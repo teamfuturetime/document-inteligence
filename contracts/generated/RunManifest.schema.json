@@ -1,0 +1,213 @@
+{
+  "$defs": {
+    "ComponentVersion": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Artifact Sha256"
+        },
+        "component": {
+          "title": "Component",
+          "type": "string"
+        },
+        "model_revision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Model Revision"
+        },
+        "package_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Package Version"
+        }
+      },
+      "required": [
+        "component",
+        "package_version",
+        "model_revision",
+        "artifact_sha256"
+      ],
+      "title": "ComponentVersion",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "dataset_version": {
+      "title": "Dataset Version",
+      "type": "string"
+    },
+    "extraction": {
+      "$ref": "#/$defs/ComponentVersion"
+    },
+    "git_commit": {
+      "title": "Git Commit",
+      "type": "string"
+    },
+    "git_dirty": {
+      "title": "Git Dirty",
+      "type": "boolean"
+    },
+    "hardware": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Hardware",
+      "type": "object"
+    },
+    "hashes": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Hashes",
+      "type": "object"
+    },
+    "manifest_sha256": {
+      "title": "Manifest Sha256",
+      "type": "string"
+    },
+    "ocr": {
+      "$ref": "#/$defs/ComponentVersion"
+    },
+    "prediction_artifact": {
+      "title": "Prediction Artifact",
+      "type": "string"
+    },
+    "prediction_source": {
+      "enum": [
+        "fixture",
+        "model"
+      ],
+      "title": "Prediction Source",
+      "type": "string"
+    },
+    "report_artifact": {
+      "title": "Report Artifact",
+      "type": "string"
+    },
+    "report_type": {
+      "enum": [
+        "evaluator_contract_check",
+        "model_benchmark"
+      ],
+      "title": "Report Type",
+      "type": "string"
+    },
+    "reproducibility_limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Reproducibility Limitations",
+      "type": "array"
+    },
+    "resolved_config": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      },
+      "title": "Resolved Config",
+      "type": "object"
+    },
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "runtime": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Runtime",
+      "type": "object"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Seed"
+    },
+    "split": {
+      "title": "Split",
+      "type": "string"
+    },
+    "started_at": {
+      "format": "date-time",
+      "title": "Started At",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "succeeded",
+        "failed",
+        "unavailable"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "versions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Versions",
+      "type": "object"
+    }
+  },
+  "required": [
+    "run_id",
+    "started_at",
+    "status",
+    "report_type",
+    "prediction_source",
+    "git_commit",
+    "git_dirty",
+    "dataset_version",
+    "manifest_sha256",
+    "split",
+    "ocr",
+    "extraction",
+    "versions",
+    "hashes",
+    "resolved_config",
+    "runtime",
+    "hardware",
+    "seed",
+    "prediction_artifact",
+    "report_artifact"
+  ],
+  "title": "RunManifest",
+  "type": "object"
+}

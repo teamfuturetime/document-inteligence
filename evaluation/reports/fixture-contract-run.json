@@ -1,0 +1,65 @@
+{
+  "run_id": "fixture_check_20261005T112631Z",
+  "started_at": "2026-10-05T11:26:31.071342Z",
+  "status": "succeeded",
+  "report_type": "evaluator_contract_check",
+  "prediction_source": "fixture",
+  "git_commit": "94c5101b94a43f1b0e2814d1cdfeee4139289673",
+  "git_dirty": true,
+  "dataset_version": "synthetic-seed-1.0.0",
+  "manifest_sha256": "842a8bfbe853ef0c4a7cde597cbcf38880599075012add9f93672e375196d556",
+  "split": "contract_fixture",
+  "ocr": {
+    "component": "fixture_ocr",
+    "package_version": null,
+    "model_revision": null,
+    "artifact_sha256": null
+  },
+  "extraction": {
+    "component": "fixture_extraction",
+    "package_version": null,
+    "model_revision": null,
+    "artifact_sha256": "0591a45380087f14e343cdbc7d20eb92189e7b9692a6880aab73bfcba3146e38"
+  },
+  "versions": {
+    "config_version": "foundation-config-1.0.0",
+    "schema_version": "1.0.0",
+    "normalization_version": "nfc-whitespace-date-1.0.0",
+    "validation_version": "application-rules-1.0.0",
+    "confidence_policy_version": "confidence-draft-1",
+    "evaluation_version": "exact-fields-1.0.0"
+  },
+  "hashes": {
+    "config": "3beedb5e97bda8646dd44b93c4e889e47bba77de42e5188c05fd418c26136d1f",
+    "predictions": "0591a45380087f14e343cdbc7d20eb92189e7b9692a6880aab73bfcba3146e38",
+    "evaluation_code": "20f36e2210fe3c210cee3075aeb688aef8a840e9ab12656c2659a65402de8d9b",
+    "normalization_code": "d3007c924c877eb42cb794de1592dd570b9303b7848c86e3723e79baf63a933b"
+  },
+  "resolved_config": {
+    "config_version": "foundation-config-1.0.0",
+    "provider": "fixture",
+    "document_type": "don_de_nghi",
+    "schema_version": "1.0.0",
+    "normalization_version": "nfc-whitespace-date-1.0.0",
+    "validation_version": "application-rules-1.0.0",
+    "confidence_policy_version": "confidence-draft-1",
+    "evaluation_version": "exact-fields-1.0.0",
+    "purpose": "contract_fixture",
+    "seed": 20261005
+  },
+  "runtime": {
+    "python": "3.14.5",
+    "backend_lock": "backend/uv.lock",
+    "backend_lock_sha256": "3f7796cddcbe262a67135d0b76c3c40931805644f4ed3dfa4ed78f40bb8750eb"
+  },
+  "hardware": {
+    "platform": "Windows-11-10.0.26100-SP0",
+    "machine": "AMD64"
+  },
+  "seed": 20261005,
+  "prediction_artifact": "data/fixtures/predictions.json",
+  "report_artifact": "evaluation/reports/fixture-contract.json",
+  "reproducibility_limitations": [
+    "Không chạy OCR/model; seed chỉ thuộc generator fixture."
+  ]
+}

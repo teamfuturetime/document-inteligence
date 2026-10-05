@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "code": {
+      "title": "Code",
+      "type": "string"
+    },
+    "field_path": {
+      "enum": [
+        "full_name",
+        "student_id",
+        "date_of_birth",
+        "class_name",
+        "faculty",
+        "request_content",
+        "request_date"
+      ],
+      "title": "Field Path",
+      "type": "string"
+    },
+    "message": {
+      "title": "Message",
+      "type": "string"
+    },
+    "severity": {
+      "enum": [
+        "error",
+        "warning"
+      ],
+      "title": "Severity",
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "field_path",
+    "severity",
+    "message"
+  ],
+  "title": "ValidationIssue",
+  "type": "object"
+}

@@ -1,0 +1,177 @@
+{
+  "$defs": {
+    "OCRSpan": {
+      "additionalProperties": false,
+      "properties": {
+        "coordinate_system": {
+          "const": "original_pixels_top_left",
+          "default": "original_pixels_top_left",
+          "title": "Coordinate System",
+          "type": "string"
+        },
+        "image_height": {
+          "exclusiveMinimum": 0,
+          "title": "Image Height",
+          "type": "integer"
+        },
+        "image_width": {
+          "exclusiveMinimum": 0,
+          "title": "Image Width",
+          "type": "integer"
+        },
+        "ocr_score": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ocr Score"
+        },
+        "page_index": {
+          "minimum": 0,
+          "title": "Page Index",
+          "type": "integer"
+        },
+        "polygon": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/Point"
+              },
+              "maxItems": 4,
+              "minItems": 4,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Polygon"
+        },
+        "span_id": {
+          "title": "Span Id",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "transform": {
+          "const": "identity",
+          "default": "identity",
+          "title": "Transform",
+          "type": "string"
+        }
+      },
+      "required": [
+        "span_id",
+        "page_index",
+        "text",
+        "image_width",
+        "image_height"
+      ],
+      "title": "OCRSpan",
+      "type": "object"
+    },
+    "Point": {
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "minimum": 0,
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "minimum": 0,
+          "title": "Y",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ],
+      "title": "Point",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "engine_package": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Engine Package"
+    },
+    "error_code": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Error Code"
+    },
+    "model_artifact": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Model Artifact"
+    },
+    "prediction_source": {
+      "enum": [
+        "fixture",
+        "model",
+        "unavailable"
+      ],
+      "title": "Prediction Source",
+      "type": "string"
+    },
+    "spans": {
+      "items": {
+        "$ref": "#/$defs/OCRSpan"
+      },
+      "title": "Spans",
+      "type": "array"
+    },
+    "status": {
+      "enum": [
+        "succeeded",
+        "unavailable",
+        "failed"
+      ],
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "status",
+    "prediction_source",
+    "spans",
+    "engine_package",
+    "model_artifact"
+  ],
+  "title": "OCRResult",
+  "type": "object"
+}

@@ -1,0 +1,47 @@
+name: foundation-ci
+"on":
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  backend-checks:
+    name: backend-checks
+    runs-on: ubuntu-latest
+    env:
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # verified v5
+      - uses: astral-sh/setup-uv@d0d8abe699bfb85fec6de9f7adb5ae17292296ff # verified v6
+        with:
+          version: "0.12.22"
+          python-version: "3.14.5"
+      - run: uv sync --project backend --locked
+      - run: uv run --project backend --locked ruff check backend scripts
+      - run: uv run --project backend --locked ruff format --check backend scripts
+      - run: uv run --project backend --locked pytest backend/tests -q
+      - run: uv run --project backend --locked python scripts/generate_contracts.py --check
+      - run: uv run --project backend --locked python scripts/check_data.py
+      - run: uv run --project backend --locked python scripts/evaluate_fixtures.py --output runtime/ci/fixture-contract.json
+      - run: uv run --project backend --locked python scripts/check_repository.py
+  frontend-checks:
+    name: frontend-checks
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # verified v5
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # verified v4
+        with:
+          node-version: "24.16.0"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run contracts:check
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm test
+      - run: npm run build

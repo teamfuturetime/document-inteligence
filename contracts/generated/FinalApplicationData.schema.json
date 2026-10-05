@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "class_name": {
+      "minLength": 1,
+      "title": "Class Name",
+      "type": "string"
+    },
+    "date_of_birth": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "title": "Date Of Birth",
+      "type": "string"
+    },
+    "faculty": {
+      "minLength": 1,
+      "title": "Faculty",
+      "type": "string"
+    },
+    "full_name": {
+      "minLength": 1,
+      "title": "Full Name",
+      "type": "string"
+    },
+    "request_content": {
+      "minLength": 1,
+      "title": "Request Content",
+      "type": "string"
+    },
+    "request_date": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "title": "Request Date",
+      "type": "string"
+    },
+    "student_id": {
+      "pattern": "^[0-9]+$",
+      "title": "Student Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "full_name",
+    "student_id",
+    "date_of_birth",
+    "class_name",
+    "faculty",
+    "request_content",
+    "request_date"
+  ],
+  "title": "FinalApplicationData",
+  "type": "object"
+}

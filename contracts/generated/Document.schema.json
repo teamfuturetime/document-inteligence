@@ -1,0 +1,67 @@
+{
+  "$defs": {
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "data_origin": {
+          "enum": [
+            "synthetic",
+            "sample"
+          ],
+          "title": "Data Origin",
+          "type": "string"
+        },
+        "prediction_source": {
+          "enum": [
+            "fixture",
+            "model",
+            "unavailable"
+          ],
+          "title": "Prediction Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data_origin",
+        "prediction_source"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "document_id": {
+      "title": "Document Id",
+      "type": "string"
+    },
+    "document_type": {
+      "const": "don_de_nghi",
+      "default": "don_de_nghi",
+      "title": "Document Type",
+      "type": "string"
+    },
+    "input_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Input Sha256",
+      "type": "string"
+    },
+    "page_count": {
+      "default": 1,
+      "minimum": 1,
+      "title": "Page Count",
+      "type": "integer"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "document_id",
+    "input_sha256",
+    "provenance"
+  ],
+  "title": "Document",
+  "type": "object"
+}

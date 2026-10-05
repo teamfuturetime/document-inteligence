@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "PROVIDER_UNAVAILABLE",
+    "message": "Chế độ mẫu giả lập chưa được bật.",
+    "request_id": "fixture-request-id"
+  }
+}

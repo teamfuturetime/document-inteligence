@@ -1,0 +1,1204 @@
+{
+  "fixture_001": {
+    "status": "succeeded",
+    "prediction_source": "fixture",
+    "spans": [
+      {
+        "span_id": "full_name_0",
+        "page_index": 0,
+        "text": "Nguyễn Minh An",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 367.0
+          },
+          {
+            "x": 309.0,
+            "y": 367.0
+          },
+          {
+            "x": 309.0,
+            "y": 399.0
+          },
+          {
+            "x": 85.0,
+            "y": 399.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "student_id_0",
+        "page_index": 0,
+        "text": "00390274",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 496.0
+          },
+          {
+            "x": 221.0,
+            "y": 496.0
+          },
+          {
+            "x": 221.0,
+            "y": 518.0
+          },
+          {
+            "x": 85.0,
+            "y": 518.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "date_of_birth_0",
+        "page_index": 0,
+        "text": "12/03/2005",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 621.0
+          },
+          {
+            "x": 237.0,
+            "y": 621.0
+          },
+          {
+            "x": 237.0,
+            "y": 643.0
+          },
+          {
+            "x": 85.0,
+            "y": 643.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "class_name_0",
+        "page_index": 0,
+        "text": "CNTT-K17",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 746.0
+          },
+          {
+            "x": 229.0,
+            "y": 746.0
+          },
+          {
+            "x": 229.0,
+            "y": 768.0
+          },
+          {
+            "x": 85.0,
+            "y": 768.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "faculty_0",
+        "page_index": 0,
+        "text": "Công nghệ thông tin",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 871.0
+          },
+          {
+            "x": 358.0,
+            "y": 871.0
+          },
+          {
+            "x": 358.0,
+            "y": 899.0
+          },
+          {
+            "x": 85.0,
+            "y": 899.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "request_content_0",
+        "page_index": 0,
+        "text": "Đề nghị xác nhận đang theo học",
+        "polygon": [
+          {
+            "x": 84.0,
+            "y": 991.0
+          },
+          {
+            "x": 521.0,
+            "y": 991.0
+          },
+          {
+            "x": 521.0,
+            "y": 1024.0
+          },
+          {
+            "x": 84.0,
+            "y": 1024.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "request_date_0",
+        "page_index": 0,
+        "text": "20/09/2026",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 1121.0
+          },
+          {
+            "x": 237.0,
+            "y": 1121.0
+          },
+          {
+            "x": 237.0,
+            "y": 1143.0
+          },
+          {
+            "x": 85.0,
+            "y": 1143.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      }
+    ],
+    "engine_package": null,
+    "model_artifact": null,
+    "error_code": null
+  },
+  "fixture_002": {
+    "status": "succeeded",
+    "prediction_source": "fixture",
+    "spans": [
+      {
+        "span_id": "full_name_0",
+        "page_index": 0,
+        "text": "Trần Mỹ Linh",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 366.0
+          },
+          {
+            "x": 261.0,
+            "y": 366.0
+          },
+          {
+            "x": 261.0,
+            "y": 399.0
+          },
+          {
+            "x": 85.0,
+            "y": 399.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "student_id_0",
+        "page_index": 0,
+        "text": "00123456",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 496.0
+          },
+          {
+            "x": 221.0,
+            "y": 496.0
+          },
+          {
+            "x": 221.0,
+            "y": 518.0
+          },
+          {
+            "x": 85.0,
+            "y": 518.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "date_of_birth_0",
+        "page_index": 0,
+        "text": "12/03/2005",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 621.0
+          },
+          {
+            "x": 237.0,
+            "y": 621.0
+          },
+          {
+            "x": 237.0,
+            "y": 643.0
+          },
+          {
+            "x": 85.0,
+            "y": 643.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "class_name_0",
+        "page_index": 0,
+        "text": "CNTT-K17",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 746.0
+          },
+          {
+            "x": 229.0,
+            "y": 746.0
+          },
+          {
+            "x": 229.0,
+            "y": 768.0
+          },
+          {
+            "x": 85.0,
+            "y": 768.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "faculty_0",
+        "page_index": 0,
+        "text": "Công nghệ thông tin",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 871.0
+          },
+          {
+            "x": 358.0,
+            "y": 871.0
+          },
+          {
+            "x": 358.0,
+            "y": 899.0
+          },
+          {
+            "x": 85.0,
+            "y": 899.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "request_content_0",
+        "page_index": 0,
+        "text": "Đề nghị xác nhận đang theo học",
+        "polygon": [
+          {
+            "x": 84.0,
+            "y": 991.0
+          },
+          {
+            "x": 521.0,
+            "y": 991.0
+          },
+          {
+            "x": 521.0,
+            "y": 1024.0
+          },
+          {
+            "x": 84.0,
+            "y": 1024.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "request_date_0",
+        "page_index": 0,
+        "text": "20/09/2026",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 1121.0
+          },
+          {
+            "x": 237.0,
+            "y": 1121.0
+          },
+          {
+            "x": 237.0,
+            "y": 1143.0
+          },
+          {
+            "x": 85.0,
+            "y": 1143.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      }
+    ],
+    "engine_package": null,
+    "model_artifact": null,
+    "error_code": null
+  },
+  "fixture_003": {
+    "status": "succeeded",
+    "prediction_source": "fixture",
+    "spans": [
+      {
+        "span_id": "full_name_0",
+        "page_index": 0,
+        "text": "Lê Hoàng Bảo",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 369.0
+          },
+          {
+            "x": 279.0,
+            "y": 369.0
+          },
+          {
+            "x": 279.0,
+            "y": 399.0
+          },
+          {
+            "x": 85.0,
+            "y": 399.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "student_id_0",
+        "page_index": 0,
+        "text": "00672188",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 496.0
+          },
+          {
+            "x": 221.0,
+            "y": 496.0
+          },
+          {
+            "x": 221.0,
+            "y": 518.0
+          },
+          {
+            "x": 85.0,
+            "y": 518.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "date_of_birth_0",
+        "page_index": 0,
+        "text": "12/03/2005",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 621.0
+          },
+          {
+            "x": 237.0,
+            "y": 621.0
+          },
+          {
+            "x": 237.0,
+            "y": 643.0
+          },
+          {
+            "x": 85.0,
+            "y": 643.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "class_name_0",
+        "page_index": 0,
+        "text": "CNTT-K17",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 746.0
+          },
+          {
+            "x": 229.0,
+            "y": 746.0
+          },
+          {
+            "x": 229.0,
+            "y": 768.0
+          },
+          {
+            "x": 85.0,
+            "y": 768.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "faculty_0",
+        "page_index": 0,
+        "text": "Công nghệ thông tin",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 871.0
+          },
+          {
+            "x": 358.0,
+            "y": 871.0
+          },
+          {
+            "x": 358.0,
+            "y": 899.0
+          },
+          {
+            "x": 85.0,
+            "y": 899.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "request_content_0",
+        "page_index": 0,
+        "text": "Đề nghị xác nhận đang theo học để bổ sung hồ sơ học bổng.",
+        "polygon": [
+          {
+            "x": 84.0,
+            "y": 989.0
+          },
+          {
+            "x": 905.0,
+            "y": 989.0
+          },
+          {
+            "x": 905.0,
+            "y": 1024.0
+          },
+          {
+            "x": 84.0,
+            "y": 1024.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "request_content_1",
+        "page_index": 0,
+        "text": "Kính mong nhà trường hỗ trợ cấp giấy xác nhận.",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 1031.0
+          },
+          {
+            "x": 738.0,
+            "y": 1031.0
+          },
+          {
+            "x": 738.0,
+            "y": 1064.0
+          },
+          {
+            "x": 85.0,
+            "y": 1064.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "request_date_0",
+        "page_index": 0,
+        "text": "20/09/2026",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 1161.0
+          },
+          {
+            "x": 237.0,
+            "y": 1161.0
+          },
+          {
+            "x": 237.0,
+            "y": 1183.0
+          },
+          {
+            "x": 85.0,
+            "y": 1183.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      }
+    ],
+    "engine_package": null,
+    "model_artifact": null,
+    "error_code": null
+  },
+  "fixture_004": {
+    "status": "succeeded",
+    "prediction_source": "fixture",
+    "spans": [
+      {
+        "span_id": "full_name_0",
+        "page_index": 0,
+        "text": "Đặng Thảo Vy",
+        "polygon": [
+          {
+            "x": 84.0,
+            "y": 369.0
+          },
+          {
+            "x": 278.0,
+            "y": 369.0
+          },
+          {
+            "x": 278.0,
+            "y": 399.0
+          },
+          {
+            "x": 84.0,
+            "y": 399.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "student_id_0",
+        "page_index": 0,
+        "text": "00410724",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 496.0
+          },
+          {
+            "x": 221.0,
+            "y": 496.0
+          },
+          {
+            "x": 221.0,
+            "y": 518.0
+          },
+          {
+            "x": 85.0,
+            "y": 518.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "date_of_birth_0",
+        "page_index": 0,
+        "text": "12/03/2005",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 621.0
+          },
+          {
+            "x": 237.0,
+            "y": 621.0
+          },
+          {
+            "x": 237.0,
+            "y": 643.0
+          },
+          {
+            "x": 85.0,
+            "y": 643.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "class_name_0",
+        "page_index": 0,
+        "text": "CNTT-K17",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 746.0
+          },
+          {
+            "x": 229.0,
+            "y": 746.0
+          },
+          {
+            "x": 229.0,
+            "y": 768.0
+          },
+          {
+            "x": 85.0,
+            "y": 768.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "request_content_0",
+        "page_index": 0,
+        "text": "Đề nghị xác nhận đang theo học",
+        "polygon": [
+          {
+            "x": 84.0,
+            "y": 991.0
+          },
+          {
+            "x": 521.0,
+            "y": 991.0
+          },
+          {
+            "x": 521.0,
+            "y": 1024.0
+          },
+          {
+            "x": 84.0,
+            "y": 1024.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "request_date_0",
+        "page_index": 0,
+        "text": "20/09/2026",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 1121.0
+          },
+          {
+            "x": 237.0,
+            "y": 1121.0
+          },
+          {
+            "x": 237.0,
+            "y": 1143.0
+          },
+          {
+            "x": 85.0,
+            "y": 1143.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      }
+    ],
+    "engine_package": null,
+    "model_artifact": null,
+    "error_code": null
+  },
+  "fixture_005": {
+    "status": "succeeded",
+    "prediction_source": "fixture",
+    "spans": [
+      {
+        "span_id": "full_name_0",
+        "page_index": 0,
+        "text": "Phạm Khánh Duy",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 371.0
+          },
+          {
+            "x": 322.0,
+            "y": 371.0
+          },
+          {
+            "x": 322.0,
+            "y": 399.0
+          },
+          {
+            "x": 85.0,
+            "y": 399.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "student_id_0",
+        "page_index": 0,
+        "text": "00519260",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 496.0
+          },
+          {
+            "x": 221.0,
+            "y": 496.0
+          },
+          {
+            "x": 221.0,
+            "y": 518.0
+          },
+          {
+            "x": 85.0,
+            "y": 518.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "date_of_birth_0",
+        "page_index": 0,
+        "text": "31/02/2005",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 621.0
+          },
+          {
+            "x": 237.0,
+            "y": 621.0
+          },
+          {
+            "x": 237.0,
+            "y": 643.0
+          },
+          {
+            "x": 85.0,
+            "y": 643.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "class_name_0",
+        "page_index": 0,
+        "text": "CNTT-K17",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 746.0
+          },
+          {
+            "x": 229.0,
+            "y": 746.0
+          },
+          {
+            "x": 229.0,
+            "y": 768.0
+          },
+          {
+            "x": 85.0,
+            "y": 768.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "faculty_0",
+        "page_index": 0,
+        "text": "Công nghệ thông tin",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 871.0
+          },
+          {
+            "x": 358.0,
+            "y": 871.0
+          },
+          {
+            "x": 358.0,
+            "y": 899.0
+          },
+          {
+            "x": 85.0,
+            "y": 899.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "request_content_0",
+        "page_index": 0,
+        "text": "Đề nghị xác nhận đang theo học",
+        "polygon": [
+          {
+            "x": 84.0,
+            "y": 991.0
+          },
+          {
+            "x": 521.0,
+            "y": 991.0
+          },
+          {
+            "x": 521.0,
+            "y": 1024.0
+          },
+          {
+            "x": 84.0,
+            "y": 1024.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "request_date_0",
+        "page_index": 0,
+        "text": "20/09/2026",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 1121.0
+          },
+          {
+            "x": 237.0,
+            "y": 1121.0
+          },
+          {
+            "x": 237.0,
+            "y": 1143.0
+          },
+          {
+            "x": 85.0,
+            "y": 1143.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      }
+    ],
+    "engine_package": null,
+    "model_artifact": null,
+    "error_code": null
+  },
+  "fixture_006": {
+    "status": "succeeded",
+    "prediction_source": "fixture",
+    "spans": [
+      {
+        "span_id": "full_name_0",
+        "page_index": 0,
+        "text": "Võ Ngọc Hà",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 371.0
+          },
+          {
+            "x": 248.0,
+            "y": 371.0
+          },
+          {
+            "x": 248.0,
+            "y": 399.0
+          },
+          {
+            "x": 85.0,
+            "y": 399.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "date_of_birth_0",
+        "page_index": 0,
+        "text": "12/03/2005",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 621.0
+          },
+          {
+            "x": 237.0,
+            "y": 621.0
+          },
+          {
+            "x": 237.0,
+            "y": 643.0
+          },
+          {
+            "x": 85.0,
+            "y": 643.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "class_name_0",
+        "page_index": 0,
+        "text": "CNTT-K17",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 746.0
+          },
+          {
+            "x": 229.0,
+            "y": 746.0
+          },
+          {
+            "x": 229.0,
+            "y": 768.0
+          },
+          {
+            "x": 85.0,
+            "y": 768.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "faculty_0",
+        "page_index": 0,
+        "text": "Công nghệ thông tin",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 871.0
+          },
+          {
+            "x": 358.0,
+            "y": 871.0
+          },
+          {
+            "x": 358.0,
+            "y": 899.0
+          },
+          {
+            "x": 85.0,
+            "y": 899.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "request_content_0",
+        "page_index": 0,
+        "text": "Đề nghị xác nhận đang theo học",
+        "polygon": [
+          {
+            "x": 84.0,
+            "y": 991.0
+          },
+          {
+            "x": 521.0,
+            "y": 991.0
+          },
+          {
+            "x": 521.0,
+            "y": 1024.0
+          },
+          {
+            "x": 84.0,
+            "y": 1024.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      },
+      {
+        "span_id": "request_date_0",
+        "page_index": 0,
+        "text": "20/09/2026",
+        "polygon": [
+          {
+            "x": 85.0,
+            "y": 1121.0
+          },
+          {
+            "x": 237.0,
+            "y": 1121.0
+          },
+          {
+            "x": 237.0,
+            "y": 1143.0
+          },
+          {
+            "x": 85.0,
+            "y": 1143.0
+          }
+        ],
+        "image_width": 1100,
+        "image_height": 1400,
+        "ocr_score": null,
+        "coordinate_system": "original_pixels_top_left",
+        "transform": "identity"
+      }
+    ],
+    "engine_package": null,
+    "model_artifact": null,
+    "error_code": null
+  }
+}

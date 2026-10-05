@@ -1,0 +1,21 @@
+{
+  "document_type": "don_de_nghi",
+  "schema_version": "1.0.0",
+  "document_id": "fixture_001",
+  "run_id": "run_fixture_001",
+  "revision": 1,
+  "data": {
+    "full_name": "Nguyễn Minh An",
+    "student_id": "00390274",
+    "date_of_birth": "2005-03-12",
+    "class_name": "CNTT-K17",
+    "faculty": "Công nghệ thông tin",
+    "request_content": "Đề nghị xác nhận đang theo học",
+    "request_date": "2026-09-20"
+  },
+  "review_status": "confirmed",
+  "provenance": {
+    "data_origin": "synthetic",
+    "prediction_source": "fixture"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "example_type": "synthetic_illustrative",
+  "prediction_source": "fixture",
+  "sample_id": "fixture_004",
+  "field_id": "faculty",
+  "run_id": "run_fixture_004",
+  "expected": null,
+  "predicted": "Kinh tế",
+  "primary_cause": "UNSUPPORTED_VALUE",
+  "secondary_tags": ["extra_fill", "no_source_evidence"],
+  "severity": "high",
+  "status": "open",
+  "issue_reference": null
+}
