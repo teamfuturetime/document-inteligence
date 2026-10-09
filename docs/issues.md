@@ -47,4 +47,9 @@ PR được một người khác review, CI pass và merge theo quyền nhóm.
 Commit local chưa đồng nghĩa issue Done trên GitHub.
 
 P0-01–P0-04 được thực hiện local trên `chore/project-bootstrap`; chưa có PR,
-review ngoài tác giả hoặc CI GitHub. Các task Phase 1 trở đi chưa triển khai.
+review ngoài tác giả hoặc CI GitHub.
+
+P1-01–P1-03 được thực hiện local trên `feat/phase1-contracts`, kế thừa bootstrap
+chưa merge: ADR scope, contract/models/schema/fixtures/tests, samples synthetic
+và manifest. Ground truth review độc lập còn pending; chưa có API/OCR service,
+PR, CI run hoặc issue GitHub. Phase 2 trở đi chưa triển khai.

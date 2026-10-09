@@ -5,9 +5,11 @@ dữ liệu có cấu trúc, review/chỉnh sửa, validation và xuất JSON.
 
 ## Trạng thái
 
-Đã khởi tạo cấu trúc và tài liệu Phase 0. Chưa có ứng dụng chạy được,
-API, OCR, mock extraction, dataset hoặc CI kiểm thử ứng dụng.
-Các interface trong tài liệu là đề xuất để chốt ở Phase 1.
+Phase 0 và baseline Phase 1 đã hoàn thành local: cấu trúc, tài liệu, quyết định
+MVP, Pydantic contracts v1.0.0, JSON Schema/fixtures và mẫu synthetic.
+Chưa có ứng dụng chạy được, HTTP API, OCR, extraction service hoặc CI GitHub.
+Fixtures mock là dữ liệu kiểm thử, chưa phải luồng demo hoạt động.
+Review nhóm/PR và golden dataset vẫn chưa hoàn thành.
 
 ## Phạm vi MVP đề xuất
 
@@ -24,12 +26,23 @@ biểu mẫu tùy ý, database, authentication, microservices và cloud.
 
 ## Bắt đầu
 
-1. Đọc [kiến trúc và MVP](docs/architecture.md).
+1. Đọc [kiến trúc và MVP](docs/architecture.md), [quyết định phạm vi](docs/decisions/001-invoice-mvp.md)
+   và [contract v1.0.0](docs/contracts.md).
 2. Đọc [roadmap](docs/roadmap.md) và [backlog issue](docs/issues.md).
 3. Làm theo [quy trình Git và task đầu tiên](docs/contributing.md).
 
-Không có lệnh chạy frontend/backend ở Phase 0. Hướng dẫn cài dependency,
-chạy demo và test sẽ được bổ sung khi hoàn thành skeleton ở Phase 2.
+Hiện chưa có frontend/backend server. Có thể chạy contract và sample integrity tests:
+
+```bash
+uv venv .venv --python python3
+uv pip install --python .venv/bin/python -r backend/requirements-contract-tests.txt
+.venv/bin/python -m backend.export_schemas --check
+.venv/bin/python -m pytest backend/tests data/tests -q
+```
+
+Python ≥ 3.11, chạy từ root repository. Nếu đã có `.venv`, bỏ bước tạo lại.
+Không có uv: dùng `python3 -m venv .venv`, sau đó `.venv/bin/python -m pip install
+-r backend/requirements-contract-tests.txt`. Hướng dẫn demo đến ở Phase 2.
 
 ## Cấu trúc
 

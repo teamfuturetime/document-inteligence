@@ -1,0 +1,53 @@
+{
+  "dataset_version": "samples-1.0.0",
+  "schema_version": "1.0.0",
+  "purpose": "development-only",
+  "generator_version": "1.0.0",
+  "seed": null,
+  "randomness": "none",
+  "pillow_version": "10.4.0",
+  "font_sha256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+  "ground_truth_review": "author-checked; independent team review pending",
+  "documents": [
+    {
+      "id": "synthetic-001",
+      "split": "dev",
+      "layout": "simple-labels-v1",
+      "condition": "clean",
+      "ground_truth": "synthetic-001.ground-truth.json",
+      "ground_truth_sha256": "3115f6873a9748fa8423d87fa2ef293566a477a6507f981fac5e499f90cac4e9",
+      "variants": [
+        {
+          "file": "synthetic-001.png",
+          "sha256": "96057ed3f30182a3dc6e58a53dec3486f6a683322ebd8d7a3390ae7ed4b9fc87",
+          "pages": 1
+        },
+        {
+          "file": "synthetic-001.jpg",
+          "sha256": "2bf53fbb59e0cdfd03424d48c3d45a706530492bc8e7dad02c901b5504d1238e",
+          "pages": 1
+        },
+        {
+          "file": "synthetic-001.pdf",
+          "sha256": "bc99227ba9e9609a1b56be1c62debea5174f754f556c3d6cf3c8baeda4793029",
+          "pages": 1
+        }
+      ]
+    },
+    {
+      "id": "synthetic-002-missing",
+      "split": "dev",
+      "layout": "simple-labels-v1",
+      "condition": "missing-currency",
+      "ground_truth": "synthetic-002-missing.ground-truth.json",
+      "ground_truth_sha256": "d22d46c5c01fc9869daed36473adc045fa5158e06ad309a930182124cfec6ac7",
+      "variants": [
+        {
+          "file": "synthetic-002-missing.png",
+          "sha256": "2f525c6d1f1ec45ba528f3982ed8ba4b8fb6f446bf9dbf047700484847b2ec93",
+          "pages": 1
+        }
+      ]
+    }
+  ]
+}
