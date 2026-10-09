@@ -1,7 +1,7 @@
 # Contract v1.0.0
 
 Baseline: [ADR 001](decisions/001-invoice-mvp.md). Models nguồn tại
-`backend/app/models/contracts.py`; JSON Schema export tại `schemas/v1/`.
+`schemas/src/document_contracts/models.py`; JSON Schema export tại `schemas/v1/`.
 Không có endpoint/server thực thi trong Phase 1.
 
 ## API
@@ -67,8 +67,9 @@ Warnings dùng code ổn định đề xuất `missing_field`, `ambiguous_field`
 `invalid_source_value`; nội dung OCR vẫn nằm evidence, không nhúng vào warning.
 Mock fixtures dùng `ocr_version=mock-not-run`, không phải output OCR thật.
 Extractor nhận OCRResult + rules/config; không import FastAPI. OCR contract
-hiện được định nghĩa cùng file nguồn models để schema nhất quán. Phase 2 tách
-kiểu dùng chung thành package độc lập trước khi pipeline import, giữ wire shape.
+được định nghĩa trong package `document-contracts` độc lập để backend, pipeline
+và evaluation dùng chung. Import cũ `backend.app.models.contracts` chỉ là shim
+tương thích Phase 1; không dùng trong pipeline. Wire shape v1.0.0 giữ nguyên.
 
 ## Fixtures và chiến lược frontend
 
@@ -89,9 +90,7 @@ API major theo `/api/v1`; fixture, schema và source đổi cùng PR. Rules/conf
 OCR model và pipeline có version độc lập, không giả vờ schema version là model.
 
 ```bash
-uv venv .venv --python python3
-uv pip install --python .venv/bin/python -r backend/requirements-contracts.txt
-uv pip install --python .venv/bin/python -r backend/requirements-contract-tests.txt
+uv sync --locked
 .venv/bin/python -m backend.export_schemas --check
 .venv/bin/python -m pytest backend/tests -q
 ```

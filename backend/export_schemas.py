@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from backend.app.models.contracts import CONTRACT_MODELS
+from document_contracts.models import CONTRACT_MODELS
 
 ROOT = Path(__file__).resolve().parents[1]
 

@@ -4,7 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from backend.app.models.contracts import InvoiceValues
+from document_contracts.models import InvoiceValues
 
 SAMPLES = Path(__file__).resolve().parents[1] / "samples"
 MANIFEST = json.loads((SAMPLES / "manifest.json").read_text())

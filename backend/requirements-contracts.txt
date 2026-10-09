@@ -1,3 +1,5 @@
 # Phase 1 tooling only; API/runtime dependencies arrive in Phase 2.
+# Compatibility install command must run from repository root.
+-e ./schemas
 pydantic==2.13.4
 jsonschema==4.23.0

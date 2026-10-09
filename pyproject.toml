@@ -1,0 +1,30 @@
+[project]
+name = "vietnamese-document-intelligence"
+version = "0.1.0"
+description = "Local Python workspace for AI-02"
+requires-python = ">=3.11"
+dependencies = [
+    "document-backend",
+    "document-contracts",
+    "document-pipeline",
+    "document-evaluation",
+]
+
+[dependency-groups]
+dev = ["pytest==8.4.2", "jsonschema==4.23.0"]
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["schemas", "backend", "pipeline", "evaluation"]
+
+[tool.uv.sources]
+document-backend = { workspace = true }
+document-contracts = { workspace = true }
+document-pipeline = { workspace = true }
+document-evaluation = { workspace = true }
+
+[tool.pytest.ini_options]
+testpaths = ["backend/tests", "data/tests"]
+addopts = "--strict-markers"

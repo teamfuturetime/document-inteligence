@@ -8,7 +8,7 @@ import pytest
 from jsonschema import Draft202012Validator, FormatChecker
 from pydantic import ValidationError
 
-from backend.app.models.contracts import (
+from document_contracts.models import (
     CONTRACT_MODELS, BoundingBox, ExtractionResponse, InvoiceValues, OCRResult,
     ReviewedExport, ValidationResponse,
 )

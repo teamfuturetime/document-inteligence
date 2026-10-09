@@ -53,9 +53,9 @@ Browser (frontend) → HTTP → backend → pipeline
 Frontend không import Python và không tự chạy AI. Backend gọi pipeline qua
 interface Python; pipeline không import FastAPI hoặc frontend. Evaluation gọi
 cùng pipeline/config với API, không viết bản extraction riêng.
-`schemas/` chứa JSON Schema/fixtures chung; Pydantic phía backend là nguồn để
-xuất schema. Phase 1 định nghĩa cách kiểm tra schema export và type TS không
-bị lệch; không duy trì ba bản schema độc lập bằng tay.
+`schemas/` chứa JSON Schema/fixtures và package Pydantic `document-contracts`
+dùng chung, do Backend sở hữu contract. Models là nguồn xuất schema;
+kiểm tra schema drift và type TS để không duy trì ba bản độc lập bằng tay.
 
 | Module | Interface dự kiến | Người sở hữu |
 | --- | --- | --- |
@@ -110,11 +110,11 @@ docs/
 .github/{ISSUE_TEMPLATE,workflows}/
 ```
 
-Hiện chỉ tạo README nêu ownership trong từng thư mục. Backend, pipeline và
-evaluation sẽ là các package Python nhỏ dùng dependency local, cài editable
-khi phát triển; không chỉnh `sys.path` bằng tay. Chốt layout đóng gói ở Phase 2.
-Frontend có lockfile riêng; dependency Python và công cụ OCR phải được pin
-khi triển khai để CI và evaluation dùng cùng cấu hình.
+Phase 2 dùng các package src-layout `document-contracts`, `document-backend`,
+`document-pipeline`, `document-evaluation` trong workspace uv. Cài editable
+bằng `uv sync --locked`; không chỉnh `sys.path` bằng tay. Models dùng chung
+không phụ thuộc HTTP framework. `uv.lock` khóa dependency Python; frontend
+sẽ có npm lockfile riêng. Công cụ/model OCR được pin khi triển khai Phase 3.
 
 ## Dữ liệu và evaluation
 
