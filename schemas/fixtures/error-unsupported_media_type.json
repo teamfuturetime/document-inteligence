@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "unsupported_media_type",
+    "message": "Synthetic error fixture: unsupported_media_type",
+    "field": null
+  }
+}

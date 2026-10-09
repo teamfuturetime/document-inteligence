@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0.0",
+  "mode": "mock",
+  "ocr_version": "mock-not-run",
+  "language": "vie+eng",
+  "page": {
+    "page": 1,
+    "width": 1200,
+    "height": 1600,
+    "to_original": [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "tokens": [
+      {
+        "text": "SYN-0001",
+        "confidence": 0.9,
+        "box": {
+          "x0": 50,
+          "y0": 200,
+          "x1": 300,
+          "y1": 240
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,156 @@
+{
+  "$defs": {
+    "BoundingBox": {
+      "additionalProperties": false,
+      "properties": {
+        "x0": {
+          "minimum": 0,
+          "title": "X0",
+          "type": "integer"
+        },
+        "x1": {
+          "exclusiveMinimum": 0,
+          "title": "X1",
+          "type": "integer"
+        },
+        "y0": {
+          "minimum": 0,
+          "title": "Y0",
+          "type": "integer"
+        },
+        "y1": {
+          "exclusiveMinimum": 0,
+          "title": "Y1",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "x0",
+        "y0",
+        "x1",
+        "y1"
+      ],
+      "title": "BoundingBox",
+      "type": "object"
+    },
+    "OCRPage": {
+      "additionalProperties": false,
+      "properties": {
+        "height": {
+          "exclusiveMinimum": 0,
+          "title": "Height",
+          "type": "integer"
+        },
+        "page": {
+          "const": 1,
+          "title": "Page",
+          "type": "integer"
+        },
+        "to_original": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 9,
+          "minItems": 9,
+          "title": "To Original",
+          "type": "array"
+        },
+        "tokens": {
+          "items": {
+            "$ref": "#/$defs/OCRToken"
+          },
+          "title": "Tokens",
+          "type": "array"
+        },
+        "width": {
+          "exclusiveMinimum": 0,
+          "title": "Width",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "page",
+        "width",
+        "height",
+        "to_original",
+        "tokens"
+      ],
+      "title": "OCRPage",
+      "type": "object"
+    },
+    "OCRToken": {
+      "additionalProperties": false,
+      "properties": {
+        "box": {
+          "$ref": "#/$defs/BoundingBox"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Confidence"
+        },
+        "text": {
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "text",
+        "confidence",
+        "box"
+      ],
+      "title": "OCRToken",
+      "type": "object"
+    }
+  },
+  "$id": "urn:ai02:1.0.0:ocr-result",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "language": {
+      "const": "vie+eng",
+      "title": "Language",
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "mock",
+        "real"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "ocr_version": {
+      "maxLength": 120,
+      "minLength": 1,
+      "title": "Ocr Version",
+      "type": "string"
+    },
+    "page": {
+      "$ref": "#/$defs/OCRPage"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "mode",
+    "ocr_version",
+    "language",
+    "page"
+  ],
+  "title": "OCRResult",
+  "type": "object"
+}

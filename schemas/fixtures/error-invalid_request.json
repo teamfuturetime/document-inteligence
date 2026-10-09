@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "Synthetic error fixture: invalid_request",
+    "field": null
+  }
+}

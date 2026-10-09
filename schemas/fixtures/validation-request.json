@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0.0",
+  "values": {
+    "invoice_number": "SYN-0001",
+    "invoice_date": "2026-10-09",
+    "seller_name": "Cửa hàng Mây Việt - dữ liệu giả",
+    "total_amount": "125000",
+    "currency": "VND"
+  }
+}

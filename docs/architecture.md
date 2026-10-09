@@ -1,7 +1,10 @@
 # MVP và kiến trúc đề xuất
 
-Trạng thái: đề xuất ban đầu, chưa phải contract đã được triển khai. Chốt bằng
-issue P1-01 trước khi viết skeleton. Thay đổi phạm vi sau đó cần issue/PR riêng.
+Phạm vi baseline đã ghi tại [ADR 001](decisions/001-invoice-mvp.md);
+[contract v1.0.0](contracts.md) có models/schema/fixtures kiểm thử ở Phase 1.
+Các mục dưới đây mô tả thiết kế ban đầu; contract và ADR là nguồn quyết định
+chi tiết hiện tại. Chưa có API/OCR thực thi hoặc review nhóm trên GitHub.
+Thay đổi phạm vi sau đó cần issue/PR riêng.
 
 ## Phạm vi và tiêu chí thành công
 

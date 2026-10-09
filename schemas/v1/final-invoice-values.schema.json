@@ -1,0 +1,47 @@
+{
+  "$id": "urn:ai02:1.0.0:final-invoice-values",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "currency": {
+      "const": "VND",
+      "title": "Currency",
+      "type": "string"
+    },
+    "invoice_date": {
+      "format": "date",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "title": "Invoice Date",
+      "type": "string"
+    },
+    "invoice_number": {
+      "maxLength": 100,
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Invoice Number",
+      "type": "string"
+    },
+    "seller_name": {
+      "maxLength": 200,
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Seller Name",
+      "type": "string"
+    },
+    "total_amount": {
+      "maximum": 9007199254740991,
+      "minimum": 0,
+      "title": "Total Amount",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "invoice_number",
+    "invoice_date",
+    "seller_name",
+    "total_amount",
+    "currency"
+  ],
+  "title": "FinalInvoiceValues",
+  "type": "object"
+}

@@ -1,0 +1,31 @@
+{
+  "$id": "urn:ai02:1.0.0:health-response",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "mode": {
+      "enum": [
+        "mock",
+        "real"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "ocr_ready": {
+      "title": "Ocr Ready",
+      "type": "boolean"
+    },
+    "status": {
+      "const": "ok",
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "status",
+    "mode",
+    "ocr_ready"
+  ],
+  "title": "HealthResponse",
+  "type": "object"
+}

@@ -1,0 +1,156 @@
+{
+  "$defs": {
+    "FieldError": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "enum": [
+            "required",
+            "invalid_format",
+            "invalid_date",
+            "out_of_range",
+            "unsupported_currency"
+          ],
+          "title": "Code",
+          "type": "string"
+        },
+        "field": {
+          "enum": [
+            "invoice_number",
+            "invoice_date",
+            "seller_name",
+            "total_amount",
+            "currency"
+          ],
+          "title": "Field",
+          "type": "string"
+        },
+        "message": {
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field",
+        "code",
+        "message"
+      ],
+      "title": "FieldError",
+      "type": "object"
+    },
+    "InvoiceValues": {
+      "additionalProperties": false,
+      "description": "All keys required; null explicitly represents a missing value.",
+      "properties": {
+        "currency": {
+          "anyOf": [
+            {
+              "const": "VND",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Currency"
+        },
+        "invoice_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Invoice Date"
+        },
+        "invoice_number": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Invoice Number"
+        },
+        "seller_name": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Seller Name"
+        },
+        "total_amount": {
+          "anyOf": [
+            {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Total Amount"
+        }
+      },
+      "required": [
+        "invoice_number",
+        "invoice_date",
+        "seller_name",
+        "total_amount",
+        "currency"
+      ],
+      "title": "InvoiceValues",
+      "type": "object"
+    }
+  },
+  "$id": "urn:ai02:1.0.0:validation-response",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "errors": {
+      "items": {
+        "$ref": "#/$defs/FieldError"
+      },
+      "title": "Errors",
+      "type": "array"
+    },
+    "normalized_values": {
+      "$ref": "#/$defs/InvoiceValues"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "valid": {
+      "title": "Valid",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema_version",
+    "valid",
+    "normalized_values",
+    "errors"
+  ],
+  "title": "ValidationResponse",
+  "type": "object"
+}

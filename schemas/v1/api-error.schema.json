@@ -1,0 +1,67 @@
+{
+  "$defs": {
+    "APIErrorDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "enum": [
+            "file_too_large",
+            "unsupported_media_type",
+            "invalid_document",
+            "multiple_pages",
+            "image_too_large",
+            "invalid_request",
+            "ocr_unavailable",
+            "processing_timeout",
+            "internal_error"
+          ],
+          "title": "Code",
+          "type": "string"
+        },
+        "field": {
+          "anyOf": [
+            {
+              "enum": [
+                "invoice_number",
+                "invoice_date",
+                "seller_name",
+                "total_amount",
+                "currency"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Field"
+        },
+        "message": {
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "field"
+      ],
+      "title": "APIErrorDetail",
+      "type": "object"
+    }
+  },
+  "$id": "urn:ai02:1.0.0:api-error",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "error": {
+      "$ref": "#/$defs/APIErrorDetail"
+    }
+  },
+  "required": [
+    "error"
+  ],
+  "title": "APIErrorResponse",
+  "type": "object"
+}

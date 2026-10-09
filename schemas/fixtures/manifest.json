@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0.0",
+  "cases": [
+    {
+      "file": "invoice-values.json",
+      "schema": "invoice-values",
+      "valid": true
+    },
+    {
+      "file": "extraction-success.json",
+      "schema": "extraction-response",
+      "valid": true
+    },
+    {
+      "file": "extraction-missing.json",
+      "schema": "extraction-response",
+      "valid": true
+    },
+    {
+      "file": "validation-request.json",
+      "schema": "validation-request",
+      "valid": true
+    },
+    {
+      "file": "validation-success.json",
+      "schema": "validation-response",
+      "valid": true
+    },
+    {
+      "file": "validation-field-error.json",
+      "schema": "validation-response",
+      "valid": true
+    },
+    {
+      "file": "validation-request-invalid-date.json",
+      "schema": "validation-request",
+      "valid": true
+    },
+    {
+      "file": "error-multiple_pages.json",
+      "schema": "api-error",
+      "valid": true
+    },
+    {
+      "file": "error-unsupported_media_type.json",
+      "schema": "api-error",
+      "valid": true
+    },
+    {
+      "file": "error-file_too_large.json",
+      "schema": "api-error",
+      "valid": true
+    },
+    {
+      "file": "error-ocr_unavailable.json",
+      "schema": "api-error",
+      "valid": true
+    },
+    {
+      "file": "error-invalid_request.json",
+      "schema": "api-error",
+      "valid": true
+    },
+    {
+      "file": "error-processing_timeout.json",
+      "schema": "api-error",
+      "valid": true
+    },
+    {
+      "file": "health-mock.json",
+      "schema": "health-response",
+      "valid": true
+    },
+    {
+      "file": "ocr-mock.json",
+      "schema": "ocr-result",
+      "valid": true
+    },
+    {
+      "file": "reviewed-export.json",
+      "schema": "reviewed-export",
+      "valid": true
+    },
+    {
+      "file": "invalid-negative-amount.json",
+      "schema": "invoice-values",
+      "valid": false
+    },
+    {
+      "file": "invalid-calendar-date.json",
+      "schema": "invoice-values",
+      "valid": false
+    },
+    {
+      "file": "invalid-extra-key.json",
+      "schema": "invoice-values",
+      "valid": false
+    },
+    {
+      "file": "invalid-amount-type.json",
+      "schema": "invoice-values",
+      "valid": false
+    }
+  ]
+}

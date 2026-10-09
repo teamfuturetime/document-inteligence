@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "valid": false,
+  "normalized_values": {
+    "invoice_number": "SYN-0001",
+    "invoice_date": null,
+    "seller_name": "Cửa hàng Mây Việt - dữ liệu giả",
+    "total_amount": 125000,
+    "currency": "VND"
+  },
+  "errors": [
+    {
+      "field": "invoice_date",
+      "code": "invalid_date",
+      "message": "Ngày không tồn tại trong lịch."
+    }
+  ]
+}

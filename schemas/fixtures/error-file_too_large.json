@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "file_too_large",
+    "message": "Synthetic error fixture: file_too_large",
+    "field": null
+  }
+}

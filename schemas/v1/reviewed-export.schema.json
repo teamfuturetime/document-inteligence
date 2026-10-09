@@ -1,0 +1,504 @@
+{
+  "$defs": {
+    "BoundingBox": {
+      "additionalProperties": false,
+      "properties": {
+        "x0": {
+          "minimum": 0,
+          "title": "X0",
+          "type": "integer"
+        },
+        "x1": {
+          "exclusiveMinimum": 0,
+          "title": "X1",
+          "type": "integer"
+        },
+        "y0": {
+          "minimum": 0,
+          "title": "Y0",
+          "type": "integer"
+        },
+        "y1": {
+          "exclusiveMinimum": 0,
+          "title": "Y1",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "x0",
+        "y0",
+        "x1",
+        "y1"
+      ],
+      "title": "BoundingBox",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "box": {
+          "$ref": "#/$defs/BoundingBox"
+        },
+        "page": {
+          "const": 1,
+          "title": "Page",
+          "type": "integer"
+        },
+        "text": {
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "text",
+        "page",
+        "box"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "ExtractedField_Annotated_int__FieldInfo_annotation_NoneType__required_True__metadata__Ge_ge_0___Le_le_9007199254740991_____": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Confidence"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "value",
+        "confidence",
+        "evidence",
+        "warnings"
+      ],
+      "title": "ExtractedField[Annotated[int, FieldInfo(annotation=NoneType, required=True, metadata=[Ge(ge=0), Le(le=9007199254740991)])]]",
+      "type": "object"
+    },
+    "ExtractedField_Annotated_str__FieldInfo_annotation_NoneType__required_True__json_schema_extra___format___metadata___PydanticGeneralMetadata_pattern_____d_4_-__d_2_-__d_2________AfterValidator__": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Confidence"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "format": "date",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "value",
+        "confidence",
+        "evidence",
+        "warnings"
+      ],
+      "title": "ExtractedField[Annotated[str, FieldInfo(annotation=NoneType, required=True, json_schema_extra={'format': 'date'}, metadata=[_PydanticGeneralMetadata(pattern='^\\\\d{4}-\\\\d{2}-\\\\d{2}$')]), AfterValidator]]",
+      "type": "object"
+    },
+    "ExtractedField_Annotated_str__FieldInfo_annotation_NoneType__required_True__metadata__MinLen_min_length_1___MaxLen_max_length_100____PydanticGeneralMetadata_pattern____S______": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Confidence"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "value",
+        "confidence",
+        "evidence",
+        "warnings"
+      ],
+      "title": "ExtractedField[Annotated[str, FieldInfo(annotation=NoneType, required=True, metadata=[MinLen(min_length=1), MaxLen(max_length=100), _PydanticGeneralMetadata(pattern='\\\\S')])]]",
+      "type": "object"
+    },
+    "ExtractedField_Annotated_str__FieldInfo_annotation_NoneType__required_True__metadata__MinLen_min_length_1___MaxLen_max_length_200____PydanticGeneralMetadata_pattern____S______": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Confidence"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "value",
+        "confidence",
+        "evidence",
+        "warnings"
+      ],
+      "title": "ExtractedField[Annotated[str, FieldInfo(annotation=NoneType, required=True, metadata=[MinLen(min_length=1), MaxLen(max_length=200), _PydanticGeneralMetadata(pattern='\\\\S')])]]",
+      "type": "object"
+    },
+    "ExtractedField_Literal__VND___": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Confidence"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "const": "VND",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "value",
+        "confidence",
+        "evidence",
+        "warnings"
+      ],
+      "title": "ExtractedField[Literal['VND']]",
+      "type": "object"
+    },
+    "ExtractedFields": {
+      "additionalProperties": false,
+      "properties": {
+        "currency": {
+          "$ref": "#/$defs/ExtractedField_Literal__VND___"
+        },
+        "invoice_date": {
+          "$ref": "#/$defs/ExtractedField_Annotated_str__FieldInfo_annotation_NoneType__required_True__json_schema_extra___format___metadata___PydanticGeneralMetadata_pattern_____d_4_-__d_2_-__d_2________AfterValidator__"
+        },
+        "invoice_number": {
+          "$ref": "#/$defs/ExtractedField_Annotated_str__FieldInfo_annotation_NoneType__required_True__metadata__MinLen_min_length_1___MaxLen_max_length_100____PydanticGeneralMetadata_pattern____S______"
+        },
+        "seller_name": {
+          "$ref": "#/$defs/ExtractedField_Annotated_str__FieldInfo_annotation_NoneType__required_True__metadata__MinLen_min_length_1___MaxLen_max_length_200____PydanticGeneralMetadata_pattern____S______"
+        },
+        "total_amount": {
+          "$ref": "#/$defs/ExtractedField_Annotated_int__FieldInfo_annotation_NoneType__required_True__metadata__Ge_ge_0___Le_le_9007199254740991_____"
+        }
+      },
+      "required": [
+        "invoice_number",
+        "invoice_date",
+        "seller_name",
+        "total_amount",
+        "currency"
+      ],
+      "title": "ExtractedFields",
+      "type": "object"
+    },
+    "ExtractionResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "config_version": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Config Version",
+          "type": "string"
+        },
+        "document_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Document Id",
+          "type": "string"
+        },
+        "fields": {
+          "$ref": "#/$defs/ExtractedFields"
+        },
+        "mode": {
+          "enum": [
+            "mock",
+            "real"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "ocr_version": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Ocr Version",
+          "type": "string"
+        },
+        "pipeline_version": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Pipeline Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "schema_version",
+        "document_id",
+        "mode",
+        "pipeline_version",
+        "ocr_version",
+        "config_version",
+        "fields",
+        "warnings"
+      ],
+      "title": "ExtractionResponse",
+      "type": "object"
+    },
+    "FinalInvoiceValues": {
+      "additionalProperties": false,
+      "properties": {
+        "currency": {
+          "const": "VND",
+          "title": "Currency",
+          "type": "string"
+        },
+        "invoice_date": {
+          "format": "date",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "title": "Invoice Date",
+          "type": "string"
+        },
+        "invoice_number": {
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Invoice Number",
+          "type": "string"
+        },
+        "seller_name": {
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Seller Name",
+          "type": "string"
+        },
+        "total_amount": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Total Amount",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "invoice_number",
+        "invoice_date",
+        "seller_name",
+        "total_amount",
+        "currency"
+      ],
+      "title": "FinalInvoiceValues",
+      "type": "object"
+    }
+  },
+  "$id": "urn:ai02:1.0.0:reviewed-export",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "edited_fields": {
+      "items": {
+        "enum": [
+          "invoice_number",
+          "invoice_date",
+          "seller_name",
+          "total_amount",
+          "currency"
+        ],
+        "type": "string"
+      },
+      "title": "Edited Fields",
+      "type": "array"
+    },
+    "original_extraction": {
+      "$ref": "#/$defs/ExtractionResponse"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "values": {
+      "$ref": "#/$defs/FinalInvoiceValues"
+    }
+  },
+  "required": [
+    "schema_version",
+    "original_extraction",
+    "values",
+    "edited_fields"
+  ],
+  "title": "ReviewedExport",
+  "type": "object"
+}

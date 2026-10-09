@@ -1,0 +1,98 @@
+{
+  "$defs": {
+    "ReviewedValues": {
+      "additionalProperties": false,
+      "description": "Raw browser input; services later normalize these strings.",
+      "properties": {
+        "currency": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Currency"
+        },
+        "invoice_date": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Invoice Date"
+        },
+        "invoice_number": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Invoice Number"
+        },
+        "seller_name": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Seller Name"
+        },
+        "total_amount": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Total Amount"
+        }
+      },
+      "required": [
+        "invoice_number",
+        "invoice_date",
+        "seller_name",
+        "total_amount",
+        "currency"
+      ],
+      "title": "ReviewedValues",
+      "type": "object"
+    }
+  },
+  "$id": "urn:ai02:1.0.0:validation-request",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "values": {
+      "$ref": "#/$defs/ReviewedValues"
+    }
+  },
+  "required": [
+    "schema_version",
+    "values"
+  ],
+  "title": "ValidationRequest",
+  "type": "object"
+}

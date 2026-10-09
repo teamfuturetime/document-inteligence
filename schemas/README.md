@@ -2,6 +2,7 @@
 
 Owner: Backend; Technical Lead điều phối review Frontend/Extraction.
 
-Phase 1 thêm JSON Schema, fixture request/response và quy tắc versioning.
-Pydantic models sẽ là nguồn xuất schema; contract tests phát hiện drift.
-Chưa có schema chính thức. Xem [contract đề xuất](../docs/architecture.md).
+Contract v1.0.0 tại `v1/`; fixtures và manifest tại `fixtures/`.
+Pydantic models ở `backend/app/models/contracts.py` là nguồn xuất schema.
+Không sửa schema sinh ra bằng tay. Xem [contract và lệnh kiểm tra](../docs/contracts.md).
+Đây là interface baseline local, chưa có API/OCR chạy hoặc review nhóm.

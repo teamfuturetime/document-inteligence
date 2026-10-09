@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0.0",
+  "document_id": "synthetic-demo-001",
+  "mode": "mock",
+  "pipeline_version": "mock-fixture-1",
+  "ocr_version": "mock-not-run",
+  "config_version": "invoice-rules-draft-1",
+  "fields": {
+    "invoice_number": {
+      "value": "SYN-0001",
+      "confidence": 0.9,
+      "evidence": [],
+      "warnings": []
+    },
+    "invoice_date": {
+      "value": "2026-10-09",
+      "confidence": 0.9,
+      "evidence": [],
+      "warnings": []
+    },
+    "seller_name": {
+      "value": "Cửa hàng Mây Việt - dữ liệu giả",
+      "confidence": 0.9,
+      "evidence": [],
+      "warnings": []
+    },
+    "total_amount": {
+      "value": 125000,
+      "confidence": 0.9,
+      "evidence": [],
+      "warnings": []
+    },
+    "currency": {
+      "value": "VND",
+      "confidence": 0.9,
+      "evidence": [],
+      "warnings": []
+    }
+  },
+  "warnings": [
+    "mock_data"
+  ]
+}

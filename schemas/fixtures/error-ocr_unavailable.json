@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "ocr_unavailable",
+    "message": "Synthetic error fixture: ocr_unavailable",
+    "field": null
+  }
+}

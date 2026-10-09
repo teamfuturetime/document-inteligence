@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "processing_timeout",
+    "message": "Synthetic error fixture: processing_timeout",
+    "field": null
+  }
+}
