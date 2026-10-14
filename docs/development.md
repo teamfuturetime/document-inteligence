@@ -78,6 +78,17 @@ fixtures đã commit.
 
 Đây là verification local, chưa phải GitHub CI, deployment hay test OCR thật.
 
+## Frontend P2-02
+
+Trong terminal riêng chạy `cd frontend`, `npm ci`, `npm run dev`. Backend vẫn
+chạy cổng 8000, Vite chạy 5173 và proxy `/health` để không cần CORS cho dev.
+`npm test` chạy 23 Vitest cases; `npm run build` kiểm tra 9 generated contracts,
+typecheck và tạo static assets. Xem [frontend README](../frontend/README.md).
+
+UI hiện chọn file local/kiểm tra health, không gửi tài liệu hoặc xử lý OCR.
+HTTP smoke check proxy đã pass; visual QA trình duyệt chưa thực hiện vì phiên
+làm việc không có browser connector. Chưa chạy GitHub CI hoặc deploy website.
+
 Tham khảo [uv workspaces](https://docs.astral.sh/uv/concepts/projects/workspaces/)
 và [locking/sync](https://docs.astral.sh/uv/concepts/projects/sync/);
 [FastAPI testing](https://fastapi.tiangolo.com/tutorial/testing/)

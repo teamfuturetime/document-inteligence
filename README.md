@@ -8,7 +8,8 @@ dữ liệu có cấu trúc, review/chỉnh sửa, validation và xuất JSON.
 Phase 0 và baseline Phase 1 đã hoàn thành local: cấu trúc, tài liệu, quyết định
 MVP, Pydantic contracts v1.0.0, JSON Schema/fixtures và mẫu synthetic.
 P2-01 đã có Python workspace/lockfile và FastAPI skeleton với `GET /health`.
-Chưa có frontend, upload API, OCR, extraction service hoặc CI GitHub.
+P2-02 đã có React/Vite frontend chọn file local và kiểm tra kết nối backend.
+Chưa có upload API, OCR, extraction service hoặc CI GitHub.
 Fixtures mock là dữ liệu kiểm thử, chưa phải luồng upload/demo hoạt động.
 Review nhóm/PR và golden dataset vẫn chưa hoàn thành.
 
@@ -44,7 +45,17 @@ uv sync --locked
 Python ≥ 3.11 và uv. Xem `http://127.0.0.1:8000/docs` hoặc gọi `/health`:
 `{"status":"ok","mode":"mock","ocr_ready":false}`.
 Chi tiết đóng gói, cài dependencies và trạng thái endpoint tại
-[hướng dẫn phát triển](docs/development.md). Frontend/mock upload demo chưa có.
+[hướng dẫn phát triển](docs/development.md). Chạy frontend ở terminal khác:
+
+```bash
+cd frontend
+npm ci
+npm run dev
+```
+
+Mở `http://127.0.0.1:5173/`, chọn sample local và bấm **Kiểm tra kết nối**.
+File chưa được gửi lên server; mock upload/extraction demo chưa có.
+Xem [frontend README](frontend/README.md) để chạy Vitest/build và generate types.
 
 ## Cấu trúc
 

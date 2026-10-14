@@ -57,4 +57,11 @@ PR, CI run hoặc issue GitHub.
 P2-01 hoàn thành local trên `feat/backend-skeleton`: workspace/package editable,
 models shared độc lập backend, lockfile, FastAPI health và error handlers, tests
 và hướng dẫn chạy. Pipeline/evaluation chỉ có package boundaries chưa có logic.
-P2-02–P2-04 và Phase 3 trở đi chưa triển khai; chưa push/merge hoặc chạy CI GitHub.
+Backend skeleton đã push lên `origin/feat/backend-skeleton`, chưa merge hoặc
+chạy CI GitHub.
+
+P2-02 hoàn thành local trên `feat/frontend-skeleton`: React/TS/Vite, npm lockfile,
+9 generated contracts, health API client/runtime validation, file selection,
+trạng thái idle/loading/success/error và tests/build. Browser visual QA chưa
+thực hiện do không có browser connector. P2-03–P2-04 và Phase 3 trở đi chưa
+triển khai; upload/extraction/review/export chưa hoạt động.

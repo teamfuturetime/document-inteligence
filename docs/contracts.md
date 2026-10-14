@@ -79,10 +79,11 @@ tương thích Phase 1; không dùng trong pipeline. Wire shape v1.0.0 giữ ngu
 success, missing, raw/invalid review, errors, OCR mock và reviewed export.
 Fixture là contract data tự tạo, không phải output model hay chất lượng đã đo.
 
-Phase 2 sẽ thêm công cụ generate TS từ `schemas/v1/*.schema.json`, khóa version
-công cụ bằng npm lockfile. Type sinh ra nằm thư mục riêng, không chỉnh bằng tay;
-CI regenerate và fail nếu diff. Runtime vẫn dùng backend validation; TypeScript
-type không tự validate JSON từ mạng. Chưa tạo frontend package ở Phase 1.
+P2-02 có công cụ generate TS từ `schemas/v1/*.schema.json`, khóa version
+bằng npm lockfile. Type sinh ở `frontend/src/api/generated/`, không sửa bằng tay.
+`npm run build` kiểm tra drift; CI sau này gọi cùng lệnh. API client health
+validate payload runtime từ schema chung bằng AJV. Các quy tắc normalization/
+review vẫn cần service backend; TS type không tự validate JSON từ mạng.
 
 ## Versioning và kiểm tra
 
