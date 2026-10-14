@@ -2,7 +2,54 @@
 
 Owner: thành viên 2 — Frontend/Review UI.
 
-React + TypeScript + Vite sẽ được khởi tạo ở Phase 2. Module chỉ gọi HTTP API,
-không chứa logic OCR/extraction. Upload, preview, trạng thái xử lý, edit,
-validation feedback và export là các task riêng. Tests Vitest đặt cạnh code.
-Chưa có package hoặc lệnh chạy. Xem [contract dự kiến](../docs/architecture.md).
+P2-02 có React + TypeScript + Vite, API client `/health`, giao diện chọn tài liệu
+local và trạng thái kết nối. Không chứa logic OCR/extraction. Chọn file không
+gửi lên server; preview, upload, review/edit và export chưa triển khai.
+
+## Chạy local
+
+Yêu cầu Node.js 22.22.2+ trong nhánh 22, 24.15.0+ trong nhánh 24 hoặc 26+ và npm
+(theo engines của jsdom). Thực tế kiểm tra Node 26.5.0/npm 11.17.0.
+Chạy backend ở terminal riêng theo [development.md](../docs/development.md),
+sau đó từ thư mục `frontend/`:
+
+```bash
+npm ci
+npm run dev
+```
+
+Mở `http://127.0.0.1:5173/`; bấm **Kiểm tra kết nối**. Vite proxy `/health` đến
+`http://127.0.0.1:8000`, vì vậy dev không cần thêm CORS vào backend.
+Backend skeleton báo Mock/OCR chưa sẵn sàng; không gọi extraction giả.
+
+## Kiểm tra và contract
+
+```bash
+npm test
+npm run build
+```
+
+Build bao gồm contract drift check và typecheck. Types trong `src/api/generated/`
+được sinh từ 9 schema tại `../schemas/v1/`; không sửa bằng tay. Khi schema thay
+đổi: chạy `npm run contracts:generate`, review schema/types cùng nhau và chạy
+tests/build. API client dùng schema chung kiểm tra payload lúc runtime bằng AJV;
+type TypeScript không bảo đảm JSON từ network đúng cấu trúc.
+
+`package-lock.json` khóa dependencies, dùng `npm ci` trên checkout mới.
+Generated `.d.ts` được track vì là interface; `node_modules/` và `dist/` bị ignore.
+
+File picker chỉ kiểm tra extension/MIME/size client: PNG/JPG/PDF, 10 MiB,
+non-empty. Không kiểm tra nội dung decode/số trang; backend phải kiểm tra thật
+khi triển khai upload. Chỉ dùng dữ liệu synthetic trong `../data/samples/`.
+
+## Deployment status
+
+`npm run build` tạo static assets, chưa deploy. Proxy của Vite phục vụ chạy
+local, không cấu hình API trên hosting production. Production hosting sau này
+cần reverse proxy cùng origin đến backend `/health` và API tương ứng.
+Không đưa secret vào frontend env vì nó được gửi tới trình duyệt.
+
+Đã chạy 23 Vitest tests, typecheck, contract check và build. HTTP smoke check
+qua Vite proxy trả đúng health response backend. Không có browser connector
+trong phiên làm việc để thực hiện visual QA trên trình duyệt; các tương tác UI
+được kiểm tra bằng React Testing Library/jsdom. CI GitHub chưa thiết lập.
