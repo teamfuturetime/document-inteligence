@@ -2,7 +2,8 @@
 
 Baseline: [ADR 001](decisions/001-invoice-mvp.md). Models nguồn tại
 `schemas/src/document_contracts/models.py`; JSON Schema export tại `schemas/v1/`.
-Không có endpoint/server thực thi trong Phase 1.
+Phase 1 định nghĩa interface. P2-01 đã triển khai `GET /health`; extract và
+validate trong bảng dưới chưa triển khai. Xem [hướng dẫn chạy](development.md).
 
 ## API
 
@@ -30,8 +31,9 @@ không chỉ kiểm tra Content-Length. UI có thể preview file local.
 
 Error envelope luôn `{ "error": { "code", "message", "field" } }`.
 `field` null cho lỗi request/file; không lộ exception/stack/đường dẫn.
-Phase 2 phải chuyển cả RequestValidationError mặc định của FastAPI vào envelope
-này, không trả lẫn hai format. Invalid review values trả 200 `valid=false`;
+P2-01 đã có handler chuyển RequestValidationError của FastAPI vào envelope
+này; 404/405 của routing không thuộc các lỗi xử lý endpoint trong bảng.
+Invalid review values theo contract trả 200 `valid=false` khi triển khai;
 JSON sai kiểu/key/version là 422 `invalid_request`.
 
 ## Schema và validation

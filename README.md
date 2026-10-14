@@ -7,8 +7,9 @@ dữ liệu có cấu trúc, review/chỉnh sửa, validation và xuất JSON.
 
 Phase 0 và baseline Phase 1 đã hoàn thành local: cấu trúc, tài liệu, quyết định
 MVP, Pydantic contracts v1.0.0, JSON Schema/fixtures và mẫu synthetic.
-Chưa có ứng dụng chạy được, HTTP API, OCR, extraction service hoặc CI GitHub.
-Fixtures mock là dữ liệu kiểm thử, chưa phải luồng demo hoạt động.
+P2-01 đã có Python workspace/lockfile và FastAPI skeleton với `GET /health`.
+Chưa có frontend, upload API, OCR, extraction service hoặc CI GitHub.
+Fixtures mock là dữ liệu kiểm thử, chưa phải luồng upload/demo hoạt động.
 Review nhóm/PR và golden dataset vẫn chưa hoàn thành.
 
 ## Phạm vi MVP đề xuất
@@ -31,18 +32,19 @@ biểu mẫu tùy ý, database, authentication, microservices và cloud.
 2. Đọc [roadmap](docs/roadmap.md) và [backlog issue](docs/issues.md).
 3. Làm theo [quy trình Git và task đầu tiên](docs/contributing.md).
 
-Hiện chưa có frontend/backend server. Có thể chạy contract và sample integrity tests:
+Chạy backend và kiểm tra từ root repository:
 
 ```bash
-uv venv .venv --python python3
-uv pip install --python .venv/bin/python -r backend/requirements-contract-tests.txt
+uv sync --locked
 .venv/bin/python -m backend.export_schemas --check
-.venv/bin/python -m pytest backend/tests data/tests -q
+.venv/bin/python -m pytest -q
+.venv/bin/python -m uvicorn document_backend.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-Python ≥ 3.11, chạy từ root repository. Nếu đã có `.venv`, bỏ bước tạo lại.
-Không có uv: dùng `python3 -m venv .venv`, sau đó `.venv/bin/python -m pip install
--r backend/requirements-contract-tests.txt`. Hướng dẫn demo đến ở Phase 2.
+Python ≥ 3.11 và uv. Xem `http://127.0.0.1:8000/docs` hoặc gọi `/health`:
+`{"status":"ok","mode":"mock","ocr_ready":false}`.
+Chi tiết đóng gói, cài dependencies và trạng thái endpoint tại
+[hướng dẫn phát triển](docs/development.md). Frontend/mock upload demo chưa có.
 
 ## Cấu trúc
 

@@ -52,4 +52,9 @@ review ngoài tác giả hoặc CI GitHub.
 P1-01–P1-03 được thực hiện local trên `feat/phase1-contracts`, kế thừa bootstrap
 chưa merge: ADR scope, contract/models/schema/fixtures/tests, samples synthetic
 và manifest. Ground truth review độc lập còn pending; chưa có API/OCR service,
-PR, CI run hoặc issue GitHub. Phase 2 trở đi chưa triển khai.
+PR, CI run hoặc issue GitHub.
+
+P2-01 hoàn thành local trên `feat/backend-skeleton`: workspace/package editable,
+models shared độc lập backend, lockfile, FastAPI health và error handlers, tests
+và hướng dẫn chạy. Pipeline/evaluation chỉ có package boundaries chưa có logic.
+P2-02–P2-04 và Phase 3 trở đi chưa triển khai; chưa push/merge hoặc chạy CI GitHub.

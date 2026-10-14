@@ -11,7 +11,7 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["pytest==8.4.2", "jsonschema==4.23.0"]
+dev = ["pytest==8.4.2", "jsonschema==4.23.0", "httpx2==2.13.0"]
 
 [tool.uv]
 package = false

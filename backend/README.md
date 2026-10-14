@@ -2,7 +2,17 @@
 
 Owner: thành viên 3 — Backend/API/Validation.
 
-Đã có Pydantic wire models và contract tests trong `tests/`, chưa có FastAPI
-server, endpoint hoặc service normalize review. Models là nguồn export schema;
-thay đổi contract cần review từ frontend và extraction. Không dùng database.
-Xem [contract và hướng dẫn test](../docs/contracts.md).
+Package `document-backend` có FastAPI app factory, router `GET /health`,
+error handlers và API/contract tests trong `tests/`. Pydantic models nguồn nằm
+ở package `document-contracts` trong `schemas/`, không phụ thuộc FastAPI.
+Chưa có upload/extraction, review validation service hoặc database.
+
+Chạy từ root sau `uv sync --locked`:
+
+```bash
+.venv/bin/python -m uvicorn document_backend.main:app --host 127.0.0.1 --port 8000 --reload
+.venv/bin/python -m pytest backend/tests -q
+```
+
+Health trả `mode=mock`, `ocr_ready=false`; chưa có demo extraction hoạt động.
+Xem [hướng dẫn local](../docs/development.md) và [contract](../docs/contracts.md).
