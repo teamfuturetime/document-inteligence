@@ -10,7 +10,8 @@ MVP, Pydantic contracts v1.0.0, JSON Schema/fixtures và mẫu synthetic.
 P2-01 đã có Python workspace/lockfile và FastAPI skeleton với `GET /health`.
 P2-02 đã có React/Vite frontend chọn file local và kiểm tra kết nối backend.
 P2-03 đã có upload PNG/JPG/PDF → fixed mock response → hiển thị kết quả mock.
-Chưa có OCR/extraction thật, review/edit/export hoặc CI GitHub.
+P2-04 đã thêm workflow CI cho backend/frontend; kiểm tra local pass, GitHub run
+chưa được xác minh. Chưa có OCR/extraction thật hoặc review/edit/export.
 Review nhóm/PR và golden dataset vẫn chưa hoàn thành.
 
 ## Phạm vi MVP đề xuất
@@ -57,6 +58,7 @@ Mở `http://127.0.0.1:5173/`, chọn sample local và bấm **Kiểm tra kết 
 Chọn mẫu synthetic rồi bấm **Gửi và xem mock** để thử upload. Mọi tài liệu hợp
 lệ nhận cùng hóa đơn mẫu; dữ liệu không được suy ra từ file. Xem [mock demo](docs/mock-demo.md).
 Xem [frontend README](frontend/README.md) để chạy Vitest/build và generate types.
+Xem [CI guide](docs/ci.md) để chạy checks, đọc workflow và publish nhánh CI.
 
 ## Cấu trúc
 

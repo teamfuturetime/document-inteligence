@@ -9,7 +9,8 @@ File/module và quyết định kỹ thuật cần reviewer biết:
 
 ## Test evidence
 
-Lệnh/kịch bản thực sự đã chạy + kết quả. Ghi rõ checks chưa chạy và lý do.
+Lệnh/kịch bản thực sự đã chạy + kết quả. Link CI run và commit SHA nếu đã có.
+Ghi rõ checks chưa chạy và lý do; local pass không đồng nghĩa GitHub CI pass.
 
 ## Trạng thái triển khai
 
@@ -22,4 +23,4 @@ Real / mock / chưa triển khai; hạn chế hoặc contract thay đổi:
 - [ ] Tests/verification phù hợp đã chạy và evidence ở trên.
 - [ ] Docs/schema/version được cập nhật nếu cần.
 - [ ] Có reviewer khác tác giả; contract đã được owner liên quan review.
-- [ ] CI pass trước merge (Phase 0: ghi rõ CI chưa thiết lập).
+- [ ] `Backend checks` và `Frontend checks` pass trên đúng commit trước merge.

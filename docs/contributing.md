@@ -53,13 +53,16 @@ dependency folders hoặc generated reports. Lockfile phải được commit khi
 PR ghi vấn đề/hành vi mới, `Closes #<issue>` khi có số thật, phạm vi file,
 test evidence gồm lệnh/kết quả, và limitations/mock status. Chọn tối thiểu một
 reviewer khác tác giả; thay đổi contract cần Backend + Frontend/Extraction review.
-CI phải pass trước merge. Trong Phase 0 chưa có CI ứng dụng, dùng evidence kiểm
-tra tài liệu thủ công; Phase 2 thêm checks thật và chọn chúng làm required.
+CI phải pass trước merge. P2-04 đã có workflow `CI` với `Backend checks` và
+`Frontend checks`; implementation/local verification chưa đồng nghĩa GitHub
+run pass. Xem [CI guide](ci.md) để publish, kiểm tra đúng commit và đọc failed log.
 
 Admin nên cấu hình main yêu cầu PR + một approval, cấm force push, yêu cầu
 resolve discussions và required CI checks sau P2-04. Đây là đề xuất, chưa
 cấu hình GitHub. Merge thường giữ atomic history; không squash mặc định nếu
 nhóm muốn giữ từng checkpoint. Chỉ người được nhóm phân quyền thực hiện merge.
+Chọn hai job names ở trên làm required checks sau khi run đầu được xác minh;
+workflow không tự cấu hình branch protection.
 
 ## Task đầu tiên trên repository thực tế
 

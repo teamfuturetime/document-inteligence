@@ -69,5 +69,10 @@ P2-03 hoàn thành local trên `feat/mock-upload-demo`: upload validation,
 fixed mock response, frontend upload/results, lỗi/retry/stale-request handling.
 85 backend/data tests + 30 frontend tests, build/schema checks và HTTP upload
 smoke qua Vite proxy pass. Mock không chạy OCR, không dùng cho evaluation.
-P2-04 và Phase 3 trở đi chưa triển khai; review/edit/export chưa hoạt động.
-Các nhánh frontend/mock mới chưa push/merge; CI GitHub chưa thiết lập.
+Review/edit/export chưa hoạt động. Các nhánh frontend/mock mới chưa push/merge.
+
+P2-04 implementation hoàn thành local trên `chore/ci-checks`: workflow hai job,
+SHA-pinned Actions, locked installs, schema/tests/build checks và CI guide.
+Actionlint/local commands pass; remote acceptance còn pending: chưa publish
+nhánh CI, chưa có GitHub run được xác minh, chưa chọn required checks trên main.
+Phase 3 trở đi chưa triển khai.
