@@ -7,6 +7,9 @@ dependencies = [
     "document-contracts",
     "document-pipeline",
     "fastapi==0.143.0",
+    "pillow==12.3.0",
+    "pypdf==6.20.1",
+    "python-multipart==0.0.32",
     "uvicorn==0.54.0",
 ]
 

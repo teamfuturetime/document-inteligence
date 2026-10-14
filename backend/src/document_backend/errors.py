@@ -7,6 +7,13 @@ from fastapi.responses import JSONResponse
 from document_contracts.models import APIErrorDetail, APIErrorResponse
 
 
+class DocumentError(Exception):
+    def __init__(self, status: int, code: str, message: str):
+        super().__init__(message)
+        self.status = status
+        self.code = code
+
+
 def error_response(status: int, code: str, message: str) -> JSONResponse:
     payload = APIErrorResponse(
         error=APIErrorDetail(code=code, message=message, field=None)
@@ -15,6 +22,10 @@ def error_response(status: int, code: str, message: str) -> JSONResponse:
 
 
 def register_error_handlers(app: FastAPI) -> None:
+    @app.exception_handler(DocumentError)
+    async def document_error(request: Request, exc: DocumentError):
+        return error_response(exc.status, exc.code, str(exc))
+
     @app.exception_handler(RequestValidationError)
     async def invalid_request(request: Request, exc: RequestValidationError):
         return error_response(422, "invalid_request", "Yêu cầu không đúng cấu trúc dữ liệu.")
