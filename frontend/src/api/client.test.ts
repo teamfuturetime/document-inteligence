@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { getHealth, RequestError } from './client'
+import { getHealth, uploadDocument, RequestError } from './client'
+import extraction from '../../../schemas/fixtures/extraction-success.json'
 
 afterEach(() => vi.unstubAllGlobals())
 
@@ -46,4 +47,17 @@ describe('health API contract', () => {
     await expect(getHealth()).rejects.toBeInstanceOf(RequestError)
     await expect(getHealth()).rejects.toThrow('5 giây')
   })
+})
+
+it('validates extraction response dates at runtime', async () => {
+  const invalid = structuredClone(extraction)
+  invalid.fields.invoice_date.value = '2026-02-30'
+  vi.stubGlobal('fetch', vi.fn().mockResolvedValue(Response.json(invalid)))
+  await expect(uploadDocument(new File(['sample'], 'sample.png'))).rejects.toThrow('không đúng contract')
+})
+
+it('rejects extraction responses missing a required field', async () => {
+  const invalid = { ...extraction, fields: { invoice_number: extraction.fields.invoice_number } }
+  vi.stubGlobal('fetch', vi.fn().mockResolvedValue(Response.json(invalid)))
+  await expect(uploadDocument(new File(['sample'], 'sample.png'))).rejects.toThrow('không đúng contract')
 })

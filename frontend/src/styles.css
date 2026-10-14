@@ -31,6 +31,9 @@ input::file-selector-button { cursor: pointer; border: 1px solid #bacdc0; border
 .error { color: #98272d; background: #fff1f1; border-left: 3px solid #b53b3f; padding: 12px; }
 .success { font-weight: 700; color: #256344; }
 .connection-result { margin-top: 18px; }
+.result { padding: 18px; border: 1px solid #d7e1da; border-radius: 8px; margin-top: 20px; }
+.result h3 { font-size: 17px; margin: 0 0 10px; }
+.result dd { overflow-wrap: anywhere; text-align: right; }
 dl { margin: 16px 0; }
 dl > div { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5ece7; gap: 12px; }
 dt { color: #526562; } dd { margin: 0; font-weight: 650; }

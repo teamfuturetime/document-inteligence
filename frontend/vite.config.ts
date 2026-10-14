@@ -8,7 +8,7 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
     // Same-origin requests avoid needing backend CORS in local development.
-    proxy: { '/health': 'http://127.0.0.1:8000' },
+    proxy: { '/health': 'http://127.0.0.1:8000', '/api': 'http://127.0.0.1:8000' },
   },
   test: {
     environment: 'jsdom',

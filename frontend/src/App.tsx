@@ -16,8 +16,8 @@ export default function App() {
         </div>
         <div className="workspace"><DocumentSelection /><BackendStatus /></div>
         <aside className="scope" aria-label="Trạng thái triển khai">
-          <strong>Đã có</strong><span>Chọn file local · Kiểm tra backend</span>
-          <strong>Sắp triển khai</strong><span>Upload · OCR · Review · Xuất JSON</span>
+          <strong>Đã có</strong><span>Upload với mock · Kiểm tra backend</span>
+          <strong>Sắp triển khai</strong><span>OCR · Review · Xuất JSON</span>
         </aside>
       </main>
       <footer>Mẫu synthetic, không sử dụng thông tin cá nhân thật.</footer>

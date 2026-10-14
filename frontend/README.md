@@ -2,9 +2,9 @@
 
 Owner: thành viên 2 — Frontend/Review UI.
 
-P2-02 có React + TypeScript + Vite, API client `/health`, giao diện chọn tài liệu
-local và trạng thái kết nối. Không chứa logic OCR/extraction. Chọn file không
-gửi lên server; preview, upload, review/edit và export chưa triển khai.
+P2-02 có React + TypeScript + Vite và health client. P2-03 thêm upload client
+`POST /api/v1/extract`, kết quả mock và trạng thái loading/error/retry. Không
+chứa logic OCR/extraction. Preview, review/edit và export chưa triển khai.
 
 ## Chạy local
 
@@ -18,9 +18,10 @@ npm ci
 npm run dev
 ```
 
-Mở `http://127.0.0.1:5173/`; bấm **Kiểm tra kết nối**. Vite proxy `/health` đến
+Mở `http://127.0.0.1:5173/`; bấm **Kiểm tra kết nối**. Vite proxy `/health` và `/api` đến
 `http://127.0.0.1:8000`, vì vậy dev không cần thêm CORS vào backend.
-Backend skeleton báo Mock/OCR chưa sẵn sàng; không gọi extraction giả.
+Backend báo Mock/OCR chưa sẵn sàng. Chọn sample synthetic rồi bấm **Gửi và xem
+mock**. Kết quả cố định, không dựa vào file; xem [mock demo](../docs/mock-demo.md).
 
 ## Kiểm tra và contract
 
@@ -33,7 +34,9 @@ Build bao gồm contract drift check và typecheck. Types trong `src/api/generat
 được sinh từ 9 schema tại `../schemas/v1/`; không sửa bằng tay. Khi schema thay
 đổi: chạy `npm run contracts:generate`, review schema/types cùng nhau và chạy
 tests/build. API client dùng schema chung kiểm tra payload lúc runtime bằng AJV;
-type TypeScript không bảo đảm JSON từ network đúng cấu trúc.
+type TypeScript không bảo đảm JSON từ network đúng cấu trúc. `ajv-formats`
+kiểm tra date format/calendar của extraction response. Upload dùng FormData,
+browser đặt multipart boundary; đổi/bỏ file hủy request và xóa kết quả cũ.
 
 `package-lock.json` khóa dependencies, dùng `npm ci` trên checkout mới.
 Generated `.d.ts` được track vì là interface; `node_modules/` và `dist/` bị ignore.
@@ -49,7 +52,8 @@ local, không cấu hình API trên hosting production. Production hosting sau n
 cần reverse proxy cùng origin đến backend `/health` và API tương ứng.
 Không đưa secret vào frontend env vì nó được gửi tới trình duyệt.
 
-Đã chạy 23 Vitest tests, typecheck, contract check và build. HTTP smoke check
-qua Vite proxy trả đúng health response backend. Không có browser connector
+Đã chạy 30 Vitest tests, typecheck, contract check và build. HTTP smoke check
+qua Vite proxy upload PNG/JPG/PDF trả mock đúng contract và file giả nhận 415.
+Không có browser connector
 trong phiên làm việc để thực hiện visual QA trên trình duyệt; các tương tác UI
 được kiểm tra bằng React Testing Library/jsdom. CI GitHub chưa thiết lập.

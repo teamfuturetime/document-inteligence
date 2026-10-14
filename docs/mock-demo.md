@@ -23,6 +23,19 @@ curl --fail --form 'file=@data/samples/synthetic-001.png' http://127.0.0.1:8000/
 Thay PNG bằng JPG/PDF tương ứng để thử ba định dạng. Schema response vẫn
 v1.0.0. `GET /health` vẫn báo OCR chưa sẵn sàng, không coi upload mock là OCR.
 
+## Thử luồng frontend
+
+Trong terminal khác: `cd frontend`, `npm ci`, `npm run dev`. Mở
+`http://127.0.0.1:5173/`, chọn mẫu ở `data/samples/` rồi bấm **Gửi và xem mock**.
+UI hiển thị trạng thái gửi, lỗi có thể retry và năm giá trị được gắn nhãn mock.
+Chọn file khác hoặc bỏ chọn hủy request và xóa kết quả cũ. Không tự động upload
+ngay khi chọn file. Chưa có preview/review/edit/JSON export.
+
+API client kiểm tra JSON Schema lúc runtime và date format; proxy `/api` đi đến
+backend 8000. Timeout client upload là 30 giây, health là 5 giây. Timeout client
+không chứng minh server đã dừng tác vụ; backend vẫn cần hard deadline pipeline
+khi tích hợp OCR thật.
+
 ## Giới hạn và xử lý tài liệu
 
 - File tối đa 10 MiB; request tối đa 10 MiB + 64 KiB overhead multipart.
@@ -59,3 +72,8 @@ over-limit, MIME/filename giả, multipart sai/duplicate, stream không có leng
 Các fixture synthetic trong Phase 1 không được sửa hoặc gọi là kết quả AI.
 Không dùng demo mock để tính evaluation. Review/edit/validation/export chưa
 triển khai; các task đó vẫn dùng contract baseline đã định nghĩa.
+
+Frontend: 30 Vitest tests pass; build/typecheck/9 generated contract check pass.
+HTTP smoke test qua Vite proxy nhận 200 đúng contract cho PNG/JPG/PDF và 415
+đúng error envelope cho file giả. Server tạm đã dừng sau verification. Chưa
+visual QA bằng browser, chưa GitHub CI/deploy.

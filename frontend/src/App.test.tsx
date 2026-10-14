@@ -11,7 +11,7 @@ it('shows implementation status and sends no requests before interaction', () =>
   render(<App />)
   expect(screen.getByRole('heading', { level: 1 })).toBeVisible()
   expect(screen.getByText('Chưa chọn tài liệu.')).toBeVisible()
-  expect(screen.getByText('Upload · OCR · Review · Xuất JSON')).toBeVisible()
+  expect(screen.getByText('OCR · Review · Xuất JSON')).toBeVisible()
   expect(fetch).not.toHaveBeenCalled()
 })
 
