@@ -24,10 +24,9 @@ curl --fail http://127.0.0.1:8000/health
 
 Kết quả: `{"status":"ok","mode":"mock","ocr_ready":false}`.
 `status=ok` chỉ là service đang hoạt động, không phải OCR readiness. Skeleton
-chưa có `/api/v1/extract` hoặc `/api/v1/validate`; gọi chúng hiện nhận 404.
-Trạng thái mock không có nghĩa luồng extraction demo đã hoạt động.
-Không có file upload, giới hạn decode hoặc deadline pipeline nào được thực thi
-trong task health này; những phần đó thuộc các endpoint/pipeline tiếp theo.
+đã có `/api/v1/extract` với fixed mock demo; `/api/v1/validate` vẫn nhận 404.
+Upload kiểm tra file thật rồi trả dữ liệu mẫu, chưa chạy OCR. Giới hạn/deadline
+đã áp dụng và phần chưa triển khai xem [mock demo](mock-demo.md).
 
 `create_app()` tạo app độc lập cho mỗi test. Router health tách khỏi app factory;
 models dùng chung không import FastAPI. Handler RequestValidationError dùng
@@ -82,12 +81,19 @@ fixtures đã commit.
 
 Trong terminal riêng chạy `cd frontend`, `npm ci`, `npm run dev`. Backend vẫn
 chạy cổng 8000, Vite chạy 5173 và proxy `/health` để không cần CORS cho dev.
-`npm test` chạy 23 Vitest cases; `npm run build` kiểm tra 9 generated contracts,
+`npm test` hiện chạy 30 Vitest cases; `npm run build` kiểm tra 9 generated contracts,
 typecheck và tạo static assets. Xem [frontend README](../frontend/README.md).
 
-UI hiện chọn file local/kiểm tra health, không gửi tài liệu hoặc xử lý OCR.
+UI hiện upload tài liệu và hiển thị fixed mock response, chưa xử lý OCR.
 HTTP smoke check proxy đã pass; visual QA trình duyệt chưa thực hiện vì phiên
 làm việc không có browser connector. Chưa chạy GitHub CI hoặc deploy website.
+
+## Evidence P2-03
+
+Backend/data 85 tests pass không warning; frontend 30 tests pass; schema drift,
+generated TS, typecheck và build pass. HTTP smoke test qua Vite proxy cho PNG,
+JPG và PDF trả 200/mock; file giả trả 415 đúng contract. Server tạm đã được
+dừng sau kiểm tra. Xem [mock-demo.md](mock-demo.md) để chạy lại và hiểu giới hạn.
 
 Tham khảo [uv workspaces](https://docs.astral.sh/uv/concepts/projects/workspaces/)
 và [locking/sync](https://docs.astral.sh/uv/concepts/projects/sync/);

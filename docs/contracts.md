@@ -2,8 +2,9 @@
 
 Baseline: [ADR 001](decisions/001-invoice-mvp.md). Models nguồn tại
 `schemas/src/document_contracts/models.py`; JSON Schema export tại `schemas/v1/`.
-Phase 1 định nghĩa interface. P2-01 đã triển khai `GET /health`; extract và
-validate trong bảng dưới chưa triển khai. Xem [hướng dẫn chạy](development.md).
+Phase 1 định nghĩa interface. P2-01 triển khai `GET /health`; P2-03 triển khai
+`POST /api/v1/extract` ở chế độ fixed mock. Validate trong bảng chưa triển khai.
+Xem [hướng dẫn chạy](development.md) và [giới hạn mock demo](mock-demo.md).
 
 ## API
 
@@ -18,7 +19,8 @@ validate trong bảng dưới chưa triển khai. Xem [hướng dẫn chạy](de
 `document_id` là ID tương quan request, không phải URL tải tài liệu đã lưu.
 Giới hạn: 10 MiB file, 25 megapixel decode, một trang, deadline 30 giây.
 Backend phải áp dụng cả streaming size limit và giới hạn decode khi triển khai;
-không chỉ kiểm tra Content-Length. UI có thể preview file local.
+không chỉ kiểm tra Content-Length. P2-03 đã áp dụng size/pixel/single-page checks
+và deadline nhận upload; hard deadline CPU/OCR và preview chưa triển khai.
 
 | HTTP status | `error.code` |
 | --- | --- |

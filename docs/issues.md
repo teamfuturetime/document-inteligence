@@ -63,5 +63,11 @@ chạy CI GitHub.
 P2-02 hoàn thành local trên `feat/frontend-skeleton`: React/TS/Vite, npm lockfile,
 9 generated contracts, health API client/runtime validation, file selection,
 trạng thái idle/loading/success/error và tests/build. Browser visual QA chưa
-thực hiện do không có browser connector. P2-03–P2-04 và Phase 3 trở đi chưa
-triển khai; upload/extraction/review/export chưa hoạt động.
+thực hiện do không có browser connector.
+
+P2-03 hoàn thành local trên `feat/mock-upload-demo`: upload validation,
+fixed mock response, frontend upload/results, lỗi/retry/stale-request handling.
+85 backend/data tests + 30 frontend tests, build/schema checks và HTTP upload
+smoke qua Vite proxy pass. Mock không chạy OCR, không dùng cho evaluation.
+P2-04 và Phase 3 trở đi chưa triển khai; review/edit/export chưa hoạt động.
+Các nhánh frontend/mock mới chưa push/merge; CI GitHub chưa thiết lập.

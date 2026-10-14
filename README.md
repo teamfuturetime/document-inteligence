@@ -9,8 +9,8 @@ Phase 0 và baseline Phase 1 đã hoàn thành local: cấu trúc, tài liệu, 
 MVP, Pydantic contracts v1.0.0, JSON Schema/fixtures và mẫu synthetic.
 P2-01 đã có Python workspace/lockfile và FastAPI skeleton với `GET /health`.
 P2-02 đã có React/Vite frontend chọn file local và kiểm tra kết nối backend.
-Chưa có upload API, OCR, extraction service hoặc CI GitHub.
-Fixtures mock là dữ liệu kiểm thử, chưa phải luồng upload/demo hoạt động.
+P2-03 đã có upload PNG/JPG/PDF → fixed mock response → hiển thị kết quả mock.
+Chưa có OCR/extraction thật, review/edit/export hoặc CI GitHub.
 Review nhóm/PR và golden dataset vẫn chưa hoàn thành.
 
 ## Phạm vi MVP đề xuất
@@ -54,7 +54,8 @@ npm run dev
 ```
 
 Mở `http://127.0.0.1:5173/`, chọn sample local và bấm **Kiểm tra kết nối**.
-File chưa được gửi lên server; mock upload/extraction demo chưa có.
+Chọn mẫu synthetic rồi bấm **Gửi và xem mock** để thử upload. Mọi tài liệu hợp
+lệ nhận cùng hóa đơn mẫu; dữ liệu không được suy ra từ file. Xem [mock demo](docs/mock-demo.md).
 Xem [frontend README](frontend/README.md) để chạy Vitest/build và generate types.
 
 ## Cấu trúc
