@@ -73,6 +73,8 @@ Review/edit/export chưa hoạt động. Các nhánh frontend/mock mới chưa p
 
 P2-04 implementation hoàn thành local trên `chore/ci-checks`: workflow hai job,
 SHA-pinned Actions, locked installs, schema/tests/build checks và CI guide.
-Actionlint/local commands pass; remote acceptance còn pending: chưa publish
-nhánh CI, chưa có GitHub run được xác minh, chưa chọn required checks trên main.
+Actionlint/local commands pass; nhánh CI đã publish. GitHub run
+[38504082654](https://github.com/teamfuturetime/document-inteligence/actions/runs/38504082654)
+success trên commit `7e6c9a1`, cả Backend checks/Frontend checks pass. Cấu hình
+required checks trên main và PR review/merge chưa thực hiện.
 Phase 3 trở đi chưa triển khai.

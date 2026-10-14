@@ -1,7 +1,10 @@
 # P2-04 — GitHub Actions checks
 
-Workflow: `.github/workflows/ci.yml`, tên `CI`. Trạng thái: đã triển khai và
-kiểm tra local; chưa push nhánh CI, chưa có GitHub run được xác minh.
+Workflow: `.github/workflows/ci.yml`. Đã push `chore/ci-checks` và xác minh
+GitHub run trên commit `7e6c9a1e028e91cc73fcbcd144e7fc04dbb6484d`:
+[run 38504082654](https://github.com/teamfuturetime/document-inteligence/actions/runs/38504082654).
+`Backend checks` và `Frontend checks` cùng success, gồm install/schema/tests/
+typecheck/build. Required checks/branch protection chưa được cấu hình.
 
 ## Trigger và hai job độc lập
 
@@ -51,7 +54,8 @@ integrations đó. Các step workflow hiện chỉ là các lệnh CLI đơn gi�
 Kết quả local: backend 85 tests, frontend 30 tests, schema/build/typecheck pass.
 Npm cảnh báo optional `fsevents` install script trên macOS chưa được approve;
 test/build vẫn pass. Không cấp quyền chạy install scripts toàn cục chỉ để xóa
-cảnh báo. Chưa khẳng định Ubuntu/GitHub run pass từ các kết quả macOS.
+cảnh báo. Các kết quả macOS là evidence local riêng; run GitHub liên kết ở trên
+đã được xác minh bằng GitHub CLI trên đúng SHA.
 
 ## Sau khi được phép publish
 
@@ -72,8 +76,8 @@ gh run list --repo teamfuturetime/document-inteligence --branch chore/ci-checks 
 gh run view RUN_ID --repo teamfuturetime/document-inteligence --log-failed
 ```
 
-`RUN_ID` là placeholder cần thay bằng ID thật. GitHub CLI hiện chưa đăng nhập;
-có thể kiểm tra run trên website mà không thay đổi cấu hình login ở máy.
+`RUN_ID` là placeholder cần thay bằng ID thật. GitHub CLI đã đăng nhập và đọc
+được run trong repository; cũng có thể kiểm tra trực tiếp trên website.
 
 ## Required checks và review
 
