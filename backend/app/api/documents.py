@@ -7,6 +7,7 @@ from app.repositories.documents import DocumentRepository
 from app.schemas.documents import DocumentList, DocumentRead
 from app.services.file_validation import InvalidDocument, validate_document
 from app.services.storage import LocalStorage
+from app.services.processing import process_document
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -49,3 +50,17 @@ def get_document(document_id: str, db: Session = Depends(get_db)):
     if not document:
         raise HTTPException(status_code=404, detail="Không tìm thấy tài liệu")
     return document
+
+
+@router.post("/{document_id}/process", status_code=status.HTTP_202_ACCEPTED)
+def run_processing(document_id: str, db: Session = Depends(get_db)):
+    document = DocumentRepository(db).get(document_id)
+    if not document:
+        raise HTTPException(status_code=404, detail="Không tìm thấy tài liệu")
+    if document.status == "processing":
+        raise HTTPException(status_code=409, detail="Tài liệu đang được xử lý")
+    try:
+        extraction = process_document(db, document)
+    except Exception as error:
+        raise HTTPException(status_code=503, detail="Không thể xử lý tài liệu") from error
+    return {"document_id": document.id, "extraction_id": extraction.id, "status": document.status}
