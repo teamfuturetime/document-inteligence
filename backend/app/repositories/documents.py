@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, timezone
 
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
 from app.models import Document
@@ -32,3 +33,31 @@ class DocumentRepository:
         self.session.commit()
         self.session.refresh(document)
         return document
+
+    def search(
+        self,
+        *,
+        query: str | None = None,
+        status: str | None = None,
+        document_type: str | None = None,
+        offset: int = 0,
+        limit: int = 20,
+    ) -> tuple[list[Document], int]:
+        filters = []
+        if query:
+            escaped = query.replace("%", r"\%").replace("_", r"\_")
+            filters.append(or_(Document.original_name.ilike(f"%{escaped}%", escape="\\"), Document.id == query))
+        if status:
+            filters.append(Document.status == status)
+        if document_type:
+            filters.append(Document.document_type == document_type)
+
+        total = self.session.scalar(select(func.count()).select_from(Document).where(*filters)) or 0
+        statement = (
+            select(Document)
+            .where(*filters)
+            .order_by(Document.created_at.desc())
+            .offset(max(offset, 0))
+            .limit(min(max(limit, 1), 100))
+        )
+        return list(self.session.scalars(statement)), total
