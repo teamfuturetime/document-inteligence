@@ -1,0 +1,313 @@
+{
+  "dataset_version": "golden-1.0.0",
+  "schema_version": "1.0.0",
+  "generator_version": "1.0.0",
+  "seed": 20261015,
+  "pillow_version": "12.3.0",
+  "font_sha256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+  "font": "macOS Supplemental Arial.ttf; not bundled",
+  "ground_truth_review": "author-checked; independent team review pending",
+  "target_macro_exact_match": 0.85,
+  "documents": [
+    {
+      "id": "golden-001",
+      "split": "dev",
+      "layout": "labels-1",
+      "condition": "clean",
+      "file": "golden-001.png",
+      "sha256": "d672e24a780f589177cb3e0a6ca73bc5d4593f948119d4fb10951732b4ae19a0",
+      "ground_truth": "golden-001.ground-truth.json",
+      "ground_truth_sha256": "5ff63dedfde0ca84c9f74ddb2c90030c3479335bc6cb75e1d8326efe8844b160"
+    },
+    {
+      "id": "golden-002",
+      "split": "dev",
+      "layout": "labels-2",
+      "condition": "compression",
+      "file": "golden-002.jpg",
+      "sha256": "ea1d07f8cf6e1c2212fff60109026e925b6f9a5c5205abc622394d08ac0f5d1b",
+      "ground_truth": "golden-002.ground-truth.json",
+      "ground_truth_sha256": "8b1fc8694207320185059ccccc7dddc77e036cd972d6ce808dd7b330e39db659"
+    },
+    {
+      "id": "golden-003",
+      "split": "dev",
+      "layout": "labels-3",
+      "condition": "blur",
+      "file": "golden-003.pdf",
+      "sha256": "42701f38d6f2805b68a67c9102c5e36111aada1c384588405ec25ae1a17cc41e",
+      "ground_truth": "golden-003.ground-truth.json",
+      "ground_truth_sha256": "95810caa4cae402772549c300da62e62cdf0760dc117556d1f15fed6941f1cb9"
+    },
+    {
+      "id": "golden-004",
+      "split": "dev",
+      "layout": "labels-1",
+      "condition": "rotation",
+      "file": "golden-004.png",
+      "sha256": "2bcc1a86bb34c7672188ac2cd653c904cce15d06befe7d12bd485ca7d1f9e2f0",
+      "ground_truth": "golden-004.ground-truth.json",
+      "ground_truth_sha256": "f9d1e993cb62ddfc6797728f94a07732bbe1e32b9d374ddd0d44285bddda32db"
+    },
+    {
+      "id": "golden-005",
+      "split": "dev",
+      "layout": "labels-2",
+      "condition": "missing-currency",
+      "file": "golden-005.jpg",
+      "sha256": "f11e7299d914ca5643bae487b34bf641388a6adf3188640513ce0437b6bc953b",
+      "ground_truth": "golden-005.ground-truth.json",
+      "ground_truth_sha256": "4febb5aaedd116ff9ae5f99798cbaea4b34a7ad8dc66c25e68c5539889a08625"
+    },
+    {
+      "id": "golden-006",
+      "split": "dev",
+      "layout": "labels-3",
+      "condition": "clean",
+      "file": "golden-006.pdf",
+      "sha256": "4d14bff66b2dc05d533594e6894faed5cf03468788b4766f6608ad656353e138",
+      "ground_truth": "golden-006.ground-truth.json",
+      "ground_truth_sha256": "a1895ca9f6ab317766b20f9440ff4c7d97a67ab15a5025a497d03b28d352b974"
+    },
+    {
+      "id": "golden-007",
+      "split": "dev",
+      "layout": "labels-1",
+      "condition": "compression",
+      "file": "golden-007.png",
+      "sha256": "06aea55b82626b461a4e241663014678da04cece1228479935286cdb7a6dc914",
+      "ground_truth": "golden-007.ground-truth.json",
+      "ground_truth_sha256": "b20101876fed1e8bc086a0927fd7cb03bb8d0bb543a9b595f7236177c0c93a9f"
+    },
+    {
+      "id": "golden-008",
+      "split": "dev",
+      "layout": "labels-2",
+      "condition": "blur",
+      "file": "golden-008.jpg",
+      "sha256": "f5e7084e560c59891c46a5109e309f5f809754215962a7a7d563717c37e25fda",
+      "ground_truth": "golden-008.ground-truth.json",
+      "ground_truth_sha256": "65c5f11a830c5ea17ae43f4bcd0f1e30c57437b9c03a0a8067499ac3e64f5a54"
+    },
+    {
+      "id": "golden-009",
+      "split": "dev",
+      "layout": "labels-3",
+      "condition": "rotation",
+      "file": "golden-009.pdf",
+      "sha256": "3e905349446aaa9ee0ff4e907bef13f5f4f91e25ba6f179332d4a83b8bb949b5",
+      "ground_truth": "golden-009.ground-truth.json",
+      "ground_truth_sha256": "190b74977c6dfbc4ae43775aad0ba320d5568ce1a5dbc166a35f5d318796609b"
+    },
+    {
+      "id": "golden-010",
+      "split": "dev",
+      "layout": "labels-1",
+      "condition": "missing-currency",
+      "file": "golden-010.png",
+      "sha256": "61ef90bd1c1d89f5e43e5402843079e5f587afac8860b545e341fa90bd7a180c",
+      "ground_truth": "golden-010.ground-truth.json",
+      "ground_truth_sha256": "8263f8ede11bb334bf2d691e7dc65971136033828d1031bce710aedcff428a6a"
+    },
+    {
+      "id": "golden-011",
+      "split": "dev",
+      "layout": "labels-2",
+      "condition": "clean",
+      "file": "golden-011.jpg",
+      "sha256": "07845f61a178a0b39502f329881b3226e47fe08da56567d8a3e0014ed7f25dc7",
+      "ground_truth": "golden-011.ground-truth.json",
+      "ground_truth_sha256": "5160c0b44896d68a681257fc77ea0aea378e213dfd0d88f6332085f9c410c701"
+    },
+    {
+      "id": "golden-012",
+      "split": "dev",
+      "layout": "labels-3",
+      "condition": "compression",
+      "file": "golden-012.pdf",
+      "sha256": "74fcf0b4f239822a604fa5f72e96660c27810a909beba10e340ca5cd8072cdf4",
+      "ground_truth": "golden-012.ground-truth.json",
+      "ground_truth_sha256": "afdac2a5f169f1b8c2a7ee74fe3c5eb802e9779105aa695aacaeb7d4b763a247"
+    },
+    {
+      "id": "golden-013",
+      "split": "dev",
+      "layout": "labels-1",
+      "condition": "blur",
+      "file": "golden-013.png",
+      "sha256": "f3fa66d02f173faf0fa8d118a3dd8141071513edffb3e8e4cb28632294b423cd",
+      "ground_truth": "golden-013.ground-truth.json",
+      "ground_truth_sha256": "32c542d5ac8e349bb1ad7223af5e864d35710e80e6ddb9cbf84cc3f676dd1315"
+    },
+    {
+      "id": "golden-014",
+      "split": "dev",
+      "layout": "labels-2",
+      "condition": "rotation",
+      "file": "golden-014.jpg",
+      "sha256": "131d14091604c93cb7f9d8a3d5fb41d4763b3d2bccf52dcd43560e859b92b6cb",
+      "ground_truth": "golden-014.ground-truth.json",
+      "ground_truth_sha256": "e31455ae52ac3b341ee1c2edd8172e7b23637dc50276f0419ad4b0e6baa9c49a"
+    },
+    {
+      "id": "golden-015",
+      "split": "dev",
+      "layout": "labels-3",
+      "condition": "missing-currency",
+      "file": "golden-015.pdf",
+      "sha256": "406beb2ce6d01b96895cfc417520dca0e1c55d7b0d02b0b751792ccf21e61e18",
+      "ground_truth": "golden-015.ground-truth.json",
+      "ground_truth_sha256": "2b01c5d8b2b360701d2e8bdba20b90b79f02b8402fabc41fc693c51cc4fda9b3"
+    },
+    {
+      "id": "golden-016",
+      "split": "dev",
+      "layout": "labels-1",
+      "condition": "clean",
+      "file": "golden-016.png",
+      "sha256": "aba12058d680bc9939d15c2458b3e1e4958f92b6cc6c0c19c3866e10ae0a9dfa",
+      "ground_truth": "golden-016.ground-truth.json",
+      "ground_truth_sha256": "a25d30082dc1bfd782d3cebd40b85f289790beed744742a897350a8ef0c37c7f"
+    },
+    {
+      "id": "golden-017",
+      "split": "dev",
+      "layout": "labels-2",
+      "condition": "compression",
+      "file": "golden-017.jpg",
+      "sha256": "772c332a8a76f488649fbe33a284df346991920a9390a7928d615b4cb95d24f1",
+      "ground_truth": "golden-017.ground-truth.json",
+      "ground_truth_sha256": "179f3f77abdf6cdd76b2024fe0afec0beea4af8e327424c847dcb7eb61d2e700"
+    },
+    {
+      "id": "golden-018",
+      "split": "dev",
+      "layout": "labels-3",
+      "condition": "blur",
+      "file": "golden-018.pdf",
+      "sha256": "4764358b72f287867fbaf9fdfa14fa0a5d388bf06bb788479ad8e9c0a7f30808",
+      "ground_truth": "golden-018.ground-truth.json",
+      "ground_truth_sha256": "c060a9cde4106eae601be0349c977d61bb60e7275bd4ca6853c1463cb607907d"
+    },
+    {
+      "id": "golden-019",
+      "split": "test",
+      "layout": "labels-1",
+      "condition": "rotation",
+      "file": "golden-019.png",
+      "sha256": "e37d0da1b0616897b40c4f83757c26330fefd2fcdeadba99cf501a3d2088a06d",
+      "ground_truth": "golden-019.ground-truth.json",
+      "ground_truth_sha256": "24fb202a8d42164b08191597ae0fb03ba111ca3f41d41bc856d7e95c8e480933"
+    },
+    {
+      "id": "golden-020",
+      "split": "test",
+      "layout": "labels-2",
+      "condition": "missing-currency",
+      "file": "golden-020.jpg",
+      "sha256": "8075c678b92be6d9ab346649758a02517f5b461456b03623a5d0cbc96d7184eb",
+      "ground_truth": "golden-020.ground-truth.json",
+      "ground_truth_sha256": "8a05bf6eb18deec76c2f1f4553a6f6d9d9c386f5f387e4e56f2a1152f04c51c3"
+    },
+    {
+      "id": "golden-021",
+      "split": "test",
+      "layout": "labels-3",
+      "condition": "clean",
+      "file": "golden-021.pdf",
+      "sha256": "8a1f4748152903aa4bfbaa97bab32a8335cf5aa0ea81558a93524abc6c2a2aa2",
+      "ground_truth": "golden-021.ground-truth.json",
+      "ground_truth_sha256": "8809b3a0dfc6015f58c215f600f389c890d131fc06858c483f52766f4eec9a70"
+    },
+    {
+      "id": "golden-022",
+      "split": "test",
+      "layout": "labels-1",
+      "condition": "compression",
+      "file": "golden-022.png",
+      "sha256": "70eb60d9e38b2e1d19b725ce4f646c3e333d8511bbaed91b4cf89103d9d084b5",
+      "ground_truth": "golden-022.ground-truth.json",
+      "ground_truth_sha256": "fdcd7b2592cb0ab05650e0467b9ba1e995fa421788bb8bb04850b2a520fafb20"
+    },
+    {
+      "id": "golden-023",
+      "split": "test",
+      "layout": "labels-2",
+      "condition": "blur",
+      "file": "golden-023.jpg",
+      "sha256": "87a8d7d5d1c744eeeeac5f3e6a1bb03a993bccf4383ad61ad52a08d12424006c",
+      "ground_truth": "golden-023.ground-truth.json",
+      "ground_truth_sha256": "2b29d548e107b34ac5c6a95dd0859fe73af34c533f32d1dc39527561f343188e"
+    },
+    {
+      "id": "golden-024",
+      "split": "test",
+      "layout": "labels-3",
+      "condition": "rotation",
+      "file": "golden-024.pdf",
+      "sha256": "5e6807c477549ba122b872e9fd96ef32e031d6ec52fd074156c160842d8f556e",
+      "ground_truth": "golden-024.ground-truth.json",
+      "ground_truth_sha256": "76878c003b60cc73b31396726c21d166a6f75ef6d6f262bc8d835db63a11d85c"
+    },
+    {
+      "id": "golden-025",
+      "split": "test",
+      "layout": "labels-1",
+      "condition": "missing-currency",
+      "file": "golden-025.png",
+      "sha256": "504436264036166d443d11b0b69a1a9e36266d45c4a21fb31710c375604aa67b",
+      "ground_truth": "golden-025.ground-truth.json",
+      "ground_truth_sha256": "4e47e61260432c831d9c9a3b17ee9f589c2532ee0877b22e132309c5c7c06c25"
+    },
+    {
+      "id": "golden-026",
+      "split": "test",
+      "layout": "labels-2",
+      "condition": "clean",
+      "file": "golden-026.jpg",
+      "sha256": "17869b11d18f7e1e7f00026e0245079f0833c769d8e2457dbe72c65452bd1c10",
+      "ground_truth": "golden-026.ground-truth.json",
+      "ground_truth_sha256": "32db87d487829152c23d004f95c4503bbf411954bd7a8b471119d44bb520c01d"
+    },
+    {
+      "id": "golden-027",
+      "split": "test",
+      "layout": "labels-3",
+      "condition": "compression",
+      "file": "golden-027.pdf",
+      "sha256": "6d20ebc4a3c4367a510f155295feb8f7d288c6bd2f63efa713d786c906073f0d",
+      "ground_truth": "golden-027.ground-truth.json",
+      "ground_truth_sha256": "a7d39d5d0e4deaa6ac5de1c2412b0b503e185a019ea49fd28ddf5060ddb853c7"
+    },
+    {
+      "id": "golden-028",
+      "split": "test",
+      "layout": "labels-1",
+      "condition": "blur",
+      "file": "golden-028.png",
+      "sha256": "e208a7fef72fb973a1ffa0c43cab0685562d3e5012c590a30dcf09bef62df5b2",
+      "ground_truth": "golden-028.ground-truth.json",
+      "ground_truth_sha256": "a8deed00fb352f160a79183e06828cde99c052975e322c178039dc1c157f6bcd"
+    },
+    {
+      "id": "golden-029",
+      "split": "test",
+      "layout": "labels-2",
+      "condition": "rotation",
+      "file": "golden-029.jpg",
+      "sha256": "6c1f54b0dbb74cebf69c4931194d4e950c815066ee4248263e77ec0c295822af",
+      "ground_truth": "golden-029.ground-truth.json",
+      "ground_truth_sha256": "5dc0191ee70111dd0d5046046a66e31b88c16fd967303afc7093feb7028e43cf"
+    },
+    {
+      "id": "golden-030",
+      "split": "test",
+      "layout": "labels-3",
+      "condition": "missing-currency",
+      "file": "golden-030.pdf",
+      "sha256": "50ec64c6aa66d871b58d582a962c6de0435a9be7092c068c0916bf95e752932e",
+      "ground_truth": "golden-030.ground-truth.json",
+      "ground_truth_sha256": "f92e2eab5cfa3db23949b6a8f588bf25ee9218b540ffb7d521ac11b822bd63a5"
+    }
+  ]
+}
