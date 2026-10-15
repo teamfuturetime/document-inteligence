@@ -1,1 +1,1 @@
-"""Framework-independent document preprocessing; OCR/extraction to follow."""
+"""Framework-independent document preprocessing and OCR; extraction to follow."""

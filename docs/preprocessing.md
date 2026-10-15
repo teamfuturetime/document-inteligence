@@ -75,8 +75,8 @@ Ngày 2026-10-15, macOS ARM64/Python 3.13.14:
 Đây là evidence local; thay đổi P3-01 chưa chạy GitHub CI. Workflow pytest
 hiện có tự thu thập `pipeline/tests` nhờ cấu hình root.
 
-Task kế tiếp là P3-02: adapter Tesseract tiếng Việt. Máy đã có Tesseract nhưng
-chưa có language model `vie`; chưa tuyên bố OCR sẵn sàng.
+P3-02 đã bổ sung adapter Tesseract tiếng Việt và model đã pin;
+xem [ocr.md](ocr.md) để cài/chạy OCR. Web/API vẫn ở chế độ mock.
 
 Tham khảo [Pillow EXIF transpose](https://pillow.readthedocs.io/en/stable/reference/ImageOps.html#PIL.ImageOps.exif_transpose),
 [PyMuPDF rasterization](https://pymupdf.readthedocs.io/en/latest/page.html#Page.get_pixmap)

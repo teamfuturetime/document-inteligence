@@ -6,7 +6,7 @@ GitHub run trên commit `7e6c9a1e028e91cc73fcbcd144e7fc04dbb6484d`:
 `Backend checks` và `Frontend checks` cùng success, gồm install/schema/tests/
 typecheck/build. Required checks/branch protection chưa được cấu hình.
 
-## Trigger và hai job độc lập
+## Trigger và các job độc lập
 
 Push mọi branch và Pull Request đều chạy checks, không lọc path để tránh thiếu
 required check khi chỉ đổi contract/docs. Commit mới hủy run cũ của cùng branch
@@ -16,9 +16,15 @@ hoặc PR. Không có deployment, publish, merge tự động hay thay branch pr
 | --- | --- | --- |
 | `Backend checks` | Ubuntu 24.04, Python 3.13.14, uv 0.11.25 | `uv sync --locked`, schema export check, Pytest |
 | `Frontend checks` | Ubuntu 24.04, Node 26.5.0 | `npm ci` trong frontend, Vitest, build gồm TS contract drift/typecheck |
+| `OCR integration` | Ubuntu 24.04, Tesseract 5.3.4-1build5, Python 3.13.14 | Model installer kiểm tra SHA-256, Pytest `--run-ocr` trên engine thật |
 
-Hai job không cần server backend/Vite đang chạy: API tests dùng TestClient,
-UI tests dùng jsdom và fake fetch. Không gọi OCR/model/cloud hoặc cần secret.
+Các job không cần server backend/Vite đang chạy: API tests dùng TestClient,
+UI tests dùng jsdom và fake fetch. `Backend checks` chạy unit tests, skip rõ
+6 tests có marker `ocr_integration`; không cần engine/model/secret.
+`OCR integration` cài engine với version gói Ubuntu đã pin, tải vie/eng vào
+`data/models/tessdata` từ commit chính thức đã pin và xác minh hash. Job này
+gọi `pytest pipeline/tests/test_ocr_integration.py --run-ocr`; thiếu prerequisite,
+download lỗi hoặc hash sai đều fail, không skip/fallback mock.
 Smoke HTTP local của P2-03 là evidence riêng, chưa phải browser E2E trong CI.
 Không cần chạy sample generator hoặc tải font để dùng fixtures đã commit.
 
@@ -38,6 +44,9 @@ Từ root:
 uv sync --locked
 uv run --locked python -m backend.export_schemas --check
 uv run --locked python -m pytest -q
+# OCR thật (cần Tesseract 5 trên PATH, installer cần mạng):
+uv run --locked python -m document_pipeline.ocr_models --directory data/models/tessdata
+uv run --locked python -m pytest pipeline/tests/test_ocr_integration.py --run-ocr --tessdata-dir data/models/tessdata -q
 ```
 
 Trong `frontend/`:
@@ -56,6 +65,13 @@ Npm cảnh báo optional `fsevents` install script trên macOS chưa được ap
 test/build vẫn pass. Không cấp quyền chạy install scripts toàn cục chỉ để xóa
 cảnh báo. Các kết quả macOS là evidence local riêng; run GitHub liên kết ở trên
 đã được xác minh bằng GitHub CLI trên đúng SHA.
+
+P3-02 đã bổ sung job `OCR integration`; actionlint pass local. Bộ Python
+workspace với real OCR đạt 158 tests trên Tesseract 5.5.2/macOS, schema check
+và model installer pass. Linux/Tesseract 5.3.4 job mới chưa được chạy trên
+GitHub; link run P2-04 phía trên không chứng minh job này đã xanh.
+Model commit/hash giống nhau, engine/build/OS khác nhau có thể cho text khác;
+integration tests kiểm tra nội dung/evidence, không snapshot toàn bộ OCR output.
 
 ## Sau khi được phép publish
 
@@ -86,6 +102,9 @@ làm required status checks cho main; bật yêu cầu PR + tối thiểu một 
 khác tác giả. Đây là bước cấu hình riêng, chưa được thực hiện bởi workflow.
 Giữ job names ổn định để không làm lệch tên required checks. Chỉ merge sau khi
 cả hai checks và review đạt yêu cầu.
+
+Khi job `OCR integration` có run thành công đã xác minh, đề xuất thêm nó làm
+required check; workflow không tự cập nhật branch protection.
 
 CI chưa pass: mở failed step, đọc lỗi và tạo fix nhỏ; không bỏ check hoặc dùng
 force push/reset để làm trạng thái xanh. Chưa có run: kiểm tra branch đã push,

@@ -84,4 +84,11 @@ PNG/JPEG/PDF một trang, EXIF/alpha/grayscale, metadata/config/hash, giới h�
 và subprocess timeout. 32 pipeline tests, tổng 117 Python tests pass; 9 schema
 không drift; CLI PNG/PDF pass. Xem [preprocessing.md](preprocessing.md).
 Chưa publish, review hoặc chạy CI cho thay đổi này. API vẫn mock.
-P3-02 và Phase 4–7 chưa triển khai.
+P3-02 đã có implementation và verification local trên `feat/vietnamese-ocr`,
+tích hợp vào `personal/canhtung-main`: Tesseract 5, vie+eng model commit/hash,
+TSV parser, OCRResult, timeout và CLI. Kiểm thử engine thật tách riêng với
+`--run-ocr`; thiếu prerequisites khi opt in sẽ fail. Xem [ocr.md](ocr.md).
+158 Python tests pass khi opt in, gồm 6 real engine tests; 9 schema không drift,
+CLI PNG/PDF và package build pass trên máy local.
+Chưa publish/review hoặc xác minh GitHub CI cho thay đổi này. API vẫn mock.
+Phase 4–7 chưa triển khai; task tiếp theo P4-01 là mapping trường từ OCR.

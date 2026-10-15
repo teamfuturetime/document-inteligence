@@ -30,10 +30,11 @@ khả năng xử lý hóa đơn thực tế; không điều chỉnh test để �
 - Python cho pipeline và evaluation để dùng lại extraction thực tế.
 - OCR baseline đề xuất: Tesseract với `vie+eng`, adapter trả token/bounding box.
   [Tesseract có model vie](https://tesseract-ocr.github.io/tessdoc/Data-Files.html).
-  Chọn bộ traineddata và ghi hash/version sau benchmark Phase 3; chưa cài OCR.
+  P3-02 đã có adapter CLI và pin `tessdata_fast` vie/eng, xem [OCR setup](ocr.md).
+  Chưa benchmark/golden evaluation hoặc nối OCR thật vào HTTP API.
 - Extraction baseline dùng rule theo nhãn và định dạng; version rules/config.
   Adapter vision-language model chỉ là khả năng mở rộng, chưa triển khai.
-- Pytest, Vitest và GitHub Actions sẽ được thêm khi có module chạy được.
+- Pytest, Vitest và GitHub Actions kiểm tra modules/CI; OCR integration tách riêng.
 
 Chạy local với hai process frontend/backend, không cần database. Mỗi request
 xử lý đồng bộ trong MVP; phải giới hạn thời gian/kích thước trước khi tích hợp.
