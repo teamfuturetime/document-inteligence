@@ -6,7 +6,7 @@ from app.core.config import get_settings
 from app.core.database import get_db
 from app.repositories.documents import DocumentRepository
 from app.schemas.documents import DocumentList, DocumentRead
-from app.schemas.extractions import ExtractionRead
+from app.schemas.extractions import ExtractionRead, ExtractionUpdate
 from app.models import Extraction
 from app.services.file_validation import InvalidDocument, validate_document
 from app.services.storage import LocalStorage
@@ -79,4 +79,38 @@ def get_latest_extraction(document_id: str, db: Session = Depends(get_db)):
     )
     if not extraction:
         raise HTTPException(status_code=404, detail="Chưa có kết quả trích xuất")
+    return extraction
+
+
+def _find_extraction(db: Session, document_id: str) -> Extraction:
+    extraction = db.scalar(
+        select(Extraction)
+        .where(Extraction.document_id == document_id)
+        .order_by(Extraction.updated_at.desc())
+        .limit(1)
+    )
+    if not extraction:
+        raise HTTPException(status_code=404, detail="Chưa có kết quả trích xuất")
+    return extraction
+
+
+@router.patch("/{document_id}/extraction", response_model=ExtractionRead)
+def update_extraction(document_id: str, payload: ExtractionUpdate, db: Session = Depends(get_db)):
+    extraction = _find_extraction(db, document_id)
+    if extraction.confirmed:
+        raise HTTPException(status_code=409, detail="Kết quả đã xác nhận")
+    extraction.data = payload.data
+    extraction.warnings = payload.warnings
+    db.commit()
+    db.refresh(extraction)
+    return extraction
+
+
+@router.post("/{document_id}/confirm", response_model=ExtractionRead)
+def confirm_extraction(document_id: str, db: Session = Depends(get_db)):
+    extraction = _find_extraction(db, document_id)
+    extraction.confirmed = True
+    extraction.document.status = "confirmed"
+    db.commit()
+    db.refresh(extraction)
     return extraction

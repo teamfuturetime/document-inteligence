@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ExtractionRead(BaseModel):
@@ -14,3 +14,8 @@ class ExtractionRead(BaseModel):
     updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class ExtractionUpdate(BaseModel):
+    data: dict[str, Any]
+    warnings: list[str] = Field(default_factory=list)
