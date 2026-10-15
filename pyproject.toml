@@ -26,5 +26,5 @@ document-pipeline = { workspace = true }
 document-evaluation = { workspace = true }
 
 [tool.pytest.ini_options]
-testpaths = ["backend/tests", "data/tests"]
+testpaths = ["backend/tests", "data/tests", "pipeline/tests"]
 addopts = "--strict-markers"

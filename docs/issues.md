@@ -77,4 +77,11 @@ Actionlint/local commands pass; nhánh CI đã publish. GitHub run
 [38504082654](https://github.com/teamfuturetime/document-inteligence/actions/runs/38504082654)
 success trên commit `7e6c9a1`, cả Backend checks/Frontend checks pass. Cấu hình
 required checks trên main và PR review/merge chưa thực hiện.
-Phase 3 trở đi chưa triển khai.
+
+P3-01 hoàn thành implementation và verification local trên
+`feat/document-preprocessing`, tích hợp vào `personal/canhtung-main`:
+PNG/JPEG/PDF một trang, EXIF/alpha/grayscale, metadata/config/hash, giới hạn
+và subprocess timeout. 32 pipeline tests, tổng 117 Python tests pass; 9 schema
+không drift; CLI PNG/PDF pass. Xem [preprocessing.md](preprocessing.md).
+Chưa publish, review hoặc chạy CI cho thay đổi này. API vẫn mock.
+P3-02 và Phase 4–7 chưa triển khai.

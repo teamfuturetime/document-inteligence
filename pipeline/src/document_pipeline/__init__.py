@@ -1,1 +1,1 @@
-"""Package boundary for preprocessing/OCR/extraction; not yet implemented."""
+"""Framework-independent document preprocessing; OCR/extraction to follow."""

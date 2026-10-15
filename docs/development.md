@@ -58,7 +58,8 @@ document-backend → document-pipeline → document-contracts
 document-evaluation → document-pipeline + document-contracts
 ```
 
-Pipeline/evaluation hiện chỉ có package boundaries, chưa có OCR, extraction,
+Pipeline hiện có preprocessing chạy trong subprocess; xem [preprocessing.md](preprocessing.md)
+để thử PNG/JPEG/PDF và đọc metadata. Chưa có OCR, extraction,
 metrics hoặc CLI chạy evaluation. Package import thành công không có nghĩa
 chức năng AI đã được thực hiện. `data/requirements-samples.txt` là công cụ tạo
 mẫu tùy chọn, không phải dependency server. Không cần font/generator để dùng
