@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
 from app.core.database import get_db
+from app.core.security import require_api_key
 from app.repositories.documents import DocumentRepository
 from app.schemas.documents import DocumentList, DocumentRead
 from app.schemas.extractions import ExtractionRead, ExtractionUpdate
@@ -13,7 +14,7 @@ from app.services.file_validation import InvalidDocument, validate_document
 from app.services.storage import LocalStorage
 from app.services.processing import process_document
 
-router = APIRouter(prefix="/documents", tags=["documents"])
+router = APIRouter(prefix="/documents", tags=["documents"], dependencies=[Depends(require_api_key)])
 
 
 @router.post("", response_model=DocumentRead, status_code=status.HTTP_201_CREATED)

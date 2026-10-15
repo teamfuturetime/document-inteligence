@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     max_upload_mb: int = 15
     cors_origins: str = "http://localhost:5173"
     ocr_engine: str = "mock"
+    api_key: str = ""
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
