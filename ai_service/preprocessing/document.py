@@ -68,7 +68,11 @@ def estimate_skew_angle(image: np.ndarray) -> float:
 
     angles = []
     for line in lines:
-        x1, y1, x2, y2 = line[0]
+        # OpenCV < 4.5 trả về shape (N, 1, 4); OpenCV >= 4.5 trả về (N, 4)
+        if line.ndim == 2 and line.shape[1] == 4:
+            x1, y1, x2, y2 = line[0]
+        else:
+            x1, y1, x2, y2 = line
         if abs(x2 - x1) < 1e-6:
             continue
         angle = np.degrees(np.arctan2(y2 - y1, x2 - x1))
