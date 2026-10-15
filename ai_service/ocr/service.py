@@ -4,6 +4,7 @@ import numpy as np
 
 from ai_service.ocr.engines import OcrEngine
 from ai_service.ocr.geometry import TextBlock, extract_blocks
+from ai_service.ocr.normalization import normalize_vietnamese_text
 from ai_service.preprocessing import deskew, enhance_image
 
 
@@ -28,6 +29,9 @@ class OcrService:
         for index, page in enumerate(pages, start=1):
             prepared = enhance_image(deskew(page))
             height, width = prepared.shape[:2]
-            lines = extract_blocks(self.engine.recognize(prepared), width, height)
+            lines = [
+                TextBlock(normalize_vietnamese_text(line.text), line.confidence, line.box)
+                for line in extract_blocks(self.engine.recognize(prepared), width, height)
+            ]
             results.append(OcrPage(index, width, height, lines))
         return results
