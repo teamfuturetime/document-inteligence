@@ -11,9 +11,10 @@ P2-01 đã có Python workspace/lockfile và FastAPI skeleton với `GET /health
 P2-02 đã có React/Vite frontend chọn file local và kiểm tra kết nối backend.
 P2-03 đã có upload PNG/JPG/PDF → fixed mock response → hiển thị kết quả mock.
 P2-04 đã có workflow CI; backend/frontend checks đã pass trên GitHub cho commit
-`7e6c9a1` (link evidence trong CI guide). Chưa có OCR/extraction thật hoặc review/edit/export.
-P3-01 đã có preprocessing PNG/JPEG/PDF chạy thật qua CLI riêng, kiểm thử local;
-chưa nối vào API. Xem [preprocessing](docs/preprocessing.md).
+`7e6c9a1` (link evidence trong CI guide). Web chưa có OCR/extraction thật hoặc review/edit/export.
+P3-01/02 đã có preprocessing và OCR Tesseract tiếng Việt chạy thật qua CLI riêng,
+kiểm thử local; chưa nối vào API. Xem [preprocessing](docs/preprocessing.md)
+và [OCR setup](docs/ocr.md).
 Review nhóm/PR và golden dataset vẫn chưa hoàn thành.
 
 ## Phạm vi MVP đề xuất

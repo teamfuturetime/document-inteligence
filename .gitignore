@@ -28,6 +28,7 @@ htmlcov/
 # Runtime/generated assets; curated synthetic fixtures remain tracked
 data/uploads/
 data/generated/
+data/models/
 evaluation/reports/
 *.log
 
