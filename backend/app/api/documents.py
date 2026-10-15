@@ -1,10 +1,13 @@
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
 from app.core.database import get_db
 from app.repositories.documents import DocumentRepository
 from app.schemas.documents import DocumentList, DocumentRead
+from app.schemas.extractions import ExtractionRead
+from app.models import Extraction
 from app.services.file_validation import InvalidDocument, validate_document
 from app.services.storage import LocalStorage
 from app.services.processing import process_document
@@ -64,3 +67,16 @@ def run_processing(document_id: str, db: Session = Depends(get_db)):
     except Exception as error:
         raise HTTPException(status_code=503, detail="Không thể xử lý tài liệu") from error
     return {"document_id": document.id, "extraction_id": extraction.id, "status": document.status}
+
+
+@router.get("/{document_id}/extraction", response_model=ExtractionRead)
+def get_latest_extraction(document_id: str, db: Session = Depends(get_db)):
+    extraction = db.scalar(
+        select(Extraction)
+        .where(Extraction.document_id == document_id)
+        .order_by(Extraction.updated_at.desc())
+        .limit(1)
+    )
+    if not extraction:
+        raise HTTPException(status_code=404, detail="Chưa có kết quả trích xuất")
+    return extraction
