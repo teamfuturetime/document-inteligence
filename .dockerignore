@@ -1,0 +1,20 @@
+# Docker ignore
+.git
+.gitignore
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+**/.mypy_cache
+node_modules
+frontend/node_modules
+frontend/dist
+.env
+.env.*
+!.env.example
+storage
+uploads
+logs
+*.log
+tests
+docs
+scripts
