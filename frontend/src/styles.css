@@ -15,7 +15,7 @@ button:disabled { cursor: wait; opacity: .65; }
 .eyebrow, .step { font-size: 12px; font-weight: 750; letter-spacing: .1em; color: #456b65; }
 h1 { font-size: clamp(32px, 4.5vw, 52px); letter-spacing: -.04em; line-height: 1.15; margin: 14px 0 20px; }
 .lead { font-size: 18px; color: #526562; max-width: 650px; }
-.workspace { display: grid; grid-template-columns: 1.15fr 1fr; gap: 24px; }
+.workspace { display: grid; grid-template-columns: minmax(0, 2fr) minmax(240px, 1fr); gap: 24px; align-items: start; }
 .panel { background: #fff; border: 1px solid #d7e1da; border-radius: 14px; padding: 28px; }
 h2 { font-size: 22px; line-height: 1.35; margin: 12px 0; }
 .panel > p { color: #526562; }
@@ -40,4 +40,16 @@ dt { color: #526562; } dd { margin: 0; font-weight: 650; }
 .scope { display: grid; grid-template-columns: auto 1fr; gap: 6px 24px; font-size: 13px; color: #526562; padding: 22px 0; }
 .scope strong { color: #294a43; }
 footer { font-size: 12px; color: #61736f; padding: 18px 0 28px; border-top: 1px solid #d5ded8; }
+.preview { margin: 20px 0; padding: 12px; background: #f6f9f6; border: 1px solid #d7e1da; border-radius: 8px; }
+.preview img { width: 100%; max-height: 600px; object-fit: contain; display: block; }
+.preview figcaption, .preview a { font-size: 13px; overflow-wrap: anywhere; }
+.review { border-top: 1px solid #d7e1da; margin-top: 20px; padding-top: 20px; }
+.review-field { margin: 18px 0; }
+.review-field label { display: block; font-weight: 650; margin-bottom: 5px; }
+.review-field input { width: 100%; border: 1px solid #93aaa0; border-radius: 5px; padding: 9px; color: #182b2b; background: white; }
+.review-field input[aria-invalid=true] { border: 2px solid #b53b3f; }
+.field-error { color: #98272d; margin: 3px 0; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+details { margin-top: 5px; font-size: 13px; overflow-wrap: anywhere; }
+summary { cursor: pointer; color: #245954; }
 @media (max-width: 720px) { .app-shell { padding: 0 18px; } .workspace { grid-template-columns: 1fr; } .panel { padding: 22px; } .intro { padding-top: 30px; } .masthead { flex-wrap: wrap; } .scope { gap: 6px 14px; } }

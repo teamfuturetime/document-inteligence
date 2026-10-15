@@ -1,4 +1,5 @@
 import type { ExtractionResponse } from '../../api/generated/extraction-response'
+import { InvoiceReview } from './InvoiceReview'
 
 const labels = {
   invoice_number: 'Số hóa đơn', invoice_date: 'Ngày hóa đơn',
@@ -20,6 +21,7 @@ export function ExtractionResult({ result }: { result: ExtractionResponse }) {
       </dl>
       <p className="hint">OCR: {result.ocr_version} · Schema: {result.schema_version}</p>
       <p className="hint">{result.mode === 'mock' ? 'Chưa có confidence hoặc evidence từ OCR thật.' : 'Kết quả cần được review.'}</p>
+      <InvoiceReview key={result.document_id} result={result} />
     </section>
   )
 }
