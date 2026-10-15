@@ -35,6 +35,17 @@ actionlint pass. Browser tải JSON thật cho PNG/JPG/PDF và kiểm tra Pydant
 ReviewedExport; ca missing/invalid/oversize/mobile cũng đạt. Đã xem ảnh QA
 desktop review và mobile preview, không có overflow mobile ở width 390.
 
+Checkout sạch từ git archive cũng cài được Python bằng uv.lock offline và chạy
+đủ 267 tests + 9 schema checks. Frontend npm ci offline, generated contracts,
+typecheck và build đạt trong checkout đó; không dùng node_modules/.venv của
+workspace để thay cho dependencies mới. Model binaries được xác minh lại từ
+thư mục đã pin khi chạy native tests.
+
+[Baseline JSON đã lưu](../evaluation/baselines/golden-1.0.0.json) ghi metrics,
+slices, năm mismatches, model/source hashes và SHA-256 report đầy đủ. Hai lượt
+đo cuối chạy từ commit sạch `759fdb7`, JSON byte-identical. Full reports nằm
+trong evaluation/reports/final-all.json và final-all-repeat.json (ignored).
+
 Hướng dẫn [demo](final-demo.md), [phương pháp đo](evaluation.md),
 [API và giới hạn](real-pipeline.md).
 
