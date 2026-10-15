@@ -31,7 +31,8 @@ khả năng xử lý hóa đơn thực tế; không điều chỉnh test để �
 - OCR baseline đề xuất: Tesseract với `vie+eng`, adapter trả token/bounding box.
   [Tesseract có model vie](https://tesseract-ocr.github.io/tessdoc/Data-Files.html).
   P3-02 đã có adapter CLI và pin `tessdata_fast` vie/eng, xem [OCR setup](ocr.md).
-  Chưa benchmark/golden evaluation hoặc nối OCR thật vào HTTP API.
+  P4-03 đã nối OCR thật vào HTTP API; Phase 6 có [evaluation](evaluation.md)
+  trên golden synthetic v1, kèm giới hạn và review độc lập còn pending.
 - P4-01 có [extraction CLI](extraction.md) dùng rule theo nhãn và định dạng;
   version rules/config, evidence và null khi không xác định được giá trị.
   Adapter vision-language model chỉ là khả năng mở rộng, chưa triển khai.

@@ -1,11 +1,10 @@
 # Synthetic data
 
-Owner: OCR tạo tài liệu; Extraction tạo ground truth; người khác kiểm tra chéo.
+Hai hóa đơn mẫu development ở [samples](samples/README.md); bộ 30 hóa đơn độc lập
+và split 18 dev/12 test ở [golden](golden/README.md). Tất cả dữ liệu tự tạo,
+không có tài liệu/cửa hàng/người thật. Manifest hash tài liệu/truth và pin
+versions/seed/font. Review ground truth độc lập còn pending.
 
-Đã có hai hóa đơn synthetic và ground truth ở [samples/](samples/README.md),
-gồm PNG/JPG/PDF và case missing. Integrity tests tại `tests/`.
-Phase 6 sẽ thêm golden manifest ở `golden/`; samples hiện chỉ dành cho dev.
-Chỉ dùng tên/cửa hàng/số hóa đơn giả. Không commit tài liệu cá nhân thật.
-`uploads/` và `generated/` là dữ liệu runtime bị Git bỏ qua; fixture synthetic
-có chủ đích được track. Chưa có golden dataset hoặc kết quả OCR/evaluation.
-Xem [thiết kế dữ liệu](../docs/architecture.md).
+Integrity tests ở tests/. uploads/, generated/, models/ là runtime/ignored;
+chỉ fixture synthetic có chủ đích được track. Xem [evaluation](../docs/evaluation.md)
+để chạy cùng pipeline thật với API và đọc giới hạn đo chất lượng.

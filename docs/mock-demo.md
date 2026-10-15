@@ -1,5 +1,9 @@
 # P2-03 — Upload và mock extraction
 
+Đây là snapshot demo mock P2-03. Hiện backend mặc định real; muốn chạy hướng
+dẫn mock dưới đây cần đặt `VDI_MODE=mock` trước khi khởi động backend.
+Luồng hiện tại xem [final-demo.md](final-demo.md).
+
 Đây là luồng kiểm thử tích hợp, chưa chạy OCR hoặc rules extraction thật.
 Mọi tài liệu hợp lệ nhận cùng năm giá trị từ hóa đơn synthetic SYN-0001,
 không phải dữ liệu suy ra từ file. Mỗi request có document_id mới, `mode=mock`,

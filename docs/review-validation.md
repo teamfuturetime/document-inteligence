@@ -13,7 +13,7 @@ Thiếu trường báo `required`, định dạng sai `invalid_format`, ngày sa
 
 Service không lưu dữ liệu hoặc thay confidence/evidence OCR. Frontend phải
 vô hiệu hóa validation cũ sau mỗi edit và chỉ export khi validation hiện tại
-đạt. P5 thực hiện luồng đó. API extraction vẫn mock cho đến P4-03.
+đạt. [Phase 5](review-export.md) đã có luồng đó; [P4-03](real-pipeline.md) đã tích hợp extraction thật.
 
 Verification: `python -m pytest backend/tests/test_review_validation.py -q`;
 kiểm tra API thật bằng TestClient, leap date/zero/max/invalid types/Unicode.

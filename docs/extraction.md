@@ -2,8 +2,8 @@
 
 `document_pipeline.extraction` nhận `OCRResult` v1.0.0 và trả
 `ExtractionResponse` cùng schema hiện có. Module độc lập FastAPI/Tesseract;
-không đọc ảnh hoặc tự gọi OCR. Web/API vẫn mock; validation cho dữ liệu review
-và nối pipeline thật vào API thuộc P4-02/03.
+không đọc ảnh hoặc tự gọi OCR. P4-02/03 đã bổ sung validation và [API thật](real-pipeline.md);
+Phase 5 đã có [review/export](review-export.md).
 
 ## Chạy thử
 

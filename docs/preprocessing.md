@@ -2,7 +2,7 @@
 
 Module `document_pipeline.preprocessing` chạy thật, độc lập FastAPI. Nó chuẩn
 hóa một trang để chuẩn bị cho OCR; không đọc chữ hoặc trích xuất hóa đơn.
-API `/api/v1/extract` vẫn trả fixed mock như [mock demo](mock-demo.md).
+API `/api/v1/extract` đã dùng [pipeline thật](real-pipeline.md) mặc định; mock cần chọn rõ.
 
 ## Chạy thử
 
@@ -76,7 +76,7 @@ Ngày 2026-10-15, macOS ARM64/Python 3.13.14:
 hiện có tự thu thập `pipeline/tests` nhờ cấu hình root.
 
 P3-02 đã bổ sung adapter Tesseract tiếng Việt và model đã pin;
-xem [ocr.md](ocr.md) để cài/chạy OCR. Web/API vẫn ở chế độ mock.
+xem [ocr.md](ocr.md) để cài/chạy OCR và [real-pipeline.md](real-pipeline.md) để chạy HTTP.
 
 Tham khảo [Pillow EXIF transpose](https://pillow.readthedocs.io/en/stable/reference/ImageOps.html#PIL.ImageOps.exif_transpose),
 [PyMuPDF rasterization](https://pymupdf.readthedocs.io/en/latest/page.html#Page.get_pixmap)

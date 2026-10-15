@@ -13,8 +13,8 @@ chưa được tích hợp vào baseline hóa đơn; không có hai implementati
 1. Tạo feature branch từ `personal/canhtung-main`.
 2. Chia atomic commits, chạy tests/schema/build cần thiết.
 3. Merge feature đã kiểm tra vào nhánh cá nhân bằng merge thường, giữ lịch sử.
-4. Chạy app theo [development.md](development.md). Chỉ những phase đã hoàn
-   thành mới hoạt động; nhánh tích hợp không tự làm OCR/review/export hoàn chỉnh.
+4. Chạy app theo [development.md](development.md); trạng thái từng phase và
+   verification hiện tại ở [completion.md](completion.md).
 5. Khi đưa thay đổi vào repository chung, vẫn cần PR/reviewer/CI trước merge main.
 
 ```bash
@@ -28,17 +28,17 @@ npm ci
 npm run dev
 ```
 
-Hiện app có upload và fixed mock extraction. Xem [mock-demo.md](mock-demo.md)
+Hiện app có pipeline thật, review/validation và export; mock chỉ khi chọn rõ. Xem [mock-demo.md](mock-demo.md)
 để phân biệt mock với xử lý AI thật. Các module mới được ghi trạng thái rõ
 trong [issues.md](issues.md).
 
 P3-01/02 đã được tích hợp để thử preprocessing và OCR thật bằng CLI riêng;
 xem [preprocessing.md](preprocessing.md) và [ocr.md](ocr.md).
-Các chức năng này chưa được gọi từ web/API.
+Các chức năng này đã được gọi từ web/API ở P4-03.
 
 P4-01 đã có [extraction CLI](extraction.md) để chạy nối tiếp từ OCR JSON,
 trả năm trường hóa đơn cùng evidence/confidence/warnings.
-Review validation, tích hợp HTTP thật và review/edit/export UI còn tiếp tục.
+Review validation, HTTP thật và UI review/export đã hoàn thành phần triển khai; xem [demo](final-demo.md).
 
 Nhánh mới hiện local; push nhánh cá nhân cần được bạn cho phép. Nếu publish
 trong repository chung, nhánh có cùng quyền truy cập với repository, không

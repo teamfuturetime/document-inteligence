@@ -99,4 +99,8 @@ missing/invalid/ambiguous, evidence/confidence và rules version/hash.
 khi opt in, 9 schema không drift. CLI OCR → extraction khớp sample dev.
 Xem [extraction.md](extraction.md). Chưa publish/review hoặc xác minh GitHub CI
 cho thay đổi này. API vẫn mock.
-Task tiếp theo P4-02: validation giá trị review; P4-03 và Phase 5–7 chưa triển khai.
+P4-02/03, Phase 5–7 đã triển khai trong đợt tiếp tục toàn bộ phases: validation,
+bounded real API, preview/edit/validate/export, golden data, evaluation/regression
+và browser E2E. Xem [completion](completion.md) và [demo](final-demo.md).
+Các đoạn phía trên là checkpoint lịch sử. GitHub review/CI và review ground
+truth độc lập còn pending; chưa tự đánh dấu issue GitHub Done.

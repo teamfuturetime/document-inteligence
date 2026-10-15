@@ -18,4 +18,5 @@ confidence cho dữ liệu người dùng sửa. Mode mock vẫn giữ nguyên v
 nhãn rõ; real backend mặc định chạy pipeline thật.
 
 Vitest kiểm tra edit/reset/stale response/invalid fields/export provenance/
-cleanup preview. Browser download/PNG/JPG/PDF sẽ được kiểm tra end-to-end ở P7.
+cleanup preview. Phase 7 có Playwright E2E xuyên backend thật, download JSON
+và kiểm tra contract; xem [completion.md](completion.md) cho evidence cuối.
