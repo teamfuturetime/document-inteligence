@@ -26,7 +26,7 @@ def test_openapi_documents_only_implemented_application_routes():
     with TestClient(create_app()) as client:
         schema = client.get("/openapi.json").json()
         assert client.get("/docs").status_code == 200
-    assert set(schema["paths"]) == {"/health", "/api/v1/extract"}
+    assert set(schema["paths"]) == {"/health", "/api/v1/extract", "/api/v1/validate"}
     operation = schema["paths"]["/health"]["get"]
     assert operation["responses"]["200"]["content"]["application/json"]["schema"]["$ref"].endswith("HealthResponse")
     assert "500" in operation["responses"]
