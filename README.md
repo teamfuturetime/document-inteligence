@@ -76,8 +76,8 @@ Chưa có dataset/ground truth hoặc Paddle model weights nên repository **kh�
 công bố số liệu accuracy**. Mock OCR chỉ phục vụ kiểm thử orchestration. Mục tiêu
 421 concurrent users là thiết kế/kịch bản test, chưa phải benchmark thực nghiệm.
 
-Git cấm khoảng trắng trong branch name, vì vậy tên bắt buộc `Công Trí` trong đề
-không thể tạo nguyên văn; nhánh triển khai dùng biến thể gần nhất `Công-Trí`.
+Git cấm khoảng trắng trong branch name, vì vậy nhánh triển khai sử dụng tên
+không dấu, không khoảng trắng là `congtri`.
 
 ## Tài liệu
 

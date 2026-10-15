@@ -1,7 +1,7 @@
 # Báo cáo đóng góp — Nguyễn Công Trí (23001945)
 
-Nhánh triển khai: `Công-Trí` (Git không cho phép khoảng trắng trong ref nên không
-thể dùng tên nguyên văn `Công Trí`). Tổng cộng 40 commit thực chất so với
+Nhánh triển khai: `congtri` (Git không cho phép khoảng trắng trong ref nên không
+thể dùng tên nguyên văn `Công Trí`). Có tối thiểu 40 commit thực chất so với
 `origin/main`, theo đúng 8 nhóm trong đề.
 
 | Nhóm | Phạm vi | Kết quả xác minh |
