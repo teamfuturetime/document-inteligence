@@ -32,7 +32,8 @@ khả năng xử lý hóa đơn thực tế; không điều chỉnh test để �
   [Tesseract có model vie](https://tesseract-ocr.github.io/tessdoc/Data-Files.html).
   P3-02 đã có adapter CLI và pin `tessdata_fast` vie/eng, xem [OCR setup](ocr.md).
   Chưa benchmark/golden evaluation hoặc nối OCR thật vào HTTP API.
-- Extraction baseline dùng rule theo nhãn và định dạng; version rules/config.
+- P4-01 có [extraction CLI](extraction.md) dùng rule theo nhãn và định dạng;
+  version rules/config, evidence và null khi không xác định được giá trị.
   Adapter vision-language model chỉ là khả năng mở rộng, chưa triển khai.
 - Pytest, Vitest và GitHub Actions kiểm tra modules/CI; OCR integration tách riêng.
 

@@ -36,6 +36,10 @@ P3-01/02 đã được tích hợp để thử preprocessing và OCR thật bằ
 xem [preprocessing.md](preprocessing.md) và [ocr.md](ocr.md).
 Các chức năng này chưa được gọi từ web/API.
 
+P4-01 đã có [extraction CLI](extraction.md) để chạy nối tiếp từ OCR JSON,
+trả năm trường hóa đơn cùng evidence/confidence/warnings.
+Review validation, tích hợp HTTP thật và review/edit/export UI còn tiếp tục.
+
 Nhánh mới hiện local; push nhánh cá nhân cần được bạn cho phép. Nếu publish
 trong repository chung, nhánh có cùng quyền truy cập với repository, không
 phải repository riêng hoặc vùng dữ liệu riêng tư.

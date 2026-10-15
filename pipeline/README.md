@@ -18,5 +18,7 @@ và [ranh giới module](../docs/architecture.md).
 
 P3-02 đã có adapter Tesseract 5 `vie+eng`, model installer/hash verification,
 OCRResult contract và CLI. Xem [hướng dẫn OCR](../docs/ocr.md) để cài model và
-chạy engine thật. Extraction và nối pipeline thật vào API chưa triển khai;
+chạy engine thật. P4-01 đã có [extraction theo nhãn](../docs/extraction.md)
+từ OCRResult: năm trường, evidence/confidence, rules version/hash và CLI.
+Validation cho review và nối pipeline thật vào API chưa triển khai;
 web vẫn chạy fixed mock.

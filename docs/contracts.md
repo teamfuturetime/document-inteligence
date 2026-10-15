@@ -74,6 +74,8 @@ Extractor nhận OCRResult + rules/config; không import FastAPI. OCR contract
 được định nghĩa trong package `document-contracts` độc lập để backend, pipeline
 và evaluation dùng chung. Import cũ `backend.app.models.contracts` chỉ là shim
 tương thích Phase 1; không dùng trong pipeline. Wire shape v1.0.0 giữ nguyên.
+P4-01 đã có [extractor theo nhãn](extraction.md) chạy riêng từ OCRResult;
+mode/version OCR được giữ nguyên, chưa nối vào `/api/v1/extract`.
 
 ## Fixtures và chiến lược frontend
 

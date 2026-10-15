@@ -91,4 +91,12 @@ TSV parser, OCRResult, timeout và CLI. Kiểm thử engine thật tách riêng 
 158 Python tests pass khi opt in, gồm 6 real engine tests; 9 schema không drift,
 CLI PNG/PDF và package build pass trên máy local.
 Chưa publish/review hoặc xác minh GitHub CI cho thay đổi này. API vẫn mock.
-Phase 4–7 chưa triển khai; task tiếp theo P4-01 là mapping trường từ OCR.
+
+P4-01 đã triển khai local trên `feat/invoice-field-extraction`, tích hợp vào
+`personal/canhtung-main`: nhãn tiếng Việt, năm field, normalization, null khi
+missing/invalid/ambiguous, evidence/confidence và rules version/hash.
+63 unit/CLI tests + 4 real OCR extraction tests pass; tổng 225 Python tests
+khi opt in, 9 schema không drift. CLI OCR → extraction khớp sample dev.
+Xem [extraction.md](extraction.md). Chưa publish/review hoặc xác minh GitHub CI
+cho thay đổi này. API vẫn mock.
+Task tiếp theo P4-02: validation giá trị review; P4-03 và Phase 5–7 chưa triển khai.
