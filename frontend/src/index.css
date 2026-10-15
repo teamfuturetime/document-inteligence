@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body { margin: 0; min-width: 320px; background: #f7f4ed; color: #132238; font-family: Inter, system-ui, sans-serif; }
+button, input { font: inherit; }
+:focus-visible { outline: 3px solid #ffb703; outline-offset: 2px; }
