@@ -26,6 +26,6 @@ document-pipeline = { workspace = true }
 document-evaluation = { workspace = true }
 
 [tool.pytest.ini_options]
-testpaths = ["backend/tests", "data/tests", "pipeline/tests"]
+testpaths = ["backend/tests", "data/tests", "pipeline/tests", "evaluation/tests"]
 addopts = "--strict-markers"
 markers = ["ocr_integration: requires explicit --run-ocr, Tesseract 5 and pinned vie/eng models"]

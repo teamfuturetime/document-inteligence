@@ -1,1 +1,1 @@
-"""Package boundary for evaluation; no evaluation CLI or metrics yet."""
+"""Hash-verified dataset loading, field metrics and real-pipeline evaluation."""

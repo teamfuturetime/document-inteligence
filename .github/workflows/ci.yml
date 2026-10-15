@@ -62,7 +62,7 @@ jobs:
       - name: Install and verify pinned official models
         run: uv run --locked python -m document_pipeline.ocr_models --directory data/models/tessdata
       - name: Require real Vietnamese OCR and extraction tests
-        run: uv run --locked python -m pytest pipeline/tests -m ocr_integration --run-ocr --tessdata-dir data/models/tessdata -q
+        run: uv run --locked python -m pytest -m ocr_integration --run-ocr --tessdata-dir=data/models/tessdata -q
 
   frontend:
     name: Frontend checks
