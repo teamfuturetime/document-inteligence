@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
+from fastapi.responses import FileResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -53,6 +54,17 @@ def get_document(document_id: str, db: Session = Depends(get_db)):
     if not document:
         raise HTTPException(status_code=404, detail="Không tìm thấy tài liệu")
     return document
+
+
+@router.get("/{document_id}/content", response_class=FileResponse)
+def get_document_content(document_id: str, db: Session = Depends(get_db)):
+    document = DocumentRepository(db).get(document_id)
+    if not document:
+        raise HTTPException(status_code=404, detail="Không tìm thấy tài liệu")
+    path = LocalStorage(get_settings().storage_dir).resolve(document.stored_name)
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail="Tệp không còn trong lưu trữ")
+    return FileResponse(path, media_type=document.mime_type, filename=document.original_name, content_disposition_type="inline")
 
 
 @router.post("/{document_id}/process", status_code=status.HTTP_202_ACCEPTED)

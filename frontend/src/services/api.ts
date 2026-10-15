@@ -14,3 +14,5 @@ export async function uploadDocument(file: File, onProgress?: (percent: number) 
 
 export async function processDocument(id: string) { await api.post(`/documents/${id}/process`); }
 export async function getExtraction(id: string) { return (await api.get<Extraction>(`/documents/${id}/extraction`)).data; }
+export async function getDocument(id: string) { return (await api.get<DocumentRecord>(`/documents/${id}`)).data; }
+export function documentContentUrl(id: string) { return `${api.defaults.baseURL}/documents/${id}/content`; }
