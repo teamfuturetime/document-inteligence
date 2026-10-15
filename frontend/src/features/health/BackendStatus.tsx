@@ -31,7 +31,7 @@ export function BackendStatus() {
     <section className="panel" aria-labelledby="connection-heading">
       <span className="step">02 / KẾT NỐI</span>
       <h2 id="connection-heading">Kiểm tra backend</h2>
-      <p>Kết nối dịch vụ trước khi tích hợp luồng xử lý tài liệu.</p>
+      <p>Kiểm tra dịch vụ và khả năng chạy OCR trước khi gửi tài liệu.</p>
       <button onClick={checkConnection} disabled={connection.status === 'loading'}>
         {connection.status === 'loading' ? 'Đang kiểm tra…' : 'Kiểm tra kết nối'}
       </button>

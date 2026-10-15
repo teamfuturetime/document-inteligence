@@ -2,8 +2,8 @@
 
 Baseline: [ADR 001](decisions/001-invoice-mvp.md). Models nguồn tại
 `schemas/src/document_contracts/models.py`; JSON Schema export tại `schemas/v1/`.
-Phase 1 định nghĩa interface. P2-01 triển khai `GET /health`; P2-03 triển khai
-`POST /api/v1/extract` ở chế độ fixed mock. Validate trong bảng chưa triển khai.
+Các endpoint trong bảng đã triển khai. Extract mặc định real ở P4-03; mock chỉ
+khi chọn `VDI_MODE=mock`. Validate hoạt động từ P4-02.
 Xem [hướng dẫn chạy](development.md) và [giới hạn mock demo](mock-demo.md).
 
 ## API
@@ -20,7 +20,7 @@ Xem [hướng dẫn chạy](development.md) và [giới hạn mock demo](mock-de
 Giới hạn: 10 MiB file, 25 megapixel decode, một trang, deadline 30 giây.
 Backend phải áp dụng cả streaming size limit và giới hạn decode khi triển khai;
 không chỉ kiểm tra Content-Length. P2-03 đã áp dụng size/pixel/single-page checks
-và deadline nhận upload; hard deadline CPU/OCR và preview chưa triển khai.
+và deadline nhận upload; P4-03 có deadline process group cho pipeline, Phase 5 có preview.
 
 | HTTP status | `error.code` |
 | --- | --- |
@@ -75,7 +75,7 @@ Extractor nhận OCRResult + rules/config; không import FastAPI. OCR contract
 và evaluation dùng chung. Import cũ `backend.app.models.contracts` chỉ là shim
 tương thích Phase 1; không dùng trong pipeline. Wire shape v1.0.0 giữ nguyên.
 P4-01 đã có [extractor theo nhãn](extraction.md) chạy riêng từ OCRResult;
-mode/version OCR được giữ nguyên, chưa nối vào `/api/v1/extract`.
+mode/version OCR được giữ nguyên và đã nối vào `/api/v1/extract` từ P4-03.
 
 ## Fixtures và chiến lược frontend
 

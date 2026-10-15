@@ -1,0 +1,1084 @@
+{
+  "code": {
+    "dependencies": {
+      "Pillow": "12.3.0",
+      "PyMuPDF": "1.28.2",
+      "pydantic": "2.13.4"
+    },
+    "git_dirty": false,
+    "git_sha": "759fdb7d748b62853296e03107637d497dc0dce2",
+    "platform": "macOS-14.8.9-arm64-arm-64bit-Mach-O",
+    "python": "3.13.14",
+    "source_sha256": "51b1d9bba5794ace4cf886ab09a19bef58387c597d8be1a5cd185ea4906c39e7"
+  },
+  "dataset_version": "golden-1.0.0",
+  "documents": 30,
+  "execution_errors": 0,
+  "full_report_sha256": "8f6b5926d7bfbb8b6a1cbe1ae756124c8732af9214f4e0dadf66513da2dc8989",
+  "ground_truth_review": "author-checked; independent team review pending",
+  "manifest_sha256": "2052a3727988aec94b030890dae0f9517e1a30799f4c3a30a4c6321209227542",
+  "metrics": {
+    "fields": {
+      "currency": {
+        "correct": 30,
+        "exact_match": 1.0,
+        "f1": 1.0,
+        "fn": 0,
+        "fp": 0,
+        "null_pairs": 6,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 24,
+        "total": 30,
+        "tp": 24
+      },
+      "invoice_date": {
+        "correct": 30,
+        "exact_match": 1.0,
+        "f1": 1.0,
+        "fn": 0,
+        "fp": 0,
+        "null_pairs": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 30,
+        "total": 30,
+        "tp": 30
+      },
+      "invoice_number": {
+        "correct": 30,
+        "exact_match": 1.0,
+        "f1": 1.0,
+        "fn": 0,
+        "fp": 0,
+        "null_pairs": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 30,
+        "total": 30,
+        "tp": 30
+      },
+      "seller_name": {
+        "correct": 25,
+        "exact_match": 0.8333333333333334,
+        "f1": 0.8333333333333334,
+        "fn": 5,
+        "fp": 5,
+        "null_pairs": 0,
+        "precision": 0.8333333333333334,
+        "recall": 0.8333333333333334,
+        "support": 30,
+        "total": 30,
+        "tp": 25
+      },
+      "total_amount": {
+        "correct": 30,
+        "exact_match": 1.0,
+        "f1": 1.0,
+        "fn": 0,
+        "fp": 0,
+        "null_pairs": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 30,
+        "total": 30,
+        "tp": 30
+      }
+    },
+    "macro": {
+      "exact_match": 0.9666666666666666,
+      "f1": 0.9666666666666666,
+      "precision": 0.9666666666666666,
+      "recall": 0.9666666666666666
+    },
+    "micro": {
+      "correct": 145,
+      "exact_match": 0.9666666666666667,
+      "f1": 0.9652777777777778,
+      "fn": 5,
+      "fp": 5,
+      "null_pairs": 6,
+      "precision": 0.9652777777777778,
+      "recall": 0.9652777777777778,
+      "support": 144,
+      "total": 150,
+      "tp": 139
+    }
+  },
+  "mismatches": [
+    {
+      "condition": "blur",
+      "errors": [
+        {
+          "cause": "unverified",
+          "expected": "Cửa hàng Mây Việt",
+          "field": "seller_name",
+          "predicted": "Cửa hang Mây Việt",
+          "symptom": "wrong_value"
+        }
+      ],
+      "id": "golden-008",
+      "split": "dev"
+    },
+    {
+      "condition": "blur",
+      "errors": [
+        {
+          "cause": "unverified",
+          "expected": "Cửa hàng Sen Việt",
+          "field": "seller_name",
+          "predicted": "Cửa hang Sen Việt",
+          "symptom": "wrong_value"
+        }
+      ],
+      "id": "golden-013",
+      "split": "dev"
+    },
+    {
+      "condition": "rotation",
+      "errors": [
+        {
+          "cause": "unverified",
+          "expected": "Cửa hàng Mây Việt",
+          "field": "seller_name",
+          "predicted": "Cửa hang Mây Việt",
+          "symptom": "wrong_value"
+        }
+      ],
+      "id": "golden-014",
+      "split": "dev"
+    },
+    {
+      "condition": "blur",
+      "errors": [
+        {
+          "cause": "unverified",
+          "expected": "Cửa hàng Mây Việt",
+          "field": "seller_name",
+          "predicted": "Cửa hang Mây Việt",
+          "symptom": "wrong_value"
+        }
+      ],
+      "id": "golden-023",
+      "split": "test"
+    },
+    {
+      "condition": "rotation",
+      "errors": [
+        {
+          "cause": "unverified",
+          "expected": "Cửa hàng Mây Việt",
+          "field": "seller_name",
+          "predicted": "Cửa hang Mây Việt",
+          "symptom": "wrong_value"
+        }
+      ],
+      "id": "golden-029",
+      "split": "test"
+    }
+  ],
+  "models": {
+    "eng": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2",
+    "vie": "79df64caf7bcfb2a27df5042ecb6121e196eada34da774956995747636d5bfa1"
+  },
+  "pipeline": {
+    "config_version": "invoice-config-1.0.0:f2dcfd5017f7",
+    "mode": "real",
+    "ocr_version": "tesseract-5.5.2:fast-874164186573:0b1d86c93e06:adapter-1.0.0",
+    "pipeline_version": "invoice-pipeline-1.0.0"
+  },
+  "report_version": "1.0.0",
+  "reproducibility": "Two complete runs over 30 documents produced byte-identical JSON.",
+  "slices": {
+    "condition": {
+      "blur": {
+        "fields": {
+          "currency": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 6,
+            "total": 6,
+            "tp": 6
+          },
+          "invoice_date": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 6,
+            "total": 6,
+            "tp": 6
+          },
+          "invoice_number": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 6,
+            "total": 6,
+            "tp": 6
+          },
+          "seller_name": {
+            "correct": 3,
+            "exact_match": 0.5,
+            "f1": 0.5,
+            "fn": 3,
+            "fp": 3,
+            "null_pairs": 0,
+            "precision": 0.5,
+            "recall": 0.5,
+            "support": 6,
+            "total": 6,
+            "tp": 3
+          },
+          "total_amount": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 6,
+            "total": 6,
+            "tp": 6
+          }
+        },
+        "macro": {
+          "exact_match": 0.9,
+          "f1": 0.9,
+          "precision": 0.9,
+          "recall": 0.9
+        },
+        "micro": {
+          "correct": 27,
+          "exact_match": 0.9,
+          "f1": 0.9,
+          "fn": 3,
+          "fp": 3,
+          "null_pairs": 0,
+          "precision": 0.9,
+          "recall": 0.9,
+          "support": 30,
+          "total": 30,
+          "tp": 27
+        }
+      },
+      "clean": {
+        "fields": {
+          "currency": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 6,
+            "total": 6,
+            "tp": 6
+          },
+          "invoice_date": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 6,
+            "total": 6,
+            "tp": 6
+          },
+          "invoice_number": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 6,
+            "total": 6,
+            "tp": 6
+          },
+          "seller_name": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 6,
+            "total": 6,
+            "tp": 6
+          },
+          "total_amount": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 6,
+            "total": 6,
+            "tp": 6
+          }
+        },
+        "macro": {
+          "exact_match": 1.0,
+          "f1": 1.0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "micro": {
+          "correct": 30,
+          "exact_match": 1.0,
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "null_pairs": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "support": 30,
+          "total": 30,
+          "tp": 30
+        }
+      },
+      "compression": {
+        "fields": {
+          "currency": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 6,
+            "total": 6,
+            "tp": 6
+          },
+          "invoice_date": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 6,
+            "total": 6,
+            "tp": 6
+          },
+          "invoice_number": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 6,
+            "total": 6,
+            "tp": 6
+          },
+          "seller_name": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 6,
+            "total": 6,
+            "tp": 6
+          },
+          "total_amount": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 6,
+            "total": 6,
+            "tp": 6
+          }
+        },
+        "macro": {
+          "exact_match": 1.0,
+          "f1": 1.0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "micro": {
+          "correct": 30,
+          "exact_match": 1.0,
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "null_pairs": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "support": 30,
+          "total": 30,
+          "tp": 30
+        }
+      },
+      "missing-currency": {
+        "fields": {
+          "currency": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 6,
+            "precision": null,
+            "recall": null,
+            "support": 0,
+            "total": 6,
+            "tp": 0
+          },
+          "invoice_date": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 6,
+            "total": 6,
+            "tp": 6
+          },
+          "invoice_number": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 6,
+            "total": 6,
+            "tp": 6
+          },
+          "seller_name": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 6,
+            "total": 6,
+            "tp": 6
+          },
+          "total_amount": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 6,
+            "total": 6,
+            "tp": 6
+          }
+        },
+        "macro": {
+          "exact_match": 1.0,
+          "f1": 1.0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "micro": {
+          "correct": 30,
+          "exact_match": 1.0,
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "null_pairs": 6,
+          "precision": 1.0,
+          "recall": 1.0,
+          "support": 24,
+          "total": 30,
+          "tp": 24
+        }
+      },
+      "rotation": {
+        "fields": {
+          "currency": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 6,
+            "total": 6,
+            "tp": 6
+          },
+          "invoice_date": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 6,
+            "total": 6,
+            "tp": 6
+          },
+          "invoice_number": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 6,
+            "total": 6,
+            "tp": 6
+          },
+          "seller_name": {
+            "correct": 4,
+            "exact_match": 0.6666666666666666,
+            "f1": 0.6666666666666666,
+            "fn": 2,
+            "fp": 2,
+            "null_pairs": 0,
+            "precision": 0.6666666666666666,
+            "recall": 0.6666666666666666,
+            "support": 6,
+            "total": 6,
+            "tp": 4
+          },
+          "total_amount": {
+            "correct": 6,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 6,
+            "total": 6,
+            "tp": 6
+          }
+        },
+        "macro": {
+          "exact_match": 0.9333333333333333,
+          "f1": 0.9333333333333333,
+          "precision": 0.9333333333333333,
+          "recall": 0.9333333333333333
+        },
+        "micro": {
+          "correct": 28,
+          "exact_match": 0.9333333333333333,
+          "f1": 0.9333333333333333,
+          "fn": 2,
+          "fp": 2,
+          "null_pairs": 0,
+          "precision": 0.9333333333333333,
+          "recall": 0.9333333333333333,
+          "support": 30,
+          "total": 30,
+          "tp": 28
+        }
+      }
+    },
+    "layout": {
+      "labels-1": {
+        "fields": {
+          "currency": {
+            "correct": 10,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 2,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 8,
+            "total": 10,
+            "tp": 8
+          },
+          "invoice_date": {
+            "correct": 10,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 10,
+            "total": 10,
+            "tp": 10
+          },
+          "invoice_number": {
+            "correct": 10,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 10,
+            "total": 10,
+            "tp": 10
+          },
+          "seller_name": {
+            "correct": 9,
+            "exact_match": 0.9,
+            "f1": 0.9,
+            "fn": 1,
+            "fp": 1,
+            "null_pairs": 0,
+            "precision": 0.9,
+            "recall": 0.9,
+            "support": 10,
+            "total": 10,
+            "tp": 9
+          },
+          "total_amount": {
+            "correct": 10,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 10,
+            "total": 10,
+            "tp": 10
+          }
+        },
+        "macro": {
+          "exact_match": 0.9800000000000001,
+          "f1": 0.9800000000000001,
+          "precision": 0.9800000000000001,
+          "recall": 0.9800000000000001
+        },
+        "micro": {
+          "correct": 49,
+          "exact_match": 0.98,
+          "f1": 0.9791666666666666,
+          "fn": 1,
+          "fp": 1,
+          "null_pairs": 2,
+          "precision": 0.9791666666666666,
+          "recall": 0.9791666666666666,
+          "support": 48,
+          "total": 50,
+          "tp": 47
+        }
+      },
+      "labels-2": {
+        "fields": {
+          "currency": {
+            "correct": 10,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 2,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 8,
+            "total": 10,
+            "tp": 8
+          },
+          "invoice_date": {
+            "correct": 10,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 10,
+            "total": 10,
+            "tp": 10
+          },
+          "invoice_number": {
+            "correct": 10,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 10,
+            "total": 10,
+            "tp": 10
+          },
+          "seller_name": {
+            "correct": 6,
+            "exact_match": 0.6,
+            "f1": 0.6,
+            "fn": 4,
+            "fp": 4,
+            "null_pairs": 0,
+            "precision": 0.6,
+            "recall": 0.6,
+            "support": 10,
+            "total": 10,
+            "tp": 6
+          },
+          "total_amount": {
+            "correct": 10,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 10,
+            "total": 10,
+            "tp": 10
+          }
+        },
+        "macro": {
+          "exact_match": 0.9199999999999999,
+          "f1": 0.9199999999999999,
+          "precision": 0.9199999999999999,
+          "recall": 0.9199999999999999
+        },
+        "micro": {
+          "correct": 46,
+          "exact_match": 0.92,
+          "f1": 0.9166666666666666,
+          "fn": 4,
+          "fp": 4,
+          "null_pairs": 2,
+          "precision": 0.9166666666666666,
+          "recall": 0.9166666666666666,
+          "support": 48,
+          "total": 50,
+          "tp": 44
+        }
+      },
+      "labels-3": {
+        "fields": {
+          "currency": {
+            "correct": 10,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 2,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 8,
+            "total": 10,
+            "tp": 8
+          },
+          "invoice_date": {
+            "correct": 10,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 10,
+            "total": 10,
+            "tp": 10
+          },
+          "invoice_number": {
+            "correct": 10,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 10,
+            "total": 10,
+            "tp": 10
+          },
+          "seller_name": {
+            "correct": 10,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 10,
+            "total": 10,
+            "tp": 10
+          },
+          "total_amount": {
+            "correct": 10,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 10,
+            "total": 10,
+            "tp": 10
+          }
+        },
+        "macro": {
+          "exact_match": 1.0,
+          "f1": 1.0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "micro": {
+          "correct": 50,
+          "exact_match": 1.0,
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "null_pairs": 2,
+          "precision": 1.0,
+          "recall": 1.0,
+          "support": 48,
+          "total": 50,
+          "tp": 48
+        }
+      }
+    },
+    "split": {
+      "dev": {
+        "fields": {
+          "currency": {
+            "correct": 18,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 3,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 15,
+            "total": 18,
+            "tp": 15
+          },
+          "invoice_date": {
+            "correct": 18,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 18,
+            "total": 18,
+            "tp": 18
+          },
+          "invoice_number": {
+            "correct": 18,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 18,
+            "total": 18,
+            "tp": 18
+          },
+          "seller_name": {
+            "correct": 15,
+            "exact_match": 0.8333333333333334,
+            "f1": 0.8333333333333334,
+            "fn": 3,
+            "fp": 3,
+            "null_pairs": 0,
+            "precision": 0.8333333333333334,
+            "recall": 0.8333333333333334,
+            "support": 18,
+            "total": 18,
+            "tp": 15
+          },
+          "total_amount": {
+            "correct": 18,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 18,
+            "total": 18,
+            "tp": 18
+          }
+        },
+        "macro": {
+          "exact_match": 0.9666666666666666,
+          "f1": 0.9666666666666666,
+          "precision": 0.9666666666666666,
+          "recall": 0.9666666666666666
+        },
+        "micro": {
+          "correct": 87,
+          "exact_match": 0.9666666666666667,
+          "f1": 0.9655172413793104,
+          "fn": 3,
+          "fp": 3,
+          "null_pairs": 3,
+          "precision": 0.9655172413793104,
+          "recall": 0.9655172413793104,
+          "support": 87,
+          "total": 90,
+          "tp": 84
+        }
+      },
+      "test": {
+        "fields": {
+          "currency": {
+            "correct": 12,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 3,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 9,
+            "total": 12,
+            "tp": 9
+          },
+          "invoice_date": {
+            "correct": 12,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 12,
+            "total": 12,
+            "tp": 12
+          },
+          "invoice_number": {
+            "correct": 12,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 12,
+            "total": 12,
+            "tp": 12
+          },
+          "seller_name": {
+            "correct": 10,
+            "exact_match": 0.8333333333333334,
+            "f1": 0.8333333333333334,
+            "fn": 2,
+            "fp": 2,
+            "null_pairs": 0,
+            "precision": 0.8333333333333334,
+            "recall": 0.8333333333333334,
+            "support": 12,
+            "total": 12,
+            "tp": 10
+          },
+          "total_amount": {
+            "correct": 12,
+            "exact_match": 1.0,
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "null_pairs": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 12,
+            "total": 12,
+            "tp": 12
+          }
+        },
+        "macro": {
+          "exact_match": 0.9666666666666666,
+          "f1": 0.9666666666666666,
+          "precision": 0.9666666666666666,
+          "recall": 0.9666666666666666
+        },
+        "micro": {
+          "correct": 58,
+          "exact_match": 0.9666666666666667,
+          "f1": 0.9649122807017544,
+          "fn": 2,
+          "fp": 2,
+          "null_pairs": 3,
+          "precision": 0.9649122807017544,
+          "recall": 0.9649122807017544,
+          "support": 57,
+          "total": 60,
+          "tp": 55
+        }
+      }
+    }
+  },
+  "target": {
+    "macro_exact_match": 0.85,
+    "met": true
+  }
+}

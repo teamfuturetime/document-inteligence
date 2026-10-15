@@ -16,14 +16,14 @@ hoặc PR. Không có deployment, publish, merge tự động hay thay branch pr
 | --- | --- | --- |
 | `Backend checks` | Ubuntu 24.04, Python 3.13.14, uv 0.11.25 | `uv sync --locked`, schema export check, Pytest |
 | `Frontend checks` | Ubuntu 24.04, Node 26.5.0 | `npm ci` trong frontend, Vitest, build gồm TS contract drift/typecheck |
-| `OCR integration` | Ubuntu 24.04, Tesseract 5.3.4-1build5, Python 3.13.14 | Model installer kiểm tra SHA-256, Pytest `--run-ocr` trên engine thật |
+| `OCR integration` | Ubuntu 24.04, Tesseract 5.3.4-1build5, Python 3.13.14, Node 26.5.0 | Pin models, native API/pipeline/golden tests, Chromium review/download E2E |
 
-Các job không cần server backend/Vite đang chạy: API tests dùng TestClient,
+Không cần server mở sẵn; job OCR tự khởi động servers riêng cho E2E. API unit tests dùng TestClient,
 UI tests dùng jsdom và fake fetch. `Backend checks` chạy unit tests, skip rõ
-10 tests có marker `ocr_integration`; không cần engine/model/secret.
+14 tests có marker `ocr_integration`; không cần engine/model/secret.
 `OCR integration` cài engine với version gói Ubuntu đã pin, tải vie/eng vào
 `data/models/tessdata` từ commit chính thức đã pin và xác minh hash. Job này
-gọi `pytest pipeline/tests -m ocr_integration --run-ocr` cho OCR/extraction; thiếu prerequisite,
+gọi `pytest -m ocr_integration --run-ocr` cho API/OCR/extraction/golden; thiếu prerequisite,
 download lỗi hoặc hash sai đều fail, không skip/fallback mock.
 Smoke HTTP local của P2-03 là evidence riêng, chưa phải browser E2E trong CI.
 Không cần chạy sample generator hoặc tải font để dùng fixtures đã commit.
@@ -46,7 +46,7 @@ uv run --locked python -m backend.export_schemas --check
 uv run --locked python -m pytest -q
 # OCR thật (cần Tesseract 5 trên PATH, installer cần mạng):
 uv run --locked python -m document_pipeline.ocr_models --directory data/models/tessdata
-uv run --locked python -m pytest pipeline/tests -m ocr_integration --run-ocr --tessdata-dir data/models/tessdata -q
+uv run --locked python -m pytest -m ocr_integration --run-ocr --tessdata-dir=data/models/tessdata -q
 ```
 
 Trong `frontend/`:
@@ -77,6 +77,13 @@ P4-01 đã thêm 4 real-engine extraction tests và mở rộng bước OCR CI t
 để thu thập tự động. Tổng 225 Python tests pass local với engine thật, trong đó
 10 tests mang marker integration; 9 schema và actionlint pass. GitHub/Linux
 run cho các thay đổi này vẫn chưa được xác minh.
+
+Phase 7 đã bổ sung Playwright 1.64.1 (npm lock), Chromium và browser E2E trong
+job OCR. Local hiện đạt 267 Python tests với real OCR, 36 Vitest tests,
+7 browser E2E tests; 9 schema/generated TS/typecheck/build và actionlint pass.
+E2E dùng ports 18000/15173, native OCR thật, tải JSON và kiểm tra Pydantic.
+Các con số P2/P3/P4 phía trên là checkpoint lịch sử. GitHub CI mới chưa chạy
+vì các nhánh tích hợp chưa publish; không dùng run P2-04 làm evidence phase mới.
 
 ## Sau khi được phép publish
 

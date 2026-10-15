@@ -2,7 +2,13 @@
 
 Owner: thành viên 5; Technical Lead review phương pháp đo.
 
-CLI sẽ gọi pipeline thật với golden manifest và config version. Tests metrics
-dùng các trường hợp tính tay được. Report sinh ra ở `reports/` (Git bỏ qua),
-không commit output lớn. Chưa có CLI hay kết quả đánh giá.
-Xem [phương pháp đề xuất](../docs/architecture.md).
+CLI gọi cùng `run_document` với backend, xác minh manifest/hash, không dùng mock.
+
+```bash
+uv run --locked python -m document_evaluation.cli --tessdata-dir data/models/tessdata --split test --output evaluation/reports/test.json --check
+```
+
+Report ghi exact match/PRF từng field, macro/micro, null support, slice theo
+layout/condition/split, mismatches và engine/model/config/source versions.
+`--check` fail nếu macro exact match < .85; mọi execution error cũng fail.
+Report lớn nằm trong `reports/` đã ignore. Xem [evaluation guide](../docs/evaluation.md).

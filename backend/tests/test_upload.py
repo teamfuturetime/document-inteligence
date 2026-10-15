@@ -18,7 +18,8 @@ SAMPLES = Path(__file__).resolve().parents[2] / "data/samples"
 
 
 @pytest.fixture
-def client():
+def client(monkeypatch):
+    monkeypatch.setenv("VDI_MODE", "mock")
     with TestClient(create_app()) as instance:
         yield instance
 

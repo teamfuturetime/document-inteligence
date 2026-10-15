@@ -1,61 +1,32 @@
 # Vietnamese Document Intelligence — AI-02
 
-Ứng dụng web phục vụ nhóm 5 người: upload hóa đơn tiếng Việt, OCR, trích xuất
-dữ liệu có cấu trúc, review/chỉnh sửa, validation và xuất JSON.
+Ứng dụng local cho hóa đơn tiếng Việt: upload → OCR thật → trích xuất năm
+trường → review/chỉnh sửa → validation → tải JSON đã xác nhận.
 
 ## Trạng thái
 
-Phase 0 và baseline Phase 1 đã hoàn thành local: cấu trúc, tài liệu, quyết định
-MVP, Pydantic contracts v1.0.0, JSON Schema/fixtures và mẫu synthetic.
-P2-01 đã có Python workspace/lockfile và FastAPI skeleton với `GET /health`.
-P2-02 đã có React/Vite frontend chọn file local và kiểm tra kết nối backend.
-P2-03 đã có upload PNG/JPG/PDF → fixed mock response → hiển thị kết quả mock.
-P2-04 đã có workflow CI; backend/frontend checks đã pass trên GitHub cho commit
-`7e6c9a1` (link evidence trong CI guide). Web chưa có OCR/extraction thật hoặc review/edit/export.
-P3-01/02 đã có preprocessing và OCR Tesseract tiếng Việt chạy thật qua CLI riêng,
-kiểm thử local; chưa nối vào API. Xem [preprocessing](docs/preprocessing.md)
-và [OCR setup](docs/ocr.md).
-P4-01 đã có extraction năm trường theo nhãn, evidence/confidence/warnings và
-CLI riêng. Xem [extraction](docs/extraction.md). Chưa có review validation hoặc
-pipeline thật trong HTTP API.
-Review nhóm/PR và golden dataset vẫn chưa hoàn thành.
+Phần triển khai Phase 0–7 đã có trên nhánh cá nhân `personal/canhtung-main`.
+Backend mặc định real; mock chỉ dùng khi đặt `VDI_MODE=mock`. Model Tesseract
+vie/eng được pin commit/SHA-256. Không database, login hoặc cloud deployment.
 
-## Phạm vi MVP đề xuất
+Golden synthetic v1 gồm 30 hóa đơn độc lập, 18 dev/12 test. Lượt local trên
+Tesseract 5.5.2 đạt macro exact match **0,9667** trên test (mục tiêu ≥ 0,85).
+Đây là dataset nhỏ gồm ba template, chưa đại diện hóa đơn thực tế. Review
+độc lập ground truth/PR và GitHub CI của các thay đổi mới còn pending.
+Xem [evidence và trạng thái bàn giao](docs/completion.md).
 
-- Hóa đơn bán hàng tổng hợp dạng in; một tài liệu mỗi lần.
-- PNG/JPG và PDF một trang; dữ liệu hoàn toàn synthetic.
-- Trích xuất số hóa đơn, ngày, tên bên bán, tổng tiền và tiền tệ VND.
-- Mỗi trường có giá trị, confidence và nguồn OCR; không tìm thấy thì trả null.
-- Review trên trình duyệt, sửa giá trị, validation và tải JSON đã xác nhận.
-- Golden dataset có ground truth, đánh giá từng trường, taxonomy lỗi,
-  version cấu hình và hướng dẫn tái lập.
+## Chạy thử
 
-Chưa đưa vào MVP: chữ viết tay, bảng chi tiết sản phẩm, PDF nhiều trang,
-biểu mẫu tùy ý, database, authentication, microservices và cloud.
-
-## Bắt đầu
-
-1. Đọc [kiến trúc và MVP](docs/architecture.md), [quyết định phạm vi](docs/decisions/001-invoice-mvp.md)
-   và [contract v1.0.0](docs/contracts.md).
-2. Đọc [roadmap](docs/roadmap.md) và [backlog issue](docs/issues.md).
-3. Làm theo [quy trình Git và task đầu tiên](docs/contributing.md).
-
-Nhánh thử nghiệm tổng hợp cá nhân là `personal/canhtung-main`;
-xem [cách dùng nhánh cá nhân](docs/personal-integration.md).
-
-Chạy backend và kiểm tra từ root repository:
+macOS/Linux, Python ≥ 3.11, uv, Node theo `frontend/package.json`, Tesseract 5.
+Chạy từ repository root:
 
 ```bash
 uv sync --locked
-.venv/bin/python -m backend.export_schemas --check
-.venv/bin/python -m pytest -q
-.venv/bin/python -m uvicorn document_backend.main:app --host 127.0.0.1 --port 8000 --reload
+.venv/bin/python -m document_pipeline.ocr_models --directory data/models/tessdata
+.venv/bin/python -m uvicorn document_backend.main:app --host 127.0.0.1 --port 8000
 ```
 
-Python ≥ 3.11 và uv. Xem `http://127.0.0.1:8000/docs` hoặc gọi `/health`:
-`{"status":"ok","mode":"mock","ocr_ready":false}`.
-Chi tiết đóng gói, cài dependencies và trạng thái endpoint tại
-[hướng dẫn phát triển](docs/development.md). Chạy frontend ở terminal khác:
+Terminal khác:
 
 ```bash
 cd frontend
@@ -63,24 +34,50 @@ npm ci
 npm run dev
 ```
 
-Mở `http://127.0.0.1:5173/`, chọn sample local và bấm **Kiểm tra kết nối**.
-Chọn mẫu synthetic rồi bấm **Gửi và xem mock** để thử upload. Mọi tài liệu hợp
-lệ nhận cùng hóa đơn mẫu; dữ liệu không được suy ra từ file. Xem [mock demo](docs/mock-demo.md).
-Xem [frontend README](frontend/README.md) để chạy Vitest/build và generate types.
-Xem [CI guide](docs/ci.md) để chạy checks, đọc workflow và publish nhánh CI.
+Mở http://127.0.0.1:5173/. Chọn `data/samples/synthetic-001.png` (hoặc JPG/PDF),
+bấm **Trích xuất hóa đơn**, đối chiếu/sửa giá trị, bấm **Kiểm tra dữ liệu** rồi
+**Xuất JSON đã xác nhận**. Sample `synthetic-002-missing.png` cần bổ sung tiền tệ.
+Health real khi model/engine hợp lệ: `{"status":"ok","mode":"real","ocr_ready":true}`.
+Thiếu engine/model trả 503 khi extract, không fallback mock.
 
-## Cấu trúc
+Xem [demo và troubleshooting](docs/final-demo.md), [phát triển](docs/development.md),
+[nhánh cá nhân](docs/personal-integration.md) và [CI](docs/ci.md).
 
-| Thư mục | Vai trò |
+## Kiểm tra
+
+```bash
+.venv/bin/python -m backend.export_schemas --check
+.venv/bin/python -m pytest --run-ocr --tessdata-dir=data/models/tessdata -q
+.venv/bin/python -m document_evaluation.cli --tessdata-dir data/models/tessdata --split test --output evaluation/reports/test.json --check
+cd frontend
+npm test
+npm run build
+npx playwright install chromium
+npm run test:e2e
+```
+
+Pytest không có `--run-ocr` skip rõ các native integration tests. Browser E2E
+chạy backend thật ở 18000 và Vite ở 15173, không reuse server đang mở.
+
+## Phạm vi và cấu trúc
+
+PNG/JPEG/PDF đúng một trang, tối đa 10 MiB/25M pixel, hóa đơn in synthetic.
+Năm trường: số hóa đơn, ngày, bên bán, tổng tiền integer VND và tiền tệ.
+Null khi missing/invalid/ambiguous; confidence heuristic có evidence, không
+phải xác suất đã hiệu chuẩn. Chưa hỗ trợ handwritten, line items, multi-page,
+nhiều cột hoặc nhãn/giá trị khác dòng; không tự sửa dấu sai từ OCR.
+
+| Module | Vai trò |
 | --- | --- |
-| `frontend/` | React + TypeScript + Vite; upload, preview, review, export |
-| `backend/` | FastAPI, Pydantic; HTTP API, điều phối và validation |
-| `pipeline/` | Python; preprocessing, adapter OCR và extraction độc lập |
-| `schemas/` | JSON Schema/fixtures dùng chung, quản lý phiên bản contract |
-| `evaluation/` | CLI evaluation, metrics và taxonomy lỗi |
-| `data/` | Mẫu synthetic, ground truth, manifest và chia tập |
-| `docs/` | Kiến trúc, kế hoạch và hướng dẫn cộng tác |
-| `.github/` | Template issue và pull request |
+| `frontend/` | React/TypeScript/Vite; preview, review, validation và JSON export |
+| `backend/` | FastAPI; upload limits, pipeline deadline, health và validation |
+| `pipeline/` | Preprocessing, Tesseract adapter, rules và bounded runner |
+| `schemas/` | Pydantic contracts, JSON Schema và TypeScript generated types |
+| `evaluation/` | Metrics, hash-verified dataset loader, CLI và regression |
+| `data/` | Samples, golden synthetic/truth/manifest và generators |
+| `docs/` | Kiến trúc, roadmap, giới hạn và evidence |
+| `.github/` | CI, issue/PR templates |
 
-Tests đặt trong `frontend/src/`, `backend/tests/`, `pipeline/tests/` và
-`evaluation/tests/` khi triển khai. Không tạo package rỗng giả là code hoạt động.
+Xem [kiến trúc](docs/architecture.md), [contract](docs/contracts.md),
+[roadmap](docs/roadmap.md), [backlog](docs/issues.md),
+[quy trình Git](docs/contributing.md). Main chung không được thay đổi tự động.

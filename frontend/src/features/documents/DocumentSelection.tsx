@@ -3,6 +3,7 @@ import { uploadDocument } from '../../api/client'
 import type { ExtractionResponse } from '../../api/generated/extraction-response'
 import { ExtractionResult } from './ExtractionResult'
 import { validateFileSelection } from './fileSelection'
+import { DocumentPreview } from './DocumentPreview'
 
 export function DocumentSelection() {
   const [file, setFile] = useState<File | null>(null)
@@ -40,7 +41,7 @@ export function DocumentSelection() {
     <section className="panel" aria-labelledby="document-heading">
       <span className="step">01 / TÀI LIỆU</span>
       <h2 id="document-heading">Chuẩn bị hóa đơn mẫu</h2>
-      <p>Gửi tài liệu synthetic để thử luồng upload với kết quả mock.</p>
+      <p>Gửi hóa đơn synthetic để OCR, trích xuất và đối chiếu kết quả.</p>
       <label className="file-label" htmlFor="document">Chọn PNG, JPG hoặc PDF</label>
       <input
         id="document"
@@ -66,15 +67,16 @@ export function DocumentSelection() {
           <strong>{file.name}</strong>
           <span>{(file.size / 1024).toFixed(1)} KiB · {upload.status === 'complete' ? 'Đã gửi lên server' : upload.status === 'loading' ? 'Đang gửi' : 'Chưa gửi lên server'}</span>
           <button onClick={sendDocument} disabled={upload.status === 'loading'}>
-            {upload.status === 'loading' ? 'Đang gửi…' : 'Gửi và xem mock'}
+            {upload.status === 'loading' ? 'Đang gửi…' : 'Trích xuất hóa đơn'}
           </button>
           <button className="secondary" onClick={() => { resetUpload(); setFile(null); setError(null) }}>Bỏ chọn</button>
         </div>
       ) : <p className="empty">Chưa chọn tài liệu.</p>}
+      {file ? <DocumentPreview key={`${file.name}-${file.lastModified}`} file={file} /> : null}
       <div aria-live="polite" aria-busy={upload.status === 'loading'}>
         {upload.status === 'complete' ? <ExtractionResult result={upload.result} /> : null}
       </div>
-      <p className="note">Chưa chạy OCR, chưa hỗ trợ review/chỉnh sửa hoặc xuất JSON.</p>
+      <p className="note">Kết quả OCR cần được kiểm tra. Nếu server chạy mock, kết quả sẽ được gắn nhãn rõ.</p>
     </section>
   )
 }

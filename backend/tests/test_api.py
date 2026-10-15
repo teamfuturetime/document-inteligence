@@ -13,7 +13,8 @@ from document_contracts.models import APIErrorResponse, ValidationRequest
 ROOT = Path(__file__).resolve().parents[2]
 
 
-def test_health_matches_shared_contract_and_reports_ocr_unavailable():
+def test_health_matches_shared_contract_and_reports_ocr_unavailable(monkeypatch):
+    monkeypatch.setenv("VDI_MODE", "mock")
     with TestClient(create_app()) as client:
         response = client.get("/health")
     assert response.status_code == 200
@@ -26,7 +27,7 @@ def test_openapi_documents_only_implemented_application_routes():
     with TestClient(create_app()) as client:
         schema = client.get("/openapi.json").json()
         assert client.get("/docs").status_code == 200
-    assert set(schema["paths"]) == {"/health", "/api/v1/extract"}
+    assert set(schema["paths"]) == {"/health", "/api/v1/extract", "/api/v1/validate"}
     operation = schema["paths"]["/health"]["get"]
     assert operation["responses"]["200"]["content"]["application/json"]["schema"]["$ref"].endswith("HealthResponse")
     assert "500" in operation["responses"]
