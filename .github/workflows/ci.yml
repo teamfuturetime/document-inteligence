@@ -63,6 +63,20 @@ jobs:
         run: uv run --locked python -m document_pipeline.ocr_models --directory data/models/tessdata
       - name: Require real Vietnamese OCR and extraction tests
         run: uv run --locked python -m pytest -m ocr_integration --run-ocr --tessdata-dir=data/models/tessdata -q
+      - name: Set up Node for browser E2E
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '26.5.0'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install browser test dependencies
+        working-directory: frontend
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Run real browser review and download flow
+        working-directory: frontend
+        run: npm run test:e2e
 
   frontend:
     name: Frontend checks

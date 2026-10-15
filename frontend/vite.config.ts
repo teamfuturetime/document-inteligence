@@ -8,9 +8,11 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
     // Same-origin requests avoid needing backend CORS in local development.
-    proxy: { '/health': 'http://127.0.0.1:8000', '/api': 'http://127.0.0.1:8000' },
+    proxy: { '/health': process.env.VDI_BACKEND_URL ?? 'http://127.0.0.1:8000',
+             '/api': process.env.VDI_BACKEND_URL ?? 'http://127.0.0.1:8000' },
   },
   test: {
+    include: ['src/**/*.test.{ts,tsx}'],
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     restoreMocks: true,
