@@ -16,3 +16,7 @@ export async function processDocument(id: string) { await api.post(`/documents/$
 export async function getExtraction(id: string) { return (await api.get<Extraction>(`/documents/${id}/extraction`)).data; }
 export async function getDocument(id: string) { return (await api.get<DocumentRecord>(`/documents/${id}`)).data; }
 export function documentContentUrl(id: string) { return `${api.defaults.baseURL}/documents/${id}/content`; }
+export async function updateExtraction(id: string, extraction: Extraction) {
+  return (await api.patch<Extraction>(`/documents/${id}/extraction`, { data: extraction.data, warnings: extraction.warnings })).data;
+}
+export async function confirmExtraction(id: string) { return (await api.post<Extraction>(`/documents/${id}/confirm`)).data; }
