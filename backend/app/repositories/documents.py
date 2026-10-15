@@ -13,12 +13,14 @@ class DocumentRepository:
     def create(
         self, *, original_name: str, stored_name: str, mime_type: str, size_bytes: int
     ) -> Document:
+        created_at = datetime.now(timezone.utc)
         document = Document(
             original_name=original_name,
             stored_name=stored_name,
             mime_type=mime_type,
             size_bytes=size_bytes,
-            expires_at=datetime.now(timezone.utc) + timedelta(days=41),
+            created_at=created_at,
+            expires_at=created_at + timedelta(days=41),
         )
         self.session.add(document)
         self.session.commit()

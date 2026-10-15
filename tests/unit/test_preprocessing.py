@@ -18,11 +18,11 @@ def test_deskew_preserves_dimensions() -> None:
     assert deskew(image).shape == image.shape
 
 
-def test_pdf_to_images_rejects_empty_document() -> None:
+def test_pdf_to_images_renders_page() -> None:
     import fitz
 
-    empty_pdf = fitz.open().tobytes()
-    try:
-        pdf_to_images(empty_pdf)
-    except ValueError as error:
-        assert "no pages" in str(error)
+    document = fitz.open()
+    document.new_page(width=100, height=100)
+    pages = pdf_to_images(document.tobytes(), dpi=72)
+    assert len(pages) == 1
+    assert pages[0].shape[:2] == (100, 100)
