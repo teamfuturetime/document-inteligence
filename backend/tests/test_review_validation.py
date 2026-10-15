@@ -35,6 +35,7 @@ def test_normalizes_unicode_spaces_amount_currency_without_mutating_request():
     ("invoice_date", "0000-01-01", "invalid_date"),
     ("total_amount", "-1", "out_of_range"),
     ("total_amount", str(MAX_SAFE_INTEGER + 1), "out_of_range"),
+    ("total_amount", "9.007.199.254.740.992", "out_of_range"),
     ("total_amount", "9" * 999, "out_of_range"),
     ("total_amount", "1e3", "invalid_format"),
     ("total_amount", "125,50", "invalid_format"),

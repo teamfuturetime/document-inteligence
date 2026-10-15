@@ -4,7 +4,7 @@ from datetime import date
 import re
 import unicodedata
 
-from document_contracts.models import ValidationRequest, ValidationResponse
+from document_contracts.models import MAX_SAFE_INTEGER, ValidationRequest, ValidationResponse
 from document_pipeline.extraction import SourceValueError, normalize_value
 
 MESSAGES = {
@@ -42,7 +42,9 @@ def validate_review(request: ValidationRequest) -> ValidationResponse:
                 elif (field == "invoice_number" and len(value) > 100
                       or field == "seller_name" and len(value) > 200
                       or field == "total_amount" and re.fullmatch(r"-?[0-9., ]+", value)
-                      and (value.startswith("-") or len(re.sub(r"[., ]", "", value).lstrip("0")) > 16)):
+                      and (value.startswith("-") or len(re.sub(r"[., ]", "", value).lstrip("0")) > 16
+                           or len(re.sub(r"[., ]", "", value).lstrip("0")) == 16
+                           and int(re.sub(r"[., ]", "", value)) > MAX_SAFE_INTEGER)):
                     code = "out_of_range"
                 elif field == "total_amount" and value.isascii() and value.isdigit():
                     code = "out_of_range"
