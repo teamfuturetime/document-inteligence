@@ -32,6 +32,9 @@ Hiện app có upload và fixed mock extraction. Xem [mock-demo.md](mock-demo.md
 để phân biệt mock với xử lý AI thật. Các module mới được ghi trạng thái rõ
 trong [issues.md](issues.md).
 
+P3-01 đã được tích hợp để thử preprocessing bằng CLI riêng; xem
+[preprocessing.md](preprocessing.md). Chức năng này chưa được gọi từ web/API.
+
 Nhánh mới hiện local; push nhánh cá nhân cần được bạn cho phép. Nếu publish
 trong repository chung, nhánh có cùng quyền truy cập với repository, không
 phải repository riêng hoặc vùng dữ liệu riêng tư.

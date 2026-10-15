@@ -12,6 +12,8 @@ P2-02 đã có React/Vite frontend chọn file local và kiểm tra kết nối 
 P2-03 đã có upload PNG/JPG/PDF → fixed mock response → hiển thị kết quả mock.
 P2-04 đã có workflow CI; backend/frontend checks đã pass trên GitHub cho commit
 `7e6c9a1` (link evidence trong CI guide). Chưa có OCR/extraction thật hoặc review/edit/export.
+P3-01 đã có preprocessing PNG/JPEG/PDF chạy thật qua CLI riêng, kiểm thử local;
+chưa nối vào API. Xem [preprocessing](docs/preprocessing.md).
 Review nhóm/PR và golden dataset vẫn chưa hoàn thành.
 
 ## Phạm vi MVP đề xuất
@@ -33,6 +35,9 @@ biểu mẫu tùy ý, database, authentication, microservices và cloud.
    và [contract v1.0.0](docs/contracts.md).
 2. Đọc [roadmap](docs/roadmap.md) và [backlog issue](docs/issues.md).
 3. Làm theo [quy trình Git và task đầu tiên](docs/contributing.md).
+
+Nhánh thử nghiệm tổng hợp cá nhân là `personal/canhtung-main`;
+xem [cách dùng nhánh cá nhân](docs/personal-integration.md).
 
 Chạy backend và kiểm tra từ root repository:
 
