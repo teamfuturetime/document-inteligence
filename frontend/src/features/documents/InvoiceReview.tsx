@@ -74,7 +74,7 @@ export function InvoiceReview({ result }: { result: ExtractionResponse }) {
               setValues(current => ({ ...current, [field]: value }))
             }} />
           <div id={`review-help-${field}`} className="hint">
-            <span>Confidence OCR: {source.confidence === null ? 'không xác định' : `${(source.confidence * 100).toFixed(1)}%`}</span>
+            <span>Confidence AI gốc: {source.confidence === null ? 'không xác định' : `${(source.confidence * 100).toFixed(1)}%`}</span>
             {source.warnings.length ? <span> · Cảnh báo: {source.warnings.join(', ')}</span> : null}
             {errors.map(error => <p className="field-error" key={error.code}>{error.message}</p>)}
           </div>
