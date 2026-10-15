@@ -2,8 +2,8 @@
 
 `document_pipeline.ocr` dùng Tesseract 5 thực để đọc tài liệu đã preprocessing.
 Kết quả là `OCRResult` v1.0.0 với `mode=real`, `language=vie+eng`, token Unicode,
-bounding box pixel và confidence. Chưa có extraction năm trường hóa đơn;
-web/API vẫn trả fixed mock và `/health` vẫn báo `ocr_ready=false`.
+bounding box pixel và confidence. P4-01 đã có [extraction CLI riêng](extraction.md)
+nhận OCRResult; web/API vẫn trả fixed mock và `/health` vẫn báo `ocr_ready=false`.
 
 ## Cài và chạy local
 

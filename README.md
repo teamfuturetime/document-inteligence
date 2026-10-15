@@ -15,6 +15,9 @@ P2-04 đã có workflow CI; backend/frontend checks đã pass trên GitHub cho c
 P3-01/02 đã có preprocessing và OCR Tesseract tiếng Việt chạy thật qua CLI riêng,
 kiểm thử local; chưa nối vào API. Xem [preprocessing](docs/preprocessing.md)
 và [OCR setup](docs/ocr.md).
+P4-01 đã có extraction năm trường theo nhãn, evidence/confidence/warnings và
+CLI riêng. Xem [extraction](docs/extraction.md). Chưa có review validation hoặc
+pipeline thật trong HTTP API.
 Review nhóm/PR và golden dataset vẫn chưa hoàn thành.
 
 ## Phạm vi MVP đề xuất

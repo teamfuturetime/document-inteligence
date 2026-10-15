@@ -60,7 +60,8 @@ document-evaluation → document-pipeline + document-contracts
 
 Pipeline hiện có preprocessing và OCR Tesseract chạy trong subprocess;
 xem [preprocessing.md](preprocessing.md) và [ocr.md](ocr.md)
-để thử PNG/JPEG/PDF và đọc metadata. Chưa có extraction,
+để thử PNG/JPEG/PDF và đọc metadata. P4-01 đã có [extraction CLI](extraction.md)
+từ OCRResult, chưa nối vào HTTP API. Chưa có review validation,
 metrics hoặc CLI chạy evaluation. Package import thành công không có nghĩa
 chức năng AI đã được thực hiện. `data/requirements-samples.txt` là công cụ tạo
 mẫu tùy chọn, không phải dependency server. Không cần font/generator để dùng

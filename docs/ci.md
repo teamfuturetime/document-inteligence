@@ -20,10 +20,10 @@ hoặc PR. Không có deployment, publish, merge tự động hay thay branch pr
 
 Các job không cần server backend/Vite đang chạy: API tests dùng TestClient,
 UI tests dùng jsdom và fake fetch. `Backend checks` chạy unit tests, skip rõ
-6 tests có marker `ocr_integration`; không cần engine/model/secret.
+10 tests có marker `ocr_integration`; không cần engine/model/secret.
 `OCR integration` cài engine với version gói Ubuntu đã pin, tải vie/eng vào
 `data/models/tessdata` từ commit chính thức đã pin và xác minh hash. Job này
-gọi `pytest pipeline/tests/test_ocr_integration.py --run-ocr`; thiếu prerequisite,
+gọi `pytest pipeline/tests -m ocr_integration --run-ocr` cho OCR/extraction; thiếu prerequisite,
 download lỗi hoặc hash sai đều fail, không skip/fallback mock.
 Smoke HTTP local của P2-03 là evidence riêng, chưa phải browser E2E trong CI.
 Không cần chạy sample generator hoặc tải font để dùng fixtures đã commit.
@@ -46,7 +46,7 @@ uv run --locked python -m backend.export_schemas --check
 uv run --locked python -m pytest -q
 # OCR thật (cần Tesseract 5 trên PATH, installer cần mạng):
 uv run --locked python -m document_pipeline.ocr_models --directory data/models/tessdata
-uv run --locked python -m pytest pipeline/tests/test_ocr_integration.py --run-ocr --tessdata-dir data/models/tessdata -q
+uv run --locked python -m pytest pipeline/tests -m ocr_integration --run-ocr --tessdata-dir data/models/tessdata -q
 ```
 
 Trong `frontend/`:
@@ -72,6 +72,11 @@ và model installer pass. Linux/Tesseract 5.3.4 job mới chưa được chạy 
 GitHub; link run P2-04 phía trên không chứng minh job này đã xanh.
 Model commit/hash giống nhau, engine/build/OS khác nhau có thể cho text khác;
 integration tests kiểm tra nội dung/evidence, không snapshot toàn bộ OCR output.
+
+P4-01 đã thêm 4 real-engine extraction tests và mở rộng bước OCR CI theo marker
+để thu thập tự động. Tổng 225 Python tests pass local với engine thật, trong đó
+10 tests mang marker integration; 9 schema và actionlint pass. GitHub/Linux
+run cho các thay đổi này vẫn chưa được xác minh.
 
 ## Sau khi được phép publish
 

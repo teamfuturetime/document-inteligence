@@ -1,0 +1,12 @@
+{
+  "version": "invoice-rules-1.0.0",
+  "line_overlap": 0.5,
+  "line_center_distance": 0.5,
+  "labels": {
+    "invoice_number": ["số hóa đơn", "mã hóa đơn"],
+    "invoice_date": ["ngày", "ngày lập", "ngày hóa đơn"],
+    "seller_name": ["bên bán", "tên bên bán", "người bán"],
+    "total_amount": ["tổng tiền", "tổng cộng", "tổng thanh toán", "tổng tiền thanh toán"],
+    "currency": ["tiền tệ", "đơn vị tiền tệ"]
+  }
+}
