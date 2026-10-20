@@ -2,7 +2,8 @@
 
 ## Cách thực hiện
 
-Lần này chỉ thực hiện **Giai đoạn 0**. Mỗi task sau là một đơn vị độc lập có phạm vi,
+Giai đoạn 0 đã hoàn thành; lượt phát triển tiếp theo chỉ thực hiện **S1.1**.
+Mỗi task là một đơn vị độc lập có phạm vi,
 cách triển khai, kiểm tra và commit Conventional Commits trên `tuannguyen`.
 Không push, PR, merge, reset, force-push, xóa branch hoặc amend khi chưa có yêu cầu riêng.
 Trước mỗi task kiểm tra branch, status, commit gần nhất và code liên quan.
@@ -17,7 +18,7 @@ hay toàn bộ yêu cầu liên quan đã hoàn thành.
 | Task / mục tiêu | Phạm vi file dự kiến | Cách triển khai | Điều kiện hoàn thành và kiểm tra | Trạng thái |
 | --- | --- | --- | --- | --- |
 | S0 — Khảo sát, ghi yêu cầu và kế hoạch | `README.md`, `docs/{repository-audit,requirements,architecture,roadmap}.md` | Đọc Git/tree/code remote và công cụ local; ghi nhận bằng chứng, phạm vi, quyết định còn mở. | Kiểm tra liên kết nội bộ và đủ R01–R12; `git diff --check`; review diff; commit tài liệu, status sạch. | Đã kiểm thử (tài liệu) |
-| S1.1 — Backend và health-check | `backend/app/{__init__,main}.py`, `backend/tests/test_health.py`, dependency/config backend, `.gitignore`, README | FastAPI tối thiểu, `GET /health`; venv/pip, khóa dependency sau kiểm tra tương thích. | TestClient trả 200 và body dự kiến; test offline; khởi động server local và gọi HTTP thật thành công; ghi lệnh PowerShell đã chạy. | Chưa triển khai |
+| S1.1 — Backend và health-check | `backend/app/{__init__,main}.py`, `backend/tests/test_health.py`, dependency/config backend, `.gitignore`, README, `docs/testing.md` | FastAPI tối thiểu, `GET /health`; venv/pip, khóa dependency sau kiểm tra tương thích. | Hai test offline đạt; Uvicorn trả HTTP 200 và JSON đúng; `pip check` đạt. Lệnh và bằng chứng trong `docs/testing.md`. | Đã kiểm thử |
 | S1.2 — Frontend chạy local | `frontend/`, `.gitignore`, README | React/TypeScript/Vite, màn hình tối thiểu; không dựng review UI trước. | Typecheck/build đạt; mở dev server kiểm tra trang hiển thị; khóa dependency, ghi lệnh chạy hai terminal. | Chưa triển khai |
 | S2.1 — Chốt hóa đơn và schema | `backend/app/schemas/`, `backend/tests/test_schemas.py`, `docs/requirements.md` | Chốt trường, required/null, kiểu tiền/ngày và schema version; Pydantic là nguồn chính. | Test hợp lệ, thiếu trường, sai kiểu, extra key, ngày không tồn tại; không cần AI. | Chưa triển khai |
 | S2.2 — Business validation | `backend/app/services/validation.py`, `backend/tests/test_validation.py` | Chuẩn hóa rõ quy tắc và trả lỗi theo trường; tách draft khỏi dữ liệu cuối. | Test chuỗi trống, số 0, tiền âm, tiền nhập nhằng, Unicode, currency sai; không tự sửa dữ liệu nhập nhằng. | Chưa triển khai |
@@ -32,7 +33,8 @@ hay toàn bộ yêu cầu liên quan đã hoàn thành.
 | S5.2 — Metrics, taxonomy và báo cáo | `evaluation/`, tests metrics/report, `docs/evaluation.md` | Field exact match và PRF theo định nghĩa yêu cầu; phân loại lỗi; report gắn dataset/model/config/code version. | Test phép tính bằng ví dụ tính tay, null/null, mẫu số 0; CLI tạo report chạy lại được; tách fake baseline với kết quả AI thật. | Chưa triển khai |
 | S6.1 — Kiểm chứng và demo | Tests luồng chính/biên, README, `docs/testing.md`, demo và báo cáo giới hạn | Chạy kiểm tra tổng thể, thử bản checkout sạch với dependency đã khóa; demo fake và real phân biệt rõ. | Backend/frontend tests, build và E2E đạt; chạy theo README ở checkout sạch; evaluation có báo cáo; cập nhật trạng thái dựa trên bằng chứng. | Chưa triển khai |
 
-S1.1 là **task tiếp theo**, dự kiến commit `feat: add backend health check`.
+S1.1 dùng commit message `feat: add backend health check`.
+S1.2 là **task tiếp theo**; chưa bắt đầu trong lượt thực hiện S1.1.
 Các commit sau đặt theo phạm vi thực tế, không theo số lượng task. Nếu một task lớn hơn dự kiến,
 tách phần độc lập kiểm tra được và cập nhật roadmap trước khi mở rộng.
 

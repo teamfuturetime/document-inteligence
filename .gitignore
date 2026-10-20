@@ -1,0 +1,15 @@
+# Local Python environments and generated files
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+build/
+dist/
+
+# Local secrets; examples may be tracked explicitly
+.env
+.env.*
+!.env.example

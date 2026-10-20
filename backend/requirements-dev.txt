@@ -1,0 +1,12 @@
+# Test pins for Windows / CPython 3.13.7.
+# Direct dependencies: pytest, httpx2; remaining entries are transitive.
+-r requirements.txt
+colorama==0.4.6
+httpcore2==2.15.1
+httpx2==2.15.1
+iniconfig==2.3.1
+packaging==26.3
+pluggy==1.7.0
+pygments==2.21.0
+pytest==9.1.1
+truststore==0.10.5
