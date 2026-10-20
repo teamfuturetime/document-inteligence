@@ -2,7 +2,7 @@
 
 ## Cách thực hiện
 
-Giai đoạn 0 đã hoàn thành; lượt phát triển tiếp theo chỉ thực hiện **S1.1**.
+Giai đoạn 0 và S1.1 đã hoàn thành; lượt S1.2 chỉ khởi tạo frontend.
 Mỗi task là một đơn vị độc lập có phạm vi,
 cách triển khai, kiểm tra và commit Conventional Commits trên `tuannguyen`.
 Không push, PR, merge, reset, force-push, xóa branch hoặc amend khi chưa có yêu cầu riêng.
@@ -19,7 +19,7 @@ hay toàn bộ yêu cầu liên quan đã hoàn thành.
 | --- | --- | --- | --- | --- |
 | S0 — Khảo sát, ghi yêu cầu và kế hoạch | `README.md`, `docs/{repository-audit,requirements,architecture,roadmap}.md` | Đọc Git/tree/code remote và công cụ local; ghi nhận bằng chứng, phạm vi, quyết định còn mở. | Kiểm tra liên kết nội bộ và đủ R01–R12; `git diff --check`; review diff; commit tài liệu, status sạch. | Đã kiểm thử (tài liệu) |
 | S1.1 — Backend và health-check | `backend/app/{__init__,main}.py`, `backend/tests/test_health.py`, dependency/config backend, `.gitignore`, README, `docs/testing.md` | FastAPI tối thiểu, `GET /health`; venv/pip, khóa dependency sau kiểm tra tương thích. | Hai test offline đạt; Uvicorn trả HTTP 200 và JSON đúng; `pip check` đạt. Lệnh và bằng chứng trong `docs/testing.md`. | Đã kiểm thử |
-| S1.2 — Frontend chạy local | `frontend/`, `.gitignore`, README | React/TypeScript/Vite, màn hình tối thiểu; không dựng review UI trước. | Typecheck/build đạt; mở dev server kiểm tra trang hiển thị; khóa dependency, ghi lệnh chạy hai terminal. | Chưa triển khai |
+| S1.2 — Frontend chạy local | `frontend/`, `.gitignore`, README, tài liệu kiến trúc/kiểm thử/trạng thái | React/TypeScript/Vite, trang giới thiệu tối thiểu; không dựng review UI trước. | `npm ci --offline`, typecheck/build, HTTP dev/preview và render React đạt; khóa dependency, ghi lệnh chạy local. Chưa kiểm tra trực quan do công cụ trình duyệt không khả dụng; xem `docs/testing.md`. | Đã kiểm thử (CLI/HTTP/render); còn kiểm tra trực quan |
 | S2.1 — Chốt hóa đơn và schema | `backend/app/schemas/`, `backend/tests/test_schemas.py`, `docs/requirements.md` | Chốt trường, required/null, kiểu tiền/ngày và schema version; Pydantic là nguồn chính. | Test hợp lệ, thiếu trường, sai kiểu, extra key, ngày không tồn tại; không cần AI. | Chưa triển khai |
 | S2.2 — Business validation | `backend/app/services/validation.py`, `backend/tests/test_validation.py` | Chuẩn hóa rõ quy tắc và trả lỗi theo trường; tách draft khỏi dữ liệu cuối. | Test chuỗi trống, số 0, tiền âm, tiền nhập nhằng, Unicode, currency sai; không tự sửa dữ liệu nhập nhằng. | Chưa triển khai |
 | S3.1 — Pipeline contract và fake | `backend/app/providers/`, `backend/app/services/pipeline.py`, tests tương ứng, kiến trúc | Interface OCR/extraction nhỏ, fake có nhãn; tách các result và run metadata. | Test luồng offline, output sai schema, provider lỗi và timeout; metadata không thiếu version; không API key. | Chưa triển khai |
@@ -34,7 +34,9 @@ hay toàn bộ yêu cầu liên quan đã hoàn thành.
 | S6.1 — Kiểm chứng và demo | Tests luồng chính/biên, README, `docs/testing.md`, demo và báo cáo giới hạn | Chạy kiểm tra tổng thể, thử bản checkout sạch với dependency đã khóa; demo fake và real phân biệt rõ. | Backend/frontend tests, build và E2E đạt; chạy theo README ở checkout sạch; evaluation có báo cáo; cập nhật trạng thái dựa trên bằng chứng. | Chưa triển khai |
 
 S1.1 dùng commit message `feat: add backend health check`.
-S1.2 là **task tiếp theo**; chưa bắt đầu trong lượt thực hiện S1.1.
+S1.2 dùng commit message `feat: initialize React frontend`.
+Task tiếp theo theo roadmap là **S2.1**; chưa bắt đầu trong lượt S1.2.
+Kiểm tra trực quan frontend vẫn còn mở, không xem typecheck/build là thay thế việc đó.
 Các commit sau đặt theo phạm vi thực tế, không theo số lượng task. Nếu một task lớn hơn dự kiến,
 tách phần độc lập kiểm tra được và cập nhật roadmap trước khi mở rộng.
 
@@ -54,7 +56,7 @@ tách phần độc lập kiểm tra được và cập nhật roadmap trước 
 | Thời điểm | Quyết định | Hướng đề xuất / điều còn thiếu |
 | --- | --- | --- |
 | Trước S1.1 | Nền code, môi trường và dependency | Giữ nền `94c5101`, không nhập nguyên nhánh remote. Dùng Python hiện có nếu dependency kiểm tra tương thích; tạo venv riêng, không sửa Python hệ thống. |
-| Trước S1.2 | Phiên bản frontend và kết nối dev | Kiểm tra tương thích Node hiện có; chọn Vite dev proxy hoặc CORS giới hạn đúng origin local khi có API call. |
+| S1.2 đã chốt | Phiên bản frontend và kết nối dev | Node 24.13.0/npm 11.6.2, React 19.3.1, TypeScript 7.0.2, Vite 8.3.4; lockfile và CLI/build đạt. Trang tĩnh chưa gọi API, chưa cần proxy/CORS. |
 | Trước S2.1 | Loại biểu mẫu, trường và quy tắc | Đề xuất hóa đơn tổng hợp một trang, năm trường trong requirements; cần chốt required/null và quy tắc ngày/tiền. |
 | Trước S3.2 | OCR engine/model | Tesseract là ứng viên có sẵn, cần đo trên mẫu; kiểm tra license, config, version và chất lượng dấu tiếng Việt. |
 | Trước S3.3 | VLM local hoặc API | Chưa biết GPU/VRAM/ngân sách; khảo sát tài nguyên và model license. Nếu cần dịch vụ tính phí/gửi dữ liệu bên ngoài, trình phương án cụ thể để người dùng quyết định trước khi gọi. |

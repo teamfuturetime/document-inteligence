@@ -9,6 +9,11 @@ htmlcov/
 build/
 dist/
 
+# Local frontend dependencies, cache and build metadata
+node_modules/
+.npm-cache/
+*.tsbuildinfo
+
 # Local secrets; examples may be tracked explicitly
 .env
 .env.*

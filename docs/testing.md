@@ -1,4 +1,4 @@
-# Kiểm thử backend S1.1
+# Kiểm thử skeleton S1.1–S1.2
 
 ## Môi trường và dependency
 
@@ -76,3 +76,64 @@ Smoke check này dùng socket local, tách khỏi bộ test in-process.
 
 Health chỉ báo backend sống. Chưa có test frontend, schema nghiệp vụ, upload,
 OCR/VLM hoặc evaluation; S1.1 không xác nhận Giai đoạn 1 đã hoàn thành.
+
+## Frontend S1.2 — môi trường và cách chạy
+
+Đã kiểm tra ngày 20/10/2026 trên Windows, Node.js **24.13.0**, npm **11.6.2**.
+Metadata npm được đọc trước khi cài: Vite **8.3.4**, React plugin **6.1.2**
+yêu cầu Node `^20.19.0 || >=22.12.0`; Node hiện tại đáp ứng.
+React/ReactDOM **19.3.1**, TypeScript **7.0.2**, type definitions React/ReactDOM
+**19.3.0** được pin trực tiếp; dependency gián tiếp và integrity nằm trong lockfile.
+Theo metadata npm, TypeScript dùng Apache-2.0, các dependency trực tiếp còn lại dùng MIT.
+Tham khảo [Vite getting started](https://vite.dev/guide/),
+[React với Vite](https://react.dev/learn/build-a-react-app-from-scratch) và metadata
+đã cài trong `frontend/node_modules/*/package.json` khi cần rà soát phiên bản.
+
+Từ thư mục gốc, chuyển vào frontend:
+
+```powershell
+Set-Location frontend
+npm ci --no-audit --no-fund
+npm run typecheck
+npm run build
+npm run dev
+```
+
+Mở `http://127.0.0.1:5173/`. Trong terminal khác tại `frontend/`,
+`npm run preview` phục vụ bản build ở `http://127.0.0.1:4173/`.
+Các server dùng loopback và `strictPort`; `Ctrl+C` để dừng.
+Xem README để đổi cổng nếu đang bị chiếm.
+
+## Frontend S1.2 — kết quả thực tế và giới hạn
+
+- Cài package từ npm thành công sau khi cấp quyền mạng; lần thử sandbox ban đầu lỗi
+  `EACCES` khi truy cập registry. Không cập nhật Node/npm hoặc cấu hình global.
+  Cache npm đặt trong repo qua `frontend/.npmrc`.
+- `npm ci --offline --no-audit --no-fund`: đạt, cài lại **24 package** từ cache theo
+  lockfile. Lần cài mới khi chưa có cache vẫn cần Internet.
+- `npm run typecheck`: đạt. `npm run build`: đạt (chạy TypeScript rồi Vite).
+  Output có `dist/index.html` và JS/CSS bundle; `dist/` được Git bỏ qua.
+- `npm ls --depth=0`: đúng bảy dependency trực tiếp, không có lỗi dependency tree.
+- Dev server: HTTP 200 cho HTML, `src/main.tsx`, `src/App.tsx` và CSS.
+  Python/backend không cần chạy để phục vụ frontend.
+- Smoke check inline dùng Vite `ssrLoadModule` và React `renderToStaticMarkup` trong Node:
+  tên dự án, trạng thái giai đoạn và các mục chưa triển khai được render đúng;
+  không có form/input/button upload. Đây là kiểm tra render trong Node,
+  không thêm SSR vào sản phẩm và không kiểm chứng việc mount/hydrate trong trình duyệt.
+- Production preview: HTTP 200 cho HTML và cả hai JS/CSS asset được tham chiếu.
+  Đã dừng dev/preview sau kiểm tra, không còn listener ở cổng 5173/4173.
+- Chạy lại backend: `python -m pytest -c backend/pytest.ini -q` bằng Python trong
+  `.venv`: **2 passed**. `git diff --exit-code 2d78293 -- backend`: không có thay đổi.
+- Smoke script ban đầu bị PowerShell thay ký tự Unicode khi pipe sang Node;
+  đổi chuỗi kiểm tra sang Unicode escape và chạy lại đạt. Source frontend đọc UTF-8 đúng.
+
+**Chưa kiểm tra trực quan:** inventory trình duyệt của công cụ trả danh sách rỗng;
+thử mở dev server bằng in-app browser trả `Browser is not available: iab`.
+Chưa xác nhận bố cục desktop/mobile, lỗi console hoặc việc React mount trong browser.
+Typecheck/build/HTTP/render ở Node không thay thế bằng chứng đó.
+Kiểm tra thủ công cần mở URL ở README, xác nhận tiêu đề/mô tả/trạng thái tiếng Việt,
+thử chiều rộng desktop và mobile, kiểm tra console rồi ghi kết quả thực tế.
+
+Chưa có unit test frontend hoặc script `test`: trang tĩnh chưa có tương tác nghiệp vụ,
+không thêm test framework chỉ để kiểm tra text cố định. Khi có upload/review ở S4,
+thêm test cho các tương tác quan trọng theo roadmap. Chưa chạy E2E hay gọi API/AI.

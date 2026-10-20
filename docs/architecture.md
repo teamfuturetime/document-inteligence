@@ -4,7 +4,8 @@
 
 Đề xuất modular monolith với một backend **Python/FastAPI**, một frontend
 **React/TypeScript/Vite**, schema/validation **Pydantic** ở backend.
-S1.1 đã triển khai backend FastAPI tối thiểu; React và pipeline còn là định hướng.
+S1.1 đã triển khai backend FastAPI tối thiểu; S1.2 đã tạo frontend React/TypeScript/Vite.
+Pipeline tài liệu còn là định hướng.
 Giữ backend đơn giản, frontend dự kiến gọi HTTP API; chưa cần database, queue, microservice
 hoặc cloud. Chỉ bổ sung lưu trữ khi có nhu cầu khôi phục/lịch sử được xác định rõ.
 
@@ -12,7 +13,9 @@ Backend dùng `.venv` với `requirements.txt` pin runtime và `requirements-dev
 pin test; đã kiểm tra trên Windows / Python 3.13.7. Runtime chỉ khai báo trực tiếp
 FastAPI và Uvicorn, test dùng pytest và HTTPX2 cho TestClient của Starlette hiện tại.
 Chưa thêm extras `standard`, SDK AI, cấu hình provider hay database.
-Frontend sẽ có lockfile khi S1.2 thực hiện. `uv` không phải điều kiện bắt buộc.
+Frontend có `package-lock.json`; chỉ dùng React/ReactDOM và các công cụ TypeScript,
+Vite, React plugin, type definitions. Không thêm UI library, router hay state manager.
+`uv` không phải điều kiện bắt buộc.
 
 ## Cấu trúc sẽ tạo dần
 
@@ -33,8 +36,10 @@ evaluation/              # S5: metrics, taxonomy và báo cáo phiên bản
 ```
 
 Hiện có `backend/app/__init__.py`, `backend/app/main.py`, `backend/tests/test_health.py`,
-`backend/pytest.ini` và hai file requirements. Các thư mục api/schemas/services/providers,
-frontend, data và evaluation trong sơ đồ còn là kế hoạch, chưa được tạo.
+`backend/pytest.ini` và hai file requirements. Frontend có `index.html`, `src/main.tsx`,
+`src/App.tsx`, `src/styles.css`, `vite.config.ts`, `tsconfig.json`, package/lockfile và
+`.npmrc` đặt cache trong repo. Các thư mục api/schemas/services/providers, data và
+evaluation trong sơ đồ còn là kế hoạch, chưa được tạo.
 Không dựng package workspace hoặc registry nhiều provider trước khi cần.
 
 ## Luồng dữ liệu dự kiến
@@ -55,6 +60,8 @@ React: chọn ảnh mẫu
 
 Luồng tài liệu này là thiết kế. S1.1 chỉ có luồng HTTP client → Uvicorn →
 FastAPI `GET /health` → `200 {"status":"ok"}`, không gọi frontend hoặc AI.
+S1.2 có luồng Vite → trình duyệt → React root → trang giới thiệu tĩnh.
+Frontend chưa gọi backend nên chưa cần dev proxy hay thay đổi CORS.
 Contract upload/extract, validate và export chỉ chốt khi task tương ứng bắt đầu.
 Xử lý đồng bộ cho một tài liệu trong MVP, có timeout rõ ràng ở tầng provider;
 nếu đo được thời gian xử lý không phù hợp mới xem xét job bất đồng bộ.
