@@ -1,4 +1,4 @@
-# Kiểm thử skeleton S1.1–S1.2
+# Kiểm thử backend và frontend
 
 ## Môi trường và dependency
 
@@ -74,7 +74,7 @@ Smoke check này dùng socket local, tách khỏi bộ test in-process.
 - Uvicorn khởi động thành công; HTTP thật: **200**, `application/json`, `{"status":"ok"}`;
   tiến trình kiểm tra đã dừng.
 
-Health chỉ báo backend sống. Chưa có test frontend, schema nghiệp vụ, upload,
+Health chỉ báo backend sống. Ở thời điểm S1.1 chưa có test frontend, schema nghiệp vụ, upload,
 OCR/VLM hoặc evaluation; S1.1 không xác nhận Giai đoạn 1 đã hoàn thành.
 
 ## Frontend S1.2 — môi trường và cách chạy
@@ -137,3 +137,42 @@ thử chiều rộng desktop và mobile, kiểm tra console rồi ghi kết qu�
 Chưa có unit test frontend hoặc script `test`: trang tĩnh chưa có tương tác nghiệp vụ,
 không thêm test framework chỉ để kiểm tra text cố định. Khi có upload/review ở S4,
 thêm test cho các tương tác quan trọng theo roadmap. Chưa chạy E2E hay gọi API/AI.
+
+## Schema canonical S2.1a
+
+Môi trường giữ nguyên: Windows, Python 3.13.7, Pydantic 2.14.1, pytest 9.1.1
+trong `.venv`. Không thêm hoặc đổi dependency. Hai model trong
+`backend/app/schemas/invoice.py` theo contract `sales_invoice` 1.0.0 ở requirements.
+
+Lệnh đã chạy tại thư mục gốc, đúng README:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -c backend/pytest.ini -q
+```
+
+Kết quả thực tế: **209 passed in 0.68s**, không có warning:
+**207 test schema**, **2 test health**. Không cần server, Internet, API key hoặc model AI.
+Fixture tại module test schema chặn socket connect/connect_ex/create_connection trong
+lúc test chạy; health test giữ fixture riêng để khởi tạo event loop Windows đúng cách.
+Đây không phải bằng chứng cấm mạng toàn bộ tiến trình ở thời điểm import.
+
+| Nhóm | Các quy tắc đã được kiểm thử |
+| --- | --- |
+| Giá trị chuẩn | Ví dụ hợp lệ, giữ nguyên khi dump/parse JSON, đủ năm key, không tự thêm default. |
+| Thiếu/null | Từng key null và tất cả null được nhận ở `InvoiceValues`; bỏ bất kỳ key nào đều lỗi ở cả hai model; null bị từ chối ở `FinalInvoiceValues`. |
+| Số hóa đơn | Giữ `0000123`, hoa/thường và dấu phân cách cho phép; độ dài 1/100 hợp lệ, 101 bị từ chối; từ chối số/bytes/bool, khoảng trắng/control, ký tự ngoài ASCII pattern. |
+| Ngày | ISO đúng, năm 0001/9999, ngày nhuận 2024/2000; từ chối 1900-02-29, 2026-02-29, 2026-04-31, tháng 13, năm 0000, DMY, thiếu zero-padding, datetime, digit ngoài ASCII, Python date object. |
+| Tiền | Chấp nhận integer 0 và 9007199254740991; từ chối âm/vượt giới hạn, bool, float (kể cả 125000.0), Decimal, NaN/Infinity, chuỗi số/nhóm nghìn/nhập nhằng; JSON cũng giữ kiểu strict. |
+| Tên người bán | Unicode NFC, có chữ cái, độ dài theo code point 1–200; giữ dấu/hoa thường. Từ chối chuỗi rỗng/trắng/chỉ số, NFD, thừa khoảng trắng, tab/newline/NBSP, Unicode Cc/Cf/Cs và quá dài. |
+| Currency | Chỉ `VND` canonical được nhận; USD, lowercase, alias `VNĐ`/`đồng`/`đ`/`₫`, bytes, rỗng và khoảng trắng bị từ chối. Chuyển alias là việc của service S2.2. |
+| Ranh giới | Từ chối key lạ và metadata status/warnings/confidence/schema/type/confirmed; từ chối object extraction wrapper ở value. Không tạo confidence giả; metadata đó không thuộc hai model. |
+| Gán lại | Gán tiền âm bị từ chối và không đổi giá trị cũ; gán mã hóa đơn chuỗi hợp lệ giữ số 0 đầu. |
+
+Test dùng input tổng hợp, không đọc tài liệu thật hoặc ground truth để giả làm OCR.
+`FinalInvoiceValues` chỉ xác nhận dữ liệu canonical hợp lệ; chưa có test xác nhận người dùng
+vì ReviewDraft/ReviewedExport chưa hiện thực. Không triển khai hoặc kiểm thử chuyển đổi
+DD/MM/YYYY, số tiền có dấu phân cách, alias VND, phân loại uncertain/cảnh báo/confidence,
+business validation service hay API ở S2.1a. Chúng vẫn thuộc các task sau.
+
+Endpoint `/health` và frontend không được sửa trong task này. Trạng thái chưa có
+kiểm tra trực quan frontend ở S1.2 vẫn giữ nguyên.

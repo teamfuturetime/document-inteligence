@@ -18,7 +18,9 @@ S2.1 chỉ chốt thiết kế dữ liệu, không bổ sung chức năng hoặc
 Chọn duy nhất **hóa đơn bán hàng tiếng Việt một trang, dữ liệu tổng hợp**, ảnh
 PNG/JPEG, nội dung in máy theo quy ước nguồn `vi-VN`. Mã loại tài liệu:
 `sales_invoice`; phiên bản đặc tả: `schema_version = "1.0.0"`.
-Đây là phiên bản thiết kế đã chốt, **chưa có Pydantic model/JSON Schema thực thi**.
+S2.1a đã hiện thực và kiểm thử hai model giá trị canonical `InvoiceValues` và
+`FinalInvoiceValues` bằng Pydantic. Các envelope OCR/extraction/validation/review
+bên dưới vẫn là thiết kế, chưa có class/API hoặc file JSON Schema xuất riêng.
 
 MVP chỉ lấy thông tin đầu hóa đơn và tổng tiền cuối cùng phải trả. PDF, nhiều trang,
 bảng chi tiết hàng hóa, thuế/chiết khấu, thông tin người mua, mã số thuế, chữ viết tay
@@ -37,6 +39,9 @@ Hai dạng giá trị dùng cùng **năm key bắt buộc**, không chấp nhậ
 Schema MVP không có trường nghiệp vụ tùy chọn. Metadata như vị trí OCR và confidence
 có thể không có cơ sở để cung cấp; biểu diễn bằng `null`, không bịa thông tin.
 Key bị bỏ quên là lỗi contract, khác với key tồn tại nhưng giá trị `null`.
+Hai model value không chứa `status`, `warnings`, `confidence`, metadata schema hoặc
+cờ xác nhận. Các thuộc tính đó thuộc envelope ở phần sau; thêm chúng vào value model
+là lỗi key lạ. `FinalInvoiceValues` hợp lệ không chứng minh người dùng đã xác nhận.
 
 | Trường | Kiểu JSON chuẩn hóa, giới hạn | Ý nghĩa / bắt buộc ở bản cuối |
 | --- | --- | --- |
@@ -92,8 +97,10 @@ bị báo lỗi. Chuỗi rỗng/sau trim chỉ còn trắng được xem là thi
 Hậu tố tiền tệ chỉ được tách nếu thuộc danh sách VND ở trên. Khi có nhiều tổng tiền
 khác nhau mà không xác định được nhãn tổng cuối phải trả, không chọn số lớn nhất;
 đánh dấu `uncertain`. Cần người dùng sửa/điền trường rồi xác nhận bản hợp lệ.
-Quy tắc này là đặc tả **chưa được code hoặc test tự động**. Kích thước file/pixel/timeout
-vẫn để task upload/provider chốt, không thêm vào schema nghiệp vụ ở S2.1.
+Các phép chuyển đổi input thô ở bảng này **chưa được code hoặc test tự động**;
+S2.1a chỉ kiểm tra giá trị đã canonical và từ chối dữ liệu chưa chuẩn hóa, không tự sửa.
+Kích thước file/pixel/timeout vẫn để task upload/provider chốt, không thêm vào schema
+nghiệp vụ ở S2.1a.
 
 ### Dữ liệu trích xuất và trường thiếu/không chắc chắn
 
@@ -161,8 +168,9 @@ confidence gốc chỉ thuộc extraction gốc, không chuyển sang giá trị
 - Tài liệu thật không đúng quy ước, tiền thập phân/ngoại tệ và số hóa đơn ngoài tập ký tự
   trên cần mở rộng schema có version sau, không âm thầm nới quy tắc.
 - Chưa chọn OCR/VLM, phương pháp confidence, ngưỡng review hoặc giới hạn file/timeout.
-- Chưa có model Pydantic, normalization service, validation API hoặc review/export thực thi.
-  [Architecture](architecture.md) chốt ranh giới dữ liệu; roadmap tách riêng task code tiếp theo.
+- Đã có hai model Pydantic canonical và test offline; chưa có normalization service,
+  validation API, extraction metadata/confidence hoặc review/export thực thi.
+  [Architecture](architecture.md) chốt ranh giới; task service input thô tiếp theo là S2.2.
 
 ## Theo dõi đủ yêu cầu giảng viên
 
@@ -174,10 +182,10 @@ phù hợp, chỉ rõ phạm vi và phiên bản.
 | ID | Yêu cầu | Giai đoạn / task | Bằng chứng cần để xác nhận | Trạng thái |
 | --- | --- | --- | --- | --- |
 | R01 | OCR nội dung tài liệu | 3 / S3.1–S3.2 | Chạy OCR thật trên ảnh mẫu; xử lý lỗi; test fake offline. | Chưa triển khai |
-| R02 | Schema extraction | 2–3 / S2.1, S2.1a, S3.1, S3.3 | Output có schema; trích xuất từ tài liệu; test thiếu/sai trường. | Chưa triển khai: S2.1 mới chốt đặc tả, chưa có model/test/inference. |
+| R02 | Schema extraction | 2–3 / S2.1, S2.1a, S3.1, S3.3 | Output có schema; trích xuất từ tài liệu; test thiếu/sai trường. | Đang triển khai: hai model value đã kiểm thử; chưa extraction envelope/inference. |
 | R03 | Confidence cấp trường khi có cơ sở | 3–4 / S3.3, S4.2 | Ghi nguồn/cách tính; test null khi không có cơ sở; UI giải thích điểm. | Chưa triển khai |
 | R04 | Review UI có chỉnh sửa | 4 / S4.2 | Test hiển thị và sửa từng trường; giữ kết quả trích xuất gốc. | Chưa triển khai |
-| R05 | Schema và business validation | 2, 4 / S2.1a–S2.2, S4.3 | Unit test và API test; backend từ chối dữ liệu sai. | Chưa triển khai: quy tắc đã được ghi, chưa có kiểm tra thực thi. |
+| R05 | Schema và business validation | 2, 4 / S2.1a–S2.2, S4.3 | Unit test và API test; backend từ chối dữ liệu sai. | Đang triển khai: canonical model validation đã kiểm thử; chưa normalize/business service hoặc validation API. |
 | R06 | Export JSON đã kiểm tra/chỉnh sửa | 4 / S4.4 | Export phản ánh sửa đổi; từ chối bản chưa hợp lệ/chưa xác nhận; test JSON. | Chưa triển khai |
 | R07 | Chỉ dùng dữ liệu tổng hợp/được phép | 3, 5 / S3.2, S5.1 | Manifest có nguồn, quyền sử dụng, hash; rà soát ảnh và ground truth. | Chưa triển khai |
 | R08 | Python, OCR, VLM và React/Vue | 1, 3 / S1.1–S1.2, S3.2–S3.3 | Backend Python, UI React và cả OCR/VLM thật có ví dụ chạy; fake không thay thế tích hợp thật. | Đang triển khai: Python health-check và React skeleton đã kiểm tra CLI/HTTP; còn kiểm tra trực quan frontend, OCR, VLM. |

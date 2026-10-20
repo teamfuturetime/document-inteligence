@@ -22,9 +22,10 @@ Vite, React plugin, type definitions. Không thêm UI library, router hay state 
 Chốt một loại biểu mẫu: **hóa đơn bán hàng tiếng Việt một trang, tổng hợp**, mã
 `sales_invoice`, đặc tả `schema_version = "1.0.0"`. Chỉ năm trường
 `invoice_number`, `invoice_date`, `seller_name`, `total_amount`, `currency`.
-[Requirements](requirements.md) là nơi định nghĩa kiểu, giới hạn và quy tắc chuẩn hóa;
-chưa có model Pydantic hoặc schema JSON thực thi. Sau này Pydantic là nguồn contract
-thực thi, không duy trì hai bộ validation Python/TypeScript riêng với quy tắc khác nhau.
+[Requirements](requirements.md) định nghĩa kiểu, giới hạn và quy tắc chuẩn hóa.
+S2.1a đã hiện thực hai model canonical bằng Pydantic ở `backend/app/schemas/invoice.py`;
+chưa có các envelope/API hoặc file JSON Schema xuất riêng. Pydantic là nguồn contract
+thực thi cho các model này, không duy trì hai bộ validation Python/TypeScript khác nhau.
 
 S1.2 vẫn **chưa kiểm tra trực quan**; các kết quả CLI/HTTP/render trong Node được giữ
 đúng phạm vi ở [testing.md](testing.md). Việc chốt thiết kế S2.1 không xác nhận toàn bộ
@@ -51,8 +52,9 @@ evaluation/              # S5: metrics, taxonomy và báo cáo phiên bản
 Hiện có `backend/app/__init__.py`, `backend/app/main.py`, `backend/tests/test_health.py`,
 `backend/pytest.ini` và hai file requirements. Frontend có `index.html`, `src/main.tsx`,
 `src/App.tsx`, `src/styles.css`, `vite.config.ts`, `tsconfig.json`, package/lockfile và
-`.npmrc` đặt cache trong repo. Các thư mục api/schemas/services/providers, data và
-evaluation trong sơ đồ còn là kế hoạch, chưa được tạo.
+`.npmrc` đặt cache trong repo. S2.1a thêm `backend/app/schemas/{__init__,invoice}.py`
+và `backend/tests/test_schemas.py`. Các thư mục api/services/providers, data và evaluation
+trong sơ đồ còn là kế hoạch, chưa được tạo.
 Không dựng package workspace hoặc registry nhiều provider trước khi cần.
 
 ## Luồng dữ liệu dự kiến
@@ -81,7 +83,8 @@ nếu đo được thời gian xử lý không phù hợp mới xem xét job b�
 
 ## Ranh giới dữ liệu và AI
 
-Các kiểu bên dưới là **đặc tả**, chưa tạo class/endpoint tương ứng. Dữ liệu đầu vào
+Các envelope bên dưới vẫn là **đặc tả**, chưa tạo class/endpoint tương ứng; chỉ hai
+model giá trị `InvoiceValues` và `FinalInvoiceValues` đã được hiện thực. Dữ liệu đầu vào
 của provider, draft thô, giá trị canonical và bản đã xác nhận có trách nhiệm khác nhau:
 
 | Artifact | Nội dung / kiểu chính | Ai tạo và được phép thay đổi |
@@ -135,13 +138,21 @@ theo requirements; confidence null khi chưa có cơ sở. Candidate không có 
 phải chuyển sang `uncertain`, không tự tin hóa điểm VLM. Chưa có chính sách đã đánh giá,
 ngưỡng review hay số đo thực nghiệm; S2.1 không thiết lập một công thức điểm mới.
 
-### Phạm vi code tiếp theo
+### Hiện thực S2.1a và phần tiếp theo
 
-Task riêng **S2.1a** chỉ hiện thực `InvoiceValues` và `FinalInvoiceValues` cùng unit test
-offline cho canonical input: key bắt buộc/null, kiểu strict, giới hạn, key lạ,
-ngày có thật và giữ số 0 đầu. Chưa tạo normalization service, API, pipeline/envelope
-OCR/extraction/confidence hoặc UI. Các envelope trên sẽ hiện thực ở S3.1/S4 khi cần.
-Service chuyển chuỗi tiền/ngày/currency thô và business validation vẫn là S2.2.
+`backend/app/schemas/invoice.py` dùng các kiểu `Annotated` chung cho cả hai model,
+`ConfigDict(strict=True, extra="forbid", validate_assignment=True)` và các validator
+kiểm tra ngày lịch/tên người bán. Các validator chỉ trả lại giá trị không đổi hoặc
+báo lỗi: `date.fromisoformat` chạy sau pattern ISO; tên phải đã ở NFC, đúng khoảng
+trắng, không có category Cc/Cf/Cs và có chữ cái. Kiểm tra khi gán lại thuộc tính cũng
+giữ các ràng buộc đó. Không thêm dependency hoặc trường metadata vào model giá trị.
+
+Test offline trong `backend/tests/test_schemas.py` đã kiểm tra canonical input:
+key bắt buộc/null, kiểu strict, giới hạn, key lạ, Unicode, ngày có thật và số 0 đầu.
+Kết quả chi tiết ở [testing.md](testing.md). Chưa tạo normalization service, API,
+pipeline/envelope OCR/extraction/confidence hoặc UI. Các envelope trên sẽ hiện thực
+ở S3.1/S4 khi cần. Service chuyển chuỗi tiền/ngày/currency thô và business validation
+là task tiếp theo **S2.2**.
 
 Business logic nhận interface nhỏ (ví dụ Python `Protocol`) được định nghĩa từ ca sử dụng thực tế.
 OCR adapter chịu trách nhiệm SDK/CLI; extraction adapter chịu trách nhiệm SDK VLM, prompt và parse.
