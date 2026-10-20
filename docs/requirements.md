@@ -19,8 +19,9 @@ Chọn duy nhất **hóa đơn bán hàng tiếng Việt một trang, dữ liệ
 PNG/JPEG, nội dung in máy theo quy ước nguồn `vi-VN`. Mã loại tài liệu:
 `sales_invoice`; phiên bản đặc tả: `schema_version = "1.0.0"`.
 S2.1a đã hiện thực và kiểm thử hai model giá trị canonical `InvoiceValues` và
-`FinalInvoiceValues` bằng Pydantic. Các envelope OCR/extraction/validation/review
-bên dưới vẫn là thiết kế, chưa có class/API hoặc file JSON Schema xuất riêng.
+`FinalInvoiceValues` bằng Pydantic. S2.2 đã thêm normalization/business validation
+local và `FieldIssue`/`ValidationResult`; chưa có validation API. Các envelope
+OCR/extraction/review vẫn là thiết kế, chưa có file JSON Schema xuất riêng.
 
 MVP chỉ lấy thông tin đầu hóa đơn và tổng tiền cuối cùng phải trả. PDF, nhiều trang,
 bảng chi tiết hàng hóa, thuế/chiết khấu, thông tin người mua, mã số thuế, chữ viết tay
@@ -97,10 +98,64 @@ bị báo lỗi. Chuỗi rỗng/sau trim chỉ còn trắng được xem là thi
 Hậu tố tiền tệ chỉ được tách nếu thuộc danh sách VND ở trên. Khi có nhiều tổng tiền
 khác nhau mà không xác định được nhãn tổng cuối phải trả, không chọn số lớn nhất;
 đánh dấu `uncertain`. Cần người dùng sửa/điền trường rồi xác nhận bản hợp lệ.
-Các phép chuyển đổi input thô ở bảng này **chưa được code hoặc test tự động**;
-S2.1a chỉ kiểm tra giá trị đã canonical và từ chối dữ liệu chưa chuẩn hóa, không tự sửa.
+S2.2 đã hiện thực và kiểm thử các phép chuyển đổi input thô ở bảng này trong service
+local. Hai model S2.1a vẫn chỉ nhận giá trị canonical, không tự sửa input.
 Kích thước file/pixel/timeout vẫn để task upload/provider chốt, không thêm vào schema
-nghiệp vụ ở S2.1a.
+nghiệp vụ ở S2.2.
+
+### Service S2.2 và phân loại lỗi
+
+- `normalize_invoice(raw_values, source_locale=None)` nhận một object có đủ năm key;
+  từng giá trị là chuỗi hoặc null, riêng tiền còn nhận integer canonical (không nhận bool/float).
+  Trả `NormalizationResult`: bản sao sâu `raw_values`, năm `candidates`, `errors`,
+  `source_locale`, `normalization_version = "invoice-normalization-1"`.
+- `candidates` là giá trị trung gian, **chưa bảo đảm hợp lệ**: ví dụ DMY có thể chuyển
+  thành `2026-04-31`, sau đó business validation mới báo ngày không có thật.
+  Normalization thành công không xác nhận tài liệu đúng hoặc đã duyệt.
+- `validate_invoice(normalization_result)` đọc candidates và lỗi trước đó, dùng
+  `FinalInvoiceValues` kiểm tra các ràng buộc đã chốt. Kết quả có `valid`,
+  `normalized_values: InvoiceValues`, `errors`, `warnings` đúng ranh giới kiến trúc.
+  Trường lỗi có normalized value null; trường tốt vẫn được giữ. Không sửa nguồn hoặc candidates.
+- `FieldIssue` giữ đúng ba thuộc tính `field`, `code`, `message`. Lỗi toàn object/key lạ
+  dùng field null; key nghiệp vụ thiếu dùng tên field đó. Mã có prefix để phân biệt
+  trách nhiệm, không đổi schema năm giá trị. Message không chép nội dung nguồn vào lỗi.
+
+| Prefix code | Ý nghĩa và các mã đang dùng |
+| --- | --- |
+| `schema.` | Sai hợp đồng input/kiểu hoặc ràng buộc hình thức của model: `invalid_input`, `missing_key`, `extra_forbidden`, `invalid_type`, `unsupported_locale`, `invalid_length`, `invalid_format`. |
+| `normalization.` | Chưa chuyển được nguồn sang một giá trị xác định: `invalid_character`, `invalid_date_format`, `ambiguous_date`, `invalid_amount_format`, `ambiguous_amount`, `ambiguous_currency`, `amount_out_of_range`. Mã cuối bảo vệ parse chuỗi tiền trên 16 chữ số có nghĩa, vốn chắc chắn vượt giới hạn integer đã chốt. |
+| `business.` | Ràng buộc dữ liệu đã chốt sau chuyển đổi: `required`, `invalid_date`, `out_of_range`, `unsupported_currency`, `invalid_seller_name`. Không thêm quy tắc thuế, đối chiếu chi tiết hàng hóa hoặc cấm ngày quá khứ/tương lai. |
+
+Các điểm sử dụng cần giữ rõ:
+
+- DMY chỉ đổi khi bên gọi truyền `source_locale="vi-VN"` dựa trên nguồn mẫu đã biết.
+  None nghĩa chưa biết nguồn; ISO được nhận, DMY báo `normalization.ambiguous_date`.
+  Locale khác chưa hỗ trợ trả lỗi schema; không suy locale từ chữ tiếng Việt.
+- Tiền chỉ parse theo grammar đã chốt, không qua float. Tiền vượt 16 chữ số có nghĩa
+  bị chặn trước parse để không gặp giới hạn chuỗi integer của Python; tiền integer
+  hoặc chuỗi parse được nhưng vượt 9007199254740991 vẫn bị business validation từ chối.
+- Currency null/rỗng chỉ có thể trở thành VND nếu text `total_amount` thực sự có hậu tố
+  VND được cho phép. Đây là nguồn chứng cứ trong input, không phải default. Hậu tố
+  chỉ được tách ở cuối, sau số hoặc khoảng trắng, không phải đuôi của một từ khác.
+  Kể cả tiền sai định dạng, hậu tố rõ vẫn là thông tin độc lập cho currency.
+- Key currency bị bỏ hẳn vẫn là lỗi `schema.missing_key`, không được che bằng hậu tố.
+  Currency tường minh sai kiểu hoặc mơ hồ không bị hậu tố ghi đè. Currency khác VND
+  mâu thuẫn với hậu tố VND trả `normalization.ambiguous_currency` và value null.
+- Các token tiền tệ riêng biệt trong trường currency (alias VND hoặc mã ba chữ ASCII)
+  có nhiều đơn vị khác nhau được báo mơ hồ; service không chọn một đơn vị. Giá trị lạ
+  không chuyển được sang VND được validation từ chối, không quy đổi ngoại tệ.
+- Lỗi normalization/schema được giữ lại khi validate, không biến thành thành công
+  vì candidate null. Tránh thêm lỗi required trùng cho chính field đã có lỗi chuyển đổi.
+  Input không phải object nhận lỗi gốc, không tạo thêm năm lỗi required do thiếu object.
+- `warnings` hiện là mảng rỗng: chưa có quy tắc cảnh báo không chặn nào được đặc tả.
+  Mơ hồ vẫn chặn valid cho tới khi sửa. Không thêm confidence, extraction status,
+  evidence bbox hoặc xác nhận người dùng vào kết quả service.
+
+**Điểm còn mở:** chưa có nguồn locale tự động, OCR evidence hoặc cơ chế chọn giữa
+nhiều candidate của mô hình. Service chỉ nhận từng giá trị scalar, không chọn từ
+mảng số tiền/tài liệu nhiều tổng. Cần contract provider ở S3.1 trước khi xử lý việc đó.
+Việc đối chiếu tổng với hàng hóa/thuế, quy tắc ngày theo chính sách thực tế và các
+locale/tiền tệ khác vẫn chưa được định nghĩa; S2.2 không đặt giả định bổ sung.
 
 ### Dữ liệu trích xuất và trường thiếu/không chắc chắn
 
@@ -168,9 +223,9 @@ confidence gốc chỉ thuộc extraction gốc, không chuyển sang giá trị
 - Tài liệu thật không đúng quy ước, tiền thập phân/ngoại tệ và số hóa đơn ngoài tập ký tự
   trên cần mở rộng schema có version sau, không âm thầm nới quy tắc.
 - Chưa chọn OCR/VLM, phương pháp confidence, ngưỡng review hoặc giới hạn file/timeout.
-- Đã có hai model Pydantic canonical và test offline; chưa có normalization service,
-  validation API, extraction metadata/confidence hoặc review/export thực thi.
-  [Architecture](architecture.md) chốt ranh giới; task service input thô tiếp theo là S2.2.
+- Đã có hai model Pydantic canonical, normalization/business validation local và test offline;
+  chưa có validation API, extraction metadata/confidence hoặc review/export thực thi.
+  [Architecture](architecture.md) chốt ranh giới; task tiếp theo là S3.1, pipeline contract và fake.
 
 ## Theo dõi đủ yêu cầu giảng viên
 
@@ -185,14 +240,14 @@ phù hợp, chỉ rõ phạm vi và phiên bản.
 | R02 | Schema extraction | 2–3 / S2.1, S2.1a, S3.1, S3.3 | Output có schema; trích xuất từ tài liệu; test thiếu/sai trường. | Đang triển khai: hai model value đã kiểm thử; chưa extraction envelope/inference. |
 | R03 | Confidence cấp trường khi có cơ sở | 3–4 / S3.3, S4.2 | Ghi nguồn/cách tính; test null khi không có cơ sở; UI giải thích điểm. | Chưa triển khai |
 | R04 | Review UI có chỉnh sửa | 4 / S4.2 | Test hiển thị và sửa từng trường; giữ kết quả trích xuất gốc. | Chưa triển khai |
-| R05 | Schema và business validation | 2, 4 / S2.1a–S2.2, S4.3 | Unit test và API test; backend từ chối dữ liệu sai. | Đang triển khai: canonical model validation đã kiểm thử; chưa normalize/business service hoặc validation API. |
+| R05 | Schema và business validation | 2, 4 / S2.1a–S2.2, S4.3 | Unit test và API test; backend từ chối dữ liệu sai. | Đang triển khai: model và normalization/business service local đã kiểm thử; còn validation API/tích hợp ở S4.3. |
 | R06 | Export JSON đã kiểm tra/chỉnh sửa | 4 / S4.4 | Export phản ánh sửa đổi; từ chối bản chưa hợp lệ/chưa xác nhận; test JSON. | Chưa triển khai |
 | R07 | Chỉ dùng dữ liệu tổng hợp/được phép | 3, 5 / S3.2, S5.1 | Manifest có nguồn, quyền sử dụng, hash; rà soát ảnh và ground truth. | Chưa triển khai |
 | R08 | Python, OCR, VLM và React/Vue | 1, 3 / S1.1–S1.2, S3.2–S3.3 | Backend Python, UI React và cả OCR/VLM thật có ví dụ chạy; fake không thay thế tích hợp thật. | Đang triển khai: Python health-check và React skeleton đã kiểm tra CLI/HTTP; còn kiểm tra trực quan frontend, OCR, VLM. |
 | R09 | Golden dataset | 5 / S5.1 | Ảnh và ground truth field-level đã rà soát, manifest/version, tập đánh giá tách tập chỉnh cấu hình. | Chưa triển khai |
 | R10 | Field-level metrics | 5 / S5.2 | Script chạy lại; test công thức, null và mẫu số 0; báo cáo theo trường. | Chưa triển khai |
 | R11 | Error taxonomy | 5 / S5.2 | Mã lỗi và quy tắc phân loại được dùng trong báo cáo; có ví dụ đã kiểm tra. | Chưa triển khai |
-| R12 | Model/config version | 3, 5 / S3.1–S3.3, S5.2 | Run metadata có model/config/schema/prompt/dataset version và commit; báo cáo so sánh tái lập. | Chưa triển khai |
+| R12 | Model/config version | 3, 5 / S3.1–S3.3, S5.2 | Run metadata có model/config/schema/prompt/dataset version và commit; báo cáo so sánh tái lập. | Đang triển khai: service có normalization_version; chưa có AI run metadata hoặc evaluation report. |
 
 ## Yêu cầu chất lượng
 

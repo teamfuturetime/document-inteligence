@@ -176,3 +176,40 @@ business validation service hay API ở S2.1a. Chúng vẫn thuộc các task sa
 
 Endpoint `/health` và frontend không được sửa trong task này. Trạng thái chưa có
 kiểm tra trực quan frontend ở S1.2 vẫn giữ nguyên.
+
+## Normalization và business validation S2.2
+
+Không thay đổi dependency hoặc model S2.1a. Hai service dùng Python stdlib và
+Pydantic đã có. Không cần Internet, server hoặc API key để chạy test.
+
+Lệnh đã chạy tại thư mục gốc theo README:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -c backend/pytest.ini -q
+```
+
+Sau triển khai ban đầu: **365 passed**. Sau review ranh giới hậu tố VND và thêm
+test kiểm tra marker/giá trị thiếu: **370 passed in 0.83s**, không có warning.
+Gồm 207 test schema và 2 test health giữ nguyên, **161 test mới** ở
+`backend/tests/test_normalization.py` và `backend/tests/test_validation.py`.
+Hai module mới chặn socket connect/create_connection trong lúc test chạy.
+
+| Nhóm | Hành vi đã được kiểm thử |
+| --- | --- |
+| Input canonical | Không đổi dữ liệu hợp lệ; NormalizationResult ghi version/locale; ValidationResult JSON round-trip giữ nguyên. |
+| Text | NFC từ NFD, trim ngoài, gộp whitespace tên người bán, giữ số 0 đầu và ký tự O trong mã hóa đơn; không sửa nhầm thành 0. Control không hỗ trợ bị báo lỗi. |
+| Ngày | ISO, DMY với vi-VN, ngày nhuận, năm 0001/9999; DMY không rõ nguồn/locale không hỗ trợ không được đoán; ngày thật được kiểm tra sau chuyển đổi. Không thêm điều kiện quá khứ/tương lai. |
+| Tiền | Integer và chuỗi chữ số/nhóm nghìn chấm hợp lệ, số 0 đầu/giá trị 0, hậu tố VND; giữ chính xác biên 9007199254740991. Từ chối bool/float, âm/vượt khoảng, format sai, tiền có dấu phẩy mơ hồ; chuỗi 5000 chữ số được báo lỗi có cấu trúc. |
+| Currency | Alias VND không phân biệt hoa/thường, hậu tố có ranh giới hợp lệ; không suy VND khi không có nguồn. Không che key bị thiếu hoặc ghi đè currency sai/mơ hồ/mâu thuẫn. Hậu tố rõ vẫn cho biết currency khi phần tiền sai. |
+| Thiếu/sai schema | Phân biệt thiếu key, null, chuỗi trắng, input không phải object, key lạ và sai kiểu; không default giá trị. Object rỗng báo đủ năm key thiếu, input không phải object báo lỗi gốc. |
+| Phân loại lỗi | Error có field/code/message; schema, normalization và business có namespace riêng. Mơ hồ/format sai không bị biến thành required trùng hoặc thành success. |
+| Nhiều lỗi | Tất cả năm trường lỗi được báo cùng lần; field sai có canonical value null, field tốt giữ nguyên; lỗi gốc vẫn chặn valid dù năm field đã đủ. |
+| Không sửa nguồn | Input trước/sau gọi service giống nhau; snapshot raw được deepcopy, kể cả object lồng ở key lạ. Validator không sửa candidates hoặc error list của normalization result. |
+| Ranh giới kết quả | valid phải khớp completeness/errors; chưa có rule warning nên warnings rỗng. Không có confidence, extraction status hoặc confirmed flag trong kết quả. |
+
+Giới hạn: service nhận scalar ở mỗi field, chưa chọn giữa nhiều candidate của AI,
+chưa đối chiếu ảnh/OCR, chưa có business rule cho thuế hoặc chi tiết hàng hóa.
+Locale phải được bên gọi cung cấp theo nguồn mẫu, không đoán từ tài liệu.
+Chưa có API, UI review hoặc export; đây không phải kết quả kiểm thử luồng tài liệu đầu cuối.
+Các file `/health`, hai model canonical và toàn bộ frontend được giữ nguyên.
+Kiểm tra trực quan frontend vẫn chưa có thêm bằng chứng trong S2.2.

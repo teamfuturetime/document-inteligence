@@ -22,10 +22,14 @@ tên người bán, tổng tiền nguyên VND và currency. Quy tắc và ranh g
 [requirements](docs/requirements.md) và [architecture](docs/architecture.md).
 **S2.1a đã hiện thực hai model Pydantic canonical** `InvoiceValues` (cho phép null,
 nhưng yêu cầu đủ key) và `FinalInvoiceValues` (đầy đủ giá trị hợp lệ).
-Đã kiểm thử offline các ràng buộc dữ liệu; chưa có normalization service,
-extraction envelope hoặc validation API. Hai model không chứa confidence/status,
+Đã kiểm thử offline các ràng buộc dữ liệu. Hai model không chứa confidence/status,
 và bản `FinalInvoiceValues` không tự chứng minh người dùng đã xác nhận.
 Phần kiểm tra trực quan S1.2 vẫn chưa hoàn tất.
+
+**S2.2 đã có normalization service và business validation local**: giữ bản sao input,
+chuyển format nguồn đã quy định rồi kiểm tra bằng các model có sẵn. Kết quả trả lỗi
+theo field với mã phân biệt schema/normalization/business; input mơ hồ không bị đoán.
+Chưa tích hợp service vào API, OCR/VLM, frontend hoặc export.
 
 ## Tài liệu
 
@@ -84,7 +88,8 @@ Sau khi cài dependency, không cần chạy Uvicorn hay có kết nối Interne
 git diff --check
 ```
 
-Kết quả toàn bộ backend sau S2.1a: **209 passed** (207 test schema và 2 test health),
+Kết quả toàn bộ backend sau S2.2: **370 passed** (207 test schema, 2 test health và
+161 test normalization/validation),
 không có warning. TestClient gọi app trong tiến trình; fixture chặn socket connect
 trong lúc gửi request. Test schema cũng chặn kết nối mạng khi chạy.
 Xem [testing.md](docs/testing.md) về coverage và giới hạn của việc chặn mạng.
@@ -92,7 +97,12 @@ Xem [testing.md](docs/testing.md) về coverage và giới hạn của việc ch
 Hai model chỉ nhận dữ liệu canonical: ngày ISO `YYYY-MM-DD`, tiền JSON integer,
 currency đúng `VND`, mã hóa đơn là chuỗi giữ số 0 đầu, tên người bán đã ở Unicode NFC.
 Input như `03/04/2026`, `125.000`, `₫` bị từ chối ở lớp này;
-service chuyển đổi chúng theo quy tắc nguồn sẽ được làm riêng ở S2.2.
+service S2.2 chuyển chúng trước khi gọi model. Sử dụng nội bộ:
+`normalize_invoice(raw_values, source_locale="vi-VN")` trong
+`app.services.normalization`, rồi `validate_invoice(result)` trong
+`app.services.validation`. Kết quả có `valid`, `normalized_values`, `errors`, `warnings`.
+DMY cần nguồn vi-VN được xác định; bỏ locale nghĩa chưa rõ nguồn và chỉ nhận ngày ISO.
+Các hàm này chạy local trong backend, chưa có HTTP endpoint riêng.
 
 ### Frontend React/TypeScript/Vite
 
@@ -142,6 +152,11 @@ Kiểm tra trực quan desktop/mobile vẫn cần thực hiện trong trình duy
   kiểm tra dữ liệu canonical, không normalize hoặc gọi AI.
 - `backend/tests/test_schemas.py`: test required/null, kiểu/giới hạn/Unicode/ngày,
   từ chối metadata/key lạ và giữ nguyên giá trị khi round-trip JSON.
+- `backend/app/services/normalization.py`: snapshot input và chuyển các format rõ ràng,
+  giữ candidates/lỗi/locale/version riêng, chưa khẳng định dữ liệu hợp lệ.
+- `backend/app/services/validation.py`: kiểm tra candidates theo model hiện có, giữ lỗi
+  và trả kết quả cấu trúc; không sửa input hoặc tự tạo confidence.
+- `backend/app/schemas/validation.py`: `FieldIssue` và `ValidationResult`.
 - `frontend/src/main.tsx`: gắn React vào phần tử `root` trong `index.html`.
 - `frontend/src/App.tsx`, `styles.css`: nội dung giới thiệu/trạng thái và CSS thuần.
 - `frontend/vite.config.ts`, `tsconfig.json`: React plugin và kiểm tra TypeScript strict.
@@ -157,9 +172,8 @@ Chưa chọn OCR/VLM provider, chưa đo chất lượng nhận dạng hay extra
 Confidence sẽ chỉ hiển thị khi có nguồn và cách tính rõ ràng;
 không xem confidence là bảo đảm dữ liệu đúng.
 
-Task tiếp theo duy nhất: **S2.2 — service chuẩn hóa input thô và business validation**
-theo quy tắc đã chốt, kèm test offline. Chưa triển khai normalization service,
-validation API, extraction hay review/export trong S2.1a.
+Task tiếp theo duy nhất: **S3.1 — pipeline contract và fake provider**, kiểm thử offline.
+Chưa triển khai validation API, OCR/VLM, extraction hay review/export trong S2.2.
 Skeleton backend/frontend đã có; giới hạn kiểm tra trực quan frontend được ghi ở trên
 và trong tài liệu testing, chưa coi kết quả CLI là bằng chứng giao diện hiển thị đúng.
 Mỗi lần chỉ làm task đã thống nhất, có kiểm tra và commit local;

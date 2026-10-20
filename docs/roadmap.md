@@ -3,7 +3,7 @@
 ## Cách thực hiện
 
 Giai đoạn 0 và S1.1 đã hoàn thành; S1.2 có kiểm tra CLI/HTTP/render nhưng còn thiếu
-kiểm tra trực quan frontend. Lượt S2.1a chỉ hiện thực hai model canonical và test offline,
+kiểm tra trực quan frontend. Lượt S2.2 chỉ thêm normalization/business validation và test offline,
 giữ điểm còn mở này và không tuyên bố toàn bộ Giai đoạn 1 đã kiểm thử đầy đủ.
 Mỗi task là một đơn vị độc lập có phạm vi,
 cách triển khai, kiểm tra và commit Conventional Commits trên `tuannguyen`.
@@ -24,7 +24,7 @@ hay toàn bộ yêu cầu liên quan đã hoàn thành.
 | S1.2 — Frontend chạy local | `frontend/`, `.gitignore`, README, tài liệu kiến trúc/kiểm thử/trạng thái | React/TypeScript/Vite, trang giới thiệu tối thiểu; không dựng review UI trước. | `npm ci --offline`, typecheck/build, HTTP dev/preview và render React đạt; khóa dependency, ghi lệnh chạy local. Chưa kiểm tra trực quan do công cụ trình duyệt không khả dụng; xem `docs/testing.md`. | Đã kiểm thử (CLI/HTTP/render); còn kiểm tra trực quan |
 | S2.1 — Chốt hóa đơn và schema (tài liệu) | `docs/requirements.md`, `docs/architecture.md`, `docs/roadmap.md`, README | Chốt hóa đơn bán hàng tổng hợp một trang, năm trường và schema 1.0.0; nêu normalization, confidence, ranh giới dữ liệu, giả định và giới hạn. | Rà soát nhất quán đặc tả, JSON minh họa hợp lệ, liên kết nội bộ, diff; commit tài liệu. Chưa có schema/validation thực thi. | Đã kiểm thử (tài liệu) |
 | S2.1a — Model canonical và unit test offline | `backend/app/schemas/__init__.py`, `backend/app/schemas/invoice.py`, `backend/tests/test_schemas.py`, tài liệu liên quan | Hai model canonical dùng Pydantic có sẵn; không normalize input thô, không thêm API/envelope AI. | Kiểm tra required/null, strict types, extra key/metadata, số 0 đầu, ngày thật, giới hạn tiền/chuỗi, NFC/khoảng trắng/control, JSON round-trip và gán lại giá trị; 207 test schema + 2 health test đạt. | Đã kiểm thử |
-| S2.2 — Business validation | `backend/app/services/validation.py`, `backend/tests/test_validation.py` | Chuẩn hóa rõ quy tắc và trả lỗi theo trường; tách draft khỏi dữ liệu cuối. | Test chuỗi trống, số 0, tiền âm, tiền nhập nhằng, Unicode, currency sai; không tự sửa dữ liệu nhập nhằng. | Chưa triển khai |
+| S2.2 — Normalization và business validation | `backend/app/services/`, `backend/app/schemas/validation.py`, `backend/tests/test_{normalization,validation}.py`, tài liệu liên quan | Tách chuyển đổi raw thành candidates khỏi validation bằng model có sẵn; snapshot nguồn, locale/version, lỗi theo trường có namespace. | 161 test mới cho format/Unicode/required/types/range/ambiguity/currency/multiple errors/immutability và result consistency; toàn bộ 370 backend tests đạt, model/health/frontend giữ nguyên. | Đã kiểm thử (service local; chưa có API) |
 | S3.1 — Pipeline contract và fake | `backend/app/providers/`, `backend/app/services/pipeline.py`, tests tương ứng, kiến trúc | Interface OCR/extraction nhỏ, fake có nhãn; tách các result và run metadata. | Test luồng offline, output sai schema, provider lỗi và timeout; metadata không thiếu version; không API key. | Chưa triển khai |
 | S3.2 — OCR thật trên ảnh mẫu | OCR adapter, mẫu tối thiểu và manifest trong `data/`, tests OCR, tài liệu OCR | Đo ứng viên trên dữ liệu tổng hợp, chọn và ghi license/config/model version; tích hợp qua interface. | Nhận dạng ảnh thực sự; test Unicode, ảnh hỏng, không có text và timeout; báo cáo riêng test fake/real. | Chưa triển khai |
 | S3.3 — VLM thật và confidence | Extraction adapter, tests extraction, cấu hình prompt/model, tài liệu provider | Chọn model theo môi trường/quyền dùng/chi phí; ảnh + OCR + schema → fields; kiểm tra output, ghi provenance và chính sách confidence. | Ví dụ inference thật từ ảnh mẫu; test fake cho JSON lỗi, thiếu trường, timeout; confidence null nếu chưa có cơ sở; model/prompt/config version đầy đủ. | Chưa triển khai |
@@ -40,8 +40,9 @@ S1.1 dùng commit message `feat: add backend health check`.
 S1.2 dùng commit message `feat: initialize React frontend`.
 S2.1 dùng commit message `docs: define MVP invoice data contract`.
 S2.1a dùng commit message `feat: add canonical invoice value models`.
-Task tiếp theo duy nhất là **S2.2 — service chuẩn hóa input thô và business validation**.
-Chưa triển khai S2.2 trong lượt S2.1a; hai model canonical đã được kiểm tra độc lập.
+S2.2 dùng commit message `feat: add invoice normalization and business validation`.
+Task tiếp theo duy nhất là **S3.1 — pipeline contract và fake provider**.
+S2.2 đã có service local độc lập, chưa tích hợp vào API/AI hoặc UI.
 Tách S2.1a khỏi S2.1 theo yêu cầu hiện tại để review quyết định dữ liệu trước khi code;
 không đưa normalization, API hoặc toàn bộ validation pipeline vào một task.
 Kiểm tra trực quan frontend vẫn còn mở, không xem typecheck/build là thay thế việc đó.
@@ -66,7 +67,7 @@ tách phần độc lập kiểm tra được và cập nhật roadmap trước 
 | --- | --- | --- |
 | Trước S1.1 | Nền code, môi trường và dependency | Giữ nền `94c5101`, không nhập nguyên nhánh remote. Dùng Python hiện có nếu dependency kiểm tra tương thích; tạo venv riêng, không sửa Python hệ thống. |
 | S1.2 đã chốt | Phiên bản frontend và kết nối dev | Node 24.13.0/npm 11.6.2, React 19.3.1, TypeScript 7.0.2, Vite 8.3.4; lockfile và CLI/build đạt. Trang tĩnh chưa gọi API, chưa cần proxy/CORS. |
-| S2.1 đã chốt, S2.1a đã kiểm thử | Loại biểu mẫu, trường và quy tắc | `sales_invoice` 1.0.0: hóa đơn bán hàng tổng hợp một trang, nguồn vi-VN; năm key required, nullable trước duyệt và không null ở bản cuối. Hai model canonical đã có test; normalization nguồn DD/MM/YYYY, tiền có dấu phân cách, alias VND chưa triển khai. |
+| S2.1 đã chốt, S2.1a/S2.2 đã kiểm thử local | Loại biểu mẫu, trường và quy tắc | `sales_invoice` 1.0.0 không đổi; hai model, normalization nguồn vi-VN và business validation đã có test. Locale phải do bên gọi xác định; chưa có chọn candidate AI, validation API hoặc review. |
 | Trước S3.2 | OCR engine/model | Tesseract là ứng viên có sẵn, cần đo trên mẫu; kiểm tra license, config, version và chất lượng dấu tiếng Việt. |
 | Trước S3.3 | VLM local hoặc API | Chưa biết GPU/VRAM/ngân sách; khảo sát tài nguyên và model license. Nếu cần dịch vụ tính phí/gửi dữ liệu bên ngoài, trình phương án cụ thể để người dùng quyết định trước khi gọi. |
 | Trước S4.1 | Giới hạn input và thời gian | Đề xuất PNG/JPEG một trang; chốt byte/pixel/timeout theo đo thực tế, chưa thêm PDF hoặc queue. |
