@@ -3,7 +3,7 @@
 ## Cách thực hiện
 
 Giai đoạn 0 và S1.1 đã hoàn thành; S1.2 có kiểm tra CLI/HTTP/render nhưng còn thiếu
-kiểm tra trực quan frontend. Lượt S2.2 chỉ thêm normalization/business validation và test offline,
+kiểm tra trực quan frontend. S3.1 chỉ thêm contract/fake/pipeline và test offline,
 giữ điểm còn mở này và không tuyên bố toàn bộ Giai đoạn 1 đã kiểm thử đầy đủ.
 Mỗi task là một đơn vị độc lập có phạm vi,
 cách triển khai, kiểm tra và commit Conventional Commits trên `tuannguyen`.
@@ -25,7 +25,7 @@ hay toàn bộ yêu cầu liên quan đã hoàn thành.
 | S2.1 — Chốt hóa đơn và schema (tài liệu) | `docs/requirements.md`, `docs/architecture.md`, `docs/roadmap.md`, README | Chốt hóa đơn bán hàng tổng hợp một trang, năm trường và schema 1.0.0; nêu normalization, confidence, ranh giới dữ liệu, giả định và giới hạn. | Rà soát nhất quán đặc tả, JSON minh họa hợp lệ, liên kết nội bộ, diff; commit tài liệu. Chưa có schema/validation thực thi. | Đã kiểm thử (tài liệu) |
 | S2.1a — Model canonical và unit test offline | `backend/app/schemas/__init__.py`, `backend/app/schemas/invoice.py`, `backend/tests/test_schemas.py`, tài liệu liên quan | Hai model canonical dùng Pydantic có sẵn; không normalize input thô, không thêm API/envelope AI. | Kiểm tra required/null, strict types, extra key/metadata, số 0 đầu, ngày thật, giới hạn tiền/chuỗi, NFC/khoảng trắng/control, JSON round-trip và gán lại giá trị; 207 test schema + 2 health test đạt. | Đã kiểm thử |
 | S2.2 — Normalization và business validation | `backend/app/services/`, `backend/app/schemas/validation.py`, `backend/tests/test_{normalization,validation}.py`, tài liệu liên quan | Tách chuyển đổi raw thành candidates khỏi validation bằng model có sẵn; snapshot nguồn, locale/version, lỗi theo trường có namespace. | 161 test mới cho format/Unicode/required/types/range/ambiguity/currency/multiple errors/immutability và result consistency; toàn bộ 370 backend tests đạt, model/health/frontend giữ nguyên. | Đã kiểm thử (service local; chưa có API) |
-| S3.1 — Pipeline contract và fake | `backend/app/providers/`, `backend/app/services/pipeline.py`, tests tương ứng, kiến trúc | Interface OCR/extraction nhỏ, fake có nhãn; tách các result và run metadata. | Test luồng offline, output sai schema, provider lỗi và timeout; metadata không thiếu version; không API key. | Chưa triển khai |
+| S3.1 — Pipeline contract và fake | `backend/app/providers/`, `backend/app/schemas/extraction.py`, `backend/app/services/pipeline.py`, `backend/tests/test_pipeline.py`, tài liệu | Protocol nhận ID/MIME/bytes; raw candidates/metadata riêng, dùng lại S2.2; fake tổng hợp có nhãn/version. | 49 test mới, toàn bộ 419 backend tests đạt: success khác valid, missing/uncertain, metadata, deterministic, sai output, lỗi và timeout giả lập; không dependency mới. Chưa giải mã ảnh/deadline thực. | Đã kiểm thử (offline; chưa OCR/VLM thật) |
 | S3.2 — OCR thật trên ảnh mẫu | OCR adapter, mẫu tối thiểu và manifest trong `data/`, tests OCR, tài liệu OCR | Đo ứng viên trên dữ liệu tổng hợp, chọn và ghi license/config/model version; tích hợp qua interface. | Nhận dạng ảnh thực sự; test Unicode, ảnh hỏng, không có text và timeout; báo cáo riêng test fake/real. | Chưa triển khai |
 | S3.3 — VLM thật và confidence | Extraction adapter, tests extraction, cấu hình prompt/model, tài liệu provider | Chọn model theo môi trường/quyền dùng/chi phí; ảnh + OCR + schema → fields; kiểm tra output, ghi provenance và chính sách confidence. | Ví dụ inference thật từ ảnh mẫu; test fake cho JSON lỗi, thiếu trường, timeout; confidence null nếu chưa có cơ sở; model/prompt/config version đầy đủ. | Chưa triển khai |
 | S4.1 — Upload tới pipeline | Backend route và file validation, `frontend/src/` upload/API client, tests | PNG/JPEG một trang, giới hạn byte/pixel, kiểm tra nội dung, file tạm, trạng thái chờ/lỗi. | API test file sai loại/quá lớn/hỏng, test chọn/gửi file và UI lỗi; chứng minh pipeline nhận đúng ảnh; dọn file tạm. | Chưa triển khai |
@@ -41,8 +41,10 @@ S1.2 dùng commit message `feat: initialize React frontend`.
 S2.1 dùng commit message `docs: define MVP invoice data contract`.
 S2.1a dùng commit message `feat: add canonical invoice value models`.
 S2.2 dùng commit message `feat: add invoice normalization and business validation`.
-Task tiếp theo duy nhất là **S3.1 — pipeline contract và fake provider**.
-S2.2 đã có service local độc lập, chưa tích hợp vào API/AI hoặc UI.
+S3.1 dùng commit message `feat: define extraction pipeline contract`.
+Task tiếp theo duy nhất là **S3.2 — OCR thật trên ảnh mẫu tổng hợp**,
+để kiểm chứng adapter thực với nền contract/fake đã có; không xem fixture là inference.
+S2.2 đã được gọi từ pipeline local, chưa tích hợp vào API/AI thật hoặc UI.
 Tách S2.1a khỏi S2.1 theo yêu cầu hiện tại để review quyết định dữ liệu trước khi code;
 không đưa normalization, API hoặc toàn bộ validation pipeline vào một task.
 Kiểm tra trực quan frontend vẫn còn mở, không xem typecheck/build là thay thế việc đó.

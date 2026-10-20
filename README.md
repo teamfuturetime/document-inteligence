@@ -31,6 +31,11 @@ chuyển format nguồn đã quy định rồi kiểm tra bằng các model có 
 theo field với mã phân biệt schema/normalization/business; input mơ hồ không bị đoán.
 Chưa tích hợp service vào API, OCR/VLM, frontend hoặc export.
 
+**S3.1 đã có extraction contract và fake provider offline**: nhận ID/MIME/bytes,
+trả raw candidates và metadata riêng, rồi dùng lại service S2.2 để tạo kết quả
+canonical `sales_invoice` 1.0.0. Fake mang nhãn rõ ràng, không nhận dạng ảnh,
+không tạo confidence/evidence. Chưa có OCR/VLM thật hoặc route extraction.
+
 ## Tài liệu
 
 - [Khảo sát repository và môi trường](docs/repository-audit.md).
@@ -88,8 +93,8 @@ Sau khi cài dependency, không cần chạy Uvicorn hay có kết nối Interne
 git diff --check
 ```
 
-Kết quả toàn bộ backend sau S2.2: **370 passed** (207 test schema, 2 test health và
-161 test normalization/validation),
+Kết quả toàn bộ backend sau S3.1: **419 passed** (207 test schema, 2 test health,
+161 test normalization/validation và 49 test contract/pipeline),
 không có warning. TestClient gọi app trong tiến trình; fixture chặn socket connect
 trong lúc gửi request. Test schema cũng chặn kết nối mạng khi chạy.
 Xem [testing.md](docs/testing.md) về coverage và giới hạn của việc chặn mạng.
@@ -103,6 +108,19 @@ service S2.2 chuyển chúng trước khi gọi model. Sử dụng nội bộ:
 `app.services.validation`. Kết quả có `valid`, `normalized_values`, `errors`, `warnings`.
 DMY cần nguồn vi-VN được xác định; bỏ locale nghĩa chưa rõ nguồn và chỉ nhận ngày ISO.
 Các hàm này chạy local trong backend, chưa có HTTP endpoint riêng.
+
+S3.1 cung cấp hàm nội bộ `run_pipeline(document, provider, code_revision=None)`
+trong `app.services.pipeline`. `document` là `DocumentInput` trong
+`app.schemas.extraction` (ID, MIME PNG/JPEG, bytes không rỗng); provider là
+`FakeExtractionProvider()` trong `app.providers.fake`. Constructor nhận một trong
+`complete`, `partial`, `failure`, `timeout`. Bytes chỉ là dữ liệu đầu vào contract,
+chưa kiểm tra nội dung/giải mã ảnh. Fake cố ý trả fixture tổng hợp không phụ thuộc ảnh.
+
+Kết quả `status="succeeded"` có `provider_output`, `run_metadata` và `validation`;
+phải kiểm tra thêm `validation.valid`, không xem chạy thành công là hóa đơn hợp lệ
+hay đã được xác nhận. Kết quả `status="failed"` có error code/message cố định,
+không có payload hóa đơn thành công. Confidence luôn null, evidence luôn rỗng ở fake.
+Không cần chạy server, API key hoặc model; backend chưa cấu hình type checker/linter.
 
 ### Frontend React/TypeScript/Vite
 
@@ -157,6 +175,10 @@ Kiểm tra trực quan desktop/mobile vẫn cần thực hiện trong trình duy
 - `backend/app/services/validation.py`: kiểm tra candidates theo model hiện có, giữ lỗi
   và trả kết quả cấu trúc; không sửa input hoặc tự tạo confidence.
 - `backend/app/schemas/validation.py`: `FieldIssue` và `ValidationResult`.
+- `backend/app/schemas/extraction.py`: input, output thô/metadata và success/failure.
+- `backend/app/providers/{contracts,fake}.py`: Protocol, lỗi provider và fixture giả lập.
+- `backend/app/services/pipeline.py`: kiểm tra boundary, ghi version/hash, gọi S2.2.
+- `backend/tests/test_pipeline.py`: test offline contract, fake và điều phối pipeline.
 - `frontend/src/main.tsx`: gắn React vào phần tử `root` trong `index.html`.
 - `frontend/src/App.tsx`, `styles.css`: nội dung giới thiệu/trạng thái và CSS thuần.
 - `frontend/vite.config.ts`, `tsconfig.json`: React plugin và kiểm tra TypeScript strict.
@@ -172,8 +194,9 @@ Chưa chọn OCR/VLM provider, chưa đo chất lượng nhận dạng hay extra
 Confidence sẽ chỉ hiển thị khi có nguồn và cách tính rõ ràng;
 không xem confidence là bảo đảm dữ liệu đúng.
 
-Task tiếp theo duy nhất: **S3.1 — pipeline contract và fake provider**, kiểm thử offline.
-Chưa triển khai validation API, OCR/VLM, extraction hay review/export trong S2.2.
+Task tiếp theo duy nhất: **S3.2 — OCR thật trên ảnh mẫu tổng hợp**, kiểm tra adapter
+và phiên bản/cấu hình trước khi tích hợp. S3.1 chưa có kiểm tra nội dung ảnh,
+deadline thực thi provider, OCR/VLM thật hoặc API/review/export.
 Skeleton backend/frontend đã có; giới hạn kiểm tra trực quan frontend được ghi ở trên
 và trong tài liệu testing, chưa coi kết quả CLI là bằng chứng giao diện hiển thị đúng.
 Mỗi lần chỉ làm task đã thống nhất, có kiểm tra và commit local;

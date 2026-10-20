@@ -20,8 +20,9 @@ PNG/JPEG, nội dung in máy theo quy ước nguồn `vi-VN`. Mã loại tài li
 `sales_invoice`; phiên bản đặc tả: `schema_version = "1.0.0"`.
 S2.1a đã hiện thực và kiểm thử hai model giá trị canonical `InvoiceValues` và
 `FinalInvoiceValues` bằng Pydantic. S2.2 đã thêm normalization/business validation
-local và `FieldIssue`/`ValidationResult`; chưa có validation API. Các envelope
-OCR/extraction/review vẫn là thiết kế, chưa có file JSON Schema xuất riêng.
+local và `FieldIssue`/`ValidationResult`; chưa có validation API.
+S3.1 đã có provider contract/fake và pipeline nội bộ; OCRResult,
+ExtractionResult đầy đủ và review vẫn là thiết kế, chưa có file JSON Schema xuất riêng.
 
 MVP chỉ lấy thông tin đầu hóa đơn và tổng tiền cuối cùng phải trả. PDF, nhiều trang,
 bảng chi tiết hàng hóa, thuế/chiết khấu, thông tin người mua, mã số thuế, chữ viết tay
@@ -159,6 +160,15 @@ locale/tiền tệ khác vẫn chưa được định nghĩa; S2.2 không đặt
 
 ### Dữ liệu trích xuất và trường thiếu/không chắc chắn
 
+Bảng dưới là đích thiết kế `ExtractionResult` có evidence, chưa được hiện thực đầy đủ.
+S3.1 chỉ có `ProviderOutput` trước normalization và `PipelineSuccess`/`PipelineFailure`:
+raw năm key tách khỏi `validation.normalized_values: InvoiceValues`, confidence và
+evidence tách trong metadata, OCR text riêng. Chi tiết ở [architecture](architecture.md).
+Fake không tạo ExtractedField có status candidate hoặc chứng cứ giả; valid của fixture
+chỉ là kiểm tra rule dữ liệu, không phải kết luận đã trích xuất đúng từ ảnh.
+Missing biểu diễn raw/canonical null; uncertainty giữ raw, canonical null và lỗi theo
+field. Không đổi hợp đồng canonical sales_invoice 1.0.0 hoặc service S2.2.
+
 `ExtractionResult.fields` luôn có đủ năm trường. Mỗi `ExtractedField<T>` gồm:
 
 | Thuộc tính | Kiểu / ý nghĩa |
@@ -223,9 +233,11 @@ confidence gốc chỉ thuộc extraction gốc, không chuyển sang giá trị
 - Tài liệu thật không đúng quy ước, tiền thập phân/ngoại tệ và số hóa đơn ngoài tập ký tự
   trên cần mở rộng schema có version sau, không âm thầm nới quy tắc.
 - Chưa chọn OCR/VLM, phương pháp confidence, ngưỡng review hoặc giới hạn file/timeout.
-- Đã có hai model Pydantic canonical, normalization/business validation local và test offline;
-  chưa có validation API, extraction metadata/confidence hoặc review/export thực thi.
-  [Architecture](architecture.md) chốt ranh giới; task tiếp theo là S3.1, pipeline contract và fake.
+- Đã có hai model canonical, service S2.2, provider contract/fake và pipeline offline.
+  Metadata confidence có kiểm tra cấu trúc nhưng fake luôn null/evidence rỗng; chưa có
+  score thực nghiệm, validation API, ExtractionResult đầy đủ hoặc review/export.
+  Input bytes chưa được giải mã, timeout chỉ giả lập/truyền lỗi, chưa cưỡng chế deadline.
+  [Architecture](architecture.md) chốt ranh giới; task tiếp theo là S3.2, OCR thật trên mẫu.
 
 ## Theo dõi đủ yêu cầu giảng viên
 
@@ -237,8 +249,8 @@ phù hợp, chỉ rõ phạm vi và phiên bản.
 | ID | Yêu cầu | Giai đoạn / task | Bằng chứng cần để xác nhận | Trạng thái |
 | --- | --- | --- | --- | --- |
 | R01 | OCR nội dung tài liệu | 3 / S3.1–S3.2 | Chạy OCR thật trên ảnh mẫu; xử lý lỗi; test fake offline. | Chưa triển khai |
-| R02 | Schema extraction | 2–3 / S2.1, S2.1a, S3.1, S3.3 | Output có schema; trích xuất từ tài liệu; test thiếu/sai trường. | Đang triển khai: hai model value đã kiểm thử; chưa extraction envelope/inference. |
-| R03 | Confidence cấp trường khi có cơ sở | 3–4 / S3.3, S4.2 | Ghi nguồn/cách tính; test null khi không có cơ sở; UI giải thích điểm. | Chưa triển khai |
+| R02 | Schema extraction | 2–3 / S2.1, S2.1a, S3.1, S3.3 | Output có schema; trích xuất từ tài liệu; test thiếu/sai trường. | Đang triển khai: canonical models, contract/fake và pipeline đã kiểm thử; chưa ExtractionResult đầy đủ hoặc inference thật. |
+| R03 | Confidence cấp trường khi có cơ sở | 3–4 / S3.3, S4.2 | Ghi nguồn/cách tính; test null khi không có cơ sở; UI giải thích điểm. | Đang triển khai: contract metadata và test null/reject nguồn sai; chưa phương pháp/score thực nghiệm hoặc UI. |
 | R04 | Review UI có chỉnh sửa | 4 / S4.2 | Test hiển thị và sửa từng trường; giữ kết quả trích xuất gốc. | Chưa triển khai |
 | R05 | Schema và business validation | 2, 4 / S2.1a–S2.2, S4.3 | Unit test và API test; backend từ chối dữ liệu sai. | Đang triển khai: model và normalization/business service local đã kiểm thử; còn validation API/tích hợp ở S4.3. |
 | R06 | Export JSON đã kiểm tra/chỉnh sửa | 4 / S4.4 | Export phản ánh sửa đổi; từ chối bản chưa hợp lệ/chưa xác nhận; test JSON. | Chưa triển khai |
@@ -247,7 +259,7 @@ phù hợp, chỉ rõ phạm vi và phiên bản.
 | R09 | Golden dataset | 5 / S5.1 | Ảnh và ground truth field-level đã rà soát, manifest/version, tập đánh giá tách tập chỉnh cấu hình. | Chưa triển khai |
 | R10 | Field-level metrics | 5 / S5.2 | Script chạy lại; test công thức, null và mẫu số 0; báo cáo theo trường. | Chưa triển khai |
 | R11 | Error taxonomy | 5 / S5.2 | Mã lỗi và quy tắc phân loại được dùng trong báo cáo; có ví dụ đã kiểm tra. | Chưa triển khai |
-| R12 | Model/config version | 3, 5 / S3.1–S3.3, S5.2 | Run metadata có model/config/schema/prompt/dataset version và commit; báo cáo so sánh tái lập. | Đang triển khai: service có normalization_version; chưa có AI run metadata hoặc evaluation report. |
+| R12 | Model/config version | 3, 5 / S3.1–S3.3, S5.2 | Run metadata có model/config/schema/prompt/dataset version và commit; báo cáo so sánh tái lập. | Đang triển khai: có provider/config/pipeline/normalization version, hash và code_revision do bên gọi cung cấp (có thể null); chưa OCR/VLM/prompt/dataset version hoặc evaluation report. |
 
 ## Yêu cầu chất lượng
 

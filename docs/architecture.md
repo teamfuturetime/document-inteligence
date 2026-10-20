@@ -5,14 +5,14 @@
 Đề xuất modular monolith với một backend **Python/FastAPI**, một frontend
 **React/TypeScript/Vite**, schema/validation **Pydantic** ở backend.
 S1.1 đã triển khai backend FastAPI tối thiểu; S1.2 đã tạo frontend React/TypeScript/Vite.
-Pipeline tài liệu còn là định hướng.
+S3.1 đã có pipeline nội bộ với fake; luồng tài liệu đầu cuối còn là định hướng.
 Giữ backend đơn giản, frontend dự kiến gọi HTTP API; chưa cần database, queue, microservice
 hoặc cloud. Chỉ bổ sung lưu trữ khi có nhu cầu khôi phục/lịch sử được xác định rõ.
 
 Backend dùng `.venv` với `requirements.txt` pin runtime và `requirements-dev.txt`
 pin test; đã kiểm tra trên Windows / Python 3.13.7. Runtime chỉ khai báo trực tiếp
 FastAPI và Uvicorn, test dùng pytest và HTTPX2 cho TestClient của Starlette hiện tại.
-Chưa thêm extras `standard`, SDK AI, cấu hình provider hay database.
+Chưa thêm extras `standard`, SDK AI hoặc database; fake có config version nội bộ.
 Frontend có `package-lock.json`; chỉ dùng React/ReactDOM và các công cụ TypeScript,
 Vite, React plugin, type definitions. Không thêm UI library, router hay state manager.
 `uv` không phải điều kiện bắt buộc.
@@ -56,7 +56,9 @@ Hiện có `backend/app/__init__.py`, `backend/app/main.py`, `backend/tests/test
 `.npmrc` đặt cache trong repo. S2.1a thêm `backend/app/schemas/{__init__,invoice}.py`
 và `backend/tests/test_schemas.py`. S2.2 thêm `schemas/validation.py`,
 `services/{__init__,normalization,validation}.py` và hai module test service.
-Các thư mục api/providers, data và evaluation trong sơ đồ còn là kế hoạch, chưa được tạo.
+S3.1 thêm `schemas/extraction.py`, `providers/{__init__,contracts,fake}.py`,
+`services/pipeline.py` và `tests/test_pipeline.py`.
+Các thư mục api, data và evaluation trong sơ đồ còn là kế hoạch, chưa được tạo.
 Không dựng package workspace hoặc registry nhiều provider trước khi cần.
 
 ## Luồng dữ liệu dự kiến
@@ -86,8 +88,9 @@ nếu đo được thời gian xử lý không phù hợp mới xem xét job b�
 ## Ranh giới dữ liệu và AI
 
 Hai model giá trị và `FieldIssue`/`ValidationResult` đã hiện thực; NormalizationResult
-là dataclass nội bộ của service. OCR/extraction/review vẫn là **đặc tả**, chưa có
-class/endpoint tương ứng. Dữ liệu đầu vào
+là dataclass nội bộ của service. S3.1 có provider contract và pipeline outcome nhỏ;
+`OCRResult`, `ExtractionResult.fields`, review/export dưới đây vẫn là **đặc tả**,
+chưa có class/endpoint tương ứng. Dữ liệu đầu vào
 của provider, draft thô, giá trị canonical và bản đã xác nhận có trách nhiệm khác nhau:
 
 | Artifact | Nội dung / kiểu chính | Ai tạo và được phép thay đổi |
@@ -133,7 +136,7 @@ Native OCR output và thông tin biến đổi vẫn được giữ riêng để
 OCR/VLM provider/model/revision, prompt version/hash, normalization/config version/hash.
 Thành phần chưa chạy để version null và trạng thái chưa chạy; fake phải mang tên/version
 fake rõ ràng. Chuỗi `normalization_version` định danh bộ quy tắc ở requirements;
-giá trị khởi đầu dự kiến `invoice-normalization-1`, chưa phải code đang hoạt động.
+giá trị đang hoạt động từ S2.2 là `invoice-normalization-1`.
 Đổi ý nghĩa trường/kiểu/required phải tăng schema version; đổi rule/prompt/config phải
 ghi version/hash mới để so sánh evaluation. Không dùng thời gian chạy thay cho model version.
 
@@ -154,8 +157,8 @@ giữ các ràng buộc đó. Không thêm dependency hoặc trường metadata 
 Test offline trong `backend/tests/test_schemas.py` đã kiểm tra canonical input:
 key bắt buộc/null, kiểu strict, giới hạn, key lạ, Unicode, ngày có thật và số 0 đầu.
 Kết quả chi tiết ở [testing.md](testing.md). Hai service S2.2 bên dưới dùng lại các
-model này. Các API/envelope OCR/extraction/confidence/review hoặc UI tương ứng vẫn
-chưa triển khai, sẽ hiện thực ở S3.1/S4 khi cần.
+model này. S3.1 thêm boundary provider bên dưới; các API, OCRResult,
+ExtractionResult đầy đủ và review/UI vẫn chưa triển khai.
 
 ### Service S2.2
 
@@ -184,6 +187,67 @@ OCR adapter chịu trách nhiệm SDK/CLI; extraction adapter chịu trách nhi�
 Service chỉ điều phối, không phụ thuộc trực tiếp SDK. Fake adapter trả output cố định có nhãn
 `fake`, version và confidence null, dùng cho test/UI; không đọc ground truth để giả thành inference.
 Thay provider bằng cấu hình đơn giản; chưa cần plugin registry hay dependency-injection framework.
+
+### Contract và fake S3.1 đang hoạt động
+
+`ExtractionProvider` là Protocol đồng bộ có `identity: ProviderIdentity` và
+`extract(DocumentInput) -> ProviderOutput`. Không có base implementation, registry,
+SDK hoặc framework DI. `DocumentInput` chứa `document_id`, MIME PNG/JPEG và bytes
+không rỗng, không nhận đường dẫn file. Đây là container, chưa giải mã ảnh, đọc EXIF
+hoặc áp dụng giới hạn byte/pixel. Adapter thật sẽ chịu trách nhiệm kiểm tra ảnh.
+
+`ProviderOutput` là boundary **trước normalization**, không phải `ExtractionResult`
+đầy đủ trong bảng thiết kế. Nó có đủ năm key ở `raw_values` và `field_metadata`:
+raw là string/null, riêng total_amount được phép integer; không default trường thiếu.
+`source_locale` là vi-VN hoặc null, do provider xác định từ nguồn/cấu hình, không đoán
+từ ngôn ngữ. `uncertain_fields` liệt kê field chưa chọn chắc chắn; `ocr_text` nullable
+giữ riêng văn bản trung gian, `warnings` là mã cảnh báo provider.
+
+Mỗi `FieldMetadata` bắt buộc có `confidence` nullable và `evidence` (có thể rỗng).
+Kiểu confidence/evidence dùng đúng cấu trúc đã đặc tả: score hữu hạn [0,1], source,
+method/calibration version, ID evidence cùng field, ID không trùng, trang 1 và bbox
+pixel có diện tích dương. Chưa có kích thước ảnh nên chưa kiểm tra cận width/height;
+adapter thật phải bổ sung kiểm tra với ảnh nguồn. Kiểm tra cấu trúc không chứng minh
+evidence hoặc phương pháp confidence là có thật. Native OCR score chưa có chỗ trong
+contract này và không được chuyển ngầm sang score cấp trường.
+
+`run_pipeline` kiểm tra lại input, identity và output bằng Pydantic, kể cả object
+đã được tạo bằng model_construct hoặc sửa sau khi tạo. Sai contract trả failure;
+raw string hợp kiểu nhưng ngày/tiền/currency sai vẫn đi qua S2.2 và trả lỗi dữ liệu.
+Pipeline giữ nguyên raw output, gọi normalization và validation không sửa các service.
+Field được provider đánh dấu uncertain bị chặn về canonical null; thêm lỗi
+`extraction.uncertain_field` nếu field chưa có lỗi normalization, không nhân đôi lỗi.
+Đây là mã của pipeline, không thay các namespace/hành vi S2.2.
+
+`PipelineSuccess` có `status="succeeded"`, schema/type cố định sales_invoice 1.0.0,
+`provider_output`, `run_metadata`, `validation: ValidationResult`. Canonical values
+chỉ ở `validation.normalized_values: InvoiceValues`. `validation.valid` có thể false;
+true chỉ chứng minh dữ liệu hợp lệ theo rule, không chứng minh đối chiếu ảnh/người dùng
+duyệt. Boundary này chưa tạo trạng thái `candidate` có evidence của ExtractedField;
+không nâng dữ liệu fixture thành dự đoán có chứng cứ.
+
+`ProviderError` biểu diễn lỗi có chủ đích: `provider_unavailable`, `provider_timeout`,
+`provider_failed`, `invalid_document`. Pipeline đổi TimeoutError thành provider_timeout,
+exception ngoài dự kiến thành provider_failed, output sai thành invalid_provider_output,
+input sai thành invalid_input. `PipelineFailure` chỉ có schema/type/document ID,
+metadata khi đã biết và error code/message cố định; không có payload thành công,
+không trả nội dung exception hoặc log text tài liệu. Không tự fallback sang fake.
+Timeout hiện chỉ được truyền/giả lập; chưa có deadline cưỡng chế cho hàm đồng bộ.
+
+Run metadata ghi provider name/implementation_version/config_version/mode,
+pipeline_version `extraction-pipeline-1`, normalization_version và SHA-256 nội dung.
+`run_id` là hash ổn định của ID/MIME/hash nội dung/các version/code_revision, không
+phải ID lần gọi duy nhất. Bên gọi truyền code_revision; bỏ qua thì null, không đọc
+Git, thời gian, biến môi trường hoặc bịa revision. Chưa chạy OCR/VLM nên không tạo
+model/prompt version; metadata đánh giá đầy đủ vẫn thuộc S3.2/S3.3/S5.2.
+
+Fake có tên `fake-invoice-fixture`, implementation `1.0.0`, config
+`synthetic-{scenario}-1`, mode fake. Bốn scenario: complete (đủ format vi-VN),
+partial (seller null, tiền `125,000` mơ hồ), failure và timeout (lỗi tức thì).
+Fixture nhỏ, hoàn toàn tổng hợp, độc lập nội dung bytes; mỗi lần tạo object mới.
+Luôn gắn `fake_data`, `not_derived_from_document`, OCR text null, confidence null,
+evidence rỗng. Pipeline từ chối fake tự gắn OCR/evidence/score hoặc bỏ nhãn này.
+Không nhận dạng ảnh, gọi mạng, đọc secret, tải model hay dùng ground truth.
 
 Pydantic được chọn làm nguồn schema thực thi. Khi API và frontend bắt đầu trao đổi dữ liệu, xuất OpenAPI/JSON
 Schema để kiểm tra đồng bộ TypeScript; chỉ thêm công cụ generate type nếu task đó cần.

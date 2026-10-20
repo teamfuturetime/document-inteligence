@@ -213,3 +213,38 @@ Locale phải được bên gọi cung cấp theo nguồn mẫu, không đoán t
 Chưa có API, UI review hoặc export; đây không phải kết quả kiểm thử luồng tài liệu đầu cuối.
 Các file `/health`, hai model canonical và toàn bộ frontend được giữ nguyên.
 Kiểm tra trực quan frontend vẫn chưa có thêm bằng chứng trong S2.2.
+
+## Extraction contract và fake S3.1
+
+Trước sửa code đã xác nhận `tuannguyen`, HEAD `50e2273`, working tree sạch,
+đọc model/service/test và tài liệu. Không khác bối cảnh task. Baseline thực tế:
+**370 passed in 0.85s** bằng lệnh README dưới đây. Không thêm dependency, không
+chạy OCR/VLM hoặc test frontend; giữ nguyên giới hạn chưa kiểm tra trực quan S1.2.
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -c backend/pytest.ini -q
+git diff --check
+```
+
+Sau S3.1: **419 passed in 0.95s**, không warning, gồm 49 test mới trong `test_pipeline.py`
+và 370 test cũ giữ nguyên. Backend chưa cấu hình type checker/linter, không báo
+mypy/ruff đã đạt. Pytest coi warning là lỗi theo config hiện có.
+
+| Nhóm | Hành vi đã kiểm thử |
+| --- | --- |
+| Contract | Fake tuân Protocol; success dùng InvoiceValues và sales_invoice 1.0.0; JSON round-trip; từ chối schema version sai. |
+| Fixture | Nhãn fake, identity/implementation/config version đầy đủ; OCR null, confidence null, evidence rỗng; output mới không chia sẻ trạng thái. |
+| Canonical | Ngày/tiền được chuyển qua S2.2; thiếu một field/tất cả field giữ null; tiền mơ hồ không đoán; raw sai ngày/currency trả validation false. |
+| Uncertainty | Raw vẫn giữ; uncertain dù parse được vẫn chặn canonical value và báo field; không sửa output nguồn. |
+| Determinism | Bốn scenario gọi lặp cùng input/version cho JSON giống nhau; hash/run ID thay theo bytes/config; code_revision không cung cấp là null. |
+| Failure | Expected error codes, TimeoutError, exception ngoài dự kiến; không lộ exception/text trong response/log; failure không mang payload thành công. |
+| Boundary | Từ chối input/identity sai trước khi gọi provider; bare dict hoặc model_construct output sai key/type/metadata bị chặn; không fallback fake. |
+| Metadata | Từ chối score NaN/ngoài khoảng, thiếu calibration version, ID evidence lạ/trùng, confidence trên null/uncertain, bbox đảo chiều hoặc page khác 1. Fake tự nhận OCR/evidence/score hoặc bỏ nhãn bị chặn. |
+
+Test dùng marker bytes tổng hợp, **không phải ảnh hợp lệ**: chứng minh contract/fake,
+không chứng minh giải mã ảnh hoặc chất lượng AI. Fixture test chặn socket
+connect/connect_ex/create_connection và os.getenv trong lúc test chạy; đây không
+phải sandbox cấm mọi truy cập mạng/môi trường lúc import. Không có score/evidence
+thực nghiệm; metadata khác null chỉ xuất hiện trong stub kiểm thử cấu trúc.
+Timeout fake phát lỗi tức thì, chưa kiểm tra thời gian thực hoặc cơ chế ngắt provider.
+Không có kiểm thử route extraction, upload, review, export hoặc metric trong S3.1.
