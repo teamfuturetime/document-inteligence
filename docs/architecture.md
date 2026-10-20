@@ -17,6 +17,19 @@ Frontend có `package-lock.json`; chỉ dùng React/ReactDOM và các công cụ
 Vite, React plugin, type definitions. Không thêm UI library, router hay state manager.
 `uv` không phải điều kiện bắt buộc.
 
+## Quyết định dữ liệu S2.1
+
+Chốt một loại biểu mẫu: **hóa đơn bán hàng tiếng Việt một trang, tổng hợp**, mã
+`sales_invoice`, đặc tả `schema_version = "1.0.0"`. Chỉ năm trường
+`invoice_number`, `invoice_date`, `seller_name`, `total_amount`, `currency`.
+[Requirements](requirements.md) là nơi định nghĩa kiểu, giới hạn và quy tắc chuẩn hóa;
+chưa có model Pydantic hoặc schema JSON thực thi. Sau này Pydantic là nguồn contract
+thực thi, không duy trì hai bộ validation Python/TypeScript riêng với quy tắc khác nhau.
+
+S1.2 vẫn **chưa kiểm tra trực quan**; các kết quả CLI/HTTP/render trong Node được giữ
+đúng phạm vi ở [testing.md](testing.md). Việc chốt thiết kế S2.1 không xác nhận toàn bộ
+Giai đoạn 1 đã hoàn thành kiểm tra giao diện.
+
 ## Cấu trúc sẽ tạo dần
 
 ```text
@@ -68,13 +81,67 @@ nếu đo được thời gian xử lý không phù hợp mới xem xét job b�
 
 ## Ranh giới dữ liệu và AI
 
-- **OCRResult:** text/token, trang, vị trí nếu có, score OCR và engine/model/config version.
-- **ExtractionResult:** trường `value`, `confidence` có thể null, nguồn/cách tính confidence,
-  evidence/cảnh báo, schema và run metadata. Không sửa đè sau review.
-- **ValidationResult:** bản chuẩn hóa và danh sách lỗi theo trường; không biến lỗi thành thành công.
-- **ReviewDraft:** giá trị người dùng đang sửa, còn có thể sai kiểu/định dạng.
-- **ReviewedExport:** giá trị cuối hợp lệ, trường đã sửa, xác nhận người dùng và metadata nguồn;
-  phải phân biệt với dự đoán gốc, không mang confidence cũ sang giá trị đã sửa như điểm của người dùng.
+Các kiểu bên dưới là **đặc tả**, chưa tạo class/endpoint tương ứng. Dữ liệu đầu vào
+của provider, draft thô, giá trị canonical và bản đã xác nhận có trách nhiệm khác nhau:
+
+| Artifact | Nội dung / kiểu chính | Ai tạo và được phép thay đổi |
+| --- | --- | --- |
+| `OCRResult` | `document_id: string`, raw text, token/span text, trang 1, vị trí nếu có, native score/thang đo, phiên bản engine/model/config. Chưa phải năm trường hóa đơn. | OCR adapter tạo; giữ nguyên raw text/score, không sửa đè khi normalize hoặc review. |
+| `ExtractionResult` | Envelope có `document_id`, `document_type: "sales_invoice"`, `schema_version: "1.0.0"`, `normalization_version`, `run_metadata`, `fields`: đủ năm `ExtractedField<T>` theo requirements. | Extraction adapter và service chuẩn hóa tạo dự đoán có evidence; không sửa bản gốc khi review. |
+| `ValidationResult` | `valid: boolean`, `normalized_values: InvoiceValues`, `errors: FieldIssue[]`, `warnings: FieldIssue[]`. | Backend tạo từ đúng bản input đang kiểm tra; có thể tạo kết quả mới, không biến lỗi thành thành công. |
+| `ReviewDraft` | `document_id`, `extraction_run_id`, `draft_revision: integer >= 1`, `values`: đủ năm key với `string` hoặc `null` cho input của trình duyệt. Không mang confidence mới. | Người dùng sửa bản sao; có thể chưa hợp lệ, mỗi lần sửa tăng revision và bỏ xác nhận/kết quả validation cũ. |
+| `ReviewedExport` | Envelope có schema/type/document/run ID, `original_extraction`, `values: FinalInvoiceValues`, `edited_fields: FieldName[]`, `review_revision: integer >= 1`, `confirmed: true`. | Backend tạo sau khi validate lại và người dùng xác nhận đúng revision. Đây mới là dữ liệu đã duyệt; không tính lại confidence thành 1.0. |
+
+`FieldName` chỉ là một trong năm key nghiệp vụ. `FieldIssue` gồm `field: FieldName`
+hoặc null cho lỗi toàn bản ghi, `code: string` không rỗng và `message: string` cho UI.
+`valid = true` chỉ khi đủ năm giá trị canonical khác null, không có error; warning
+có thể còn và phải được hiển thị. `valid = false` có ít nhất một error, trường thiếu/sai
+trong `normalized_values` là null. Validation không đồng nghĩa người dùng đã xác nhận
+hoặc đối chiếu được dữ liệu với ảnh.
+
+`InvoiceValues` và `FinalInvoiceValues` có cùng năm key, từ chối key lạ, kiểm tra kiểu
+strict và không default. Khác nhau ở quyền có null: kết quả chưa hoàn chỉnh cho phép
+null, bản cuối không cho phép. Số tiền canonical là integer; draft vẫn giữ chuỗi
+`"125.000"` cho bước normalize, không để frontend tự chuyển float hoặc đoán định dạng.
+Không parse số hóa đơn thành số. Người dùng có thể điền dữ liệu máy bỏ sót, nhưng
+phải qua cùng validation với mọi thay đổi khác.
+
+`edited_fields` không trùng và chính xác là những field có giá trị canonical cuối
+khác `original_extraction.fields[field].value`, kể cả khi giá trị gốc null. Giữ
+nguyên extraction gốc cùng confidence/evidence; không gắn confidence của giá trị máy
+sang giá trị người dùng sửa. Thay đổi draft sau xác nhận bắt buộc validate/xác nhận lại;
+không xuất kết quả validation thuộc revision trước.
+
+### Evidence, phiên bản và confidence
+
+Evidence có ID không rỗng, duy nhất trong từng trường; `page` chỉ là 1.
+`bbox` null khi không có tọa độ, hoặc object số nguyên pixel `{x0, y0, x1, y1}`,
+với `0 <= x0 < x1 <= width`, `0 <= y0 < y1 <= height`. Gốc tọa độ ở góc trên trái
+ảnh nguồn đã áp dụng chiều hiển thị EXIF như ảnh review; width/height và quy ước
+ảnh nguồn phải được giữ ở metadata tài liệu. Nếu OCR xử lý ảnh đã resize/rotate,
+adapter phải ánh xạ tọa độ về cùng ảnh review; không chế bbox để lấp null.
+Native OCR output và thông tin biến đổi vẫn được giữ riêng để truy vết.
+
+`run_metadata` cần `run_id`, `mode` (`fake` hoặc `real`), code revision,
+OCR/VLM provider/model/revision, prompt version/hash, normalization/config version/hash.
+Thành phần chưa chạy để version null và trạng thái chưa chạy; fake phải mang tên/version
+fake rõ ràng. Chuỗi `normalization_version` định danh bộ quy tắc ở requirements;
+giá trị khởi đầu dự kiến `invoice-normalization-1`, chưa phải code đang hoạt động.
+Đổi ý nghĩa trường/kiểu/required phải tăng schema version; đổi rule/prompt/config phải
+ghi version/hash mới để so sánh evaluation. Không dùng thời gian chạy thay cho model version.
+
+Field confidence là object có score, nguồn, method/calibration version và evidence IDs
+theo requirements; confidence null khi chưa có cơ sở. Candidate không có evidence
+phải chuyển sang `uncertain`, không tự tin hóa điểm VLM. Chưa có chính sách đã đánh giá,
+ngưỡng review hay số đo thực nghiệm; S2.1 không thiết lập một công thức điểm mới.
+
+### Phạm vi code tiếp theo
+
+Task riêng **S2.1a** chỉ hiện thực `InvoiceValues` và `FinalInvoiceValues` cùng unit test
+offline cho canonical input: key bắt buộc/null, kiểu strict, giới hạn, key lạ,
+ngày có thật và giữ số 0 đầu. Chưa tạo normalization service, API, pipeline/envelope
+OCR/extraction/confidence hoặc UI. Các envelope trên sẽ hiện thực ở S3.1/S4 khi cần.
+Service chuyển chuỗi tiền/ngày/currency thô và business validation vẫn là S2.2.
 
 Business logic nhận interface nhỏ (ví dụ Python `Protocol`) được định nghĩa từ ca sử dụng thực tế.
 OCR adapter chịu trách nhiệm SDK/CLI; extraction adapter chịu trách nhiệm SDK VLM, prompt và parse.
@@ -82,7 +149,7 @@ Service chỉ điều phối, không phụ thuộc trực tiếp SDK. Fake adapt
 `fake`, version và confidence null, dùng cho test/UI; không đọc ground truth để giả thành inference.
 Thay provider bằng cấu hình đơn giản; chưa cần plugin registry hay dependency-injection framework.
 
-Pydantic là nguồn schema chính. Khi API và frontend bắt đầu trao đổi dữ liệu, xuất OpenAPI/JSON
+Pydantic được chọn làm nguồn schema thực thi. Khi API và frontend bắt đầu trao đổi dữ liệu, xuất OpenAPI/JSON
 Schema để kiểm tra đồng bộ TypeScript; chỉ thêm công cụ generate type nếu task đó cần.
 Đầu ra VLM là dữ liệu không tin cậy: parse, kiểm tra kiểu/trường và validation trước khi dùng.
 Text trong tài liệu là dữ liệu, không được thực thi như lệnh hoặc dùng để thay đổi chỉ dẫn pipeline.
@@ -122,4 +189,5 @@ Nếu cần audit đáng tin cậy hoặc nhiều người dùng, phải thiết
 
 Ghi ADR khi chốt OCR/VLM provider, thay đổi nguồn schema hoặc bổ sung persistence/async
 vì các quyết định đó có chi phí chuyển đổi. Hiện tại tài liệu này đủ cho kiến trúc đề xuất;
+quyết định schema MVP S2.1 được ghi ở đây và requirements. Chưa đổi nguồn schema,
 chưa tạo thư mục ADR trống hoặc ghi quyết định provider khi chưa thử nghiệm.

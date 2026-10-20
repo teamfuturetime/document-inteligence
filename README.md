@@ -16,6 +16,13 @@ Chưa kiểm tra trực quan trên trình duyệt vì công cụ trình duyệt 
 không khả dụng. Chưa có OCR, VLM hay bộ dữ liệu. Code trên các nhánh remote chỉ được
 đọc để tham khảo ở Giai đoạn 0, chưa được nhập vào nhánh này.
 
+**S2.1 đã chốt đặc tả dữ liệu:** hóa đơn bán hàng tiếng Việt một trang từ dữ liệu
+tổng hợp, mã `sales_invoice`, schema dự kiến `1.0.0`, gồm số hóa đơn, ngày lập,
+tên người bán, tổng tiền nguyên VND và currency. Quy tắc và ranh giới dữ liệu ở
+[requirements](docs/requirements.md) và [architecture](docs/architecture.md).
+Chưa có model Pydantic hoặc validation thực thi; việc chốt tài liệu không xác nhận
+phần kiểm tra trực quan S1.2 đã hoàn tất.
+
 ## Tài liệu
 
 - [Khảo sát repository và môi trường](docs/repository-audit.md).
@@ -136,7 +143,9 @@ Chưa chọn OCR/VLM provider, chưa đo chất lượng nhận dạng hay extra
 Confidence sẽ chỉ hiển thị khi có nguồn và cách tính rõ ràng;
 không xem confidence là bảo đảm dữ liệu đúng.
 
-Task tiếp theo theo roadmap: **S2.1 — chốt loại hóa đơn và schema dữ liệu**.
+Task tiếp theo duy nhất: **S2.1a — hiện thực hai model canonical `InvoiceValues` và
+`FinalInvoiceValues` bằng Pydantic, cùng unit test offline**. Chưa triển khai service
+normalize input thô, validation API, extraction hay review/export trong S2.1.
 Skeleton backend/frontend đã có; giới hạn kiểm tra trực quan frontend được ghi ở trên
 và trong tài liệu testing, chưa coi kết quả CLI là bằng chứng giao diện hiển thị đúng.
 Mỗi lần chỉ làm task đã thống nhất, có kiểm tra và commit local;
