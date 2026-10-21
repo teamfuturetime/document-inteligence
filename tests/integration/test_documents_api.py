@@ -48,3 +48,11 @@ def test_upload_rejects_spoofed_file(tmp_path: Path) -> None:
         files={"file": ("fake.pdf", b"not pdf", "application/pdf")},
     )
     assert response.status_code == 422
+
+
+def test_list_rejects_invalid_pagination(tmp_path: Path) -> None:
+    client = build_client(tmp_path)
+
+    assert client.get("/api/v1/documents", params={"offset": -1}).status_code == 422
+    assert client.get("/api/v1/documents", params={"limit": 0}).status_code == 422
+    assert client.get("/api/v1/documents", params={"limit": 101}).status_code == 422

@@ -39,8 +39,8 @@ def list_documents(
     q: str | None = None,
     status_filter: str | None = Query(None, alias="status"),
     document_type: str | None = None,
-    offset: int = 0,
-    limit: int = 20,
+    offset: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db),
 ):
     items, total = DocumentRepository(db).search(
