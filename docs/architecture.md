@@ -11,7 +11,7 @@ hoặc cloud. Chỉ bổ sung lưu trữ khi có nhu cầu khôi phục/lịch s
 
 Backend dùng `.venv` với `requirements.txt` pin runtime và `requirements-dev.txt`
 pin test; đã kiểm tra trên Windows / Python 3.13.7. Runtime chỉ khai báo trực tiếp
-FastAPI và Uvicorn, test dùng pytest và HTTPX2 cho TestClient của Starlette hiện tại.
+FastAPI, Uvicorn và (từ S3.2) Pillow; test dùng pytest và HTTPX2 cho TestClient.
 Chưa thêm extras `standard`, SDK AI hoặc database; fake có config version nội bộ.
 Frontend có `package-lock.json`; chỉ dùng React/ReactDOM và các công cụ TypeScript,
 Vite, React plugin, type definitions. Không thêm UI library, router hay state manager.
@@ -58,7 +58,10 @@ và `backend/tests/test_schemas.py`. S2.2 thêm `schemas/validation.py`,
 `services/{__init__,normalization,validation}.py` và hai module test service.
 S3.1 thêm `schemas/extraction.py`, `providers/{__init__,contracts,fake}.py`,
 `services/pipeline.py` và `tests/test_pipeline.py`.
-Các thư mục api, data và evaluation trong sơ đồ còn là kế hoạch, chưa được tạo.
+Các thư mục api và evaluation trong sơ đồ vẫn là kế hoạch.
+S3.2 đã tạo `data/ocr-smoke/` (generator, ba ảnh tổng hợp, manifest),
+`schemas/ocr.py`, `providers/{ocr,tesseract}.py`, `app/ocr_cli.py`,
+`tests/{conftest,test_ocr,test_ocr_real}.py`. Thư mục api/evaluation vẫn chưa có.
 Không dựng package workspace hoặc registry nhiều provider trước khi cần.
 
 ## Luồng dữ liệu dự kiến
@@ -89,8 +92,9 @@ nếu đo được thời gian xử lý không phù hợp mới xem xét job b�
 
 Hai model giá trị và `FieldIssue`/`ValidationResult` đã hiện thực; NormalizationResult
 là dataclass nội bộ của service. S3.1 có provider contract và pipeline outcome nhỏ;
-`OCRResult`, `ExtractionResult.fields`, review/export dưới đây vẫn là **đặc tả**,
-chưa có class/endpoint tương ứng. Dữ liệu đầu vào
+S3.2 đã hiện thực `OCRResult` và OCR adapter/CLI riêng, chưa có HTTP endpoint.
+`ExtractionResult.fields`, review/export dưới đây vẫn là **đặc tả**.
+Dữ liệu đầu vào
 của provider, draft thô, giá trị canonical và bản đã xác nhận có trách nhiệm khác nhau:
 
 | Artifact | Nội dung / kiểu chính | Ai tạo và được phép thay đổi |
@@ -157,8 +161,8 @@ giữ các ràng buộc đó. Không thêm dependency hoặc trường metadata 
 Test offline trong `backend/tests/test_schemas.py` đã kiểm tra canonical input:
 key bắt buộc/null, kiểu strict, giới hạn, key lạ, Unicode, ngày có thật và số 0 đầu.
 Kết quả chi tiết ở [testing.md](testing.md). Hai service S2.2 bên dưới dùng lại các
-model này. S3.1 thêm boundary provider bên dưới; các API, OCRResult,
-ExtractionResult đầy đủ và review/UI vẫn chưa triển khai.
+model này. S3.1 thêm boundary provider bên dưới; S3.2 có OCRResult riêng.
+Các API, ExtractionResult đầy đủ và review/UI vẫn chưa triển khai.
 
 ### Service S2.2
 
@@ -256,9 +260,29 @@ Text trong tài liệu là dữ liệu, không được thực thi như lệnh h
 
 ## OCR, VLM và confidence
 
-Tesseract đã có `vie`/`eng` trên máy, nên là ứng viên cần đo trên mẫu, chưa được chọn làm provider
-chính. Chọn OCR/VLM sau khi kiểm tra chất lượng tiếng Việt, tài nguyên CPU/GPU, giấy phép,
-khả năng chạy Python local, chi phí và API key. Việc chọn model chưa chặn skeleton.
+S3.2 chọn Tesseract local + `vie` sau smoke test trên mẫu tổng hợp; cấu hình,
+hash model, license và lỗi dấu còn lại ở [OCR local](ocr.md), quyết định ở
+[ADR 0001](adr/0001-local-tesseract-ocr.md). Chưa chọn VLM hoặc so sánh nhiều OCR engine.
+
+`OCRProvider.recognize(DocumentInput) -> OCRResult` là Protocol riêng, dùng lại
+DocumentInput/ProviderIdentity/BoundingBox và ProviderError của S3.1 nhưng không sửa
+chúng. Không ép OCR-only adapter trả năm field của ExtractionProvider. Luồng local
+hiện tại: PNG/JPEG bytes → Pillow decode/EXIF/RGB nền trắng → Tesseract txt+tsv →
+OCRResult; S3.1 extraction pipeline/fake vẫn chạy độc lập. Kết nối với extraction thật
+chỉ thực hiện ở S3.3, không thêm rule extraction để giả lập VLM.
+
+OCRResult giữ ID/hash nguồn, hash ảnh đã xử lý, width/height/hệ toạ độ, raw text/TSV,
+word text/page/bbox/native_confidence, metadata engine/model/config/Pillow và warnings.
+Giữ nguyên text/xuống dòng, native score 0–100 (unavailable -1 thành null), không
+normalize dữ liệu hóa đơn hoặc gắn field confidence. Bbox được kiểm tra cận ảnh đã
+áp dụng EXIF; native TSV được giữ nguyên riêng để truy vết, không sửa S3.1 Evidence.
+
+Pillow thêm vào runtime pins để decode PNG/JPEG thực và áp dụng EXIF. Adapter từ chối
+format không khớp MIME, ảnh hỏng/multiple frame và vượt guard 10 MiB/20 triệu pixel.
+Các guard này chưa phải chính sách HTTP upload. Mỗi subprocess có timeout 30 giây
+mặc định (cấu hình được), hết hạn giết/chờ child; decode/hash không nằm trong deadline.
+File output tạm được dọn bằng context manager, không log text/stderr engine. Ảnh trống
+trả thành công với warning no_text, không tạo candidate/default hóa đơn.
 
 VLM thật vẫn nằm trong S3.3; OCR cộng rule không đáp ứng riêng yêu cầu VLM.
 Trước khi dùng API có phí hoặc gửi tài liệu ra ngoài phải xác định provider, giá, dữ liệu gửi

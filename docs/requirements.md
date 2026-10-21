@@ -21,8 +21,9 @@ PNG/JPEG, nội dung in máy theo quy ước nguồn `vi-VN`. Mã loại tài li
 S2.1a đã hiện thực và kiểm thử hai model giá trị canonical `InvoiceValues` và
 `FinalInvoiceValues` bằng Pydantic. S2.2 đã thêm normalization/business validation
 local và `FieldIssue`/`ValidationResult`; chưa có validation API.
-S3.1 đã có provider contract/fake và pipeline nội bộ; OCRResult,
-ExtractionResult đầy đủ và review vẫn là thiết kế, chưa có file JSON Schema xuất riêng.
+S3.1 đã có provider contract/fake và pipeline nội bộ. S3.2 có OCRResult/adapter/CLI
+đã chạy OCR thật local; ExtractionResult đầy đủ và review vẫn là thiết kế,
+chưa có file JSON Schema xuất riêng.
 
 MVP chỉ lấy thông tin đầu hóa đơn và tổng tiền cuối cùng phải trả. PDF, nhiều trang,
 bảng chi tiết hàng hóa, thuế/chiết khấu, thông tin người mua, mã số thuế, chữ viết tay
@@ -232,12 +233,13 @@ confidence gốc chỉ thuộc extraction gốc, không chuyển sang giá trị
   cuối và dữ liệu được phép sử dụng. Chưa có dataset nên đây chưa phải bằng chứng R07/R09 hoàn thành.
 - Tài liệu thật không đúng quy ước, tiền thập phân/ngoại tệ và số hóa đơn ngoài tập ký tự
   trên cần mở rộng schema có version sau, không âm thầm nới quy tắc.
-- Chưa chọn OCR/VLM, phương pháp confidence, ngưỡng review hoặc giới hạn file/timeout.
+- Đã chọn OCR Tesseract/vie cho smoke local, có guard ảnh và timeout subprocess;
+  chưa chọn VLM, phương pháp confidence, ngưỡng review hoặc chính sách upload API.
 - Đã có hai model canonical, service S2.2, provider contract/fake và pipeline offline.
   Metadata confidence có kiểm tra cấu trúc nhưng fake luôn null/evidence rỗng; chưa có
   score thực nghiệm, validation API, ExtractionResult đầy đủ hoặc review/export.
-  Input bytes chưa được giải mã, timeout chỉ giả lập/truyền lỗi, chưa cưỡng chế deadline.
-  [Architecture](architecture.md) chốt ranh giới; task tiếp theo là S3.2, OCR thật trên mẫu.
+  S3.2 giải mã ảnh và có timeout thật ở OCR adapter riêng; pipeline S3.1 giữ nguyên.
+  [Architecture](architecture.md) chốt ranh giới; task tiếp theo là S3.3, VLM và confidence.
 
 ## Theo dõi đủ yêu cầu giảng viên
 
@@ -248,18 +250,18 @@ phù hợp, chỉ rõ phạm vi và phiên bản.
 
 | ID | Yêu cầu | Giai đoạn / task | Bằng chứng cần để xác nhận | Trạng thái |
 | --- | --- | --- | --- | --- |
-| R01 | OCR nội dung tài liệu | 3 / S3.1–S3.2 | Chạy OCR thật trên ảnh mẫu; xử lý lỗi; test fake offline. | Chưa triển khai |
+| R01 | OCR nội dung tài liệu | 3 / S3.1–S3.2 | Chạy OCR thật trên ảnh mẫu; xử lý lỗi; test fake offline. | Đã kiểm thử local S3.2 trên PNG/JPEG tổng hợp; có unit/integration/error tests. Chưa tích hợp upload/extraction/UI hoặc chứng minh chất lượng ảnh thực tế. |
 | R02 | Schema extraction | 2–3 / S2.1, S2.1a, S3.1, S3.3 | Output có schema; trích xuất từ tài liệu; test thiếu/sai trường. | Đang triển khai: canonical models, contract/fake và pipeline đã kiểm thử; chưa ExtractionResult đầy đủ hoặc inference thật. |
 | R03 | Confidence cấp trường khi có cơ sở | 3–4 / S3.3, S4.2 | Ghi nguồn/cách tính; test null khi không có cơ sở; UI giải thích điểm. | Đang triển khai: contract metadata và test null/reject nguồn sai; chưa phương pháp/score thực nghiệm hoặc UI. |
 | R04 | Review UI có chỉnh sửa | 4 / S4.2 | Test hiển thị và sửa từng trường; giữ kết quả trích xuất gốc. | Chưa triển khai |
 | R05 | Schema và business validation | 2, 4 / S2.1a–S2.2, S4.3 | Unit test và API test; backend từ chối dữ liệu sai. | Đang triển khai: model và normalization/business service local đã kiểm thử; còn validation API/tích hợp ở S4.3. |
 | R06 | Export JSON đã kiểm tra/chỉnh sửa | 4 / S4.4 | Export phản ánh sửa đổi; từ chối bản chưa hợp lệ/chưa xác nhận; test JSON. | Chưa triển khai |
-| R07 | Chỉ dùng dữ liệu tổng hợp/được phép | 3, 5 / S3.2, S5.1 | Manifest có nguồn, quyền sử dụng, hash; rà soát ảnh và ground truth. | Chưa triển khai |
-| R08 | Python, OCR, VLM và React/Vue | 1, 3 / S1.1–S1.2, S3.2–S3.3 | Backend Python, UI React và cả OCR/VLM thật có ví dụ chạy; fake không thay thế tích hợp thật. | Đang triển khai: Python health-check và React skeleton đã kiểm tra CLI/HTTP; còn kiểm tra trực quan frontend, OCR, VLM. |
+| R07 | Chỉ dùng dữ liệu tổng hợp/được phép | 3, 5 / S3.2, S5.1 | Manifest có nguồn, quyền sử dụng, hash; rà soát ảnh và ground truth. | Đang triển khai: ba ảnh smoke tổng hợp có nguồn/quyền dùng/hash, đã xem PNG; chưa golden dataset/annotation. |
+| R08 | Python, OCR, VLM và React/Vue | 1, 3 / S1.1–S1.2, S3.2–S3.3 | Backend Python, UI React và cả OCR/VLM thật có ví dụ chạy; fake không thay thế tích hợp thật. | Đang triển khai: Python/React skeleton và OCR Tesseract local đã kiểm thử; còn VLM và kiểm tra trực quan frontend. |
 | R09 | Golden dataset | 5 / S5.1 | Ảnh và ground truth field-level đã rà soát, manifest/version, tập đánh giá tách tập chỉnh cấu hình. | Chưa triển khai |
 | R10 | Field-level metrics | 5 / S5.2 | Script chạy lại; test công thức, null và mẫu số 0; báo cáo theo trường. | Chưa triển khai |
 | R11 | Error taxonomy | 5 / S5.2 | Mã lỗi và quy tắc phân loại được dùng trong báo cáo; có ví dụ đã kiểm tra. | Chưa triển khai |
-| R12 | Model/config version | 3, 5 / S3.1–S3.3, S5.2 | Run metadata có model/config/schema/prompt/dataset version và commit; báo cáo so sánh tái lập. | Đang triển khai: có provider/config/pipeline/normalization version, hash và code_revision do bên gọi cung cấp (có thể null); chưa OCR/VLM/prompt/dataset version hoặc evaluation report. |
+| R12 | Model/config version | 3, 5 / S3.1–S3.3, S5.2 | Run metadata có model/config/schema/prompt/dataset version và commit; báo cáo so sánh tái lập. | Đang triển khai: S3.1 có version/hash/code_revision nullable; S3.2 ghi engine version, model/config/input/processed-image hash, tham số và Pillow version; chưa VLM/prompt/golden dataset version hoặc evaluation report. |
 
 ## Yêu cầu chất lượng
 

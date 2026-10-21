@@ -2,67 +2,61 @@
 
 ## Task và Git
 
-- Đóng phiên sau S3.1 và đưa tiến độ lên GitHub; không bắt đầu S3.2.
-- Repository: `E:\HUS\subject\Code\SE\PROJECT\document-inteligence`.
-- Branch: `tuannguyen`.
-- HEAD lúc kiểm tra trước khi tạo bản bàn giao:
-  `d6203429cd8c6c8c613392c97f2fbac6bcf744d8` —
-  `feat: define extraction pipeline contract`.
-- Khi bắt đầu bàn giao: working tree sạch, không có file mới/staged hoặc code dở;
-  local và `origin/tuannguyen` cùng HEAD (ahead 0, behind 0).
-- Lượt đóng phiên chỉ thêm file này bằng commit tài liệu local; không push.
-  HEAD sau bàn giao xem bằng `git log -1 --oneline`; commit tài liệu sẽ đứng sau
-  `d620342`, dự kiến ahead 1 so với remote đã kiểm tra. Xác minh lại ở phiên sau.
+- S3.2 — OCR thật trên ảnh mẫu tổng hợp đã triển khai và kiểm thử local.
+- Branch `tuannguyen`; HEAD nền lúc bắt đầu:
+  `39c67892655b0e0113c082aae2fb355d26fcb5b9` — `docs: add session progress handoff`.
+  Working tree lúc đó sạch, ahead 1 so với origin/tuannguyen theo refs local.
+- Commit S3.2 dự kiến `feat: add local Tesseract OCR adapter`; HEAD sau bàn giao xem
+  bằng `git log -1 --oneline`. Không push/fetch/merge trong S3.2; remote refs chưa
+  được làm mới. Sau commit này dự kiến ahead 2 so với origin/tuannguyen đã biết.
 
-## Đã hoàn thành và xác minh
+## Đã hoàn thành
 
-- S3.1 có Protocol provider, input ID/MIME/bytes, output thô/metadata và kết quả
-  success/failure. Pipeline dùng lại normalization/business validation S2.2 và
-  `InvoiceValues`; giữ nguyên `sales_invoice` 1.0.0, health-check và frontend.
-- Fake offline có bốn scenario: complete, partial, failure, timeout; có nhãn/version,
-  confidence null, evidence rỗng. Success không đồng nghĩa validation.valid hoặc
-  dữ liệu đã được người dùng duyệt. Bổ sung 49 test, không thêm dependency.
-- Đã push 8 commit tiến độ từ `1a7ad59` đến `d620342` bằng
-  `git push -u origin tuannguyen`. Git xác nhận tạo branch và upstream thành công.
-  `git ls-remote --heads origin tuannguyen main` xác nhận remote tuannguyen đúng
-  `d620342`; main giữ `94c5101b94a43f1b0e2814d1cdfeee4139289673`.
-- Đã rà 38 file tracked và quét 69 blob trong lịch sử HEAD bằng các mẫu secret:
-  không phát hiện secret hoặc file môi trường/cache/build bị theo dõi. Chuỗi
-  `DO_NOT_EXPOSE` là sentinel test tổng hợp; quét mẫu không bảo đảm phát hiện mọi secret.
-  `.gitignore` loại `.env`, `.venv`, node_modules, cache và build output.
+- OCRProvider/OCRResult riêng, adapter Tesseract và CLI local nhận PNG/JPEG bytes.
+  Giữ text/TSV, word/bbox/native score, hash input/ảnh xử lý/model/config và version.
+- Giải mã bằng Pillow 13.0.0, áp dụng EXIF, alpha trên nền trắng; guard ảnh
+  10 MiB/20 triệu pixel, từ chối nhiều frame. Timeout từng subprocess, dọn file tạm.
+- Chọn Tesseract 5.5.0.20241111, vie tessdata_fast, OEM 1/PSM 6/DPI 300.
+  Hash vie đã so với file chính thức; engine/model Apache-2.0, không phân phối model.
+- Ba ảnh smoke hoàn toàn tổng hợp, generator/manifest; đã xem PNG trực quan.
+  37 unit test OCR và 7 test tích hợp/mẫu, trong đó 5 ca chạy OCR thật.
+- S3.1, schema sales_invoice 1.0.0, normalization/validation, health và frontend giữ nguyên.
+  Không có VLM, field extraction mới, API upload/review/export hoặc metrics.
 
-## Lệnh kiểm tra và kết quả thực tế
+## Kiểm tra thực tế
 
-- `git fetch origin`: thành công trước push; remote chưa có tuannguyen lúc đó.
 - `.\.venv\Scripts\python.exe -m pytest -c backend/pytest.ini -q`:
-  lần gần nhất trước bàn giao **419 passed in 0.92s**, không warning.
-- `git diff --check`, `git diff --cached --check`: đạt khi đóng phiên.
-- `git rev-list --left-right --count HEAD...origin/tuannguyen`: `0 0`
-  trước commit tài liệu bàn giao; `git status --porcelain=v1`: rỗng lúc đó.
-- Backend chưa cấu hình type checker/linter. Không chạy lại backend/frontend tests
-  trong lượt chỉ viết tài liệu bàn giao này.
+  baseline 419 passed in 0.95s; sau S3.2 **463 passed in 2.74s**, không warning/skip.
+- `.\.venv\Scripts\python.exe -m pytest -c backend/pytest.ini backend/tests -q --require-real-ocr`:
+  **463 passed in 2.81s**, không warning/skip.
+- `.\.venv\Scripts\python.exe -m pytest -c backend/pytest.ini -q -m "not ocr_real"`:
+  **456 passed, 7 deselected in 1.12s**; không cần Tesseract.
+- `.\.venv\Scripts\python.exe -m pip check`: No broken requirements found.
+- `git diff --check`, `git diff --cached --check`: kiểm tra trong quy trình review/commit.
+- Backend chưa cấu hình type checker/linter; không chạy frontend tests ở S3.2.
 
-## Dang dở, lỗi và giới hạn
+## Lỗi đã xử lý và giới hạn
 
-- Không có code dở hoặc lỗi test/push chưa xử lý. Kết nối GitHub trong sandbox từng
-  bị chặn; chạy lại lệnh Git với quyền mạng được cấp đã thành công, không đổi remote.
-- S3.2 chưa bắt đầu; chưa chọn/đo OCR thật, chưa có VLM, upload, review hoặc export.
-- Fake không giải mã ảnh; timeout là lỗi giả lập/truyền lỗi, chưa có deadline cưỡng chế.
-  ExtractionResult đầy đủ và confidence có cơ sở thực nghiệm vẫn chưa triển khai.
-- Frontend chưa được kiểm tra trực quan; CLI/HTTP/render trước đây không thay thế việc đó.
+- Cài Pillow/đọc hash model chính thức trong sandbox bị chặn mạng; chạy lại với
+  quyền mạng đã cấp thành công. Chỉ cài trong .venv, không sửa Tesseract/model hệ thống.
+- Cờ pytest --require-real-ocr cần truyền rõ backend/tests để nạp conftest trước parse;
+  lệnh đầu thiếu đường dẫn bị từ chối option, lệnh đúng phía trên đã đạt.
+- OCR vie còn đọc nhầm TỔNG thành TỎNG, GIẢ LẬP thành GIÁ LẬP trên mẫu. Giữ nguyên
+  raw output, không sửa dấu để làm kết quả có vẻ tốt hơn. Chưa có metric/benchmark.
+- Timeout là giới hạn riêng từng tiến trình version/OCR, không bao gồm decode/hash.
+- Chưa nối OCR vào extraction S3.1; native score không phải confidence cấp trường.
+- Frontend vẫn chưa được kiểm tra trực quan; S3.3 chưa bắt đầu. Không có code dở đã biết.
 
-## Tiếp tục ở phiên sau
+## Phiên sau
 
-1. Đọc bản bàn giao; kiểm tra branch, HEAD, status và diff, đối chiếu roadmap.
-   Không ghi đè thay đổi mới; commit bàn giao local chưa được push.
-2. Task tiếp theo duy nhất theo roadmap: **S3.2 — OCR thật trên ảnh mẫu tổng hợp**.
-   Chỉ triển khai khi phiên sau giao task này; không làm lại S3.1 hoặc mở rộng sang VLM/UI.
-3. Giữ Conventional Commits; không push/merge/reset/amend nếu chưa có yêu cầu mới.
-
-Đọc trước: [README](../README.md), [requirements](requirements.md),
-[architecture](architecture.md), [roadmap](roadmap.md), [testing](testing.md) và
-`..\MASTER_PROMPT_AI02_Solo_Development.md` (nằm ngoài repo).
-Code liên quan: `backend/app/schemas/{invoice,extraction,validation}.py`,
-`backend/app/providers/{contracts,fake}.py`,
-`backend/app/services/{pipeline,normalization,validation}.py`,
-`backend/tests/test_pipeline.py` và các test schema/service hiện có.
+1. Đọc bản bàn giao, kiểm tra branch/HEAD/status/diff và commit mới; giữ mọi thay đổi
+   phát sinh sau bàn giao. Không giả định refs remote còn mới hoặc tự push.
+2. Task tiếp theo duy nhất theo roadmap: **S3.3 — VLM thật và confidence**. Trước khi
+   triển khai, kiểm tra tài nguyên/model/license và phạm vi được giao; không làm lại S3.2.
+3. Đọc [README](../README.md), [requirements](requirements.md),
+   [architecture](architecture.md), [roadmap](roadmap.md), [testing](testing.md),
+   [OCR local](ocr.md), [ADR 0001](adr/0001-local-tesseract-ocr.md) và
+   `..\MASTER_PROMPT_AI02_Solo_Development.md` ngoài repo.
+4. Code liên quan: schemas/{invoice,extraction,ocr}.py, providers/{contracts,ocr,tesseract,fake}.py,
+   services/pipeline.py, app/ocr_cli.py trong backend/app; tests/test_ocr*.py,
+   tests/test_pipeline.py, tests/conftest.py trong backend; data/ocr-smoke/.

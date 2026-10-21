@@ -248,3 +248,56 @@ phải sandbox cấm mọi truy cập mạng/môi trường lúc import. Không 
 thực nghiệm; metadata khác null chỉ xuất hiện trong stub kiểm thử cấu trúc.
 Timeout fake phát lỗi tức thì, chưa kiểm tra thời gian thực hoặc cơ chế ngắt provider.
 Không có kiểm thử route extraction, upload, review, export hoặc metric trong S3.1.
+
+## OCR local S3.2 — kết quả thực tế ngày 21/10/2026
+
+Trước sửa: `tuannguyen`, HEAD `39c6789`, working tree sạch, baseline **419 passed
+in 0.95s**. Đọc handoff/Master Prompt/roadmap và code; không thay S3.1 hoặc schema.
+Môi trường: Python 3.13.7, Tesseract 5.5.0.20241111 có vie/eng, thêm Pillow 13.0.0.
+Model `vie` khớp hash tessdata_fast chính thức; [OCR local](ocr.md) ghi nguồn/license,
+manifest, cấu hình và lỗi dấu còn lại. Không thay engine/model hoặc cài package global.
+
+Các lệnh thực tế tại thư mục gốc:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install --no-cache-dir --disable-pip-version-check Pillow==13.0.0
+.\.venv\Scripts\python.exe -m pip check
+.\.venv\Scripts\python.exe data/ocr-smoke/generate.py --font C:/Windows/Fonts/arial.ttf
+.\.venv\Scripts\python.exe -m pytest -c backend/pytest.ini -q
+.\.venv\Scripts\python.exe -m pytest -c backend/pytest.ini backend/tests -q --require-real-ocr
+.\.venv\Scripts\python.exe -m pytest -c backend/pytest.ini -q -m "not ocr_real"
+git diff --check
+git diff --cached --check
+```
+
+- Cài Pillow thành công sau khi chạy lại với quyền mạng (sandbox lần đầu chặn socket).
+  `pip check`: **No broken requirements found**.
+- Lệnh README mặc định: **463 passed in 2.74s**, không warning/skip.
+- Lệnh bắt buộc OCR thật: **463 passed in 2.81s**, không warning/skip.
+- Nhóm không cần Tesseract: **456 passed, 7 deselected in 1.12s**.
+- Tổng 419 test cũ + **37 unit OCR** (`test_ocr.py`) + **7 test tích hợp/mẫu**
+  (`test_ocr_real.py`). Trong nhóm sau: 5 ca chạy inference thật (PNG, JPEG, blank,
+  JPEG EXIF, CLI), 1 ca từ chối ảnh hỏng và 1 ca kiểm tra manifest.
+
+| Nhóm | Bằng chứng đã kiểm tra |
+| --- | --- |
+| OCR thật | Đọc được tiêu đề tiếng Việt, tên cửa hàng, số có 0 đầu, ngày và tiền từ PNG/JPEG; giữ native text/TSV và metadata. Không so toàn bộ text thành exact match. |
+| Ảnh | Khớp MIME/format, decode PNG/JPEG, áp dụng EXIF, alpha nền trắng, bbox trong ảnh hiển thị; ảnh hỏng/truncated/GIF/APNG và vượt byte/pixel bị từ chối. |
+| Raw/score | Không sửa input hoặc xuống dòng nguồn; native score 88.5 giữ nguyên, -1 thành null; từ chối NaN/Infinity/ngoài khoảng; dấu ngoặc kép không bị parser bỏ. |
+| Output lỗi | Header/row/page/geometry sai, duplicate/missing page, text/token mâu thuẫn bị từ chối, không biến thành quan sát hợp lệ. |
+| Lỗi thực thi | Thiếu executable/model, nonzero exit, timeout, không lộ stderr/text hoặc log tài liệu; file tạm được dọn cả khi lỗi. |
+| Timeout thật | _invoke chạy Python child ngủ 10 giây với timeout 0.05 giây và nhận provider_timeout; riêng nhánh lỗi Tesseract được test bằng stub. Không tuyên bố đã đo SLA hoặc cố tình làm Tesseract treo. |
+| Metadata/mẫu | JSON round-trip, provider/config/engine/model/Pillow/hash; manifest khớp hash/kích thước/ID, chỉ dữ liệu tổng hợp, không phân phối font/model. |
+
+Đã chạy CLI thật qua integration test với `python -m app.ocr_cli ...` từ backend,
+JSON UTF-8 hợp lệ, stderr rỗng. PNG mẫu đã được xem trực quan; chưa kiểm tra trực quan
+frontend. Test Python chặn socket connect; đây không phải sandbox mạng cho tiến trình
+Tesseract con. Adapter không có lệnh mạng/model download, chỉ nhận ảnh và model local.
+
+Lần đầu gọi `--require-real-ocr` mà không chỉ rõ `backend/tests` bị pytest từ chối
+option trước khi collect (conftest chưa được nạp từ thư mục con). Chạy lại đúng lệnh
+ở trên đã đạt; không giảm yêu cầu hoặc bỏ qua real tests để báo thành công.
+Trên máy thiếu engine/model, lệnh mặc định skip 6 ca cần môi trường; strict command
+sẽ fail thay vì skip. Backend chưa cấu hình type checker/linter; không báo chúng đã chạy.
+Test không chứng minh chất lượng ảnh thật/ảnh khó, không đánh giá field-level metrics,
+không tích hợp extraction S3.1 với OCR, không có VLM hoặc API/UI/export trong S3.2.

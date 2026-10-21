@@ -13,7 +13,8 @@ FastAPI có `GET /health`, hai test offline và kiểm tra HTTP local bằng Uvi
 **S1.2 đã có frontend React/TypeScript/Vite** với trang giới thiệu và trạng thái dự án;
 đã kiểm tra lockfile, TypeScript, build, HTTP và render React trong Node.
 Chưa kiểm tra trực quan trên trình duyệt vì công cụ trình duyệt của phiên phát triển
-không khả dụng. Chưa có OCR, VLM hay bộ dữ liệu. Code trên các nhánh remote chỉ được
+không khả dụng. S3.2 đã thêm OCR local và mẫu smoke tổng hợp; chưa có VLM hay golden dataset.
+Code trên các nhánh remote chỉ được
 đọc để tham khảo ở Giai đoạn 0, chưa được nhập vào nhánh này.
 
 **S2.1 đã chốt đặc tả dữ liệu:** hóa đơn bán hàng tiếng Việt một trang từ dữ liệu
@@ -34,7 +35,12 @@ Chưa tích hợp service vào API, OCR/VLM, frontend hoặc export.
 **S3.1 đã có extraction contract và fake provider offline**: nhận ID/MIME/bytes,
 trả raw candidates và metadata riêng, rồi dùng lại service S2.2 để tạo kết quả
 canonical `sales_invoice` 1.0.0. Fake mang nhãn rõ ràng, không nhận dạng ảnh,
-không tạo confidence/evidence. Chưa có OCR/VLM thật hoặc route extraction.
+không tạo confidence/evidence. Riêng S3.1 không có OCR/VLM thật hoặc route extraction.
+
+**S3.2 đã có OCR Tesseract local** trên ảnh tổng hợp PNG/JPEG, giữ text/TSV,
+token/toạ độ/native score và engine/model/config metadata. Có xử lý ảnh hỏng,
+ảnh trống, EXIF và timeout thực thi; chưa nối OCR vào extraction hoặc API/UI.
+Hướng dẫn, license, kết quả và lỗi dấu tiếng Việt còn lại ở [OCR local](docs/ocr.md).
 
 ## Tài liệu
 
@@ -43,6 +49,7 @@ không tạo confidence/evidence. Chưa có OCR/VLM thật hoặc route extracti
 - [Kiến trúc tối giản và luồng dữ liệu dự kiến](docs/architecture.md).
 - [Roadmap, task nhỏ và điều kiện hoàn thành](docs/roadmap.md).
 - [Cách kiểm thử và kết quả backend/frontend](docs/testing.md).
+- [OCR local và mẫu tổng hợp S3.2](docs/ocr.md).
 
 ## Cài đặt, chạy và kiểm tra
 
@@ -93,8 +100,8 @@ Sau khi cài dependency, không cần chạy Uvicorn hay có kết nối Interne
 git diff --check
 ```
 
-Kết quả toàn bộ backend sau S3.1: **419 passed** (207 test schema, 2 test health,
-161 test normalization/validation và 49 test contract/pipeline),
+Kết quả toàn bộ backend sau S3.2 trên máy đã cài Tesseract/vie: **463 passed**
+(419 test cũ, 37 unit test OCR và 7 test tích hợp/mẫu),
 không có warning. TestClient gọi app trong tiến trình; fixture chặn socket connect
 trong lúc gửi request. Test schema cũng chặn kết nối mạng khi chạy.
 Xem [testing.md](docs/testing.md) về coverage và giới hạn của việc chặn mạng.
@@ -121,6 +128,31 @@ phải kiểm tra thêm `validation.valid`, không xem chạy thành công là h
 hay đã được xác nhận. Kết quả `status="failed"` có error code/message cố định,
 không có payload hóa đơn thành công. Confidence luôn null, evidence luôn rỗng ở fake.
 Không cần chạy server, API key hoặc model; backend chưa cấu hình type checker/linter.
+
+### OCR local S3.2
+
+Dependency Python có thêm Pillow 13.0.0. Tesseract và model `vie` là công cụ ngoài
+Python, cần cài riêng để chạy OCR thật; S3.2 dùng bản có sẵn, không sửa cài đặt hệ thống.
+Chạy tại thư mục gốc, sau khi Tesseract ở PATH và có `vie.traineddata`:
+
+```powershell
+Push-Location backend
+..\.venv\Scripts\python.exe -m app.ocr_cli ../data/ocr-smoke/invoice_vi.png
+Pop-Location
+```
+
+CLI trả OCR JSON ra stdout, chưa trả hóa đơn canonical. Có thể thêm
+`--tesseract`/`--tessdata-dir`/`--timeout`; xem [ocr.md](docs/ocr.md).
+Test mặc định tự bỏ qua nhóm cần engine nếu không có môi trường. Để bắt buộc kiểm
+tra OCR thật, truyền rõ đường dẫn test để pytest nạp các option từ conftest:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -c backend/pytest.ini backend/tests -q --require-real-ocr
+.\.venv\Scripts\python.exe -m pytest -c backend/pytest.ini -q -m "not ocr_real"
+```
+
+Lệnh thứ hai chạy nhóm không cần Tesseract: **456 passed, 7 deselected**.
+Có thể thêm `--ocr-executable` và `--ocr-tessdata-dir` vào lệnh bắt buộc OCR thật.
 
 ### Frontend React/TypeScript/Vite
 
@@ -179,6 +211,9 @@ Kiểm tra trực quan desktop/mobile vẫn cần thực hiện trong trình duy
 - `backend/app/providers/{contracts,fake}.py`: Protocol, lỗi provider và fixture giả lập.
 - `backend/app/services/pipeline.py`: kiểm tra boundary, ghi version/hash, gọi S2.2.
 - `backend/tests/test_pipeline.py`: test offline contract, fake và điều phối pipeline.
+- `backend/app/schemas/ocr.py`, `providers/{ocr,tesseract}.py`: OCR-only contract/adapter.
+- `backend/app/ocr_cli.py`: chạy OCR local từ PNG/JPEG, không tạo API hoặc invoice fields.
+- `data/ocr-smoke/`: generator, ba ảnh tổng hợp và manifest; không chứa model/font.
 - `frontend/src/main.tsx`: gắn React vào phần tử `root` trong `index.html`.
 - `frontend/src/App.tsx`, `styles.css`: nội dung giới thiệu/trạng thái và CSS thuần.
 - `frontend/vite.config.ts`, `tsconfig.json`: React plugin và kiểm tra TypeScript strict.
@@ -190,13 +225,13 @@ Frontend hiện chạy độc lập: Vite → trình duyệt → React, chưa n�
 
 ## Giới hạn và bước tiếp theo
 
-Chưa chọn OCR/VLM provider, chưa đo chất lượng nhận dạng hay extraction.
+Đã chọn Tesseract local cho smoke OCR; chưa chọn VLM hoặc đo chất lượng field extraction.
 Confidence sẽ chỉ hiển thị khi có nguồn và cách tính rõ ràng;
 không xem confidence là bảo đảm dữ liệu đúng.
 
-Task tiếp theo duy nhất: **S3.2 — OCR thật trên ảnh mẫu tổng hợp**, kiểm tra adapter
-và phiên bản/cấu hình trước khi tích hợp. S3.1 chưa có kiểm tra nội dung ảnh,
-deadline thực thi provider, OCR/VLM thật hoặc API/review/export.
+Task tiếp theo duy nhất: **S3.3 — VLM thật và confidence**. OCR adapter S3.2 đã
+kiểm tra ảnh và timeout từng subprocess; pipeline extraction S3.1 giữ nguyên,
+chưa tích hợp OCR/VLM thật hoặc API/review/export.
 Skeleton backend/frontend đã có; giới hạn kiểm tra trực quan frontend được ghi ở trên
 và trong tài liệu testing, chưa coi kết quả CLI là bằng chứng giao diện hiển thị đúng.
 Mỗi lần chỉ làm task đã thống nhất, có kiểm tra và commit local;
