@@ -3,6 +3,18 @@ import type { DocumentRecord, Extraction } from "../types/document";
 
 export const api = axios.create({ baseURL: import.meta.env.VITE_API_URL ?? "http://localhost:8000/api/v1", timeout: 30000 });
 
+export function getApiErrorMessage(error: unknown, fallback: string) {
+  if (!axios.isAxiosError(error)) return fallback;
+  const detail = error.response?.data?.detail;
+  if (typeof detail === "string") return detail;
+  if (Array.isArray(detail)) {
+    const messages = detail.flatMap(item => typeof item?.msg === "string" ? [item.msg] : []);
+    if (messages.length) return messages.join("; ");
+  }
+  if (error.code === "ECONNABORTED") return "Yêu cầu quá thời gian chờ. Vui lòng thử lại.";
+  return fallback;
+}
+
 export async function uploadDocument(file: File, onProgress?: (percent: number) => void) {
   const form = new FormData();
   form.append("file", file);
