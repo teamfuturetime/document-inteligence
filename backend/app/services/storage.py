@@ -36,3 +36,7 @@ class LocalStorage:
         if candidate.parent != self.root.resolve():
             raise ValueError("Invalid storage path")
         return candidate
+
+    def delete(self, stored_name: str) -> None:
+        """Remove a stored file without allowing paths outside the storage root."""
+        self.resolve(stored_name).unlink(missing_ok=True)

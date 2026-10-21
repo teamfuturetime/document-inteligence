@@ -25,13 +25,18 @@ async def upload_document(file: UploadFile = File(...), db: Session = Depends(ge
         validated = validate_document(file.filename or "document", content, settings.max_upload_mb * 1024 * 1024)
     except InvalidDocument as error:
         raise HTTPException(status_code=422, detail=str(error)) from error
-    stored = LocalStorage(settings.storage_dir).save(file.filename or "document", content)
-    return DocumentRepository(db).create(
-        original_name=stored.original_name,
-        stored_name=stored.stored_name,
-        mime_type=validated.mime_type,
-        size_bytes=stored.size_bytes,
-    )
+    storage = LocalStorage(settings.storage_dir)
+    stored = storage.save(file.filename or "document", content)
+    try:
+        return DocumentRepository(db).create(
+            original_name=stored.original_name,
+            stored_name=stored.stored_name,
+            mime_type=validated.mime_type,
+            size_bytes=stored.size_bytes,
+        )
+    except Exception:
+        storage.delete(stored.stored_name)
+        raise
 
 
 @router.get("", response_model=DocumentList)
