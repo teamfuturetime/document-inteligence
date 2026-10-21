@@ -1,0 +1,14 @@
+{
+  "version": "synthetic-response-1",
+  "responses": {
+    "invoice_vi": {
+      "default": "```json\n{\"raw_values\": {\"invoice_number\": \"HD-0000123\", \"invoice_date\": \"03/04/2026\", \"seller_name\": \"Cửa hàng Mây Việt (GIẢ LẬP)\", \"total_amount\": \"125.000\", \"currency\": \"VND\"}, \"evidence\": {\"invoice_number\": [\"s1\"], \"invoice_date\": [\"s2\"], \"seller_name\": [\"s3\"], \"total_amount\": [\"s4\"], \"currency\": [\"s5\"]}, \"uncertain_fields\": [], \"model_reported_scores\": {}}\n```"
+    },
+    "invoice_vi-jpeg": {
+      "default": "```json\n{\"raw_values\": {\"invoice_number\": \"HD-0000123\", \"invoice_date\": \"03/04/2026\", \"seller_name\": \"Cửa hàng Mây Việt (GIẢ LẬP)\", \"total_amount\": \"125.000\", \"currency\": \"VND\"}, \"evidence\": {\"invoice_number\": [\"s1\"], \"invoice_date\": [\"s2\"], \"seller_name\": [\"s3\"], \"total_amount\": [\"s4\"], \"currency\": [\"s5\"]}, \"uncertain_fields\": [], \"model_reported_scores\": {}}\n```"
+    },
+    "blank": {
+      "default": "{\"raw_values\": {\"invoice_number\": null, \"invoice_date\": null, \"seller_name\": null, \"total_amount\": null, \"currency\": null}, \"evidence\": {}, \"uncertain_fields\": [], \"model_reported_scores\": {}}"
+    }
+  }
+}

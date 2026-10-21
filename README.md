@@ -42,6 +42,20 @@ token/toạ độ/native score và engine/model/config metadata. Có xử lý �
 ảnh trống, EXIF và timeout thực thi; chưa nối OCR vào extraction hoặc API/UI.
 Hướng dẫn, license, kết quả và lỗi dấu tiếng Việt còn lại ở [OCR local](docs/ocr.md).
 
+**S3.3.1 đã khảo sát VLM**: phần cứng, Qwen/InternVL/Gemini từ nguồn chính thức,
+khuyến nghị local có điều kiện và kế hoạch benchmark/confidence ở
+[khảo sát VLM](docs/vlm-survey.md). Chưa tải/chạy model hoặc đo chất lượng VLM;
+khảo sát được lưu cùng benchmark offline trong phiên chốt tiến trình.
+
+**S3.3.2a đã có benchmark runner/parser offline** cho ba mode, dùng text/response
+fixture tổng hợp, labels evaluator-only và metric typed/normalized/evidence riêng.
+Report ghi rõ không inference và không phải chất lượng VLM; hướng dẫn ở
+[benchmark offline](docs/benchmark-offline.md). Không đổi S3.1/S3.2 hoặc schema 1.0.0.
+
+**S3.3.2b mới có preflight**, gồm revision/checksum công bố, runtime CPU và ngân sách
+tải dự kiến tại [VLM preflight](docs/vlm-preflight.md). Chưa được xác nhận cho phép
+tải model/runtime; chưa có provider inference hoặc benchmark VLM thật.
+
 ## Tài liệu
 
 - [Khảo sát repository và môi trường](docs/repository-audit.md).
@@ -50,6 +64,10 @@ Hướng dẫn, license, kết quả và lỗi dấu tiếng Việt còn lại �
 - [Roadmap, task nhỏ và điều kiện hoàn thành](docs/roadmap.md).
 - [Cách kiểm thử và kết quả backend/frontend](docs/testing.md).
 - [OCR local và mẫu tổng hợp S3.2](docs/ocr.md).
+- [Khảo sát VLM và kế hoạch benchmark S3.3.1](docs/vlm-survey.md).
+- [Benchmark fixture và parser/evidence adapter S3.3.2a](docs/benchmark-offline.md).
+- [Preflight model/runtime S3.3.2b](docs/vlm-preflight.md).
+- [Bàn giao phiên và bước tiếp theo](docs/session-handoff.md).
 
 ## Cài đặt, chạy và kiểm tra
 
@@ -100,8 +118,8 @@ Sau khi cài dependency, không cần chạy Uvicorn hay có kết nối Interne
 git diff --check
 ```
 
-Kết quả toàn bộ backend sau S3.2 trên máy đã cài Tesseract/vie: **463 passed**
-(419 test cũ, 37 unit test OCR và 7 test tích hợp/mẫu),
+Kết quả toàn bộ backend sau S3.3.2a trên máy đã cài Tesseract/vie: **531 passed**
+(463 test S1–S3.2 và 68 test benchmark offline),
 không có warning. TestClient gọi app trong tiến trình; fixture chặn socket connect
 trong lúc gửi request. Test schema cũng chặn kết nối mạng khi chạy.
 Xem [testing.md](docs/testing.md) về coverage và giới hạn của việc chặn mạng.
@@ -153,6 +171,20 @@ tra OCR thật, truyền rõ đường dẫn test để pytest nạp các option
 
 Lệnh thứ hai chạy nhóm không cần Tesseract: **456 passed, 7 deselected**.
 Có thể thêm `--ocr-executable` và `--ocr-tessdata-dir` vào lệnh bắt buộc OCR thật.
+
+### Benchmark fixture offline S3.3.2a
+
+```powershell
+Push-Location backend
+..\.venv\Scripts\python.exe -m app.benchmark
+Pop-Location
+```
+
+Report JSON là `fixture_simulation`, không inference hoặc đo chất lượng VLM.
+Mặc định deterministic, thời gian null; `--without-labels` báo metric N/A,
+`--measure` chỉ đo runner fixture. Dữ liệu, contract, mẫu số và giới hạn ở
+[benchmark-offline.md](docs/benchmark-offline.md). Không cần Tesseract hoặc model
+để chạy công cụ này, không cài dependency mới.
 
 ### Frontend React/TypeScript/Vite
 
@@ -229,7 +261,9 @@ Frontend hiện chạy độc lập: Vite → trình duyệt → React, chưa n�
 Confidence sẽ chỉ hiển thị khi có nguồn và cách tính rõ ràng;
 không xem confidence là bảo đảm dữ liệu đúng.
 
-Task tiếp theo duy nhất: **S3.3 — VLM thật và confidence**. OCR adapter S3.2 đã
+Task tiếp theo duy nhất: **S3.3.2b — Runtime/model và benchmark inference thật**,
+sau khi được cho phép tải/chạy; nền fixture S3.3.2a không thay bằng chứng VLM thật.
+OCR adapter S3.2 đã
 kiểm tra ảnh và timeout từng subprocess; pipeline extraction S3.1 giữ nguyên,
 chưa tích hợp OCR/VLM thật hoặc API/review/export.
 Skeleton backend/frontend đã có; giới hạn kiểm tra trực quan frontend được ghi ở trên

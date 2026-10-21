@@ -27,7 +27,11 @@ hay toàn bộ yêu cầu liên quan đã hoàn thành.
 | S2.2 — Normalization và business validation | `backend/app/services/`, `backend/app/schemas/validation.py`, `backend/tests/test_{normalization,validation}.py`, tài liệu liên quan | Tách chuyển đổi raw thành candidates khỏi validation bằng model có sẵn; snapshot nguồn, locale/version, lỗi theo trường có namespace. | 161 test mới cho format/Unicode/required/types/range/ambiguity/currency/multiple errors/immutability và result consistency; toàn bộ 370 backend tests đạt, model/health/frontend giữ nguyên. | Đã kiểm thử (service local; chưa có API) |
 | S3.1 — Pipeline contract và fake | `backend/app/providers/`, `backend/app/schemas/extraction.py`, `backend/app/services/pipeline.py`, `backend/tests/test_pipeline.py`, tài liệu | Protocol nhận ID/MIME/bytes; raw candidates/metadata riêng, dùng lại S2.2; fake tổng hợp có nhãn/version. | 49 test mới, toàn bộ 419 backend tests đạt: success khác valid, missing/uncertain, metadata, deterministic, sai output, lỗi và timeout giả lập; không dependency mới. Chưa giải mã ảnh/deadline thực. | Đã kiểm thử (offline; chưa OCR/VLM thật) |
 | S3.2 — OCR thật trên ảnh mẫu | `schemas/ocr.py`, `providers/{ocr,tesseract}.py`, `ocr_cli.py`, `data/ocr-smoke/`, tests OCR, dependency/config và tài liệu | OCRProvider riêng, Tesseract/vie thật, Pillow decode/EXIF; giữ raw text/TSV/native score và version/hash; không đổi S3.1/canonical schema. | Toàn bộ 463 tests đạt, gồm 37 unit OCR và 7 integration/mẫu; bắt buộc engine thật cũng đạt. PNG/JPEG, Unicode, blank/corrupt, EXIF, guards, cleanup và timeout subprocess; giới hạn chất lượng ở docs/ocr.md. | Đã kiểm thử local (chưa extraction/VLM/API/UI) |
-| S3.3 — VLM thật và confidence | Extraction adapter, tests extraction, cấu hình prompt/model, tài liệu provider | Chọn model theo môi trường/quyền dùng/chi phí; ảnh + OCR + schema → fields; kiểm tra output, ghi provenance và chính sách confidence. | Ví dụ inference thật từ ảnh mẫu; test fake cho JSON lỗi, thiếu trường, timeout; confidence null nếu chưa có cơ sở; model/prompt/config version đầy đủ. | Chưa triển khai |
+| S3.3 — VLM thật và confidence | Extraction adapter, tests extraction, cấu hình prompt/model, tài liệu provider | Chọn model theo môi trường/quyền dùng/chi phí; ảnh + OCR + schema → fields; kiểm tra output, ghi provenance và chính sách confidence. | Ví dụ inference thật từ ảnh mẫu; test fake cho JSON lỗi, thiếu trường, timeout; confidence null nếu chưa có cơ sở; model/prompt/config version đầy đủ. | Đã khảo sát bước S3.3.1; chưa triển khai VLM/inference hoặc tích hợp |
+| S3.3.1 — Khảo sát VLM | `docs/vlm-survey.md`, README, roadmap | Xác minh Git/phần cứng, model card/license/giá; shortlist Qwen, InternVL, Gemini; đề xuất benchmark và confidence/provenance. | Bảng nguồn chính thức, phân biệt thông tin xác minh/ước tính/chưa đo, nhãn/schema/hash hợp lệ; review tài liệu/diff. Không tải/chạy model. | Đã khảo sát và kiểm tra tài liệu |
+| S3.3.2 — Runner benchmark local và parser/evidence adapter | Tách thành a/b theo prompt hiện tại | a xây nền offline; b mới tải/chạy model sau khi được cho phép. | Không coi fixture test là inference/model benchmark. | Đã có nền offline a; b chưa triển khai |
+| S3.3.2a — Runner/parser/evidence offline | `backend/app/benchmark/`, `backend/tests/test_benchmark.py`, `data/benchmark-fixture/`, tài liệu | Ba mode, strict JSON/fence parser, nguồn text span/bbox, labels riêng, typed/normalized/null/error metrics, report fixture có version/hash. | 68 test mới, toàn bộ 531 tests đạt; giữ S3.1/S3.2/schema, confidence null; không VLM/API/dependency mới. | Đã kiểm thử offline |
+| S3.3.2b — Inference thật và benchmark | `docs/vlm-preflight.md`; sau phê duyệt mới thêm runtime/model adapter, OCR snapshots/provenance, runner guard và report thật | Preflight đã xác minh revision/checksum công bố và nguồn runtime CPU; tải/chạy chỉ sau xác nhận của người dùng. | Ít nhất một inference ảnh và report 9 run ban đầu hoặc lỗi thực tế; quality/time/memory thật, nguồn evidence kiểm chứng, unit/full tests. | Chỉ có preflight Giai đoạn 0–1; chưa tải model/runtime hoặc chạy inference |
 | S4.1 — Upload tới pipeline | Backend route và file validation, `frontend/src/` upload/API client, tests | PNG/JPEG một trang, giới hạn byte/pixel, kiểm tra nội dung, file tạm, trạng thái chờ/lỗi. | API test file sai loại/quá lớn/hỏng, test chọn/gửi file và UI lỗi; chứng minh pipeline nhận đúng ảnh; dọn file tạm. | Chưa triển khai |
 | S4.2 — Review/edit từng trường | Frontend review/preview, type contract và tests | Giữ extraction gốc, bản sửa độc lập; hiển thị evidence/confidence có nguồn và cảnh báo. | Test sửa từng trường, giữ giá trị gốc, trường null, nhập chưa hợp lệ, reset xác nhận sau sửa; contract khớp backend. | Chưa triển khai |
 | S4.3 — Validate bản review | Backend validation API, frontend validation flow, API/UI tests | Dùng lại service S2.2; hiện lỗi theo trường, chỉ xác nhận payload đang hợp lệ. | Test lỗi backend hiện đúng; sửa sau validation vô hiệu hóa xác nhận cũ; không bỏ qua validation backend. | Chưa triển khai |
@@ -43,8 +47,9 @@ S2.1a dùng commit message `feat: add canonical invoice value models`.
 S2.2 dùng commit message `feat: add invoice normalization and business validation`.
 S3.1 dùng commit message `feat: define extraction pipeline contract`.
 S3.2 dùng commit message `feat: add local Tesseract OCR adapter`.
-Task tiếp theo duy nhất là **S3.3 — VLM thật và confidence**,
-để trích xuất trường từ ảnh/OCR qua provider thật; không coi OCR-only là extraction.
+Task tiếp theo duy nhất là **S3.3.2b — Runtime/model và benchmark inference thật**,
+theo [benchmark offline](benchmark-offline.md), sau khi phạm vi/runtime/model download được cho phép.
+S3.3.1 là khảo sát, S3.3.2a chỉ fixture; chưa có benchmark VLM hoặc tích hợp provider thật.
 S2.2 đã được gọi từ pipeline local, chưa tích hợp vào API/AI thật hoặc UI.
 Tách S2.1a khỏi S2.1 theo yêu cầu hiện tại để review quyết định dữ liệu trước khi code;
 không đưa normalization, API hoặc toàn bộ validation pipeline vào một task.
@@ -72,7 +77,7 @@ tách phần độc lập kiểm tra được và cập nhật roadmap trước 
 | S1.2 đã chốt | Phiên bản frontend và kết nối dev | Node 24.13.0/npm 11.6.2, React 19.3.1, TypeScript 7.0.2, Vite 8.3.4; lockfile và CLI/build đạt. Trang tĩnh chưa gọi API, chưa cần proxy/CORS. |
 | S2.1 đã chốt, S2.1a/S2.2 đã kiểm thử local | Loại biểu mẫu, trường và quy tắc | `sales_invoice` 1.0.0 không đổi; hai model, normalization nguồn vi-VN và business validation đã có test. Locale phải do bên gọi xác định; chưa có chọn candidate AI, validation API hoặc review. |
 | S3.2 đã chốt cho smoke local | OCR engine/model | Tesseract 5.5.0 + vie tessdata_fast, OEM 1/PSM 6/DPI 300; license/hash/config, so sánh vie/vie+eng và lỗi dấu ở docs/ocr.md và ADR 0001. Chưa benchmark nhiều engine hoặc golden dataset. |
-| Trước S3.3 | VLM local hoặc API | Chưa biết GPU/VRAM/ngân sách; khảo sát tài nguyên và model license. Nếu cần dịch vụ tính phí/gửi dữ liệu bên ngoài, trình phương án cụ thể để người dùng quyết định trước khi gọi. |
+| S3.3.1 đã khảo sát, chưa chốt provider | VLM local hoặc API | Core Ultra 5 125H, khoảng 31.5 GiB RAM, CIM thấy Intel Arc; dedicated VRAM/backend tăng tốc chưa xác định. Đề xuất Qwen GGUF CPU có điều kiện; API cần chốt quyền gửi dữ liệu/ngân sách trước khi dùng. Chi tiết nguồn/giới hạn ở docs/vlm-survey.md. |
 | Trước S4.1 | Giới hạn input và thời gian | Đề xuất PNG/JPEG một trang; chốt byte/pixel/timeout theo đo thực tế, chưa thêm PDF hoặc queue. |
 | Trước S5.1–S5.2 | Dataset, chuẩn hóa và metric | Chốt mẫu khó, tách tập, ground truth, taxonomy và công thức trước khi chạy đánh giá để tránh chọn quy tắc theo kết quả. |
 
@@ -85,6 +90,10 @@ Mỗi task cần đúng phạm vi, đọc/review diff, chạy kiểm tra phù h�
 không có secret/cache/build/dữ liệu không được phép, stage đúng file, commit local thành công
 và xác nhận branch/hash/status. Nếu chưa chạy được kiểm tra, ghi nguyên nhân và phạm vi chưa xác minh,
 không đánh dấu đã kiểm thử. Nếu commit thất bại, báo lỗi thực tế và không bịa hash.
+S3.3.1 và S3.3.2a đã được giữ chưa commit theo yêu cầu khi triển khai. Phiên finalize
+22/10/2026 cho phép commit/push toàn bộ tiến trình hợp lệ sau kiểm tra; kết quả thực tế
+ghi trong [bàn giao phiên](session-handoff.md). Việc này không cấp phép tải model/runtime
+hoặc đánh dấu S3.3.2b hoàn thành.
 
 Báo cáo theo mẫu: **Task**, **Files changed**, **Implementation**, **Verification**,
 **Git** (branch, hash, message), **Remaining issues**, **Next task**.

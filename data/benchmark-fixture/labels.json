@@ -1,0 +1,26 @@
+{
+  "version": "benchmark-fixture-labels-1",
+  "labels": {
+    "invoice_vi": {
+      "invoice_number": "HD-0000123",
+      "invoice_date": "2026-04-03",
+      "seller_name": "Cửa hàng Mây Việt (GIẢ LẬP)",
+      "total_amount": 125000,
+      "currency": "VND"
+    },
+    "invoice_vi-jpeg": {
+      "invoice_number": "HD-0000123",
+      "invoice_date": "2026-04-03",
+      "seller_name": "Cửa hàng Mây Việt (GIẢ LẬP)",
+      "total_amount": 125000,
+      "currency": "VND"
+    },
+    "blank": {
+      "invoice_number": null,
+      "invoice_date": null,
+      "seller_name": null,
+      "total_amount": null,
+      "currency": null
+    }
+  }
+}

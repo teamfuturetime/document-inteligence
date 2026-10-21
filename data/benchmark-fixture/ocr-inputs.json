@@ -1,0 +1,129 @@
+{
+  "version": "benchmark-text-1",
+  "sources": {
+    "invoice_vi": {
+      "document_id": "invoice_vi",
+      "input_sha256": "d0b6f26322e0b77203651c4b0e0488350d7019515e0cde3100d3e89a8b81f7dc",
+      "text": "SYNTHETIC TEXT FIXTURE — NOT MEASURED OCR\nSố hóa đơn: HD-0000123\nNgày lập: 03/04/2026\nNgười bán: Cửa hàng Mây Việt (GIẢ LẬP)\nTổng tiền: 125.000\nĐơn vị tiền tệ: VND\n",
+      "text_sha256": "19e999006b125f601b75d79dc18fcf4be96b391aea7e9b7574301d03051736fd",
+      "origin": "synthetic_text_fixture",
+      "width": 1600,
+      "height": 1050,
+      "spans": [
+        {
+          "id": "s1",
+          "start": 54,
+          "end": 64,
+          "page": 1,
+          "bbox": null,
+          "ocr_native_score": null
+        },
+        {
+          "id": "s2",
+          "start": 75,
+          "end": 85,
+          "page": 1,
+          "bbox": null,
+          "ocr_native_score": null
+        },
+        {
+          "id": "s3",
+          "start": 97,
+          "end": 124,
+          "page": 1,
+          "bbox": null,
+          "ocr_native_score": null
+        },
+        {
+          "id": "s4",
+          "start": 136,
+          "end": 143,
+          "page": 1,
+          "bbox": null,
+          "ocr_native_score": null
+        },
+        {
+          "id": "s5",
+          "start": 160,
+          "end": 163,
+          "page": 1,
+          "bbox": null,
+          "ocr_native_score": null
+        }
+      ],
+      "provenance": {
+        "fixture_version": "benchmark-text-1",
+        "source": "hand-authored synthetic text; no OCR inference or native scores"
+      }
+    },
+    "invoice_vi-jpeg": {
+      "document_id": "invoice_vi-jpeg",
+      "input_sha256": "7c2b0c5c08c475cafea088dd562e98c8357aeac57c34c4ea8ac0c8584eb7606b",
+      "text": "SYNTHETIC TEXT FIXTURE — NOT MEASURED OCR\nSố hóa đơn: HD-0000123\nNgày lập: 03/04/2026\nNgười bán: Cửa hàng Mây Việt (GIẢ LẬP)\nTổng tiền: 125.000\nĐơn vị tiền tệ: VND\n",
+      "text_sha256": "19e999006b125f601b75d79dc18fcf4be96b391aea7e9b7574301d03051736fd",
+      "origin": "synthetic_text_fixture",
+      "width": 1600,
+      "height": 1050,
+      "spans": [
+        {
+          "id": "s1",
+          "start": 54,
+          "end": 64,
+          "page": 1,
+          "bbox": null,
+          "ocr_native_score": null
+        },
+        {
+          "id": "s2",
+          "start": 75,
+          "end": 85,
+          "page": 1,
+          "bbox": null,
+          "ocr_native_score": null
+        },
+        {
+          "id": "s3",
+          "start": 97,
+          "end": 124,
+          "page": 1,
+          "bbox": null,
+          "ocr_native_score": null
+        },
+        {
+          "id": "s4",
+          "start": 136,
+          "end": 143,
+          "page": 1,
+          "bbox": null,
+          "ocr_native_score": null
+        },
+        {
+          "id": "s5",
+          "start": 160,
+          "end": 163,
+          "page": 1,
+          "bbox": null,
+          "ocr_native_score": null
+        }
+      ],
+      "provenance": {
+        "fixture_version": "benchmark-text-1",
+        "source": "hand-authored synthetic text; no OCR inference or native scores"
+      }
+    },
+    "blank": {
+      "document_id": "blank",
+      "input_sha256": "4c164b5e0d00be76a0c2b069ba37c48193ca00510a3055e775c58e003c4f058e",
+      "text": "",
+      "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "origin": "synthetic_text_fixture",
+      "width": 800,
+      "height": 400,
+      "spans": [],
+      "provenance": {
+        "fixture_version": "benchmark-text-1",
+        "source": "hand-authored synthetic text; no OCR inference or native scores"
+      }
+    }
+  }
+}

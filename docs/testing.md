@@ -301,3 +301,41 @@ Trên máy thiếu engine/model, lệnh mặc định skip 6 ca cần môi trư�
 sẽ fail thay vì skip. Backend chưa cấu hình type checker/linter; không báo chúng đã chạy.
 Test không chứng minh chất lượng ảnh thật/ảnh khó, không đánh giá field-level metrics,
 không tích hợp extraction S3.1 với OCR, không có VLM hoặc API/UI/export trong S3.2.
+
+## Benchmark fixture S3.3.2a
+
+Trước sửa: branch tuannguyen, HEAD 7a28be3, hai file khảo sát đã sửa và một file
+khảo sát mới chưa staged; giữ các thay đổi đó. Baseline chạy thực tế: 463 passed in 2.93s.
+Không tải/chạy VLM, cài dependency mới hoặc dùng API. S3.1/S3.2/schema không đổi.
+
+Lệnh đã chạy:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -c backend/pytest.ini backend/tests/test_benchmark.py -q
+.\.venv\Scripts\python.exe -m pytest -c backend/pytest.ini -q
+git diff --check
+git diff --cached --check
+```
+
+Toàn bộ **531 passed in 3.60s**, 463 test cũ và 68 test mới, không warning/skip.
+Test mới bao gồm JSON/fence/schema/evidence lỗi, normalization/null/no GT/zero/typed
+match, mẫu số không loại failure, determinism/version/hash, không truyền label cho
+provider, không mutate source, optional fixture timing và CLI JSON. Chi tiết và giới
+hạn ở [benchmark offline](benchmark-offline.md). Kết quả fixture là kiểm tra plumbing,
+không phải field accuracy, confidence hoặc tốc độ của VLM.
+
+## Xác minh cuối phiên — 22/10/2026
+
+Chạy lại theo yêu cầu finalize, không cài dependency hoặc chạy VLM:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -c backend/pytest.ini -q -p no:cacheprovider
+git diff --check
+git diff --cached --check
+```
+
+**531 passed in 4.09s**, không warning/skip. Kiểm tra whitespace đạt; các kiểm tra
+staged được chạy lại trước commit. S3.1/S3.2 và canonical schema vẫn giữ nguyên.
+Không chạy lại frontend vì không thay đổi frontend. S3.3.2b chỉ có tài liệu preflight,
+chưa tải weights/runtime, chưa có inference hoặc benchmark VLM thật. Trạng thái commit
+và push cuối phiên ghi ở [bàn giao](session-handoff.md).
