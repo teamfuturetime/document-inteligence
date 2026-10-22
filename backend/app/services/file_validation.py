@@ -60,7 +60,7 @@ def validate_upload(
         raise FileValidationError(
             "Không thể nhận diện loại file. File có thể bị hỏng hoặc không phải PDF/ảnh"
         )
-    if detected != ext:
+    if detected != ext and not ({detected, ext} <= {"jpg", "jpeg"}):
         raise FileValidationError(
             f"Đuôi file (.{ext}) không khớp với nội dung thực tế ({detected})"
         )
@@ -68,3 +68,28 @@ def validate_upload(
     # 4. Kiểm tra MIME type nếu có
     if content_type and content_type not in ALLOWED_MIME:
         raise FileValidationError(f"MIME type không hợp lệ: {content_type}")
+
+
+def validate_upload_metadata(filename: str, content_type: str = "") -> str:
+    """Từ chối metadata sai trước khi bắt đầu ghi stream."""
+    ext = Path(filename).suffix.lower().lstrip(".")
+    if ext not in settings.ALLOWED_EXTENSIONS:
+        raise FileValidationError(
+            f"Loại file không được hỗ trợ: .{ext}. "
+            f"Chỉ chấp nhận: {', '.join(settings.ALLOWED_EXTENSIONS)}"
+        )
+    if content_type and content_type not in ALLOWED_MIME:
+        raise FileValidationError(f"MIME type không hợp lệ: {content_type}")
+    return ext
+
+
+def validate_upload_signature(filename: str, header: bytes) -> None:
+    """Kiểm tra magic bytes từ phần đầu stream."""
+    ext = Path(filename).suffix.lower().lstrip(".")
+    detected = _detect_extension(header)
+    if detected is None:
+        raise FileValidationError("Không thể nhận diện loại file hoặc file bị hỏng")
+    if detected != ext and not ({detected, ext} <= {"jpg", "jpeg"}):
+        raise FileValidationError(
+            f"Đuôi file (.{ext}) không khớp với nội dung thực tế ({detected})"
+        )

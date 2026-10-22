@@ -2,7 +2,6 @@
 import pytest
 
 from ai_service.ocr.confidence import (
-    ConfidenceReport,
     assess_confidence,
     low_confidence_words,
     should_reprocess,

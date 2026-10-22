@@ -1,7 +1,12 @@
-"""Phân loại loại tài liệu tiếng Việt dựa trên nội dung văn bản."""
+"""Bộ phân loại tài liệu minh bạch dựa trên luật.
+
+``confidence`` nằm trong [0, 100] và chỉ là ước lượng heuristic, không phải
+xác suất đã được hiệu chuẩn trên tập dữ liệu gán nhãn.
+"""
 from __future__ import annotations
 
 import re
+import unicodedata
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
@@ -10,124 +15,106 @@ from ai_service.ocr.engine import OCRResult
 
 @dataclass
 class ClassificationResult:
-    """Kết quả phân loại tài liệu."""
+    """Hợp đồng ổn định giữa classifier và pipeline."""
 
     document_type: str
     confidence: float
     scores: Dict[str, float] = field(default_factory=dict)
-    source: str = "keyword"  # "keyword" | "ml"
+    source: str = "rule"
+    raw_score: float = 0.0
+    confidence_type: str = "heuristic"
+    matched_rules: List[str] = field(default_factory=list)
+    needs_review: bool = False
 
     @property
     def is_confident(self) -> bool:
-        return self.confidence >= 70.0
+        return self.document_type != "unknown" and self.confidence >= 70.0 and not self.needs_review
 
 
 @dataclass
 class DocumentClass:
-    """Định nghĩa một loại tài liệu với các từ khóa đặc trưng."""
-
     name: str
     keywords: List[str] = field(default_factory=list)
     patterns: List[str] = field(default_factory=list)
     weight: float = 1.0
 
 
-class DocumentClassifier:
-    """Phân loại tài liệu dựa trên từ khóa và pattern."""
+def normalize_text(text: str) -> str:
+    """Chuẩn hóa Unicode, bỏ dấu và nhiễu khoảng trắng của OCR."""
+    normalized = unicodedata.normalize("NFKD", text or "")
+    without_marks = "".join(char for char in normalized if not unicodedata.combining(char))
+    without_marks = without_marks.replace("đ", "d").replace("Đ", "D")
+    return re.sub(r"[^a-z0-9]+", " ", without_marks.casefold()).strip()
 
+
+class DocumentClassifier:
     def __init__(self, classes: Optional[List[DocumentClass]] = None) -> None:
-        self.classes: List[DocumentClass] = classes or []
-        self._compiled: Dict[str, List[re.Pattern]] = {}
+        self.classes: List[DocumentClass] = []
+        self._compiled: Dict[str, List[re.Pattern[str]]] = {}
+        for doc_class in classes or []:
+            self.register(doc_class)
 
     def register(self, doc_class: DocumentClass) -> None:
-        """Thêm một loại tài liệu vào bộ phân loại."""
         self.classes.append(doc_class)
-        self._compiled[doc_class.name] = [
-            re.compile(p, re.IGNORECASE) for p in doc_class.patterns
-        ]
+        self._compiled[doc_class.name] = [re.compile(pattern, re.IGNORECASE) for pattern in doc_class.patterns]
 
     def _normalize(self, text: str) -> str:
-        """Chuẩn hóa văn bản để khớp từ khóa (bỏ dấu, hạ thường)."""
-        import unicodedata
-
-        normalized = unicodedata.normalize("NFD", text)
-        stripped = "".join(c for c in normalized if not unicodedata.combining(c))
-        return stripped.lower()
+        return normalize_text(text)
 
     def classify(self, text: str) -> ClassificationResult:
-        """Phân loại tài liệu từ văn bản."""
-        normalized = self._normalize(text)
+        normalized = normalize_text(text)
+        if not normalized:
+            return ClassificationResult("unknown", 0.0)
+
         scores: Dict[str, float] = {}
-
+        matches: Dict[str, List[str]] = {}
+        capacities: Dict[str, float] = {}
         for doc_class in self.classes:
-            score = 0.0
-            for keyword in doc_class.keywords:
-                keyword_norm = self._normalize(keyword)
-                if keyword_norm in normalized:
-                    score += doc_class.weight
-            for pattern in self._compiled.get(doc_class.name, []):
+            matched: List[str] = []
+            keywords = {normalize_text(keyword) for keyword in doc_class.keywords}
+            for keyword in sorted(keywords):
+                if keyword and re.search(rf"\b{re.escape(keyword)}\b", normalized):
+                    matched.append(f"keyword:{keyword}")
+            for index, pattern in enumerate(self._compiled.get(doc_class.name, [])):
                 if pattern.search(text):
-                    score += doc_class.weight * 1.5
-            scores[doc_class.name] = score
+                    matched.append(f"pattern:{doc_class.patterns[index]}")
+            keyword_score = sum(rule.startswith("keyword:") for rule in matched)
+            pattern_score = sum(rule.startswith("pattern:") for rule in matched) * 1.5
+            scores[doc_class.name] = (keyword_score + pattern_score) * doc_class.weight
+            capacities[doc_class.name] = max((len(keywords) + len(doc_class.patterns) * 1.5) * doc_class.weight, 1.0)
+            matches[doc_class.name] = matched
 
-        if not scores or max(scores.values()) <= 0:
-            return ClassificationResult(
-                document_type="unknown",
-                confidence=0.0,
-                scores=scores,
-            )
-
-        best_type = max(scores, key=scores.get)
-        best_score = scores[best_type]
-        total = sum(scores.values()) or 1.0
-        confidence = (best_score / total) * 100.0
+        ranked = sorted(scores.items(), key=lambda item: item[1], reverse=True)
+        if not ranked or ranked[0][1] <= 0:
+            return ClassificationResult("unknown", 0.0, scores=scores)
+        best_type, best_score = ranked[0]
+        second_score = ranked[1][1] if len(ranked) > 1 else 0.0
+        tied = second_score > 0 and abs(best_score - second_score) < 1e-9
+        margin = (best_score - second_score) / max(best_score, 1e-9)
+        coverage = min(best_score / capacities[best_type], 1.0)
+        evidence_volume = min(best_score / 3.0, 1.0)
+        confidence = min(95.0, 100.0 * (0.35 * coverage + 0.35 * max(margin, 0.0) + 0.30 * evidence_volume))
+        weak = best_score < 1.0 or confidence < 50.0
+        ambiguous = tied or (second_score > 0 and margin < 0.30)
+        needs_review = weak or ambiguous or confidence < 70.0
         return ClassificationResult(
-            document_type=best_type,
-            confidence=round(min(confidence, 99.0), 2),
-            scores=scores,
+            document_type="unknown" if weak or tied else best_type,
+            confidence=round(confidence, 2),
+            scores={name: round(score, 2) for name, score in scores.items()},
+            raw_score=round(best_score, 2),
+            matched_rules=matches[best_type],
+            needs_review=needs_review,
         )
 
     def classify_from_ocr(self, ocr_result: OCRResult) -> ClassificationResult:
-        """Phân loại từ kết quả OCR."""
         return self.classify(ocr_result.text)
 
 
 def build_vietnamese_classifier() -> DocumentClassifier:
-    """Tạo bộ phân loại cho các loại tài liệu tiếng Việt phổ biến."""
     classifier = DocumentClassifier()
-    classifier.register(
-        DocumentClass(
-            name="cccd",
-            keywords=["can cuoc", "căn cước", "cccd", "chip", "quoc gia", "quốc gia"],
-            patterns=[r"Số[:\s]*[0-9]{12}", r"Ngày cấp", r"Nơi cấp"],
-        )
-    )
-    classifier.register(
-        DocumentClass(
-            name="cmnd",
-            keywords=["chung minh nhan dan", "chứng minh nhân dân", "cmnd"],
-            patterns=[r"Số[:\s]*[0-9]{9}"],
-        )
-    )
-    classifier.register(
-        DocumentClass(
-            name="hop_dong_lao_dong",
-            keywords=["hop dong lao dong", "hợp đồng lao động", "hđld"],
-            patterns=[r"Hợp đồng lao động", r"Nghĩa vụ", r"Quyền lợi"],
-        )
-    )
-    classifier.register(
-        DocumentClass(
-            name="don_xin_viec",
-            keywords=["doc don", "đơn xin việc", "kinh gui", "kính gửi"],
-            patterns=[r"Đơn xin việc", r"Kính gửi"],
-        )
-    )
-    classifier.register(
-        DocumentClass(
-            name="ho_khau",
-            keywords=["ho khau", "hộ khẩu", "so ho khau", "sổ hộ khẩu"],
-            patterns=[r"Sổ hộ khẩu", r"Chủ hộ"],
-        )
-    )
+    classifier.register(DocumentClass("cccd", ["căn cước công dân", "căn cước", "cccd", "gắn chip"], [r"Số[:\s]*[0-9]{12}", r"Ngày cấp", r"Nơi cấp"]))
+    classifier.register(DocumentClass("cmnd", ["chứng minh nhân dân", "cmnd"], [r"Số[:\s]*[0-9]{9}"]))
+    classifier.register(DocumentClass("hop_dong_lao_dong", ["hợp đồng lao động", "hđld"], [r"Hợp đồng lao động", r"Nghĩa vụ", r"Quyền lợi"]))
+    classifier.register(DocumentClass("don_xin_viec", ["đơn xin việc", "kính gửi"], [r"Đơn xin việc", r"Kính gửi"]))
+    classifier.register(DocumentClass("ho_khau", ["hộ khẩu", "sổ hộ khẩu"], [r"Sổ hộ khẩu", r"Chủ hộ"]))
     return classifier

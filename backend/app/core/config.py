@@ -40,18 +40,27 @@ class Settings(BaseSettings):
 
     # AI Service
     AI_SERVICE_URL: str = "http://localhost:8001"
-    OCR_ENGINE: str = "paddle"
-    OCR_LANG: str = "vietnamese"
-    OCR_FALLBACK_ENABLED: bool = True
+    OCR_ENGINE: str = "tesseract"
+    OCR_LANG: str = "vie"
+    OCR_FALLBACK_ENABLED: bool = False
+    AI_SERVICE_TIMEOUT_SECONDS: float = 120.0
 
-    # Ràng buộc biến thể RE-044
-    MAX_CONCURRENT_USERS: int = 421
-    DATA_RETENTION_DAYS: int = 41
-    CHANGE_REQUEST_HOURS: int = 18
+    DATA_RETENTION_DAYS: int = 30
+    CLASSIFICATION_REVIEW_THRESHOLD: float = 70.0
 
     # Logging
     LOG_LEVEL: str = "INFO"
     LOG_FORMAT: str = "json"
+
+    @field_validator("DEBUG", mode="before")
+    @classmethod
+    def _parse_debug(cls, value: object) -> object:
+        # Một số môi trường đặt DEBUG=release/debug thay vì boolean.
+        if isinstance(value, str) and value.lower() in {"release", "production"}:
+            return False
+        if isinstance(value, str) and value.lower() == "debug":
+            return True
+        return value
 
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")
     @classmethod

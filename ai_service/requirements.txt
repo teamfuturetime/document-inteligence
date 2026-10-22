@@ -11,8 +11,9 @@ Pillow==11.0.0
 # ===== PDF processing =====
 PyMuPDF==1.25.1
 
-# ===== OCR (tùy chọn, có fallback) =====
-# paddleocr==2.7.3  # cần Python <= 3.11, bật khi có model
+# ===== OCR mặc định =====
+pytesseract==0.3.13
+python-multipart==0.0.20
 
 # ===== HTTP client =====
 httpx==0.28.1

@@ -1,80 +1,105 @@
 # Document Intelligence cho biểu mẫu tiếng Việt
 
-**Mã đề tài:** AI-02
-**Nhóm:** SE2026-T11 – Future Time
-**Thành viên:** Nguyễn Minh Thao (MSSV: 23001936) – Thành viên phát triển
-**Nhánh triển khai cá nhân:** `minhthao`
+Ứng dụng mẫu xử lý PDF/ảnh tiếng Việt theo luồng upload → tiền xử lý → OCR →
+phân loại theo luật → trích xuất → người dùng rà soát và xác nhận. Repository
+hiện có backend FastAPI, AI service FastAPI, PostgreSQL và local file storage.
+Frontend chưa có source code thực thi (thư mục chỉ có Dockerfile), vì vậy không
+được đưa vào Compose ở trạng thái hiện tại.
 
-## Giới thiệu
+## Kiến trúc và công nghệ
 
-Hệ thống Document Intelligence ứng dụng AI để tự động xử lý, nhận diện và trích xuất thông tin từ biểu mẫu tiếng Việt. Hệ thống tiếp nhận PDF, JPG, JPEG, PNG; tiền xử lý ảnh; nhận diện văn bản tiếng Việt bằng OCR; phân loại biểu mẫu; trích xuất thông tin quan trọng thành JSON có cấu trúc; cho phép người dùng xem, chỉnh sửa và xác nhận kết quả; lưu trữ và tìm kiếm tài liệu qua giao diện thân thiện.
-
-## Luồng xử lý
-
-```
-Người dùng → React → FastAPI → Upload → Tiền xử lý → OCR → Phân tích bố cục
-→ AI Document Understanding → JSON → Chuẩn hóa → Người dùng xác nhận
-→ PostgreSQL + File Storage
+```text
+Client → Backend API → Application Service → Repository → PostgreSQL
+                     ├→ StorageService → local volume
+                     └→ AI Service → preprocessing → Tesseract → rules
 ```
 
-## Công nghệ
+- Python 3.12, FastAPI, Pydantic, SQLAlchemy 2, Alembic, PostgreSQL 16.
+- OpenCV, PyMuPDF và Tesseract OCR với gói ngôn ngữ `vie`.
+- Pytest cho unit test. Chưa có E2E thực chạy trên toàn bộ container.
 
-| Tầng | Công nghệ |
-|------|-----------|
-| Frontend | React, TypeScript, Tailwind CSS, Axios, React Router |
-| Backend | Python, FastAPI, Pydantic, SQLAlchemy, Alembic |
-| AI/OCR | PaddleOCR, OpenCV, PyMuPDF, mô hình phân tích bố cục, LLM/Document Understanding, JSON Schema |
-| Dữ liệu & triển khai | PostgreSQL, MinIO/file storage, Docker, Docker Compose, Git/GitHub |
-| Kiểm thử | Pytest, FastAPI TestClient, integration tests, end-to-end tests |
+Thiết kế chi tiết: [docs/architecture.md](docs/architecture.md). API:
+[docs/api.md](docs/api.md).
 
-## Cấu trúc thư mục
+## Cấu trúc thực tế
 
-```
-document-intelligence-vietnamese/
-  frontend/src/{components,pages,services,hooks,types}/
-  frontend/package.json
-  backend/app/{api,core,models,schemas,services,repositories}/
-  backend/app/main.py
-  backend/migrations/
-  backend/requirements.txt
-  ai_service/{ocr,preprocessing,classification,extraction,evaluation}/
-  ai_service/main.py
-  tests/{unit,integration,e2e}/
-  docs/{architecture,database,pipeline,api,evaluation}.md
-  scripts/
-  docker-compose.yml
-  .env.example
-  .gitignore
-  README.md
+```text
+backend/app/{api,core,models,repositories,schemas,services}/
+backend/migrations/             # schema Alembic
+ai_service/{ocr,preprocessing,classification,extraction}/
+ai_service/main.py              # GET /health, POST /process
+tests/unit/                     # unit/API tests có mock
+tests/integration/              # hiện chưa có test case
+tests/e2e/                      # hiện chưa có test case
+docs/
+docker-compose.yml
 ```
 
-## Bắt đầu nhanh
-
-Xem hướng dẫn chi tiết trong [docs/architecture.md](docs/architecture.md) và [docs/pipeline.md](docs/pipeline.md).
+## Cài đặt local
 
 ```bash
-# 1. Sao chép cấu hình môi trường
-cp .env.example .env
-
-# 2. Khởi động toàn bộ hệ thống bằng Docker Compose
-docker compose up --build
-
-# 3. Truy cập
-# Frontend: http://localhost:5173
-# Backend API: http://localhost:8000/docs
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+pip install -r backend/requirements.txt -r backend/requirements-dev.txt
+pip install -r ai_service/requirements.txt
+copy .env.example .env
 ```
 
-## Tài liệu
+Local cần PostgreSQL và Tesseract có language pack tiếng Việt. Khởi tạo DB và
+chạy hai service (hai terminal):
 
-- [Kiến trúc hệ thống](docs/architecture.md)
-- [Thiết kế cơ sở dữ liệu](docs/database.md)
-- [Pipeline xử lý tài liệu](docs/pipeline.md)
-- [Tài liệu API](docs/api.md)
-- [Đánh giá AI](docs/evaluation.md)
+```bash
+cd backend
+alembic upgrade head
+uvicorn app.main:app --reload --port 8000
 
-## Quy ước commit
+# từ thư mục repository
+uvicorn ai_service.main:app --reload --port 8001
+```
 
-- Mỗi task tương ứng tối thiểu 1 commit riêng, có thay đổi thực chất và có thể kiểm chứng.
-- Commit message theo chuẩn Conventional Commits: `feat`, `fix`, `docs`, `test`, `chore`, `perf`.
-- Không push trực tiếp lên `main`; mọi commit triển khai cá nhân thực hiện trên nhánh cá nhân và tích hợp qua Pull Request.
+Các biến quan trọng: `DATABASE_URL`, `AI_SERVICE_URL`, `OCR_ENGINE`,
+`OCR_LANG`, `MAX_UPLOAD_SIZE_MB`, `STORAGE_PATH`, `DATA_RETENTION_DAYS`,
+`CLASSIFICATION_REVIEW_THRESHOLD`. Xem toàn bộ mẫu ở `.env.example`.
 
+## Docker
+
+```bash
+docker compose up --build
+```
+
+Compose khởi động `db`, `ai_service`, `backend`; backend tự chạy migration sau
+khi PostgreSQL và AI service healthy. API ở `http://localhost:8000/docs` và AI
+service ở `http://localhost:8001/health`. Source frontend chưa tồn tại nên chưa
+có container frontend hợp lệ.
+
+## API và kiểm thử
+
+Backend cung cấp `/api/v1/documents` cho upload/list/detail/process/extraction/
+review/confirm/delete. File tối đa mặc định 10 MB; chỉ PDF, PNG, JPEG có magic
+bytes hợp lệ được nhận.
+
+```powershell
+$env:DEBUG='false'  # chỉ cần nếu máy đang có DEBUG=release
+python -m pytest -q
+python -m compileall -q backend ai_service tests
+```
+
+Dọn dữ liệu hết hạn bằng cron hoặc Task Scheduler:
+
+```bash
+cd backend
+python -m app.retention_cli
+```
+
+## Trạng thái và giới hạn
+
+- Confidence phân loại là heuristic 0–100, không phải xác suất/accuracy đã hiệu chuẩn.
+- Chưa có dataset gán nhãn để đo accuracy, precision hoặc recall.
+- Chưa có authentication/authorization; API chỉ phù hợp phát triển nội bộ và
+  không được công bố Internet với dữ liệu thật.
+- Local filesystem + DB dùng cơ chế bù trừ best-effort, không phải transaction phân tán.
+- Chưa có frontend, rate limiting, antivirus, integration/E2E container test.
+- Production cần reverse proxy giới hạn request body và TLS.
+
+Nợ kỹ thuật được theo dõi tại [docs/technical-debt.md](docs/technical-debt.md),
+kết quả đánh giá AI tại [docs/evaluation.md](docs/evaluation.md).

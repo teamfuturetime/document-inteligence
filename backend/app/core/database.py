@@ -6,7 +6,7 @@ from app.core.config import get_settings
 
 settings = get_settings()
 
-# Pool phù hợp với ràng buộc 421 người dùng đồng thời (chỉ cho PostgreSQL)
+# Pool phát triển có kiểm tra kết nối sống (chỉ áp dụng cho PostgreSQL).
 _engine_kwargs: dict = {"pool_pre_ping": True}
 if settings.DATABASE_URL.startswith("postgresql"):
     _engine_kwargs.update({"pool_size": 10, "max_overflow": 20, "pool_recycle": 1800})

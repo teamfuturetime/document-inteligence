@@ -60,8 +60,8 @@ class Document(Base):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         if self.expires_at is None:
-            # Ràng buộc RE-044: lưu giữ 41 ngày
-            self.expires_at = _now() + timedelta(days=settings.DATA_RETENTION_DAYS)
+            created_at = kwargs.get("created_at") or _now()
+            self.expires_at = created_at + timedelta(days=settings.DATA_RETENTION_DAYS)
 
 
 class Extraction(Base):

@@ -1,5 +1,5 @@
 """Repository: truy vấn và lưu trữ metadata tài liệu."""
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from typing import Optional
 
 from sqlalchemy import func, or_, select
@@ -25,8 +25,7 @@ class DocumentRepository:
             file_path=data.file_path,
         )
         self.db.add(doc)
-        self.db.commit()
-        self.db.refresh(doc)
+        self.db.flush()
         return doc
 
     # ===== Read =====
@@ -90,8 +89,7 @@ class DocumentRepository:
         if doc is None:
             return None
         doc.status = status
-        self.db.commit()
-        self.db.refresh(doc)
+        self.db.flush()
         return doc
 
     def save_ocr_result(
@@ -103,8 +101,7 @@ class DocumentRepository:
             return None
         doc.ocr_text = ocr_text
         doc.ocr_boxes = ocr_boxes
-        self.db.commit()
-        self.db.refresh(doc)
+        self.db.flush()
         return doc
 
     def save_extraction(
@@ -129,17 +126,55 @@ class DocumentRepository:
             extraction.data = data
             extraction.confidence = confidence
             extraction.status = "pending_review"
-        self.db.commit()
-        self.db.refresh(extraction)
+        self.db.flush()
+        return extraction
+
+    def review_extraction(
+        self, document_id: str, data: dict, document_type: str | None = None
+    ) -> Optional[Extraction]:
+        extraction = self.get_extraction(document_id)
+        if extraction is None:
+            return None
+        extraction.data = data
+        if document_type:
+            extraction.document_type = document_type
+        extraction.status = "reviewed"
+        self.db.flush()
+        return extraction
+
+    def confirm_extraction(self, document_id: str) -> Optional[Extraction]:
+        extraction = self.get_extraction(document_id)
+        if extraction is None:
+            return None
+        extraction.status = "confirmed"
+        extraction.confirmed_at = datetime.now(timezone.utc)
+        self.db.flush()
         return extraction
 
     # ===== Delete / Retention =====
-    def delete_expired(self, retention_days: int) -> int:
-        """Xóa tài liệu hết hạn lưu giữ (RE-044: 41 ngày)."""
-        cutoff = datetime.now(timezone.utc) - timedelta(days=retention_days)
-        stmt = select(Document).where(Document.created_at < cutoff)
-        expired = list(self.db.execute(stmt).scalars().all())
+    def expired(self, now: datetime | None = None) -> list[Document]:
+        """Lấy tài liệu theo ``expires_at`` là nguồn sự thật duy nhất."""
+        cutoff = now or datetime.now(timezone.utc)
+        stmt = select(Document).where(Document.expires_at.is_not(None), Document.expires_at <= cutoff)
+        return list(self.db.execute(stmt).scalars().all())
+
+    def delete(self, document: Document) -> None:
+        self.db.delete(document)
+        self.db.flush()
+
+    def delete_expired(self, retention_days: int | None = None) -> int:
+        """Tương thích API cũ; ``retention_days`` không thay đổi expires_at."""
+        expired = self.expired()
         for doc in expired:
             self.db.delete(doc)
-        self.db.commit()
+        self.db.flush()
         return len(expired)
+
+    def commit(self) -> None:
+        self.db.commit()
+
+    def rollback(self) -> None:
+        self.db.rollback()
+
+    def refresh(self, instance: object) -> None:
+        self.db.refresh(instance)

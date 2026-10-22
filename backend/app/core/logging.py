@@ -19,7 +19,18 @@ class JsonFormatter(logging.Formatter):
         if record.exc_info:
             entry["exc_info"] = self.formatException(record.exc_info)
         # Chỉ ghi extra fields an toàn (không chứa dữ liệu cá nhân)
-        for key in ("request_id", "document_id", "duration_ms", "status_code"):
+        for key in (
+            "request_id",
+            "document_id",
+            "duration_ms",
+            "status_code",
+            "stored_name",
+            "size_bytes",
+            "deleted_records",
+            "deleted_files",
+            "file_errors",
+            "app",
+        ):
             value = getattr(record, key, None)
             if value is not None:
                 entry[key] = value

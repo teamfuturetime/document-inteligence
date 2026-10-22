@@ -1,79 +1,21 @@
-# OCR Tiếng Việt
+# OCR tiếng Việt
 
-Module OCR nhận dạng văn bản tiếng Việt từ ảnh tài liệu đã qua tiền xử lý.
-
-## Kiến trúc
-
-```
-Ảnh đã tiền xử lý
-        │
-        ▼
-┌───────────────────┐
-│  VietnameseOCR    │  ai_service/ocr/engine.py
-│  Engine           │  Tesseract (chính) → PaddleOCR (dự phòng)
-└─────────┬─────────┘
-          │ OCRResult (text + words + confidence)
-          ▼
-┌───────────────────┐
-│  Post-processing  │  ai_service/ocr/postprocess.py
-│  - Chuẩn hóa NFC │  - Sửa lỗi OCR phổ biến
-│  - Dọn whitespace│  - Sửa dấu tiếng Việt
-└─────────┬─────────┘
-          ▼
-┌───────────────────┐
-│  Confidence       │  ai_service/ocr/confidence.py
-│  Scoring          │  Đánh giá chất lượng → cần rà soát?
-└───────────────────┘
-```
-
-## Engine
-
-`VietnameseOCREngine` hỗ trợ hai engine:
-
-| Engine | Ưu điểm | Cài đặt |
-|--------|---------|---------|
-| **Tesseract** (mặc định) | Nhẹ, nhanh, hỗ trợ tiếng Việt qua gói `vie` | `pip install pytesseract` + tesseract-ocr + gói `vie` |
-| **PaddleOCR** (dự phòng) | Chính xác hơn với ảnh scan, tự phát hiện góc | `pip install paddleocr` (cần Python ≤ 3.11) |
-
-Cơ chế fallback: nếu engine ưu tiên không khả dụng, tự động chuyển sang engine còn lại.
-
-### Sử dụng
+MVP dùng Tesseract và language pack `vie`. Docker image cài cả runtime
+`tesseract-ocr` lẫn `tesseract-ocr-vie`; Python dùng `pytesseract`.
 
 ```python
-from ai_service.ocr.engine import VietnameseOCREngine
-
-engine = VietnameseOCREngine()
-result = engine.recognize(image)   # image: numpy array (BGR)
-print(result.text)                 # văn bản nhận dạng
-print(result.mean_confidence)      # độ tin cậy trung bình (0-100)
+engine = VietnameseOCREngine(prefer="tesseract", tesseract_lang="vie")
+result = engine.recognize(image)
 ```
 
-## Hậu xử lý
+`OCRResult` chứa text, word/bounding box, engine và mean confidence 0–100 do OCR
+runtime cung cấp. `assess_confidence` chia quality high/medium/low; text/identifier
+không được ghi vào application log.
 
-`postprocess_text()` thực hiện theo thứ tự:
+Mã nguồn còn adapter PaddleOCR để mở rộng, nhưng dependency này không có trong
+image/requirements mặc định và chưa được CI test. Fallback mặc định tắt. Chỉ đặt
+`OCR_FALLBACK_ENABLED=true` sau khi đã cài và kiểm thử engine còn lại; nếu engine
+cấu hình không khả dụng, `/health` trả `degraded` và `/process` trả lỗi xử lý.
 
-1. **Chuẩn hóa Unicode** — chuyển NFD → NFC để đồng nhất dấu tiếng Việt
-2. **Sửa lỗi OCR phổ biến** — `å → á`, `ä → ă`, `ë → ê`, `| → l`, ...
-3. **Sửa dấu sai vị trí** — `hòa → hoà`, `úy → uý` (theo quy tắc chính tả)
-4. **Dọn khoảng trắng** — gộp space, bỏ space trước dấu câu
-
-## Độ tin cậy
-
-`assess_confidence()` phân loại chất lượng:
-
-| Chất lượng | Điều kiện | Hành động |
-|------------|-----------|-----------|
-| `high` | mean ≥ 80 và ≤ 10% từ thấp | Lưu trực tiếp |
-| `medium` | mean ≥ 50 | Lưu, đánh dấu cần kiểm tra |
-| `low` | mean < 50 | Chạy lại với engine khác / yêu cầu rà soát thủ công |
-
-`should_reprocess()` quyết định có nên chạy lại OCR với engine dự phòng không.
-
-## Tích hợp pipeline
-
-Trong pipeline xử lý tài liệu (xem `docs/pipeline.md`), OCR nằm sau bước
-tiền xử lý ảnh và trước bước trích xuất thông tin:
-
-```
-Upload → Validate → Preprocess → OCR → Post-process → Extract → Store
-```
+PDF được render bằng PyMuPDF (200 DPI); ảnh được resize, grayscale, tăng tương phản
+và khử nhiễu bằng OpenCV trước OCR.

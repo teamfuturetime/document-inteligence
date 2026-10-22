@@ -31,6 +31,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      ai_service:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 10s
@@ -42,9 +44,10 @@ services:
       context: .
       dockerfile: ai_service/Dockerfile
     environment:
-      OCR_ENGINE: ${OCR_ENGINE:-paddle}
-      OCR_LANG: ${OCR_LANG:-vietnamese}
-      OCR_FALLBACK_ENABLED: "true"
+      OCR_ENGINE: ${OCR_ENGINE:-tesseract}
+      OCR_LANG: ${OCR_LANG:-vie}
+      OCR_FALLBACK_ENABLED: ${OCR_FALLBACK_ENABLED:-false}
+      MAX_UPLOAD_SIZE_MB: ${MAX_UPLOAD_SIZE_MB:-10}
     ports:
       - "8001:8001"
     healthcheck:
@@ -52,15 +55,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-  frontend:
-    build:
-      context: .
-      dockerfile: frontend/Dockerfile
-    ports:
-      - "5173:80"
-    depends_on:
-      - backend
 
 volumes:
   pgdata:

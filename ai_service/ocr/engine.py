@@ -1,8 +1,8 @@
-"""OCR engine hỗ trợ tiếng Việt: Tesseract (chính) + PaddleOCR (dự phòng)."""
+"""OCR tiếng Việt; Tesseract mặc định, fallback chỉ khi được bật rõ ràng."""
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import List
 
 import numpy as np
 
@@ -23,6 +23,20 @@ except ImportError:  # pragma: no cover
 
 class OCRError(Exception):
     """Lỗi khi nhận dạng văn bản thất bại."""
+
+
+def available_engines() -> List[str]:
+    """Danh sách engine có cả thư viện Python lẫn runtime khả dụng."""
+    engines: List[str] = []
+    if _HAS_TESSERACT:
+        try:
+            pytesseract.get_tesseract_version()
+            engines.append("tesseract")
+        except Exception:
+            pass
+    if _HAS_PADDLE:
+        engines.append("paddle")
+    return engines
 
 
 @dataclass
@@ -52,7 +66,7 @@ class OCRResult:
 
 
 class VietnameseOCREngine:
-    """Engine OCR tiếng Việt với cơ chế fallback Tesseract → PaddleOCR."""
+    """Engine OCR tiếng Việt với fallback tùy chọn."""
 
     def __init__(
         self,
@@ -60,26 +74,33 @@ class VietnameseOCREngine:
         prefer: str = "tesseract",
         tesseract_lang: str = "vie",
         paddle_lang: str = "vi",
+        allow_fallback: bool = False,
     ) -> None:
         self.tesseract_lang = tesseract_lang
         self.paddle_lang = paddle_lang
         self._paddle_engine = None
         self.prefer = prefer
+        self.allow_fallback = allow_fallback
 
     # ------------------------------------------------------------------
     # Public API
     # ------------------------------------------------------------------
     def recognize(self, image: np.ndarray) -> OCRResult:
         """Nhận dạng văn bản tiếng Việt từ ảnh."""
-        if self.prefer == "paddle" and _HAS_PADDLE:
-            return self._recognize_paddle(image)
-        if _HAS_TESSERACT:
-            return self._recognize_tesseract(image)
-        if _HAS_PADDLE:
-            return self._recognize_paddle(image)
+        if self.prefer == "paddle":
+            if _HAS_PADDLE:
+                return self._recognize_paddle(image)
+            if self.allow_fallback and _HAS_TESSERACT:
+                return self._recognize_tesseract(image)
+        elif self.prefer == "tesseract":
+            if _HAS_TESSERACT:
+                return self._recognize_tesseract(image)
+            if self.allow_fallback and _HAS_PADDLE:
+                return self._recognize_paddle(image)
+        else:
+            raise OCRError(f"OCR engine không được hỗ trợ: {self.prefer}")
         raise OCRError(
-            "Không có OCR engine nào khả dụng. "
-            "Cài pytesseract (kèm tesseract-ocr + gói vie) hoặc paddleocr."
+            f"OCR engine '{self.prefer}' không khả dụng trong runtime."
         )
 
     # ------------------------------------------------------------------

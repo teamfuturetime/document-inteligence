@@ -36,7 +36,7 @@ Lưu metadata của tài liệu đã upload.
 | ocr_boxes | JSONB | NULL | Bounding boxes OCR |
 | created_at | DateTime | NOT NULL, default now | Thời điểm tạo |
 | updated_at | DateTime | NOT NULL, onupdate | Thời điểm cập nhật |
-| expires_at | DateTime | NULL | Hết hạn lưu giữ (41 ngày) |
+| expires_at | DateTime | NULL | Hết hạn lưu giữ theo cấu hình |
 
 ## 3. Bảng `extractions`
 
@@ -64,5 +64,5 @@ Lưu kết quả trích xuất JSON của từng tài liệu.
 
 ## 5. Ràng buộc RE-044
 
-- **Lưu giữ 41 ngày**: cột `expires_at = created_at + 41 ngày`; script `scripts/retention.py` xóa tài liệu hết hạn.
-- **421 người dùng đồng thời**: pool kết nối PostgreSQL cấu hình phù hợp (pool_size, max_overflow).
+- **Lưu giữ cấu hình được**: `expires_at = created_at + DATA_RETENTION_DAYS`; chạy `python -m app.retention_cli` định kỳ.
+- **Kết nối**: pool PostgreSQL nhỏ cho môi trường phát triển; production phải sizing từ đo tải thật.

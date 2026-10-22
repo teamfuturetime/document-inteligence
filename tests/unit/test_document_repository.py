@@ -1,5 +1,5 @@
 """Unit tests cho DocumentRepository."""
-from app.models import Document, Extraction
+from app.models import Document
 from app.repositories.documents import DocumentRepository
 from app.schemas.documents import DocumentCreate
 
@@ -17,7 +17,6 @@ def _make_doc(db, filename="file.pdf", status="uploaded"):
 
 
 def test_create_document(db_session):
-    repo = DocumentRepository(db_session)
     doc = _make_doc(db_session, "hoa-don.pdf")
     assert doc.id is not None
     assert doc.status == "uploaded"

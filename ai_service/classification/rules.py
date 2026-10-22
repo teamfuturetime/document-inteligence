@@ -88,20 +88,35 @@ class DocumentTypeDetector:
                 document_type="unknown", confidence=0.0, scores=combined
             )
 
-        best_type = max(combined, key=combined.get)
-        best_score = combined[best_type]
-        total = sum(combined.values()) or 1.0
-        confidence = round((best_score / total) * 100.0, 2)
+        ranked = sorted(combined.items(), key=lambda item: item[1], reverse=True)
+        best_type, best_score = ranked[0]
+        second_score = ranked[1][1] if len(ranked) > 1 else 0.0
+        margin = (best_score - second_score) / max(best_score, 1e-9)
+        confidence = round(
+            min(95.0, 35.0 + min(best_score, 4.0) * 12.0 + margin * 12.0), 2
+        )
+        ambiguous = second_score > 0 and margin < 0.30
 
         # Ghi đè bằng keyword nếu pattern rỗng nhưng input rõ ràng
         if best_score <= 0 and keyword_result.document_type != "unknown":
             return keyword_result
 
         return ClassificationResult(
-            document_type=best_type if confidence >= self.min_confidence else "unknown",
+            document_type=(
+                best_type
+                if confidence >= self.min_confidence and not ambiguous
+                else "unknown"
+            ),
             confidence=confidence,
             scores=combined,
             source="rule",
+            raw_score=best_score,
+            matched_rules=[
+                f"pattern:{pattern}"
+                for pattern in _SPECIFIC_PATTERNS[best_type]
+                if re.search(pattern, text, re.IGNORECASE)
+            ],
+            needs_review=ambiguous or confidence < 70.0,
         )
 
 

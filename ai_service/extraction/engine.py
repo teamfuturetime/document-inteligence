@@ -1,9 +1,8 @@
 """Engine trích xuất trường dữ liệu từ văn bản OCR."""
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass, field
-from typing import Callable, Dict, List, Optional, Pattern
+from typing import Dict, List, Optional, Pattern
 
 from ai_service.ocr.engine import OCRResult
 

@@ -60,3 +60,7 @@ class ExtractionUpdate(BaseModel):
 
     data: Dict[str, Any]
     document_type: Optional[str] = None
+
+
+class MessageOut(BaseModel):
+    message: str

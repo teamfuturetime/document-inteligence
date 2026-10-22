@@ -52,15 +52,22 @@ def assess_classification(result: ClassificationResult) -> ClassificationReport:
     else:
         quality = "low"
 
-    return ClassificationReport(
+    report = ClassificationReport(
         document_type=result.document_type,
         confidence=result.confidence,
         quality=quality,
         is_ambiguous=is_ambiguous,
         note=note,
     )
+    if result.needs_review and report.quality == "high":
+        report.quality = "medium"
+    return report
 
 
 def is_classified(result: ClassificationResult) -> bool:
     """Kiểm tra tài liệu đã được phân loại thành công chưa."""
-    return result.document_type != "unknown" and result.confidence >= LOW_CONFIDENCE
+    return (
+        result.document_type != "unknown"
+        and result.confidence >= LOW_CONFIDENCE
+        and not result.needs_review
+    )
