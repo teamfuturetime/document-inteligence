@@ -5,6 +5,8 @@ from app.core.database import get_db
 from app.repositories.documents import DocumentRepository
 from app.services.documents import DocumentService
 from app.services.storage import StorageService
+from app.api.security import get_current_user
+from app.models import User
 
 
 def get_repository(db: Session = Depends(get_db)) -> DocumentRepository:
@@ -18,5 +20,6 @@ def get_storage() -> StorageService:
 def get_document_service(
     repository: DocumentRepository = Depends(get_repository),
     storage: StorageService = Depends(get_storage),
+    user: User = Depends(get_current_user),
 ) -> DocumentService:
-    return DocumentService(repository, storage)
+    return DocumentService(repository, storage, user.id)

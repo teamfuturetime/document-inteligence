@@ -21,6 +21,7 @@ except ImportError:  # pragma: no cover
     _HAS_FITZ = False
 
 from ai_service.preprocessing.image import PreprocessingError, to_grayscale
+from ai_service.config import MAX_IMAGE_PIXELS, MAX_PDF_PAGES
 
 
 def pdf_to_images(pdf_path: str, dpi: int = 200) -> List[np.ndarray]:
@@ -35,11 +36,17 @@ def pdf_to_images(pdf_path: str, dpi: int = 200) -> List[np.ndarray]:
 
     images: List[np.ndarray] = []
     with fitz.open(path) as doc:
+        if doc.page_count == 0:
+            raise PreprocessingError("PDF không có trang")
+        if doc.page_count > MAX_PDF_PAGES:
+            raise PreprocessingError(f"PDF vượt quá giới hạn {MAX_PDF_PAGES} trang")
         for page in doc:
             # Render trang ở DPI mong muốn
             zoom = dpi / 72.0
             matrix = fitz.Matrix(zoom, zoom)
             pix = page.get_pixmap(matrix=matrix, alpha=False)
+            if pix.width * pix.height > MAX_IMAGE_PIXELS:
+                raise PreprocessingError("Trang PDF vượt quá giới hạn kích thước ảnh")
             # Chuyển sang numpy array (RGB)
             img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(
                 pix.height, pix.width, pix.n

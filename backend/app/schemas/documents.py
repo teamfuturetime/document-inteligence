@@ -12,6 +12,7 @@ class DocumentCreate(BaseModel):
     content_type: str = Field(..., max_length=100)
     file_size: int = Field(..., ge=0)
     file_path: str = Field(..., max_length=500)
+    owner_id: Optional[str] = None
 
 
 class DocumentOut(BaseModel):
@@ -49,6 +50,7 @@ class ExtractionOut(BaseModel):
     document_type: str
     data: Dict[str, Any]
     confidence: float
+    classification_metadata: Optional[Dict[str, Any]] = None
     status: str
     created_at: datetime
     updated_at: datetime
@@ -64,3 +66,11 @@ class ExtractionUpdate(BaseModel):
 
 class MessageOut(BaseModel):
     message: str
+
+
+class DashboardOut(BaseModel):
+    total: int
+    processed: int
+    awaiting_review: int
+    confirmed: int
+    recent: List[DocumentOut]

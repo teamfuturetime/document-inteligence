@@ -1,58 +1,35 @@
-# Kiến trúc hiện tại
-
-## Thành phần và phụ thuộc
+# Kiến trúc hệ thống
 
 ```text
-HTTP client
-   │
-   ▼
-Backend Router ──► Document/Upload Service ──► Repository ──► PostgreSQL
-                              │
-                              ├──► StorageService ──► uploads volume
-                              └──► AI Service /process
-                                         │
-                                         ▼
-                       validation → preprocessing → OCR
-                       → classification → extraction → JSON
+Browser → Nginx :3000 ─┬→ React SPA
+                      └→ /api (same origin)
+                            ↓
+                 FastAPI Backend :8000
+                 ├→ Auth/CSRF/ownership
+                 ├→ Service → Repository → PostgreSQL
+                 ├→ StorageService → uploads volume
+                 └→ AI Service :8001
+                     validation → PDF/image limits → preprocessing
+                     → Tesseract vie → classification → extraction
 ```
 
-Router chỉ chuyển đổi HTTP/Pydantic và ánh xạ lỗi. Application service điều phối
-use case và sở hữu commit/rollback. Repository chỉ thao tác ORM/flush. AI service
-không import model hoặc schema database của backend. Đây là phân tầng và tách
-biệt mối quan tâm theo Lecture 04; dependency đi từ tầng cao xuống abstraction
-nhỏ, dễ thay trong test.
+Router chuyển đổi HTTP/Pydantic và ánh xạ lỗi. Application service sở hữu transaction; repository chỉ thao tác ORM/flush. AI Service độc lập với schema database. Frontend gọi `/api` qua Nginx nên cookie session không cần CORS khi chạy Compose.
 
-## Quyết định chính
+## Quyết định bảo mật
 
-- `file_path` hiện lưu storage key ngẫu nhiên, không lưu path do client cung cấp.
-  Storage root được resolve một lần; absolute path, traversal và symlink escape bị chặn.
-- Upload ghi từng chunk 1 MiB và dừng ngay khi vượt `MAX_UPLOAD_SIZE_MB`.
-- `expires_at` là nguồn sự thật duy nhất cho retention và luôn là UTC aware ở
-  Python. Cleanup xóa quan hệ con qua cascade, có thể chạy lại khi file không tồn tại.
-- Confidence của classifier ghi rõ `confidence_type=heuristic`, cùng raw score,
-  matched rules và `needs_review`; hòa điểm trả `unknown`.
-- Tesseract + `vie` là OCR mặc định duy nhất được cài trong image. Paddle chỉ có
-  thể dùng khi người vận hành tự cài dependency; không quảng bá là fallback sẵn có.
+- Mật khẩu băm bằng scrypt với salt ngẫu nhiên; không lưu mật khẩu rõ.
+- Session ngẫu nhiên nằm trong cookie HttpOnly, SameSite=Lax; database chỉ lưu SHA-256 digest của token.
+- Mọi thao tác ghi tài liệu yêu cầu CSRF token. Production phải đặt `SESSION_COOKIE_SECURE=true` và dùng TLS.
+- Repository lọc `owner_id`; tài liệu của người khác trả 404 để không tiết lộ ID tồn tại.
+- Client không nhận `file_path`. Preview kiểm tra quyền, đúng MIME, inline và `Cache-Control: private, no-store`.
+- Storage key ngẫu nhiên; absolute path, traversal và symlink escape bị chặn.
 
-## Transaction và lỗi
+## Transaction và trạng thái
 
-Service commit ở cuối mỗi thay đổi logic. Upload xóa file nếu DB flush/commit lỗi.
-Processing rollback thay đổi dở dang và chuyển trạng thái sang `failed`. Filesystem
-và PostgreSQL không hỗ trợ atomic transaction chung; cleanup vì vậy dùng bù trừ
-best-effort và log metadata không chứa OCR text/PII.
+Luồng hợp lệ chính: `uploaded → processing → processed → reviewed → confirmed`; xử lý lỗi thành `failed`, có thể retry. Không review/confirm trước khi xử lý và không xử lý lại bản đã xác nhận. Extraction có unique constraint theo document và được upsert.
 
-Mỗi HTTP response có `X-Request-ID`. Exception không dự kiến trả thông báo chung;
-log không ghi nội dung tài liệu. Request validation trả 400/413; lỗi AI upstream trả 502.
+Upload xóa file khi DB lỗi. Processing rollback dữ liệu dở dang rồi lưu trạng thái `failed`. Filesystem và PostgreSQL không có distributed transaction nên cleanup là best-effort.
 
-## Deploy
+## Triển khai
 
-Compose thực tế gồm `db`, `ai_service`, `backend`, named volume cho PostgreSQL và
-uploads, health check và dependency condition. Backend chạy Alembic trước Uvicorn.
-Frontend chưa có source/package manifest nên không nằm trong Compose.
-
-## Liên hệ nguyên lý môn học
-
-- Lecture 04: ranh giới Router → Service → Repository → Database; AI service độc lập;
-  contract HTTP và typed schema rõ ràng.
-- Lecture 05: hàm có một trách nhiệm, validation tập trung, không commit rải rác,
-  cấu hình qua environment, lỗi/log nhất quán, test cho boundary và security case.
+Compose có `db`, `ai_service`, `backend`, `frontend`; named volume cho PostgreSQL và uploads, health checks, migration trước Uvicorn, Tesseract `vie`, và Nginx SPA fallback.

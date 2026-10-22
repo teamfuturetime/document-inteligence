@@ -21,7 +21,7 @@ class DocumentUploadService:
         self.repository = repository
         self.storage = storage
 
-    async def upload(self, file: UploadFile):
+    async def upload(self, file: UploadFile, owner_id: str | None = None):
         filename = file.filename or "unknown"
         content_type = file.content_type or "application/octet-stream"
         validate_upload_metadata(filename, content_type)
@@ -41,6 +41,7 @@ class DocumentUploadService:
                     content_type=content_type,
                     file_size=size,
                     file_path=key,
+                    owner_id=owner_id,
                 )
             )
             self.repository.commit()

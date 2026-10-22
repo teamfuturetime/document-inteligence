@@ -23,19 +23,25 @@ class DocumentRepository:
             content_type=data.content_type,
             file_size=data.file_size,
             file_path=data.file_path,
+            owner_id=data.owner_id,
         )
         self.db.add(doc)
         self.db.flush()
         return doc
 
     # ===== Read =====
-    def get_by_id(self, document_id: str) -> Optional[Document]:
+    def get_by_id(self, document_id: str, owner_id: str | None = None) -> Optional[Document]:
         """Lấy tài liệu theo id."""
-        return self.db.get(Document, document_id)
+        stmt = select(Document).where(Document.id == document_id)
+        if owner_id is not None:
+            stmt = stmt.where(Document.owner_id == owner_id)
+        return self.db.execute(stmt).scalar_one_or_none()
 
-    def get_extraction(self, document_id: str) -> Optional[Extraction]:
+    def get_extraction(self, document_id: str, owner_id: str | None = None) -> Optional[Extraction]:
         """Lấy kết quả trích xuất của tài liệu."""
-        stmt = select(Extraction).where(Extraction.document_id == document_id)
+        stmt = select(Extraction).join(Document).where(Extraction.document_id == document_id)
+        if owner_id is not None:
+            stmt = stmt.where(Document.owner_id == owner_id)
         return self.db.execute(stmt).scalar_one_or_none()
 
     def list_documents(
@@ -46,10 +52,15 @@ class DocumentRepository:
         status: Optional[str] = None,
         search: Optional[str] = None,
         document_type: Optional[str] = None,
+        owner_id: str | None = None,
     ) -> tuple[list[Document], int]:
         """Liệt kê tài liệu với phân trang, lọc và tìm kiếm."""
         stmt = select(Document)
         count_stmt = select(func.count(Document.id))
+
+        if owner_id is not None:
+            stmt = stmt.where(Document.owner_id == owner_id)
+            count_stmt = count_stmt.where(Document.owner_id == owner_id)
 
         if status:
             stmt = stmt.where(Document.status == status)
@@ -110,6 +121,7 @@ class DocumentRepository:
         document_type: str,
         data: dict,
         confidence: float,
+        classification_metadata: dict | None = None,
     ) -> Extraction:
         """Tạo hoặc cập nhật kết quả trích xuất."""
         extraction = self.get_extraction(document_id)
@@ -119,12 +131,14 @@ class DocumentRepository:
                 document_type=document_type,
                 data=data,
                 confidence=confidence,
+                classification_metadata=classification_metadata,
             )
             self.db.add(extraction)
         else:
             extraction.document_type = document_type
             extraction.data = data
             extraction.confidence = confidence
+            extraction.classification_metadata = classification_metadata
             extraction.status = "pending_review"
         self.db.flush()
         return extraction

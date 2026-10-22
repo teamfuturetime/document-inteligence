@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 import uuid
 
 from app.api.documents import router as documents_router
+from app.api.auth import router as auth_router
 from app.core.config import get_settings
 from app.core.logging import get_logger, setup_logging
 
@@ -40,6 +41,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(documents_router, prefix=settings.API_V1_PREFIX)
+app.include_router(auth_router, prefix=settings.API_V1_PREFIX)
 
 
 @app.middleware("http")

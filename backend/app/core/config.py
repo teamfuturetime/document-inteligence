@@ -20,6 +20,8 @@ class Settings(BaseSettings):
     API_V1_PREFIX: str = "/api/v1"
     SECRET_KEY: str = "dev-secret-key"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    SESSION_COOKIE_NAME: str = "di_session"
+    SESSION_COOKIE_SECURE: bool = False
 
     # CORS
     BACKEND_CORS_ORIGINS: List[str] = [

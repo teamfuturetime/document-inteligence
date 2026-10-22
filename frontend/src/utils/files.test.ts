@@ -1,0 +1,2 @@
+import{describe,expect,it}from'vitest';import{validateUpload}from'./files';
+describe('validateUpload',()=>{it('chấp nhận PDF hợp lệ',()=>expect(validateUpload(new File(['%PDF'],'mau.pdf',{type:'application/pdf'}))).toBeNull());it('từ chối định dạng lạ',()=>expect(validateUpload(new File(['x'],'x.txt',{type:'text/plain'}))).toContain('Chỉ hỗ trợ'));it('từ chối file quá lớn',()=>expect(validateUpload(new File([new Uint8Array(11*1024*1024)],'x.png',{type:'image/png'}))).toContain('10 MB'))})

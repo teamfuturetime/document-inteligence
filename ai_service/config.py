@@ -6,5 +6,7 @@ OCR_LANG = os.getenv("OCR_LANG", "vie")
 OCR_FALLBACK_ENABLED = os.getenv("OCR_FALLBACK_ENABLED", "false").lower() in {"1", "true", "yes"}
 MAX_UPLOAD_SIZE_MB = int(os.getenv("MAX_UPLOAD_SIZE_MB", "10"))
 MAX_UPLOAD_SIZE_BYTES = MAX_UPLOAD_SIZE_MB * 1024 * 1024
+MAX_PDF_PAGES = int(os.getenv("MAX_PDF_PAGES", "20"))
+MAX_IMAGE_PIXELS = int(os.getenv("MAX_IMAGE_PIXELS", "40000000"))
 ALLOWED_EXTENSIONS = {".pdf", ".png", ".jpg", ".jpeg"}
 REVIEW_THRESHOLD = float(os.getenv("CLASSIFICATION_REVIEW_THRESHOLD", "70"))

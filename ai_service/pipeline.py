@@ -3,6 +3,11 @@ from __future__ import annotations
 
 from dataclasses import asdict
 from pathlib import Path
+import os
+
+from ai_service.config import MAX_IMAGE_PIXELS
+
+os.environ.setdefault("OPENCV_IO_MAX_IMAGE_PIXELS", str(MAX_IMAGE_PIXELS))
 
 import cv2
 
@@ -30,6 +35,8 @@ class DocumentPipeline:
         if path.suffix.lower() == ".pdf":
             return preprocess_document(str(path))
         image = cv2.imread(str(path), cv2.IMREAD_COLOR)
+        if image is not None and image.shape[0] * image.shape[1] > MAX_IMAGE_PIXELS:
+            raise PipelineError("Ảnh vượt quá giới hạn số điểm ảnh")
         if image is None:
             raise PipelineError("Không thể giải mã ảnh")
         return [image]

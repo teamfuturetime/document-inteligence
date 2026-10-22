@@ -32,6 +32,11 @@ def api_client(tmp_path):
     app.dependency_overrides[get_db] = override_db
     app.dependency_overrides[get_storage] = lambda: storage
     with TestClient(app) as client:
+        auth = client.post(
+            "/api/v1/auth/register",
+            json={"email": "unit@example.test", "username": "unit_user", "password": "Unit-password-123"},
+        )
+        client.headers.update({"X-CSRF-Token": auth.json()["csrf_token"]})
         yield client, storage
     app.dependency_overrides.clear()
     Base.metadata.drop_all(engine)

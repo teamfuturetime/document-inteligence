@@ -1,33 +1,25 @@
 # API
 
-Base URL backend: `/api/v1`. Swagger: `/docs`.
-
-| Method | Path | Thành công | Mô tả |
-|---|---|---:|---|
-| POST | `/documents` | 201 | Multipart field `file`; PDF/JPEG/PNG, mặc định ≤10 MB |
-| GET | `/documents` | 200 | `page`, `page_size`, `status`, `search`, `document_type` |
-| GET | `/documents/{id}` | 200 | Metadata tài liệu |
-| POST | `/documents/{id}/process` | 200 | Gửi file nội bộ tới AI service và lưu extraction |
-| GET | `/documents/{id}/extraction` | 200 | Kết quả trích xuất |
-| PATCH | `/documents/{id}/extraction` | 200 | Body `{data, document_type?}`; đánh dấu reviewed |
-| POST | `/documents/{id}/confirm` | 200 | Xác nhận kết quả đã rà soát |
-| DELETE | `/documents/{id}` | 200 | Xóa record và file tương ứng |
-
-Mã lỗi chính: `400` file sai định dạng, `413` quá dung lượng, `404` không tồn tại,
-`422` body không hợp lệ, `502` AI service thất bại, `500` lỗi không dự kiến.
-
-AI service:
+Base URL: `/api/v1`; Swagger: `/docs`. Endpoint tài liệu yêu cầu cookie đăng nhập. Request ghi yêu cầu header `X-CSRF-Token` nhận từ đăng nhập/đăng ký.
 
 | Method | Path | Mô tả |
 |---|---|---|
-| GET | `/health` | Engine cấu hình và engine runtime khả dụng |
-| POST | `/process` | Multipart `file`, trả `ocr`, `classification`, `extraction` |
+| POST | `/auth/register` | Tạo người dùng và session |
+| POST | `/auth/login` | Đăng nhập bằng email hoặc username |
+| GET | `/auth/me` | Người dùng hiện tại |
+| POST | `/auth/logout` | Hủy session |
+| GET | `/documents/dashboard/summary` | Thống kê và tài liệu gần đây |
+| POST | `/documents` | Upload PDF/JPEG/PNG ≤ 10 MB |
+| GET | `/documents` | Phân trang; lọc `status`, `document_type`; `search` tên/OCR |
+| GET | `/documents/{id}` | Metadata không chứa storage path |
+| GET | `/documents/{id}/preview` | PDF/ảnh inline, riêng tư |
+| GET | `/documents/{id}/export` | JSON extraction an toàn |
+| POST | `/documents/{id}/process` | OCR, phân loại, trích xuất và lưu |
+| GET | `/documents/{id}/extraction` | Kết quả trích xuất |
+| PATCH | `/documents/{id}/extraction` | Lưu chỉnh sửa `{data, document_type?}` |
+| POST | `/documents/{id}/confirm` | Xác nhận kết quả |
+| DELETE | `/documents/{id}` | Xóa record và file |
 
-`classification.confidence` thuộc [0,100], loại `heuristic`; không được diễn giải
-như xác suất. `matched_rules` giải thích tín hiệu, `needs_review` yêu cầu kiểm tra tay.
+Mã lỗi chính: `400` file sai; `401` chưa đăng nhập; `403` CSRF sai; `404` không tồn tại/không sở hữu; `409` trạng thái không hợp lệ; `413` quá dung lượng; `422` body sai; `502` AI Service lỗi.
 
-## Cảnh báo bảo mật
-
-Phiên bản này chưa xác thực người dùng và chưa phân quyền theo document. Không dùng
-API trên Internet hoặc với dữ liệu cá nhân thật trước khi bổ sung authz, TLS, audit
-và chính sách request-size ở reverse proxy.
+AI Service có `GET /health` và `POST /process`. `classification.confidence` là heuristic 0–100, không phải xác suất hiệu chuẩn; backend lưu `matched_rules`, `confidence_type`, `needs_review` để giải thích.

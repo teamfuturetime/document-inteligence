@@ -48,10 +48,27 @@ services:
       OCR_LANG: ${OCR_LANG:-vie}
       OCR_FALLBACK_ENABLED: ${OCR_FALLBACK_ENABLED:-false}
       MAX_UPLOAD_SIZE_MB: ${MAX_UPLOAD_SIZE_MB:-10}
+      MAX_PDF_PAGES: ${MAX_PDF_PAGES:-20}
+      MAX_IMAGE_PIXELS: ${MAX_IMAGE_PIXELS:-40000000}
     ports:
       - "8001:8001"
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost/"]
       interval: 10s
       timeout: 5s
       retries: 5

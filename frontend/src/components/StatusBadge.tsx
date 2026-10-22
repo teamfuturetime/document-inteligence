@@ -1,0 +1,1 @@
+const labels:Record<string,string>={uploaded:'Đã tải lên',processing:'Đang xử lý',processed:'Chờ rà soát',reviewed:'Đã rà soát',confirmed:'Đã xác nhận',failed:'Xử lý lỗi'};export default function StatusBadge({status}:{status:string}){return <span className={'badge status-'+status}>{labels[status]||status}</span>}

@@ -1,0 +1,23 @@
+[
+  {
+    "file": "don-xin-viec-tong-hop.png",
+    "expected_document_type": "don_xin_viec",
+    "synthetic": true
+  },
+  {
+    "file": "hop-dong-tong-hop.png",
+    "expected_document_type": "hop_dong_lao_dong",
+    "synthetic": true
+  },
+  {
+    "file": "bieu-mau-hanh-chinh.png",
+    "expected_document_type": "unknown",
+    "synthetic": true
+  },
+  {
+    "file": "bo-mau-nhieu-trang.pdf",
+    "expected_document_type": "mixed_demo",
+    "synthetic": true,
+    "pages": 3
+  }
+]

@@ -26,19 +26,28 @@ class ProcessingError(RuntimeError):
     pass
 
 
+class InvalidStateError(RuntimeError):
+    pass
+
+
 class DocumentService:
-    def __init__(self, repository: DocumentRepository, storage: StorageService):
+    def __init__(self, repository: DocumentRepository, storage: StorageService, owner_id: str | None = None):
         self.repository = repository
         self.storage = storage
+        self.owner_id = owner_id
 
     def get(self, document_id: str):
-        document = self.repository.get_by_id(document_id)
+        document = self.repository.get_by_id(document_id, self.owner_id)
         if document is None:
             raise DocumentNotFoundError(document_id)
         return document
 
     async def process(self, document_id: str):
         document = self.get(document_id)
+        if document.status == "processing":
+            raise InvalidStateError("Tài liệu đang được xử lý")
+        if document.status == "confirmed":
+            raise InvalidStateError("Tài liệu đã được xác nhận")
         self.repository.update_status(document_id, "processing")
         self.repository.commit()
         logger.info("Processing started", extra={"document_id": document_id})
@@ -61,6 +70,7 @@ class DocumentService:
                 classification["document_type"],
                 extraction.get("data", {}),
                 float(classification.get("confidence", 0.0)) / 100.0,
+                {"confidence_type": classification.get("confidence_type", "heuristic"), "matched_rules": classification.get("matched_rules", []), "needs_review": classification.get("needs_review", True)},
             )
             self.repository.update_status(document_id, "processed")
             self.repository.commit()
@@ -75,7 +85,9 @@ class DocumentService:
             raise ProcessingError("AI service không thể xử lý tài liệu") from exc
 
     def review(self, document_id: str, update: ExtractionUpdate):
-        self.get(document_id)
+        document = self.get(document_id)
+        if document.status not in {"processed", "reviewed"}:
+            raise InvalidStateError("Chỉ có thể rà soát tài liệu đã xử lý")
         extraction = self.repository.review_extraction(document_id, update.data, update.document_type)
         if extraction is None:
             raise ExtractionNotFoundError(document_id)
@@ -85,7 +97,9 @@ class DocumentService:
         return extraction
 
     def confirm(self, document_id: str):
-        self.get(document_id)
+        document = self.get(document_id)
+        if document.status not in {"processed", "reviewed"}:
+            raise InvalidStateError("Chỉ có thể xác nhận tài liệu đã xử lý")
         extraction = self.repository.confirm_extraction(document_id)
         if extraction is None:
             raise ExtractionNotFoundError(document_id)
