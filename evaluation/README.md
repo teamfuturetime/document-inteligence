@@ -1,5 +1,9 @@
 # Evaluation
 
+Product 0.2.0 có evaluator `docintel.evaluation.product` cho invoice/application và `scripts/evaluate_model.py`; labels chỉ được evaluator đọc sau prediction. [Các run thực](runs/2026-10-24-test-frozen/report.json), [policy profile](reports/confidence-selection-2026-10-24.json), [candidate hashes](reports/product-candidate-2026-10-24.json). Mỗi run giữ predictions.json và report.json; test source đã freeze, không tune trên test. Bộ synthetic nhỏ/template đã biết không là độ chính xác tổng quát.
+
+Reproduce policy profile từ cache validation baseline: `uv run --project backend --locked python scripts/select_confidence_policy.py --run-dir evaluation/runs/2026-10-24-validation-baseline --output runtime/evaluation/profile-new.json`. Muốn tạo baseline mới, evaluate_model hỗ trợ `--config configs/pipeline-baseline.json`; luôn dùng output directory mới. Không đưa report/prediction artifacts vào inference.
+
 Logic duy nhất trong package backend/evaluation, scripts gốc là entry point mỏng:
 
 ```powershell

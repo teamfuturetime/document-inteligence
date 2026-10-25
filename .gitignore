@@ -20,6 +20,7 @@ uploads/
 *.pth
 *.onnx
 *.safetensors
+*.traineddata
 artifacts/
 .DS_Store
 Thumbs.db

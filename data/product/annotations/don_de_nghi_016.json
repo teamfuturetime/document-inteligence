@@ -1,0 +1,33 @@
+{
+  "sample_id": "don_de_nghi_016",
+  "fields": {
+    "full_name": {
+      "status": "present",
+      "value": "Nguyễn Minh An 116"
+    },
+    "student_id": {
+      "status": "present",
+      "value": "00100016"
+    },
+    "date_of_birth": {
+      "status": "present",
+      "value": "2005-03-17"
+    },
+    "class_name": {
+      "status": "present",
+      "value": "CNTT-K17"
+    },
+    "faculty": {
+      "status": "present",
+      "value": "Công nghệ thông tin"
+    },
+    "request_content": {
+      "status": "present",
+      "value": "Đề nghị cấp giấy xác nhận đang theo học. Mã hồ sơ mẫu 116."
+    },
+    "request_date": {
+      "status": "present",
+      "value": "2026-10-17"
+    }
+  }
+}

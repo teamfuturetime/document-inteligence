@@ -1,5 +1,7 @@
 # Phạm vi và nguồn yêu cầu
 
+**Cập nhật 24/10/2026:** người dùng yêu cầu triển khai cả sản phẩm trên nhatquang. Phần foundation-only bên dưới là phạm vi lịch sử của lượt khởi tạo. Phạm vi mới ở [ADR 0007](../adr/0007-product-on-nhatquang.md), [kiến trúc](../product/architecture.md) và README; không phải xác nhận nhóm đã chọn nền chung hoặc thay rubric.
+
 Nguồn giao việc: `AI02_CODEX_REPOSITORY_FOUNDATION.md`, phiên bản 1.0, ngày 05/10/2026, do người dùng cung cấp. Repository ban đầu chỉ có README và Git; giữ lịch sử, remote `teamfuturetime/document-inteligence`, nhánh `nhatquang` và không có thay đổi chưa commit. Không có AGENTS.md hiện hữu được tìm thấy trong repository/các thư mục cha đã kiểm tra.
 
 ## COURSE_REQUIRED — thông tin giảng viên đã cung cấp

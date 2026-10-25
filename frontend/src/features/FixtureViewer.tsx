@@ -13,7 +13,7 @@ const labels: Record<FieldId, string> = {
   request_date: 'Ngày làm đơn',
 };
 
-export function FixtureViewer({ mode }: { mode: 'fixture' | 'unconfigured' }) {
+export function FixtureViewer({ mode }: { mode: 'fixture' | 'unconfigured' | 'tesseract' }) {
   const [catalog, setCatalog] = useState<string[]>([]);
   const [sample, setSample] = useState('');
   const [view, setView] = useState<FixtureView | null>(null);
@@ -55,7 +55,7 @@ export function FixtureViewer({ mode }: { mode: 'fixture' | 'unconfigured' }) {
   }, [sample, attempt]);
   if (mode !== 'fixture')
     return (
-      <Notice message="Chế độ fixture chưa bật. Cấu hình DOCINTEL_PROVIDER_MODE=fixture để xem mẫu. OCR thật chưa triển khai." />
+      <Notice message="Chế độ fixture chưa bật. Cấu hình DOCINTEL_PROVIDER_MODE=fixture để xem mẫu. Chọn Xử lý tài liệu để sử dụng OCR thật khi provider sẵn sàng." />
     );
   const activePrediction = view?.run.fields.find((field) => field.field_id === active);
   const spans =

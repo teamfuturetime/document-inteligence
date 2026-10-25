@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "currency": {
+      "const": "VND",
+      "title": "Currency",
+      "type": "string"
+    },
+    "invoice_date": {
+      "title": "Invoice Date",
+      "type": "string"
+    },
+    "invoice_number": {
+      "minLength": 1,
+      "title": "Invoice Number",
+      "type": "string"
+    },
+    "seller_name": {
+      "minLength": 1,
+      "title": "Seller Name",
+      "type": "string"
+    },
+    "total_amount": {
+      "maximum": 9007199254740991,
+      "minimum": 0,
+      "title": "Total Amount",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "invoice_number",
+    "invoice_date",
+    "seller_name",
+    "total_amount",
+    "currency"
+  ],
+  "title": "FinalInvoiceData",
+  "type": "object"
+}

@@ -1,5 +1,9 @@
 # Tài liệu AI-02
 
+Sản phẩm nhatquang 0.2.0 ngày 24/10: [kiến trúc thực](product/architecture.md), [runbook/demo/backup](product/runbook.md), [handoff](product/integration-handoff.md), [nguồn kế thừa](ml/source-lineage.md), [báo cáo kiểm chứng](reports/product-verification-2026-10-24.md). Tài liệu foundation là snapshot lịch sử.
+
+Kế hoạch mới cho nhóm 5 người: [phân công và lịch 20/10 đến 28/12/2026](planning/team-delivery-plan-2026-10-20.md), kèm [khảo sát các nhánh thực tế](reports/branch-audit-2026-10-20.md). Kế hoạch mô tả bước phát triển PRODUCT_MVP tiếp theo; không đổi trạng thái implementation của foundation bằng việc có tài liệu mới.
+
 Điểm vào: [README](../README.md), [onboarding](team/onboarding.md), [báo cáo bàn giao](reports/foundation-verification.md).
 
 | Chủ đề | Tài liệu |

@@ -1,0 +1,33 @@
+{
+  "sample_id": "don_de_nghi_003",
+  "fields": {
+    "full_name": {
+      "status": "present",
+      "value": "Nguyễn Minh An 103"
+    },
+    "student_id": {
+      "status": "absent",
+      "value": null
+    },
+    "date_of_birth": {
+      "status": "present",
+      "value": "2005-03-04"
+    },
+    "class_name": {
+      "status": "present",
+      "value": "CNTT-K19"
+    },
+    "faculty": {
+      "status": "present",
+      "value": "Công nghệ thông tin"
+    },
+    "request_content": {
+      "status": "present",
+      "value": "Đề nghị cấp giấy xác nhận đang theo học. Mã hồ sơ mẫu 103."
+    },
+    "request_date": {
+      "status": "present",
+      "value": "2026-10-04"
+    }
+  }
+}

@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException, Request
@@ -7,18 +8,38 @@ from fastapi.responses import FileResponse, JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from docintel import __version__
+from docintel.api.documents import router as document_router
 from docintel.api.models import Capabilities, ErrorEnvelope, FixtureCatalog, Health, SchemaInfo
 from docintel.config import ROOT, Settings
 from docintel.domain.models import FIELD_IDS, SCHEMA_VERSION, FixtureView
+from docintel.services.documents import DocumentService, ProductError
 from docintel.services.fixtures import FixtureService
+from docintel.services.worker import LocalInferenceWorker
 
 
-def create_app(settings: Settings | None = None) -> FastAPI:
+def create_app(settings: Settings | None = None, *, start_worker: bool = True) -> FastAPI:
     config = settings or Settings()
+
+    @asynccontextmanager
+    async def lifespan(application: FastAPI):
+        application.state.documents = DocumentService(config)
+        worker = None
+        if start_worker and config.provider_mode == "tesseract":
+            worker = LocalInferenceWorker(application.state.documents)
+            worker.start()
+        yield
+        if worker:
+            worker.close()
+
     application = FastAPI(
-        title="AI-02 Document Intelligence Foundation",
+        title="AI-02 Document Intelligence",
         version=__version__,
+        lifespan=lifespan,
         responses={
+            409: {"model": ErrorEnvelope},
+            413: {"model": ErrorEnvelope},
+            415: {"model": ErrorEnvelope},
+            429: {"model": ErrorEnvelope},
             404: {"model": ErrorEnvelope},
             422: {"model": ErrorEnvelope},
             503: {"model": ErrorEnvelope},
@@ -26,15 +47,45 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         },
     )
     application.add_middleware(
-        CORSMiddleware, allow_origins=config.cors_origins, allow_methods=["GET"]
+        CORSMiddleware,
+        allow_origins=config.cors_origins,
+        allow_methods=["GET", "POST", "PUT"],
+        allow_headers=["Content-Type", "Idempotency-Key"],
     )
 
     @application.middleware("http")
     async def request_identifier(request: Request, call_next):
         request.state.request_id = str(uuid4())
+        if request.method in {"POST", "PUT", "DELETE", "PATCH"}:
+            origin = request.headers.get("origin")
+            if origin and origin not in config.cors_origins:
+                return JSONResponse(
+                    status_code=403,
+                    content={
+                        "error": {
+                            "code": "ORIGIN_NOT_ALLOWED",
+                            "message": "Nguồn yêu cầu không được phép.",
+                            "request_id": request.state.request_id,
+                        }
+                    },
+                    headers={"X-Request-ID": request.state.request_id},
+                )
         response = await call_next(request)
         response.headers["X-Request-ID"] = request.state.request_id
         return response
+
+    @application.exception_handler(ProductError)
+    async def product_error(request: Request, exc: ProductError):
+        return JSONResponse(
+            status_code=exc.status,
+            content={
+                "error": {
+                    "code": exc.code,
+                    "message": exc.message,
+                    "request_id": request.state.request_id,
+                }
+            },
+        )
 
     @application.exception_handler(StarletteHTTPException)
     async def http_error(request: Request, exc: StarletteHTTPException):
@@ -85,21 +136,33 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @application.get("/api/v1/capabilities", response_model=Capabilities)
     def capabilities():
+        ready = False
+        if config.provider_mode == "tesseract":
+            from document_pipeline.errors import PipelineError
+            from document_pipeline.tesseract import probe
+
+            try:
+                probe(config.tesseract_executable, config.tessdata_dir)
+                ready = True
+            except PipelineError:
+                pass
         return Capabilities(
             provider_mode=config.provider_mode,
-            supported_schemas=["don_de_nghi@1.0.0"],
+            ocr_ready=ready,
+            max_upload_bytes=config.max_upload_bytes,
+            supported_schemas=["don_de_nghi@1.0.0", "hoa_don@1.0.0"],
             features={
                 "normalization": "implemented",
                 "validation": "implemented",
                 "fixture_catalog": "fixture"
                 if config.provider_mode == "fixture"
                 else "unavailable",
-                "ocr": "planned",
-                "extraction": "planned",
-                "upload": "planned",
-                "review": "planned",
-                "persistence": "planned",
-                "export": "planned",
+                "ocr": "implemented" if ready else "unavailable",
+                "extraction": "implemented",
+                "upload": "implemented",
+                "review": "implemented",
+                "persistence": "implemented",
+                "export": "implemented",
             },
         )
 
@@ -145,6 +208,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     def fixture_image(sample_id: str):
         return FileResponse(check_sample(sample_id).image_path(sample_id), media_type="image/png")
 
+    application.include_router(document_router)
     return application
 
 

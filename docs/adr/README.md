@@ -10,6 +10,7 @@ ADR ghi context, options, decision, consequences, status và revisit conditions.
 | Fixture explicit, không fallback | FOUNDATION_REQUIRED | [0004](0004-fixture-mode.md) |
 | OCR + rules baseline trước VLM | PROVISIONAL | [0005](0005-baseline.md), BL-002/004 |
 | Đơn đề nghị, typed, PNG/JPG một trang, synthetic | PROVISIONAL / DATA-01 COURSE_REQUIRED | [0006](0006-data-scope.md), BL-001 |
+| Triển khai sản phẩm local trên nhatquang theo yêu cầu 24/10 | Applied trên nhatquang; chưa là nền nhóm được duyệt | [0007](0007-product-on-nhatquang.md) |
 | Bắt buộc cả hóa đơn và đơn từ? | Chưa giả định; TBD | Điều phối đối chiếu giảng viên/nhóm, BL-001 |
 | OCR engine/model weights | TBD | Spike BL-002 rồi ADR; không lấy package version làm weights version |
 | VLM/LLM, PDF, line items | FUTURE_OPTION | BL-011/ADR riêng nếu chọn; header/totals vs line items cần scope riêng |

@@ -1,0 +1,19 @@
+{
+  "version": "label-rules-1.0.0",
+  "hoa_don": {
+    "invoice_number": ["Số hóa đơn", "Số HĐ", "Invoice number", "Invoice no"],
+    "invoice_date": ["Ngày hóa đơn", "Ngày lập", "Invoice date"],
+    "seller_name": ["Đơn vị bán hàng", "Người bán", "Tên người bán", "Seller"],
+    "total_amount": ["Tổng cộng tiền thanh toán", "Tổng tiền thanh toán", "Tổng cộng thanh toán", "Tổng thanh toán", "Tổng tiền", "Grand total", "Total amount"],
+    "currency": ["Đơn vị tiền tệ", "Tiền tệ", "Currency"]
+  },
+  "don_de_nghi": {
+    "full_name": ["Họ và tên", "Họ tên", "Tên sinh viên"],
+    "student_id": ["Mã sinh viên", "Mã số sinh viên", "MSSV"],
+    "date_of_birth": ["Ngày sinh"],
+    "class_name": ["Lớp", "Lớp học"],
+    "faculty": ["Khoa"],
+    "request_content": ["Nội dung đề nghị", "Nội dung yêu cầu", "Nội dung"],
+    "request_date": ["Ngày làm đơn", "Ngày đề nghị", "Ngày yêu cầu", "Ngày lập đơn"]
+  }
+}

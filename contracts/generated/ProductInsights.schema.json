@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "completed_runs": {
+      "title": "Completed Runs",
+      "type": "integer"
+    },
+    "confirmed_documents": {
+      "title": "Confirmed Documents",
+      "type": "integer"
+    },
+    "corrected_fields": {
+      "title": "Corrected Fields",
+      "type": "integer"
+    },
+    "documents": {
+      "title": "Documents",
+      "type": "integer"
+    },
+    "failed_runs": {
+      "title": "Failed Runs",
+      "type": "integer"
+    },
+    "notice": {
+      "default": "Thống kê vận hành và review; không phải độ chính xác của mô hình.",
+      "title": "Notice",
+      "type": "string"
+    },
+    "reviewed_fields": {
+      "title": "Reviewed Fields",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "documents",
+    "completed_runs",
+    "failed_runs",
+    "confirmed_documents",
+    "reviewed_fields",
+    "corrected_fields"
+  ],
+  "title": "ProductInsights",
+  "type": "object"
+}

@@ -27,7 +27,9 @@ LABELS = {
 def write(path: Path, value):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
-        json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        json.dumps(value, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+        newline="\n",
     )
 
 
@@ -63,7 +65,7 @@ def main():
     rng = random.Random(20261005)
     manifest = {
         "purpose": "contract_fixture",
-        "dataset_version": "synthetic-seed-1.0.0",
+        "dataset_version": "synthetic-seed-1.0.1",
         "samples": [],
     }
     predictions, ocr_records = {}, {}

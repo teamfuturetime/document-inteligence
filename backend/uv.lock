@@ -62,9 +62,10 @@ wheels = [
 
 [[package]]
 name = "docintel"
-version = "0.1.0"
+version = "0.2.0"
 source = { editable = "." }
 dependencies = [
+    { name = "document-pipeline" },
     { name = "fastapi" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
@@ -83,6 +84,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "document-pipeline", editable = "../pipeline" },
     { name = "fastapi", specifier = "==0.142.2" },
     { name = "pydantic", specifier = "==2.13.5" },
     { name = "pydantic-settings", specifier = "==2.15.0" },
@@ -97,6 +99,21 @@ dev = [
     { name = "pytest", specifier = "==9.1.1" },
     { name = "pyyaml", specifier = "==6.0.3" },
     { name = "ruff", specifier = "==0.16.10" },
+]
+
+[[package]]
+name = "document-pipeline"
+version = "0.1.0"
+source = { editable = "../pipeline" }
+dependencies = [
+    { name = "pillow" },
+    { name = "pydantic" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "pillow", specifier = "==12.3.0" },
+    { name = "pydantic", specifier = "==2.13.5" },
 ]
 
 [[package]]

@@ -1,0 +1,20 @@
+{
+  "document_type": "hoa_don",
+  "schema_version": "1.0.0",
+  "document_id": "d1f14a8508894db78208a86541cbfb92",
+  "run_id": "3dd3513cb4f64582b10c8ca1f9878ae7",
+  "revision": 1,
+  "data": {
+    "invoice_number": "0041007",
+    "invoice_date": "2026-10-08",
+    "seller_name": "Công ty Giả Lập 107",
+    "total_amount": 1000000,
+    "currency": "VND"
+  },
+  "review_status": "confirmed",
+  "provenance": {
+    "data_origin": "synthetic",
+    "prediction_source": "model"
+  },
+  "exported_at": "2026-10-24T12:39:14.477109Z"
+}

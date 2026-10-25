@@ -1,5 +1,7 @@
 # Nguồn chuẩn hợp đồng
 
+App 0.2.0 bổ sung nguồn chuẩn `docintel.domain.documents`: invoice/application workflow, review requests, history và persisted export. Product schema 1.0.0 sinh cùng generator; không đổi nghĩa foundation fixture schema 1.0.0. `pipeline.models` chỉ là DTO implementation được adapter chuyển sang backend domain, không nguồn HTTP thứ hai.
+
 Domain models backend và FastAPI là nguồn chuẩn. `generated/*.schema.json` (JSON Schema 2020-12) và `generated/openapi.json` được sinh bằng:
 
 ```powershell

@@ -1,5 +1,7 @@
 # Error taxonomy
 
+Product candidate có error records thật trong [development baseline](../../evaluation/runs/2026-10-24-development-baseline/report.json) và [validation](../../evaluation/runs/2026-10-24-validation-selected/report.json). `UNTRIAGED` là dấu chờ phân tích nguồn/OCR, không một root cause đã được xác nhận; không tự quy mọi mismatch cho model hoặc tuyên bố mọi lỗi đã sửa. Giữ record và liên kết run/sample/field để nhóm tiếp tục triage.
+
 Mã ổn định, severity độc lập category. Record: sample_id, field_id, run_id, expected, predicted, primary_cause, secondary_tags, severity, status, issue_reference. [Ví dụ synthetic/illustrative](../../evaluation/examples/error-illustrative.json), không thống kê model thực nghiệm.
 
 | Mã | Nguyên nhân |

@@ -3,6 +3,7 @@ import json
 
 from docintel.api.app import create_app
 from docintel.config import ROOT, Settings
+from docintel.domain import documents as product_models
 from docintel.domain import models
 from docintel.domain.versioning import RunManifest
 
@@ -31,6 +32,22 @@ def main():
     ):
         documents[name + ".schema.json"] = getattr(models, name).model_json_schema()
     documents["RunManifest.schema.json"] = RunManifest.model_json_schema()
+    for name in (
+        "ProductSchema",
+        "DocumentDetail",
+        "ProductRun",
+        "ProductRevision",
+        "ReviewRequest",
+        "RevisionRequest",
+        "ReprocessRequest",
+        "FinalInvoiceData",
+        "ProductExportArtifact",
+        "DocumentHistory",
+        "ProductInsights",
+    ):
+        documents[name + ".schema.json"] = getattr(
+            product_models, name
+        ).model_json_schema()
     drift = []
     for name, document in documents.items():
         if name.endswith(".schema.json"):
@@ -44,7 +61,7 @@ def main():
                 drift.append(name)
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(expected, encoding="utf-8")
+            path.write_text(expected, encoding="utf-8", newline="\n")
     if drift:
         raise SystemExit("Contract drift: " + ", ".join(drift))
     print(f"Contracts {'CHECK PASS' if args.check else 'generated'}: {len(documents)}")

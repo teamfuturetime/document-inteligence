@@ -1,5 +1,7 @@
 # Protocol đánh giá
 
+Sản phẩm có evaluator `docintel.evaluation.product`, generator 150 synthetic parents và CLI `scripts/evaluate_model.py`. Output tách report model trước review với fixture check. Dataset/splits/hashes được kiểm; report có present accuracy, strict types/dấu/zero, PRF/support, unreadable/absent, confidence buckets và document exclusions. [Dataset card](../../data/product/README.md) nêu giới hạn và review nhãn còn cần nhóm thực hiện.
+
 Unit document_id + field_id, dùng **máy trước review**; `nfc-whitespace-date-1.0.0`: NFC, gộp whitespace, ngày dd/mm/yyyy rõ về ISO khi tồn tại, giữ dấu/số 0; không fuzzy/casefold. Ngày sai nhìn thấy giữ chuỗi sai, validation không đổi gold.
 
 | Gold/prediction | Counts |

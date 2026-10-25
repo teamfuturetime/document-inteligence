@@ -18,13 +18,17 @@ jobs:
           version: "0.12.22"
           python-version: "3.14.5"
       - run: uv sync --project backend --locked
-      - run: uv run --project backend --locked ruff check backend scripts
-      - run: uv run --project backend --locked ruff format --check backend scripts
-      - run: uv run --project backend --locked pytest backend/tests -q
+      - run: uv run --project backend --locked ruff check backend scripts pipeline
+      - run: uv run --project backend --locked ruff format --check backend scripts pipeline
+      - run: uv run --project backend --locked pytest backend/tests pipeline/tests -q
       - run: uv run --project backend --locked python scripts/generate_contracts.py --check
       - run: uv run --project backend --locked python scripts/check_data.py
       - run: uv run --project backend --locked python scripts/evaluate_fixtures.py --output runtime/ci/fixture-contract.json
       - run: uv run --project backend --locked python scripts/check_repository.py
+      - name: Install native OCR for real workflow verification
+        run: sudo apt-get update && sudo apt-get install -y tesseract-ocr
+      - run: uv run --project backend --locked python scripts/fetch_ocr_models.py
+      - run: uv run --project backend --locked python scripts/verify_product.py
   frontend-checks:
     name: frontend-checks
     runs-on: ubuntu-latest

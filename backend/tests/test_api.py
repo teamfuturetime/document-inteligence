@@ -1,5 +1,6 @@
 from fastapi.testclient import TestClient
 
+from docintel import __version__
 from docintel.adapters.fixture import FixtureExtractionAdapter, FixtureOCRAdapter
 from docintel.api.app import create_app
 from docintel.config import ROOT, Settings
@@ -11,11 +12,12 @@ def client(mode="unconfigured"):
 
 def test_health_does_not_claim_ocr():
     with client() as api:
-        assert api.get("/api/v1/health").json() == {"status": "ok", "app_version": "0.1.0"}
+        assert api.get("/api/v1/health").json() == {"status": "ok", "app_version": __version__}
         capabilities = api.get("/api/v1/capabilities").json()
         assert capabilities["ocr_ready"] is False
         assert capabilities["model_benchmark_status"] == "not_measured"
-        assert capabilities["features"]["export"] == "planned"
+        assert capabilities["features"]["export"] == "implemented"
+        assert capabilities["features"]["ocr"] == "unavailable"
         assert len(api.get("/api/v1/schemas").json()[0]["required_fields"]) == 7
         response = api.get("/api/v1/fixtures")
         assert response.status_code == 503
@@ -31,7 +33,12 @@ def test_fixture_and_unknown_id():
         assert payload["label"] == "Mẫu giả lập — chưa chạy OCR"
         assert api.get("/api/v1/fixtures/fixture_001/image").headers["content-type"] == "image/png"
         assert api.get("/api/v1/fixtures/unknown").status_code == 404
-        assert api.post("/api/v1/documents").status_code == 404
+        # The product route now exists, but fixture mode must never process a real upload.
+        response = api.post(
+            "/api/v1/documents?document_type=hoa_don&data_origin=synthetic", content=b"x"
+        )
+        assert response.status_code == 503
+        assert response.json()["error"]["code"] == "PROVIDER_UNAVAILABLE"
 
 
 def test_explicit_fixture_gate():

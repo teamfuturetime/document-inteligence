@@ -1,0 +1,77 @@
+{
+  "$defs": {
+    "ProductReviewedField": {
+      "additionalProperties": false,
+      "properties": {
+        "is_reviewed": {
+          "title": "Is Reviewed",
+          "type": "boolean"
+        },
+        "reviewed_value": {
+          "anyOf": [
+            {
+              "maxLength": 16000,
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Reviewed Value"
+        }
+      },
+      "required": [
+        "is_reviewed",
+        "reviewed_value"
+      ],
+      "title": "ProductReviewedField",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "expected_revision": {
+      "minimum": 1,
+      "title": "Expected Revision",
+      "type": "integer"
+    },
+    "fields": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ProductReviewedField"
+      },
+      "propertyNames": {
+        "enum": [
+          "invoice_number",
+          "invoice_date",
+          "seller_name",
+          "total_amount",
+          "currency",
+          "full_name",
+          "student_id",
+          "date_of_birth",
+          "class_name",
+          "faculty",
+          "request_content",
+          "request_date"
+        ]
+      },
+      "title": "Fields",
+      "type": "object"
+    },
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_id",
+    "expected_revision",
+    "fields"
+  ],
+  "title": "ReviewRequest",
+  "type": "object"
+}

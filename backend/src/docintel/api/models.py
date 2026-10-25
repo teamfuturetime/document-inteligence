@@ -9,8 +9,9 @@ class Health(Contract):
 
 
 class Capabilities(Contract):
-    provider_mode: Literal["unconfigured", "fixture"]
-    ocr_ready: Literal[False] = False
+    provider_mode: Literal["unconfigured", "fixture", "tesseract"]
+    ocr_ready: bool = False
+    max_upload_bytes: int = 5_242_880
     model_benchmark_status: Literal["not_measured"] = "not_measured"
     supported_schemas: list[str]
     features: dict[str, Literal["implemented", "fixture", "planned", "unavailable"]]

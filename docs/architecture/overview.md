@@ -1,5 +1,7 @@
 # Kiến trúc
 
+**Snapshot foundation lịch sử.** Kiến trúc triển khai thêm ngày 24/10/2026 ở [product architecture](../product/architecture.md): backend services/storage/SQLite/worker và package pipeline, OCR thật và persisted review/export. Phần nền/đích dưới đây giữ để truy vết, không là feature status mới nhất.
+
 ## Nền đang có
 
 React/TypeScript → API client `/api/v1` → FastAPI routes → FixtureService → OCR/extraction fixture adapters → file dự đoán/spans viết sẵn. Domain giữ kiểu dữ liệu và normalization/validation. Evaluator là package Python riêng trong backend, chạy offline từ entry point mỏng; không import app/server/frontend. Fixture adapters chỉ đọc `ocr.json`/`predictions.json`, không đọc annotations. Config ứng dụng tập trung trong `docintel/config.py`; `configs/foundation.json` là config của generator/evaluator, không tự bật fixture trong app.

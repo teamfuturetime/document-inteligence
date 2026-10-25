@@ -1,5 +1,7 @@
 # Traceability matrix
 
+**Bảng foundation lịch sử.** Candidate sản phẩm 0.2.0 được truy vết riêng tại [product traceability](product-traceability.md), có source/tests/evidence thực và các bước vẫn pending. Không suy trạng thái hiện tại từ các hàng scaffolded bên dưới.
+
 Trạng thái chung: `planned`, `scaffolded`, `implemented`, `verified`, `blocked`. `verified` bên dưới chỉ chứng minh hành vi nền được nêu trong cột checks/evidence, không chứng minh hoàn thành cả yêu cầu PRODUCT_MVP. Đường dẫn code/test/evidence tương đối từ gốc repo.
 
 | requirement_id | description | source | module | implementation_status | test_or_check | evidence_path | backlog_id |

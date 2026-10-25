@@ -1,60 +1,84 @@
 # AI-02 · Document Intelligence cho biểu mẫu tiếng Việt
 
-Ứng dụng đích trích xuất trường dữ liệu từ hóa đơn/đơn từ mẫu, cho người dùng đối chiếu và sửa trước khi xuất JSON. Repository này mới hoàn thành **FOUNDATION 0.1.0**, chưa hoàn thành PRODUCT_MVP. Tài liệu và UI dùng tiếng Việt; định danh code dùng tiếng Anh.
+Sản phẩm local **0.2.0 trên nhatquang**: tải ảnh → OCR thật → trích xuất có evidence → sửa/lưu nháp → xác nhận → xuất JSON từ backend. Hỗ trợ hóa đơn header/tổng tiền (5 trường) và đơn đề nghị đánh máy (7 trường). Chỉ dùng synthetic/sample hợp lệ.
 
-| Phần | Tình trạng thực tế |
+| Phần | Implementation |
 | --- | --- |
-| FastAPI health/capabilities/schemas | Chạy thật; health không có nghĩa OCR sẵn sàng |
-| Pydantic, JSON Schema/OpenAPI, TypeScript types | Sinh từ nguồn chuẩn backend, có kiểm tra drift |
-| Chuẩn hóa và validation | Chạy thật: Unicode, chuỗi mã số, ngày tồn tại, ngày sinh/ngày đơn |
-| UI giới thiệu và đối chiếu mẫu | Mẫu giả lập — chưa chạy OCR; chỉ xem |
-| 6 ảnh và predictions synthetic | Fixture kiểm tra contract/UI; một số đáp án sai có chủ ý |
-| Field-level evaluator | Chạy trên fixture; **chưa đo chất lượng mô hình** |
-| Upload, OCR/extraction thật, persistence, sửa/lưu/xác nhận/export | Chưa triển khai; xem [backlog](docs/planning/backlog.md) |
-| Docker, GitHub CI/ruleset | Có cấu hình local; tình trạng chạy trong [báo cáo](docs/reports/foundation-verification.md) |
+| OCR | Tesseract 5 vie+eng, models pin SHA256, native process có timeout; không fallback mock |
+| Extraction/confidence | Nhãn/multiline/candidates, raw/normalized/evidence riêng, abstain; confidence heuristic chưa calibrated |
+| Upload/storage | PNG/JPG một trang, kiểm format thật/bytes/pixels, preview chuẩn EXIF |
+| Persistence/worker | SQLite migrations, queue bounded, immutable runs, restart recovery và process lock |
+| Review | Draft cho missing/invalid, giữ xóa-null, kiểm revision trong transaction, stale trả 409 |
+| Confirm/export | JSON từ latest persisted confirmed revision; không tin approved/final JSON client |
+| Frontend | Đối chiếu ảnh/evidence, form edit, dirty-state guard, conflict compare, pagination/history |
+| Evidence | 150 synthetic parent documents, splits/hashes, field metrics, errors, model/config/source versions |
+| Fixture cũ | Catalogue riêng, chỉ khi bật explicit; không phải model benchmark |
 
-Schema đơn đề nghị 7 trường, ảnh một trang và stack FastAPI + React là **PROVISIONAL**, áp dụng để dựng nền; chưa phải lựa chọn được nhóm duyệt cho sản phẩm cuối. Chỉ dùng synthetic/sample có nguồn và quyền phù hợp; không đưa hồ sơ thật, secret hay model weights vào Git.
+Kết quả thực và pending checks: [báo cáo triển khai](docs/reports/product-verification-2026-10-24.md). Không suy chất lượng tài liệu thật hoặc khả năng public deployment từ tests/synthetic scores.
 
-## Chạy local
+## Cài và chạy native
 
-Môi trường đã kiểm tra: Windows PowerShell, Python **3.14.5**, uv **0.12.22**, Node **24.16.0**, npm **11.13.0**. Runtime được ghi tại `backend/.python-version`, `frontend/.node-version`; dependency được khóa bằng `backend/uv.lock` và `frontend/package-lock.json`. Không cần API key, GPU hoặc tải model.
-
-Từ thư mục gốc, cài dependency và bật rõ chế độ mẫu:
+Runtime pins: Python 3.14.5, uv 0.12.22, Node 24.16.x, npm 11.13.x. Cần Tesseract 5 từ nguồn chính thức; không cần GPU hoặc API key.
 
 ```powershell
-Copy-Item .env.example .env
 uv sync --project backend --locked
 npm --prefix frontend ci
+uv run --project backend --locked python scripts/fetch_ocr_models.py
 ```
 
-Trên Linux/macOS dùng `cp .env.example .env` thay cho `Copy-Item`. Các lệnh uv/npm còn lại giống nhau; chưa được chạy trực tiếp trên hai hệ điều hành đó.
+Model helper tải khoảng 4.7 MB vie+eng đã pin vào runtime ngoài Git, không tải trong inference. Settings tìm Tesseract trên PATH hoặc vị trí Windows chuẩn; có thể override DOCINTEL_TESSERACT_EXECUTABLE bằng đường dẫn cài thật.
 
-Terminal 1:
+Nếu chưa có `.env`, sao chép `.env.example`. Nếu đã có, giữ các cấu hình riêng và chỉ đổi provider thành tesseract; không ghi đè secrets. Hoặc dùng biến trong terminal backend:
 
 ```powershell
-uv run --project backend --locked uvicorn docintel.api.app:app --reload --host 127.0.0.1 --port 8000
+$env:DOCINTEL_PROVIDER_MODE='tesseract'
+uv run --project backend --locked uvicorn docintel.api.app:app --host 127.0.0.1 --port 8000
 ```
 
-Terminal 2:
+Terminal frontend:
 
 ```powershell
 npm --prefix frontend run dev
 ```
 
-Mở [giao diện](http://localhost:5173), chọn **Mẫu minh họa**. API docs tại [Swagger](http://127.0.0.1:8000/docs). Frontend proxy `/api` về backend. Nếu chưa có `.env`, provider mặc định `unconfigured`, catalogue trả `503 PROVIDER_UNAVAILABLE`; không tự chuyển sang fixture.
+Mở [ứng dụng](http://localhost:5173), chọn **Xử lý tài liệu**; [API docs](http://127.0.0.1:8000/docs). Dùng ảnh `data/product/images/hoa_don_007.png` để demo. Chạy một worker process cho mỗi runtime DB. Health chỉ xác nhận tiến trình; xem capabilities.ocr_ready trước upload.
 
-Docker (cần Docker Engine/Compose; **chưa chạy trên máy bàn giao**): sau khi tạo `.env`, dùng `docker compose up --build`; hai cổng chỉ bind loopback. `docker compose down` dừng ứng dụng. Không expose demo chưa có authentication ra Internet.
+Mặc định: 5 MiB, 16M pixels, một trang, deadline 30 giây, tối đa 5 queued/running runs. Chưa hỗ trợ PDF, chữ viết tay, line items, nhiều trang hoặc tài khoản. Fixture catalogue cần provider fixture, không tự bật khi OCR lỗi.
 
-## Kiểm tra và sinh hợp đồng
+## Cấu trúc
+
+```text
+frontend/src/features/documents/     Upload/list/review/source/history/export UI
+backend/src/docintel/
+  api/                              HTTP routes, errors/request ID
+  domain/                           Nguồn chuẩn contracts và validation
+  services/                         Use cases, revisions/export, persisted worker
+  repositories/                     SQLite transactions, migrations, worker lock
+  storage/                          Source/preview bất biến, cleanup khi upload lỗi
+  adapters/                         Pipeline → public domain; fixture adapter riêng
+  evaluation/                       Metrics offline, không thuộc inference
+pipeline/src/document_pipeline/     Image worker → OCR → extraction → confidence
+contracts/                          Generated JSON Schema/OpenAPI/examples
+configs/                            Config có version và mục đích rõ
+data/                               Synthetic images/labels/manifests
+scripts/                            Verify, evaluate, fetch models, backup/restore
+docs/                               Requirements/ADR/architecture/runbook/reports
+runtime/                            DB/uploads/models/cache/local reports; ignored
+```
+
+[Kiến trúc](docs/product/architecture.md), [runbook và demo](docs/product/runbook.md), [handoff tích hợp nhóm](docs/product/integration-handoff.md), [nguồn kế thừa](docs/ml/source-lineage.md). Public contracts sinh từ backend domain; không sửa generated files hoặc tạo schema frontend độc lập.
+
+## Kiểm tra
 
 ```powershell
-uv run --project backend --locked ruff check backend scripts
-uv run --project backend --locked ruff format --check backend scripts
-uv run --project backend --locked pytest backend/tests -q
+uv run --project backend --locked ruff check backend scripts pipeline
+uv run --project backend --locked ruff format --check backend scripts pipeline
+uv run --project backend --locked pytest backend/tests pipeline/tests -q
 uv run --project backend --locked python scripts/generate_contracts.py --check
 uv run --project backend --locked python scripts/check_data.py
 uv run --project backend --locked python scripts/evaluate_fixtures.py
 uv run --project backend --locked python scripts/check_repository.py
+uv run --project backend --locked python scripts/verify_product.py
 npm --prefix frontend run contracts:check
 npm --prefix frontend run typecheck
 npm --prefix frontend run lint
@@ -63,12 +87,20 @@ npm --prefix frontend test
 npm --prefix frontend run build
 ```
 
-Có thể chạy toàn bộ checks bằng `uv run --project backend --locked python scripts/verify_foundation.py` (dừng frontend dev server trước vì script chạy `npm ci`; Windows khóa native DLL khi Vite đang dùng). Script fail ngay khi check lỗi, record ở runtime ngoài Git; không bao gồm Docker/CI remote/model benchmark.
+Unit/component tests có doubles rõ ràng. verify_product thực sự chạy OCR và HTTP workflow, thiếu môi trường thì fail. Fixture evaluator chỉ kiểm công thức. Đánh giá model dùng prediction trước review:
 
-Khi đổi domain/API: chạy `uv run --project backend --locked python scripts/generate_contracts.py`, sau đó `npm --prefix frontend run contracts:generate`; cập nhật fixtures/examples, version và tests liên quan. Khi cần sinh lại dữ liệu: `uv run --project backend --locked python scripts/generate_fixtures.py`, rồi `uv run --project backend --locked python scripts/generate_examples.py`; phải đối chiếu ảnh/gold, kiểm tra manifest và cập nhật evidence. Generator dùng font hệ thống, không phân phối font; khác font có thể khác checksum.
+```powershell
+uv run --project backend --locked python scripts/evaluate_model.py --split development --output runtime/evaluation/dev-new-run
+```
 
-## Bắt đầu phát triển
+Output phải là thư mục mới; không ghi đè report cũ. Chọn policy trên development/validation, giữ test độc lập. [Dataset card](data/product/README.md), [protocol](docs/ml/evaluation-protocol.md) và [confidence](docs/ml/confidence-policy.md) nêu support/exclusions và giới hạn.
 
-Đọc [onboarding](docs/team/onboarding.md), [phạm vi](docs/requirements/scope.md), [contracts](contracts/README.md) và [CONTRIBUTING](CONTRIBUTING.md). [Danh mục tài liệu](docs/README.md) dẫn tới SRS, use cases, traceability, kiến trúc, ADR, dữ liệu, đánh giá và kế hoạch.
+Đổi schema/API: chạy generate_contracts.py rồi `npm --prefix frontend run contracts:generate`; cập nhật versions/examples/tests/docs. Đổi data/model/rules/config phải cập nhật hashes và evidence, không sửa gold theo prediction.
 
-Bốn evidence môn học: golden dataset hiện mới có seed/format; metrics hiện kiểm tra evaluator; taxonomy có mã và ví dụ minh họa; versioning có contract/config và manifest lần chạy fixture. Không dùng các fixture này để khẳng định OCR/model có chất lượng. Xem [báo cáo bàn giao](docs/reports/foundation-verification.md) để biết lệnh đã chạy, hạn chế và năm việc tiếp theo.
+## Vận hành và Git
+
+`docker compose up --build` dựng backend/OCR cùng frontend, bind loopback, named volume giữ DB/uploads sau `docker compose down`. Không dùng `down -v` nếu cần dữ liệu. Docker và remote Actions phải kiểm riêng, không suy từ YAML. [Runbook](docs/product/runbook.md) có backup/restore kiểm hash và không ghi đè thư mục cũ.
+
+Local/single-user, chưa có auth/multi-tenant; không expose công khai hoặc dùng hồ sơ thật. `.env`, DB/uploads/models/cache ở ngoài Git. Đọc [AGENTS](AGENTS.md), [scope](docs/requirements/scope.md), [contracts](contracts/README.md) và ADR trước khi sửa.
+
+Lượt 24/10 triển khai cả sản phẩm trên nhatquang theo yêu cầu mới; chưa push/merge main hoặc đổi phần việc nhánh khác. [Foundation verification](docs/reports/foundation-verification.md) là snapshot lịch sử; [ADR 0007](docs/adr/0007-product-on-nhatquang.md) ghi phạm vi mới. [Kế hoạch 10 tuần](docs/planning/team-delivery-plan-2026-10-20.md) giữ cho nhóm tham chiếu. Người dùng tự review/commit/push.
