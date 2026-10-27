@@ -7,7 +7,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.core.config import get_settings
 from app.core.logging import get_logger
 from app.repositories.documents import DocumentRepository
-from app.schemas.documents import ExtractionUpdate
+from app.schemas.documents import ExtractionUpdate, OCRCorrectionUpdate
 from app.services.storage import StorageService
 
 settings = get_settings()
@@ -27,6 +27,10 @@ class ProcessingError(RuntimeError):
 
 
 class InvalidStateError(RuntimeError):
+    pass
+
+
+class ReviewPersistenceError(RuntimeError):
     pass
 
 
@@ -91,26 +95,66 @@ class DocumentService:
         document = self.get(document_id)
         if document.status not in {"processed", "reviewed"}:
             raise InvalidStateError("Chỉ có thể rà soát tài liệu đã xử lý")
-        extraction = self.repository.review_extraction(document_id, update.data, update.document_type)
-        if extraction is None:
-            raise ExtractionNotFoundError(document_id)
-        self.repository.update_status(document_id, "reviewed")
-        self.repository.commit()
-        self.repository.refresh(extraction)
-        return extraction
+        try:
+            extraction = self.repository.review_extraction(document_id, update.data, update.document_type)
+            self.repository.update_status(document_id, "reviewed")
+            self.repository.commit()
+            self.repository.refresh(extraction)
+            return extraction
+        except SQLAlchemyError as exc:
+            self.repository.rollback()
+            raise ReviewPersistenceError("Không thể lưu dữ liệu rà soát") from exc
+
+    def correct_ocr(self, document_id: str, update: OCRCorrectionUpdate):
+        document = self.get(document_id)
+        if document.status not in {"processed", "reviewed"}:
+            raise InvalidStateError("Chỉ có thể sửa OCR của tài liệu đang rà soát")
+        if not document.ocr_text:
+            raise InvalidStateError("Tài liệu chưa có kết quả OCR để chỉnh sửa")
+        try:
+            saved = self.repository.save_ocr_correction(document_id, update.text)
+            if saved is None:
+                raise DocumentNotFoundError(document_id)
+            self.repository.update_status(document_id, "reviewed")
+            self.repository.commit()
+            self.repository.refresh(saved)
+            return saved
+        except SQLAlchemyError as exc:
+            self.repository.rollback()
+            raise ReviewPersistenceError("Không thể lưu văn bản OCR chỉnh sửa") from exc
 
     def confirm(self, document_id: str):
         document = self.get(document_id)
         if document.status not in {"processed", "reviewed"}:
             raise InvalidStateError("Chỉ có thể xác nhận tài liệu đã xử lý")
-        extraction = self.repository.confirm_extraction(document_id)
-        if extraction is None:
-            raise ExtractionNotFoundError(document_id)
-        self.repository.update_status(document_id, "confirmed")
-        self.repository.commit()
-        self.repository.refresh(extraction)
-        logger.info("Document confirmed", extra={"document_id": document_id})
-        return extraction
+        try:
+            extraction = self.repository.confirm_extraction(document_id)
+            if extraction is None:
+                raise ExtractionNotFoundError(document_id)
+            self.repository.update_status(document_id, "confirmed")
+            self.repository.commit()
+            self.repository.refresh(extraction)
+            logger.info("Document confirmed", extra={"document_id": document_id})
+            return extraction
+        except SQLAlchemyError as exc:
+            self.repository.rollback()
+            raise ReviewPersistenceError("Không thể xác nhận kết quả rà soát") from exc
+
+    def reopen(self, document_id: str):
+        document = self.get(document_id)
+        if document.status != "confirmed":
+            raise InvalidStateError("Chỉ có thể mở lại tài liệu đã xác nhận")
+        try:
+            extraction = self.repository.reopen_extraction(document_id)
+            if extraction is None:
+                raise ExtractionNotFoundError(document_id)
+            self.repository.update_status(document_id, "reviewed")
+            self.repository.commit()
+            self.repository.refresh(extraction)
+            return extraction
+        except SQLAlchemyError as exc:
+            self.repository.rollback()
+            raise ReviewPersistenceError("Không thể mở lại phiên rà soát") from exc
 
     def delete(self, document_id: str) -> None:
         document = self.get(document_id)

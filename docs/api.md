@@ -26,3 +26,12 @@ AI Service có `GET /health` và `POST /process`. `ocr.mean_confidence` là conf
 thật từ OCR engine; `classification.confidence` là heuristic 0–100, không phải xác
 suất hiệu chuẩn. Backend lưu `matched_rules`, `confidence_type`, `needs_review` để
 giải thích. Response OCR còn có `pages`, `boxes` và cấu hình Tesseract đã dùng.
+# Rà soát bởi người dùng
+
+- `PATCH /api/v1/documents/{id}/ocr-correction`: lưu bản OCR người dùng hiệu chỉnh; không ghi đè OCR máy.
+- `PATCH /api/v1/documents/{id}/extraction`: tạo hoặc cập nhật trường thủ công và loại tài liệu đã duyệt.
+- `POST /api/v1/documents/{id}/confirm`: xác nhận và khóa phiên rà soát.
+- `POST /api/v1/documents/{id}/reopen`: mở lại tài liệu đã xác nhận trước khi sửa tiếp.
+- `GET /api/v1/documents/{id}/export`: xuất giá trị hiệu lực đã duyệt cùng OCR gốc để kiểm toán.
+
+Các endpoint thay đổi dữ liệu yêu cầu session hợp lệ, header CSRF và quyền sở hữu tài liệu.

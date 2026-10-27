@@ -115,6 +115,16 @@ class DocumentRepository:
         self.db.flush()
         return doc
 
+    def save_ocr_correction(self, document_id: str, text: str) -> Optional[Document]:
+        """Save a human correction without ever overwriting machine OCR."""
+        doc = self.get_by_id(document_id)
+        if doc is None:
+            return None
+        doc.ocr_text_corrected = text
+        doc.ocr_corrected_at = datetime.now(timezone.utc)
+        self.db.flush()
+        return doc
+
     def save_extraction(
         self,
         document_id: str,
@@ -132,6 +142,7 @@ class DocumentRepository:
                 data=data,
                 confidence=confidence,
                 classification_metadata=classification_metadata,
+                ai_document_type=document_type,
             )
             self.db.add(extraction)
         else:
@@ -139,6 +150,8 @@ class DocumentRepository:
             extraction.data = data
             extraction.confidence = confidence
             extraction.classification_metadata = classification_metadata
+            extraction.ai_document_type = document_type
+            extraction.reviewed_document_type = None
             extraction.status = "pending_review"
         self.db.flush()
         return extraction
@@ -148,11 +161,23 @@ class DocumentRepository:
     ) -> Optional[Extraction]:
         extraction = self.get_extraction(document_id)
         if extraction is None:
-            return None
+            effective_type = document_type or "unknown"
+            extraction = Extraction(
+                document_id=document_id,
+                document_type=effective_type,
+                ai_document_type="unknown",
+                reviewed_document_type=effective_type,
+                data=data,
+                confidence=0.0,
+                classification_metadata={"source": "manual", "needs_review": False},
+            )
+            self.db.add(extraction)
         extraction.data = data
-        if document_type:
+        if document_type is not None:
             extraction.document_type = document_type
+            extraction.reviewed_document_type = document_type
         extraction.status = "reviewed"
+        extraction.confirmed_at = None
         self.db.flush()
         return extraction
 
@@ -162,6 +187,15 @@ class DocumentRepository:
             return None
         extraction.status = "confirmed"
         extraction.confirmed_at = datetime.now(timezone.utc)
+        self.db.flush()
+        return extraction
+
+    def reopen_extraction(self, document_id: str) -> Optional[Extraction]:
+        extraction = self.get_extraction(document_id)
+        if extraction is None:
+            return None
+        extraction.status = "reviewed"
+        extraction.confirmed_at = None
         self.db.flush()
         return extraction
 

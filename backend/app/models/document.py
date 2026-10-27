@@ -46,6 +46,11 @@ class Document(Base):
         String(20), nullable=False, default="uploaded", index=True
     )
     ocr_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # Human correction is deliberately stored separately from machine OCR.
+    ocr_text_corrected: Mapped[str | None] = mapped_column(Text, nullable=True)
+    ocr_corrected_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     ocr_boxes: Mapped[list | None] = mapped_column(JSON, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, default=_now, index=True
@@ -82,6 +87,8 @@ class Extraction(Base):
     document_type: Mapped[str] = mapped_column(
         String(50), nullable=False, index=True
     )
+    ai_document_type: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    reviewed_document_type: Mapped[str | None] = mapped_column(String(50), nullable=True)
     data: Mapped[dict] = mapped_column(JSON, nullable=False)
     confidence: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
     classification_metadata: Mapped[dict | None] = mapped_column(JSON, nullable=True)
