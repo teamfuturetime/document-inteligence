@@ -1,6 +1,9 @@
+import logging
+
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
 from fastapi.responses import FileResponse
 from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
@@ -15,28 +18,58 @@ from app.services.storage import LocalStorage
 from app.services.processing import process_document
 
 router = APIRouter(prefix="/documents", tags=["documents"], dependencies=[Depends(require_api_key)])
+logger = logging.getLogger(__name__)
 
 
-@router.post("", response_model=DocumentRead, status_code=status.HTTP_201_CREATED)
-async def upload_document(file: UploadFile = File(...), db: Session = Depends(get_db)):
+@router.post(
+    "",
+    response_model=DocumentRead,
+    status_code=status.HTTP_201_CREATED,
+    summary="Upload a PDF, PNG or JPEG document",
+    responses={
+        422: {"description": "File or metadata failed validation"},
+        500: {"description": "File storage is unavailable"},
+        503: {"description": "Document database is unavailable"},
+    },
+)
+def upload_document(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    # FastAPI runs synchronous endpoints in a worker thread, including file
+    # decoding, disk writes and the synchronous SQLAlchemy transaction.
     settings = get_settings()
-    content = await file.read(settings.max_upload_mb * 1024 * 1024 + 1)
     try:
-        validated = validate_document(file.filename or "document", content, settings.max_upload_mb * 1024 * 1024)
-    except InvalidDocument as error:
-        raise HTTPException(status_code=422, detail=str(error)) from error
-    storage = LocalStorage(settings.storage_dir)
-    stored = storage.save(file.filename or "document", content)
-    try:
-        return DocumentRepository(db).create(
-            original_name=stored.original_name,
-            stored_name=stored.stored_name,
-            mime_type=validated.mime_type,
-            size_bytes=stored.size_bytes,
-        )
-    except Exception:
-        storage.delete(stored.stored_name)
-        raise
+        max_bytes = settings.max_upload_mb * 1024 * 1024
+        content = file.file.read(max_bytes + 1)
+        try:
+            validated = validate_document(file.filename or "", content, max_bytes)
+        except InvalidDocument as error:
+            raise HTTPException(status_code=422, detail=str(error)) from error
+        try:
+            storage = LocalStorage(settings.storage_dir)
+            stored = storage.save(file.filename or "", content)
+        except OSError as error:
+            logger.exception("document_storage_failed")
+            raise HTTPException(status_code=500, detail="Không thể lưu tài liệu") from error
+        try:
+            return DocumentRepository(db).create(
+                original_name=stored.original_name,
+                stored_name=stored.stored_name,
+                mime_type=validated.mime_type,
+                size_bytes=stored.size_bytes,
+            )
+        except Exception as error:
+            db.rollback()
+            try:
+                storage.delete(stored.stored_name)
+            except OSError:
+                logger.exception("document_cleanup_failed")
+            if isinstance(error, SQLAlchemyError):
+                logger.exception("document_database_failed")
+                raise HTTPException(
+                    status_code=503, detail="Không thể lưu metadata tài liệu"
+                ) from error
+            raise
+    finally:
+        file.file.close()
 
 
 @router.get("", response_model=DocumentList)

@@ -52,3 +52,26 @@ Model `Document` lưu ID UUID, tên gốc, tên lưu duy nhất, MIME thực t�
 trạng thái `uploaded`, thời điểm tạo và hạn lưu 41 ngày. `DocumentCreate` kiểm tra
 metadata trước khi ghi; `DocumentRead` chỉ trả metadata công khai. Transaction
 thất bại được rollback để session có thể dùng cho request tiếp theo.
+
+## Upload API
+
+```bash
+curl -X POST http://localhost:8000/api/v1/documents \
+  -F 'file=@demo_documents/don_de_nghi.png;type=image/png'
+```
+
+Chọn đường dẫn tới tài liệu có thật trên máy. Endpoint nhận `multipart/form-data`
+với trường bắt buộc `file`; trả `201` và metadata gồm `id`, `original_name`,
+`mime_type`, `size_bytes`, `status`, `document_type`, `created_at`, `expires_at`.
+Tên lưu là UUID để các upload trùng tên không ghi đè nhau. Lưu file bằng rename
+nguyên tử, dọn file tạm khi ghi thất bại và xóa file đã lưu nếu transaction lỗi.
+
+| API | Kết quả |
+|---|---|
+| `GET /api/v1/documents` | Danh sách metadata và tổng số tài liệu |
+| `GET /api/v1/documents/{id}` | Metadata tài liệu vừa upload |
+| `GET /api/v1/documents/{id}/content` | Nội dung gốc |
+
+Lỗi dùng JSON `{"detail": "..."}`: `422` khi input không hợp lệ, `500` khi
+không ghi được file, `503` khi database không lưu được metadata. Nếu bật API key,
+thêm `-H 'X-API-Key: <giá trị đã cấu hình>'` vào lệnh curl.

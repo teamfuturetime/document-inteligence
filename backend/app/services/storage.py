@@ -18,12 +18,16 @@ class LocalStorage:
         self.root.mkdir(parents=True, exist_ok=True)
 
     def save(self, original_name: str, content: bytes) -> StoredFile:
+        original_name = original_name.replace("\\", "/").rsplit("/", 1)[-1].strip()
         suffix = Path(original_name).suffix.lower()
         stored_name = f"{uuid.uuid4().hex}{suffix}"
         destination = self.root / stored_name
         temp_path = self.root / f".{stored_name}.tmp"
-        temp_path.write_bytes(content)
-        os.replace(temp_path, destination)
+        try:
+            temp_path.write_bytes(content)
+            os.replace(temp_path, destination)
+        finally:
+            temp_path.unlink(missing_ok=True)
         return StoredFile(
             original_name=Path(original_name).name,
             stored_name=stored_name,
