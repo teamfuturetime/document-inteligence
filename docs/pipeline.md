@@ -10,9 +10,11 @@ POST /api/v1/documents
 POST /api/v1/documents/{id}/process
   → status processing
   → AI /process
-      → validate → PDF/image preprocessing → Tesseract OCR
+      → validate → PDF/image normalization + bounded candidates
+      → Tesseract data (word confidence + coordinates)
+      → layout reconstruction (page/block/line/table/columns)
       → rule classification → regex extraction → confidence assessment
-  → lưu OCR/extraction → status processed
+  → lưu raw OCR + structured pages trong JSON sẵn có → status processed
   → PATCH review → status reviewed
   → POST confirm → status confirmed
 ```
@@ -20,6 +22,10 @@ POST /api/v1/documents/{id}/process
 Trạng thái lỗi AI là `failed`; backend trả 502 mà không lộ exception nội bộ.
 Backend không retry tự động để tránh nhân tải OCR ngoài kiểm soát. Request ID được
 trả qua header. Temporary file của AI service luôn được xóa trong `finally`.
+
+Backend tạo `ocr_text_cleaned` khi serialize response và vẫn giữ `ocr_text` cùng
+`ocr_text_raw` để tương thích/đối chiếu. `GET /documents/{id}` trả thêm `ocr_pages`;
+các endpoint danh sách không mang layout payload lớn.
 
 Retention dùng `expires_at` (UTC) làm nguồn sự thật. Chạy định kỳ:
 

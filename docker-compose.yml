@@ -46,6 +46,9 @@ services:
     environment:
       OCR_ENGINE: ${OCR_ENGINE:-tesseract}
       OCR_LANG: ${OCR_LANG:-vie}
+      OCR_PSM_MODES: ${OCR_PSM_MODES:-3,4,6,11}
+      OCR_MAX_ATTEMPTS: ${OCR_MAX_ATTEMPTS:-3}
+      PDF_DPI: ${PDF_DPI:-250}
       OCR_FALLBACK_ENABLED: ${OCR_FALLBACK_ENABLED:-false}
       MAX_UPLOAD_SIZE_MB: ${MAX_UPLOAD_SIZE_MB:-10}
       MAX_PDF_PAGES: ${MAX_PDF_PAGES:-20}
@@ -68,7 +71,7 @@ services:
       backend:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost/"]
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1/"]
       interval: 10s
       timeout: 5s
       retries: 5

@@ -11,7 +11,7 @@ Base URL: `/api/v1`; Swagger: `/docs`. Endpoint tài liệu yêu cầu cookie đ
 | GET | `/documents/dashboard/summary` | Thống kê và tài liệu gần đây |
 | POST | `/documents` | Upload PDF/JPEG/PNG ≤ 10 MB |
 | GET | `/documents` | Phân trang; lọc `status`, `document_type`; `search` tên/OCR |
-| GET | `/documents/{id}` | Metadata không chứa storage path |
+| GET | `/documents/{id}` | Metadata, raw/cleaned OCR và structured pages; không chứa storage path |
 | GET | `/documents/{id}/preview` | PDF/ảnh inline, riêng tư |
 | GET | `/documents/{id}/export` | JSON extraction an toàn |
 | POST | `/documents/{id}/process` | OCR, phân loại, trích xuất và lưu |
@@ -22,4 +22,7 @@ Base URL: `/api/v1`; Swagger: `/docs`. Endpoint tài liệu yêu cầu cookie đ
 
 Mã lỗi chính: `400` file sai; `401` chưa đăng nhập; `403` CSRF sai; `404` không tồn tại/không sở hữu; `409` trạng thái không hợp lệ; `413` quá dung lượng; `422` body sai; `502` AI Service lỗi.
 
-AI Service có `GET /health` và `POST /process`. `classification.confidence` là heuristic 0–100, không phải xác suất hiệu chuẩn; backend lưu `matched_rules`, `confidence_type`, `needs_review` để giải thích.
+AI Service có `GET /health` và `POST /process`. `ocr.mean_confidence` là confidence
+thật từ OCR engine; `classification.confidence` là heuristic 0–100, không phải xác
+suất hiệu chuẩn. Backend lưu `matched_rules`, `confidence_type`, `needs_review` để
+giải thích. Response OCR còn có `pages`, `boxes` và cấu hình Tesseract đã dùng.

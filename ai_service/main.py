@@ -8,7 +8,11 @@ from pathlib import Path
 from fastapi import FastAPI, File, HTTPException, UploadFile
 
 from ai_service.config import MAX_UPLOAD_SIZE_BYTES, OCR_ENGINE, OCR_FALLBACK_ENABLED, OCR_LANG
-from ai_service.ocr.engine import VietnameseOCREngine, available_engines
+from ai_service.ocr.engine import (
+    VietnameseOCREngine,
+    available_engines,
+    available_tesseract_languages,
+)
 from ai_service.pipeline import DocumentPipeline, PipelineError
 from ai_service.validation import DocumentValidationError, validate_document
 
@@ -23,6 +27,7 @@ def health() -> dict:
         "status": "ready" if OCR_ENGINE in engines else "degraded",
         "configured_engine": OCR_ENGINE,
         "available_engines": engines,
+        "available_tesseract_languages": available_tesseract_languages(),
     }
 
 

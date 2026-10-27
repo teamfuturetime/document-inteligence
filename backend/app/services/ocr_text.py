@@ -12,23 +12,6 @@ import unicodedata
 
 
 _MOJIBAKE_MARKERS = ("Ã", "Â", "Ä", "áº", "á»", "â€", "ðŸ")
-_STRUCTURED_PREFIXES = (
-    "ngày",
-    "date",
-    "tổng",
-    "total",
-    "cộng",
-    "điện thoại",
-    "đt",
-    "phone",
-    "email",
-    "e-mail",
-    "địa chỉ",
-    "address",
-    "website",
-)
-_LIST_ITEM = re.compile(r"^(?:[-•–—*]|\d+[.)]|[a-zA-Z][.)])\s+")
-_DATE_LINE = re.compile(r"^(?:\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|ngày\s+\d{1,2})", re.I)
 _ONLY_NOISE = re.compile(r"^[^\wÀ-ỹ]+$", re.UNICODE)
 
 
@@ -63,50 +46,16 @@ def _is_obvious_noise(line: str) -> bool:
     if not line:
         return False
     if _ONLY_NOISE.fullmatch(line):
-        # Keep ordinary punctuation, but discard separators and OCR artifacts.
-        return len(line) > 1 or line in {"|", "_", "~"}
+        # Only remove repeated scan artifacts; punctuation may be document structure.
+        return set(line) <= {"|", "_", "~"}
     return False
-
-
-def _is_heading(line: str) -> bool:
-    letters = [char for char in line if char.isalpha()]
-    return bool(letters) and len(line) <= 80 and all(char.isupper() for char in letters)
-
-
-def _is_structured_line(line: str) -> bool:
-    lowered = line.casefold()
-    return (
-        _is_heading(line)
-        or ":" in line
-        or lowered.startswith(_STRUCTURED_PREFIXES)
-        or bool(_DATE_LINE.match(line))
-        or bool(_LIST_ITEM.match(line))
-    )
-
-
-def _sentence_case_long_shout(line: str) -> str:
-    """Reduce all-caps prose while preserving short headings and field labels."""
-
-    letters = [char for char in line if char.isalpha()]
-    if (
-        len(line.split()) >= 7
-        and len(letters) >= 20
-        and all(char.isupper() for char in letters)
-        and ":" not in line
-        and not line.casefold().startswith(_STRUCTURED_PREFIXES)
-        and not _DATE_LINE.match(line)
-        and not _LIST_ITEM.match(line)
-    ):
-        lowered = line.lower()
-        return lowered[:1].upper() + lowered[1:]
-    return line
 
 
 def clean_ocr_text(raw_text: str | None) -> str | None:
     """Return a conservative, human-readable rendering of raw OCR text.
 
     This normalizes encoding and whitespace, removes punctuation-only OCR noise,
-    and joins likely soft-wrapped prose. Meaningful document structure is kept.
+    while preserving line boundaries, uppercase tokens and all numeric values.
     """
 
     if raw_text is None:
@@ -124,7 +73,6 @@ def clean_ocr_text(raw_text: str | None) -> str | None:
         line = re.sub(r"([:;!?])(?=\S)", r"\1 ", line)
         line = re.sub(r"(?<!\d)([,.])(?=\S)", r"\1 ", line)
         line = re.sub(r"(?<=\d)([,.])(?=[^\s\d])", r"\1 ", line)
-        line = _sentence_case_long_shout(line)
         if _is_obvious_noise(line):
             continue
         normalized_lines.append(line)
@@ -136,14 +84,6 @@ def clean_ocr_text(raw_text: str | None) -> str | None:
                 output.append("")
             continue
 
-        if output and output[-1] and not _is_structured_line(line):
-            previous = output[-1]
-            previous_ends_sentence = previous.endswith((".", "!", "?", ":", ";"))
-            if not _is_structured_line(previous) and (
-                not previous_ends_sentence or line[:1].islower()
-            ):
-                output[-1] = f"{previous} {line}"
-                continue
         output.append(line)
 
     while output and output[-1] == "":

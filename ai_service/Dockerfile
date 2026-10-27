@@ -9,7 +9,7 @@ WORKDIR /app
 
 # OpenCV và Tesseract với bộ ngôn ngữ tiếng Việt
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgl1 libglib2.0-0 libgomp1 tesseract-ocr tesseract-ocr-vie \
+    libgl1 libglib2.0-0 libgomp1 tesseract-ocr tesseract-ocr-vie tesseract-ocr-eng \
     && rm -rf /var/lib/apt/lists/*
 
 COPY ai_service/requirements.txt .

@@ -10,11 +10,15 @@ from ai_service.preprocessing.document import (  # noqa: E402
     pdf_to_images,
 )
 from ai_service.preprocessing.image import (  # noqa: E402
+    adaptive_binarize,
     binarize,
+    build_preprocessing_candidates,
     denoise,
     enhance_contrast,
     preprocess_image,
     resize_to_max_width,
+    resize_for_ocr,
+    sharpen,
     to_grayscale,
 )
 
@@ -56,12 +60,28 @@ def test_binarize_otsu(sample_image):
     assert set(np.unique(binary)) <= {0, 255}
 
 
+def test_adaptive_binarize_and_light_sharpen_keep_shape(sample_image):
+    assert adaptive_binarize(sample_image).shape == sample_image.shape
+    assert sharpen(sample_image).shape == sample_image.shape
+
+
 def test_resize_to_max_width(sample_image):
     small = resize_to_max_width(sample_image, max_width=100)
     assert small.shape[1] == 100
     # Ảnh nhỏ hơn max_width không bị đổi
     unchanged = resize_to_max_width(sample_image, max_width=500)
     assert unchanged.shape == sample_image.shape
+
+
+def test_resize_for_ocr_upscales_proportionally_with_bound(sample_image):
+    resized = resize_for_ocr(sample_image, min_width=300, max_upscale=2)
+    assert resized.shape == (150, 300)
+
+
+def test_preprocessing_candidates_are_bounded_and_same_size(sample_image):
+    candidates = build_preprocessing_candidates(sample_image)
+    assert len(candidates) == 3
+    assert len({candidate.shape for candidate in candidates}) == 1
 
 
 def test_preprocess_image_pipeline(sample_image):

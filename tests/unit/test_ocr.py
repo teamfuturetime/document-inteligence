@@ -39,7 +39,11 @@ class TestPostprocess:
 
     def test_fix_vietnamese_diacritics(self):
         assert fix_vietnamese_diacritics("hoà bình") == "hoà bình"
-        assert fix_vietnamese_diacritics("hòa bình") == "hoà bình"
+        assert fix_vietnamese_diacritics("hòa bình") == "hòa bình"
+
+    def test_postprocess_preserves_critical_numeric_tokens(self):
+        text = "MST: 0101234567 | Tổng: 15.081.500 | Ngày: 01/05/2026"
+        assert postprocess_text(text) == text
 
     def test_is_valid_word(self):
         assert is_valid_word("Xin")
@@ -49,7 +53,7 @@ class TestPostprocess:
 
     def test_postprocess_text_pipeline(self):
         raw = "  Xin   chào ,  tåi   là  Nam  "
-        result = postprocess_text(raw)
+        result = postprocess_text(raw, fix_errors=True)
         assert "  " not in result
         assert "tåi" not in result
         assert result.startswith("Xin chào")
@@ -119,3 +123,31 @@ class TestEngine:
         assert result.language == "vie"
         assert result.engine == "tesseract"
         assert result.mean_confidence == 0.0
+
+    def test_candidate_retry_stops_after_measured_high_quality(self, monkeypatch):
+        engine = VietnameseOCREngine()
+        calls = []
+
+        def recognize(image, *, page_number=1, psm=3):
+            calls.append(psm)
+            confidence = 40 if len(calls) == 1 else 95
+            words = [OCRWord(f"từ-{index}", confidence) for index in range(6)]
+            return OCRResult(" ".join(word.text for word in words), words=words, config=f"psm-{psm}")
+
+        monkeypatch.setattr(engine, "recognize", recognize)
+        result = engine.recognize_candidates([object(), object(), object()], psm_modes=(3, 4, 6))
+
+        assert calls == [3, 4]
+        assert result.config == "psm-4"
+
+    def test_candidate_selection_uses_confidence_not_language_guessing(self, monkeypatch):
+        engine = VietnameseOCREngine()
+        results = iter([
+            OCRResult("câu có vẻ đúng", words=[OCRWord("đúng", 20)]),
+            OCRResult("raw-token-0101", words=[OCRWord("raw-token-0101", 80)]),
+        ])
+        monkeypatch.setattr(engine, "recognize", lambda *args, **kwargs: next(results))
+
+        selected = engine.recognize_candidates([object(), object()], psm_modes=(3, 6))
+
+        assert selected.text == "raw-token-0101"

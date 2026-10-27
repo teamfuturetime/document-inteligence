@@ -48,6 +48,20 @@ class DocumentOut(BaseModel):
     expires_at: Optional[datetime] = None
 
 
+class DocumentDetailOut(DocumentOut):
+    """Document detail with optional layout metadata stored in the existing JSON column."""
+
+    ocr_boxes: Optional[List[Dict[str, Any]]] = Field(default=None, exclude=True)
+
+    @computed_field(return_type=List[Dict[str, Any]])
+    @property
+    def ocr_pages(self) -> List[Dict[str, Any]]:
+        pages = self.ocr_boxes or []
+        if pages and isinstance(pages[0], dict) and "blocks" in pages[0]:
+            return pages
+        return []
+
+
 class DocumentList(BaseModel):
     """Danh sách tài liệu kèm phân trang."""
 

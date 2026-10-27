@@ -1,5 +1,9 @@
 export type User={id:string;email:string;username:string;created_at:string}
-export type Document={id:string;filename:string;content_type:string;file_size:number;status:string;ocr_text?:string|null;ocr_text_raw?:string|null;ocr_text_cleaned?:string|null;created_at:string;updated_at:string;expires_at?:string}
+export type OCRCell={text:string;confidence:number;bbox:number[]}
+export type OCRLine={text:string;confidence:number;bbox:number[];needs_review:boolean;cells?:OCRCell[]}
+export type OCRBlock={type:'heading'|'paragraph'|'key_value'|'table'|'list'|'unknown';text:string;confidence:number;bbox:number[];needs_review:boolean;lines:OCRLine[];key?:string;value?:string;rows?:OCRCell[][]}
+export type OCRPage={page_number:number;width:number;height:number;blocks:OCRBlock[]}
+export type Document={id:string;filename:string;content_type:string;file_size:number;status:string;ocr_text?:string|null;ocr_text_raw?:string|null;ocr_text_cleaned?:string|null;ocr_pages?:OCRPage[];created_at:string;updated_at:string;expires_at?:string}
 export type Extraction={id:string;document_id:string;document_type:string;data:Record<string,unknown>;confidence:number;classification_metadata?:{confidence_type?:string;matched_rules?:string[];needs_review?:boolean};status:string;created_at:string;updated_at:string;confirmed_at?:string}
 export type DocumentList={items:Document[];total:number;page:number;page_size:number}
 export type Dashboard={total:number;processed:number;awaiting_review:number;confirmed:number;recent:Document[]}

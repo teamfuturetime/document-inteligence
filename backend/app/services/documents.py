@@ -64,7 +64,10 @@ class DocumentService:
             classification = result["classification"]
             extraction = result["extraction"]
             ocr = result["ocr"]
-            self.repository.save_ocr_result(document_id, ocr.get("text", ""), ocr.get("boxes", []))
+            # Keep raw OCR text untouched. Structured pages use the existing JSON
+            # column, avoiding a migration and retaining legacy word boxes as fallback.
+            structure = ocr.get("pages") or ocr.get("boxes", [])
+            self.repository.save_ocr_result(document_id, ocr.get("text", ""), structure)
             saved = self.repository.save_extraction(
                 document_id,
                 classification["document_type"],

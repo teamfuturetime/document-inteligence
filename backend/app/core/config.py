@@ -1,9 +1,9 @@
 """Application settings loaded from environment variables."""
 from functools import lru_cache
-from typing import List
+from typing import Annotated, List
 
 from pydantic import field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     SESSION_COOKIE_SECURE: bool = False
 
     # CORS
-    BACKEND_CORS_ORIGINS: List[str] = [
+    BACKEND_CORS_ORIGINS: Annotated[List[str], NoDecode] = [
         "http://localhost:5173",
         "http://localhost:3000",
     ]
@@ -38,7 +38,7 @@ class Settings(BaseSettings):
     STORAGE_BACKEND: str = "local"
     STORAGE_PATH: str = "./storage/uploads"
     MAX_UPLOAD_SIZE_MB: int = 10
-    ALLOWED_EXTENSIONS: List[str] = ["pdf", "jpg", "jpeg", "png"]
+    ALLOWED_EXTENSIONS: Annotated[List[str], NoDecode] = ["pdf", "jpg", "jpeg", "png"]
 
     # AI Service
     AI_SERVICE_URL: str = "http://localhost:8001"

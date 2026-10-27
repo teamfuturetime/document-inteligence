@@ -4,15 +4,9 @@ from __future__ import annotations
 import re
 import unicodedata
 
-# Bảng thay thế lỗi OCR phổ biến trên tiếng Việt
+# Chỉ giữ các thay thế ký tự mojibake có bằng chứng rõ ràng. Không thay chữ/số
+# theo ngữ cảnh vì có thể làm hỏng MST, số tiền, ngày tháng hoặc mã giấy tờ.
 _COMMON_FIXES = {
-    "|": "l",
-    "0": "o",  # chỉ áp dụng trong từ, không áp dụng số
-    "1": "l",
-    "5": "s",
-    "8": "B",
-    "rn": "m",
-    "cl": "d",
     "cå": "cá",
     "då": "dá",
     "lå": "lá",
@@ -63,29 +57,9 @@ def clean_whitespace(text: str) -> str:
 
 
 def fix_vietnamese_diacritics(text: str) -> str:
-    """Sửa dấu tiếng Việt bị đặt sai vị trí (vd: 'hoà' → 'hòa')."""
-    # Quy tắc đơn giản: nguyên âm đôi 'oa' khi có dấu huyền/sắc/hỏi/ngã
-    # thường đặt trên 'o' (hòa, hóa) thay vì 'a' (hoà, hoá)
-    replacements = {
-        "òa": "oà",
-        "óa": "oá",
-        "ỏa": "oả",
-        "õa": "oã",
-        "ọa": "oạ",
-        "òe": "oè",
-        "óe": "oé",
-        "ỏe": "oẻ",
-        "õe": "oẽ",
-        "ọe": "oẹ",
-        "ùy": "uỳ",
-        "úy": "uý",
-        "ủy": "uỷ",
-        "ũy": "uỹ",
-        "ụy": "uỵ",
-    }
-    for wrong, right in replacements.items():
-        text = text.replace(wrong, right)
-    return text
+    """Preserve recognized diacritics; NFC is the only safe automatic change."""
+
+    return normalize_unicode(text)
 
 
 def is_valid_word(word: str) -> bool:
@@ -95,8 +69,8 @@ def is_valid_word(word: str) -> bool:
     return any(ch.isalnum() for ch in word)
 
 
-def postprocess_text(text: str, *, fix_errors: bool = True) -> str:
-    """Pipeline hậu xử lý văn bản tiếng Việt hoàn chỉnh."""
+def postprocess_text(text: str, *, fix_errors: bool = False) -> str:
+    """Safely normalize OCR text without guessing words or numeric tokens."""
     result = normalize_unicode(text)
     if fix_errors:
         result = fix_common_ocr_errors(result)

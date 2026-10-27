@@ -2,22 +2,114 @@
   {
     "file": "don-xin-viec-tong-hop.png",
     "expected_document_type": "don_xin_viec",
-    "synthetic": true
+    "category": "vietnamese_text",
+    "synthetic": true,
+    "ground_truth": "ĐƠN XIN VIỆC\nKính gửi: Công ty Minh Họa\nTôi tên là: NGUYỄN VĂN DEMO\nVị trí ứng tuyển: Nhân viên kiểm thử\nNgười làm đơn",
+    "reading_order": [
+      "ĐƠN XIN VIỆC",
+      "Kính gửi: Công ty Minh Họa",
+      "Tôi tên là: NGUYỄN VĂN DEMO",
+      "Vị trí ứng tuyển: Nhân viên kiểm thử",
+      "Người làm đơn"
+    ]
   },
   {
     "file": "hop-dong-tong-hop.png",
     "expected_document_type": "hop_dong_lao_dong",
-    "synthetic": true
+    "category": "vietnamese_text",
+    "synthetic": true,
+    "ground_truth": "HỢP ĐỒNG LAO ĐỘNG\nBên A: CÔNG TY MẪU\nBên B: TRẦN THỊ THỬ NGHIỆM\nĐiều 1: Thời hạn hợp đồng\nTiền lương: 10.000.000 đồng",
+    "reading_order": [
+      "HỢP ĐỒNG LAO ĐỘNG",
+      "Bên A: CÔNG TY MẪU",
+      "Bên B: TRẦN THỊ THỬ NGHIỆM",
+      "Điều 1: Thời hạn hợp đồng",
+      "Tiền lương: 10.000.000 đồng"
+    ]
   },
   {
     "file": "bieu-mau-hanh-chinh.png",
     "expected_document_type": "unknown",
-    "synthetic": true
+    "category": "administrative_form",
+    "synthetic": true,
+    "ground_truth": "CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nBIỂU MẪU HÀNH CHÍNH TỔNG HỢP\nMã hồ sơ: DEMO-0001\nNội dung chỉ dùng để kiểm thử OCR tiếng Việt.",
+    "reading_order": [
+      "CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM",
+      "BIỂU MẪU HÀNH CHÍNH TỔNG HỢP",
+      "Mã hồ sơ: DEMO-0001",
+      "Nội dung chỉ dùng để kiểm thử OCR tiếng Việt."
+    ]
   },
   {
     "file": "bo-mau-nhieu-trang.pdf",
     "expected_document_type": "mixed_demo",
+    "category": "multi_page_pdf",
     "synthetic": true,
-    "pages": 3
+    "pages": 3,
+    "ground_truth": "ĐƠN XIN VIỆC\nKính gửi: Công ty Minh Họa\nTôi tên là: NGUYỄN VĂN DEMO\nVị trí ứng tuyển: Nhân viên kiểm thử\nNgười làm đơn\fHỢP ĐỒNG LAO ĐỘNG\nBên A: CÔNG TY MẪU\nBên B: TRẦN THỊ THỬ NGHIỆM\nĐiều 1: Thời hạn hợp đồng\nTiền lương: 10.000.000 đồng\fCỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nBIỂU MẪU HÀNH CHÍNH TỔNG HỢP\nMã hồ sơ: DEMO-0001\nNội dung chỉ dùng để kiểm thử OCR tiếng Việt.",
+    "reading_order": [
+      "ĐƠN XIN VIỆC",
+      "Kính gửi: Công ty Minh Họa",
+      "Tôi tên là: NGUYỄN VĂN DEMO",
+      "Vị trí ứng tuyển: Nhân viên kiểm thử",
+      "Người làm đơn",
+      "HỢP ĐỒNG LAO ĐỘNG",
+      "Bên A: CÔNG TY MẪU",
+      "Bên B: TRẦN THỊ THỬ NGHIỆM",
+      "Điều 1: Thời hạn hợp đồng",
+      "Tiền lương: 10.000.000 đồng",
+      "CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM",
+      "BIỂU MẪU HÀNH CHÍNH TỔNG HỢP",
+      "Mã hồ sơ: DEMO-0001",
+      "Nội dung chỉ dùng để kiểm thử OCR tiếng Việt."
+    ]
+  },
+  {
+    "file": "hoa-don-bang-tong-hop.png",
+    "expected_document_type": "unknown",
+    "category": "invoice_table",
+    "synthetic": true,
+    "ground_truth": "HÓA ĐƠN DỊCH VỤ\nMST: 0101234567\nHạng mục Số lượng Đơn giá Thành tiền\nDịch vụ A 2 500.000 1.000.000\nTỔNG CỘNG: 1.000.000 đồng",
+    "reading_order": [
+      "HÓA ĐƠN DỊCH VỤ",
+      "MST: 0101234567",
+      "Hạng mục Số lượng Đơn giá Thành tiền",
+      "Dịch vụ A 2 500.000 1.000.000",
+      "TỔNG CỘNG: 1.000.000 đồng"
+    ],
+    "expected_structure": [
+      "heading",
+      "key_value",
+      "table"
+    ],
+    "expected_fields": {
+      "tax_code": "0101234567"
+    }
+  },
+  {
+    "file": "van-ban-hai-cot-tong-hop.png",
+    "expected_document_type": "unknown",
+    "category": "multi_column",
+    "synthetic": true,
+    "ground_truth": "VĂN BẢN HAI CỘT\nCột trái dòng một\nCột trái dòng hai\nCột phải dòng một\nCột phải dòng hai",
+    "reading_order": [
+      "VĂN BẢN HAI CỘT",
+      "Cột trái dòng một",
+      "Cột trái dòng hai",
+      "Cột phải dòng một",
+      "Cột phải dòng hai"
+    ]
+  },
+  {
+    "file": "anh-nghieng-do-phan-giai-thap.png",
+    "expected_document_type": "unknown",
+    "category": "skewed_low_resolution",
+    "synthetic": true,
+    "ground_truth": "ẢNH NGHIÊNG ĐỘ PHÂN GIẢI THẤP\nNgày: 01/05/2026\nMã hồ sơ: DEMO-0099",
+    "reading_order": [
+      "ẢNH NGHIÊNG ĐỘ PHÂN GIẢI THẤP",
+      "Ngày: 01/05/2026",
+      "Mã hồ sơ: DEMO-0099"
+    ]
   }
 ]

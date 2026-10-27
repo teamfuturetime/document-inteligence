@@ -6,7 +6,7 @@ from app.api.dependencies import get_document_service, get_repository, get_stora
 from app.api.security import get_current_user
 from app.models import User
 from app.repositories.documents import DocumentRepository
-from app.schemas.documents import DashboardOut, DocumentList, DocumentOut, ExtractionOut, ExtractionUpdate, MessageOut
+from app.schemas.documents import DashboardOut, DocumentDetailOut, DocumentList, DocumentOut, ExtractionOut, ExtractionUpdate, MessageOut
 from app.services.documents import DocumentNotFoundError, DocumentService, ExtractionNotFoundError, InvalidStateError, ProcessingError
 from app.services.file_validation import FileValidationError
 from app.services.storage import StorageService
@@ -38,7 +38,7 @@ def dashboard(repository: DocumentRepository = Depends(get_repository), user: Us
     _, confirmed = repository.list_documents(status="confirmed", page_size=1, owner_id=user.id)
     return DashboardOut(total=total, processed=processed + reviewed + confirmed, awaiting_review=processed + reviewed, confirmed=confirmed, recent=recent)
 
-@router.get("/{document_id}", response_model=DocumentOut)
+@router.get("/{document_id}", response_model=DocumentDetailOut)
 def get_document(document_id: str, service: DocumentService = Depends(get_document_service)):
     try: return service.get(document_id)
     except DocumentNotFoundError as exc: raise _not_found(exc) from exc

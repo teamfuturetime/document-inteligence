@@ -3,7 +3,7 @@
 import unicodedata
 from datetime import datetime, timezone
 
-from app.schemas.documents import DocumentOut
+from app.schemas.documents import DocumentDetailOut, DocumentOut
 from app.services.ocr_text import clean_ocr_text
 
 
@@ -19,13 +19,13 @@ def test_repairs_common_vietnamese_mojibake():
 
 
 def test_repairs_mojibake_inside_other_correct_vietnamese_text():
-    assert clean_ocr_text("Đã đúng\nVÄƒn báº£n") == "Đã đúng Văn bản"
+    assert clean_ocr_text("Đã đúng\nVÄƒn báº£n") == "Đã đúng\nVăn bản"
 
 
-def test_removes_noise_and_joins_soft_wrapped_prose():
+def test_removes_safe_noise_without_joining_line_boundaries():
     raw = "Nội dung bị ngắt giữa\nhai dòng không cần thiết\n||||\n---\n\nĐoạn mới."
 
-    assert clean_ocr_text(raw) == "Nội dung bị ngắt giữa hai dòng không cần thiết\n\nĐoạn mới."
+    assert clean_ocr_text(raw) == "Nội dung bị ngắt giữa\nhai dòng không cần thiết\n---\n\nĐoạn mới."
 
 
 def test_preserves_meaningful_document_structure():
@@ -42,15 +42,21 @@ def test_preserves_meaningful_document_structure():
 
 def test_empty_input_returns_none():
     assert clean_ocr_text(None) is None
-    assert clean_ocr_text(" \n --- \n") is None
+    assert clean_ocr_text(" \n |||| \n") is None
 
 
-def test_reduces_long_all_caps_prose_but_keeps_short_heading():
+def test_preserves_all_caps_names_organizations_and_headings():
     raw = "THÔNG BÁO\nĐÂY LÀ MỘT ĐOẠN VĂN BẢN DÀI BỊ OCR NHẬN THÀNH TOÀN CHỮ HOA"
 
-    assert clean_ocr_text(raw) == (
-        "THÔNG BÁO\nĐây là một đoạn văn bản dài bị ocr nhận thành toàn chữ hoa"
+    assert clean_ocr_text(raw) == raw
+
+
+def test_preserves_numbers_dates_identifiers_and_money_exactly():
+    raw = (
+        "MST: 0101234567\nSố tài khoản: 0011001234567\n"
+        "Ngày: 01/05/2026\nTổng cộng: 15.081.500 đ\nCCCD: 079201012345"
     )
+    assert clean_ocr_text(raw) == raw
 
 
 def test_document_response_exposes_raw_cleaned_and_legacy_fields():
@@ -69,3 +75,22 @@ def test_document_response_exposes_raw_cleaned_and_legacy_fields():
     assert response["ocr_text"] == "VÄƒn  báº£n"
     assert response["ocr_text_raw"] == "VÄƒn  báº£n"
     assert response["ocr_text_cleaned"] == "Văn bản"
+
+
+def test_document_detail_exposes_stored_structured_pages():
+    now = datetime.now(timezone.utc)
+    pages = [{"page_number": 1, "width": 100, "height": 200, "blocks": []}]
+    response = DocumentDetailOut(
+        id="doc-1",
+        filename="sample.pdf",
+        content_type="application/pdf",
+        file_size=100,
+        status="processed",
+        ocr_text="",
+        ocr_boxes=pages,
+        created_at=now,
+        updated_at=now,
+    ).model_dump()
+
+    assert response["ocr_pages"] == pages
+    assert "ocr_boxes" not in response
