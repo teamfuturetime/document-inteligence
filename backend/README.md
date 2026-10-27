@@ -88,3 +88,29 @@ thêm `-H 'X-API-Key: <giá trị đã cấu hình>'` vào lệnh curl.
 - Từ chối file rỗng, tên rỗng, tên vượt 255 ký tự và ký tự điều khiển. Tên có
   đường dẫn được lấy basename cho cả dấu `/` và `\\`.
 - Input bị từ chối không tạo metadata hoặc file trong thư mục lưu trữ.
+
+## Kiểm thử và nghiệm thu tuần 1
+
+```bash
+# Toàn bộ dự án
+python -m pytest
+
+# Riêng nền tảng backend và Upload API
+python -m pytest \
+  tests/unit/test_config.py \
+  tests/unit/test_database.py \
+  tests/unit/test_document_repository.py \
+  tests/unit/test_storage.py \
+  tests/unit/test_file_validation.py \
+  tests/integration/test_documents_api.py
+```
+
+Các test tự tạo PDF/PNG/JPEG thật trong bộ nhớ, dùng database SQLite và thư mục
+lưu file tạm; không cần OCR hoặc PostgreSQL chạy bên ngoài. Integration test
+chạy lifespan để kiểm tra tạo bảng, gọi upload, đọc metadata và tải lại đúng
+nội dung đã lưu. Các trường hợp thất bại kiểm tra cả HTTP response lẫn việc
+không còn metadata/file thừa; unit test mô phỏng lỗi ghi file, rename, refresh
+và commit để kiểm tra rollback và dọn dẹp.
+
+Nghiệm thu: `/health` trả `200`; migration chạy được; PDF/PNG/JPEG hợp lệ trả
+`201`; input không hợp lệ trả `422`; metadata và nội dung lưu đọc lại được.
