@@ -2,7 +2,9 @@
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, computed_field
+
+from app.services.ocr_text import clean_ocr_text
 
 
 class DocumentCreate(BaseModel):
@@ -26,6 +28,21 @@ class DocumentOut(BaseModel):
     file_size: int
     status: str
     ocr_text: Optional[str] = None
+
+    @computed_field(return_type=Optional[str])
+    @property
+    def ocr_text_raw(self) -> Optional[str]:
+        """Raw OCR retained for debugging and backward compatibility."""
+
+        return self.ocr_text
+
+    @computed_field(return_type=Optional[str])
+    @property
+    def ocr_text_cleaned(self) -> Optional[str]:
+        """Readability-enhanced OCR generated without changing stored data."""
+
+        return clean_ocr_text(self.ocr_text)
+
     created_at: datetime
     updated_at: datetime
     expires_at: Optional[datetime] = None
