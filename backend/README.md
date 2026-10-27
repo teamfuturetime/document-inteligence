@@ -32,3 +32,23 @@ PYTHONPATH=backend:. uvicorn app.main:app --reload
 | `app/services/` | Validation và lưu file |
 | `migrations/` | Migration database bằng Alembic |
 | `../tests/` | Unit, integration và end-to-end tests |
+
+## Database và migration
+
+Chạy migration trước khi khởi động trên database mới:
+
+```bash
+alembic upgrade head
+alembic current
+```
+
+Ứng dụng vẫn tự tạo bảng khi khởi động để hỗ trợ demo cục bộ. Nếu database đã
+được tạo bởi ứng dụng, đối chiếu schema với model trước khi chạy
+`alembic stamp head` để ghi nhận phiên bản mà không tạo lại bảng; sau đó dùng
+`alembic check` để xác nhận không còn khác biệt.
+Không chạy migration ban đầu trên các bảng đã tồn tại.
+
+Model `Document` lưu ID UUID, tên gốc, tên lưu duy nhất, MIME thực tế, số byte,
+trạng thái `uploaded`, thời điểm tạo và hạn lưu 41 ngày. `DocumentCreate` kiểm tra
+metadata trước khi ghi; `DocumentRead` chỉ trả metadata công khai. Transaction
+thất bại được rollback để session có thể dùng cho request tiếp theo.

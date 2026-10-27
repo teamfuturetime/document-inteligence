@@ -4,6 +4,7 @@ from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
 from app.models import Document
+from app.schemas.documents import DocumentCreate
 
 
 class DocumentRepository:
@@ -13,18 +14,28 @@ class DocumentRepository:
     def create(
         self, *, original_name: str, stored_name: str, mime_type: str, size_bytes: int
     ) -> Document:
-        created_at = datetime.now(timezone.utc)
-        document = Document(
+        metadata = DocumentCreate(
             original_name=original_name,
             stored_name=stored_name,
             mime_type=mime_type,
             size_bytes=size_bytes,
+        )
+        created_at = datetime.now(timezone.utc)
+        document = Document(
+            **metadata.model_dump(),
             created_at=created_at,
             expires_at=created_at + timedelta(days=41),
         )
-        self.session.add(document)
-        self.session.commit()
-        self.session.refresh(document)
+        try:
+            self.session.add(document)
+            self.session.flush()
+            # Refresh before commit: a failed read must not leave durable metadata
+            # pointing at a file that the upload endpoint subsequently removes.
+            self.session.refresh(document)
+            self.session.commit()
+        except Exception:
+            self.session.rollback()
+            raise
         return document
 
     def get(self, document_id: str) -> Document | None:
