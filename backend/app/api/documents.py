@@ -40,7 +40,9 @@ def upload_document(file: UploadFile = File(...), db: Session = Depends(get_db))
         max_bytes = settings.max_upload_mb * 1024 * 1024
         content = file.file.read(max_bytes + 1)
         try:
-            validated = validate_document(file.filename or "", content, max_bytes)
+            validated = validate_document(
+                file.filename or "", content, max_bytes, content_type=file.content_type
+            )
         except InvalidDocument as error:
             raise HTTPException(status_code=422, detail=str(error)) from error
         try:

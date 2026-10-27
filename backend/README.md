@@ -57,7 +57,7 @@ thất bại được rollback để session có thể dùng cho request tiếp 
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/documents \
-  -F 'file=@demo_documents/don_de_nghi.png;type=image/png'
+  -F 'file=@demo_documents/03_don_de_nghi.png;type=image/png'
 ```
 
 Chọn đường dẫn tới tài liệu có thật trên máy. Endpoint nhận `multipart/form-data`
@@ -75,3 +75,16 @@ nguyên tử, dọn file tạm khi ghi thất bại và xóa file đã lưu nế
 Lỗi dùng JSON `{"detail": "..."}`: `422` khi input không hợp lệ, `500` khi
 không ghi được file, `503` khi database không lưu được metadata. Nếu bật API key,
 thêm `-H 'X-API-Key: <giá trị đã cấu hình>'` vào lệnh curl.
+
+## Validation
+
+- Chỉ nhận PDF, PNG, JPG/JPEG; phần mở rộng không phân biệt chữ hoa/thường.
+- Kiểm tra dung lượng trước khi giải mã; chỉ đọc tối đa giới hạn cộng 1 byte.
+- So khớp chữ ký, phần mở rộng và MIME do client khai báo. MIME trống hoặc
+  `application/octet-stream` được nhận diện bằng nội dung thực tế.
+- PDF phải có cấu trúc đọc được, có trang, kết thúc đầy đủ và không yêu cầu
+  mật khẩu; không nhận file mà trình đọc phải sửa cấu trúc.
+- Ảnh phải qua cả kiểm tra cấu trúc và giải mã pixel, tối đa 40 triệu pixel.
+- Từ chối file rỗng, tên rỗng, tên vượt 255 ký tự và ký tự điều khiển. Tên có
+  đường dẫn được lấy basename cho cả dấu `/` và `\\`.
+- Input bị từ chối không tạo metadata hoặc file trong thư mục lưu trữ.
