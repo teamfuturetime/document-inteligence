@@ -7,7 +7,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.core.config import get_settings
 from app.core.logging import get_logger
 from app.repositories.documents import DocumentRepository
-from app.schemas.documents import ExtractionUpdate, OCRCorrectionUpdate
+from app.schemas.documents import DocumentDetailOut, ExtractionUpdate, OCRCorrectionUpdate
 from app.services.storage import StorageService
 
 settings = get_settings()
@@ -106,19 +106,25 @@ class DocumentService:
             raise ReviewPersistenceError("Không thể lưu dữ liệu rà soát") from exc
 
     def correct_ocr(self, document_id: str, update: OCRCorrectionUpdate):
-        document = self.get(document_id)
-        if document.status not in {"processed", "reviewed"}:
-            raise InvalidStateError("Chỉ có thể sửa OCR của tài liệu đang rà soát")
-        if not document.ocr_text:
-            raise InvalidStateError("Tài liệu chưa có kết quả OCR để chỉnh sửa")
         try:
-            saved = self.repository.save_ocr_correction(document_id, update.text)
+            saved = self.repository.save_ocr_correction(
+                document_id, update.text, update.expected_revision, self.owner_id
+            )
             if saved is None:
-                raise DocumentNotFoundError(document_id)
-            self.repository.update_status(document_id, "reviewed")
+                # A zero-row update may mean stale revision, a changed status,
+                # missing OCR, or a missing/foreign document. Preserve ownership
+                # semantics without disclosing another user's revision.
+                document = self.get(document_id)
+                if document.status not in {"processed", "reviewed"}:
+                    raise InvalidStateError("Chỉ có thể sửa OCR của tài liệu đang rà soát")
+                if not document.ocr_text:
+                    raise InvalidStateError("Tài liệu chưa có kết quả OCR để chỉnh sửa")
+                raise InvalidStateError("Xung đột phiên bản OCR. Hãy tải lại tài liệu trước khi lưu lại.")
+            # Capture exactly this write before releasing the transaction lock.
+            # A post-commit refresh could acknowledge a later client's content.
+            response = DocumentDetailOut.model_validate(saved)
             self.repository.commit()
-            self.repository.refresh(saved)
-            return saved
+            return response
         except SQLAlchemyError as exc:
             self.repository.rollback()
             raise ReviewPersistenceError("Không thể lưu văn bản OCR chỉnh sửa") from exc

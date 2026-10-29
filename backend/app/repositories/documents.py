@@ -2,7 +2,7 @@
 from datetime import datetime, timezone
 from typing import Optional
 
-from sqlalchemy import func, or_, select
+from sqlalchemy import func, or_, select, update
 from sqlalchemy.orm import Session
 
 from app.models import Document, Extraction
@@ -115,15 +115,34 @@ class DocumentRepository:
         self.db.flush()
         return doc
 
-    def save_ocr_correction(self, document_id: str, text: str) -> Optional[Document]:
-        """Save a human correction without ever overwriting machine OCR."""
-        doc = self.get_by_id(document_id)
-        if doc is None:
-            return None
-        doc.ocr_text_corrected = text
-        doc.ocr_corrected_at = datetime.now(timezone.utc)
-        self.db.flush()
-        return doc
+    def save_ocr_correction(
+        self, document_id: str, text: str, expected_revision: int, owner_id: str | None
+    ) -> Optional[Document]:
+        """Compare and increment in one statement, including editability guards.
+
+        The database serializes competing writes; an earlier SELECT is never the
+        authority for whether a draft may replace the persisted correction.
+        """
+        stmt = (
+            update(Document)
+            .where(
+                Document.id == document_id,
+                Document.owner_id == owner_id,
+                Document.ocr_revision == expected_revision,
+                Document.status.in_(("processed", "reviewed")),
+                Document.ocr_text.is_not(None),
+                Document.ocr_text != "",
+            )
+            .values(
+                ocr_text_corrected=text,
+                ocr_corrected_at=datetime.now(timezone.utc),
+                ocr_revision=Document.ocr_revision + 1,
+                status="reviewed",
+            )
+            .returning(Document)
+            .execution_options(synchronize_session=False, populate_existing=True)
+        )
+        return self.db.execute(stmt).scalar_one_or_none()
 
     def save_extraction(
         self,

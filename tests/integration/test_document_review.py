@@ -52,7 +52,7 @@ def test_ocr_correction_persists_without_modifying_raw(review_client):
     client, factory, _ = review_client
     document_id = make_processed(client, factory)
     corrected = "Họ và tên: Nguyễn Văn A\nMST: 0101234567"
-    response = client.patch(f"/api/v1/documents/{document_id}/ocr-correction", json={"text": corrected})
+    response = client.patch(f"/api/v1/documents/{document_id}/ocr-correction", json={"text": corrected, "expected_revision": 0})
     assert response.status_code == 200
     assert response.json()["ocr_text_cleaned"] == corrected
     assert response.json()["ocr_text_raw"] == "HO VA TEN: NGUYEN VAN A\nMST: 0101234567"
@@ -86,11 +86,11 @@ def test_review_requires_csrf_and_ownership(review_client):
     client, factory, csrf = review_client
     document_id = make_processed(client, factory)
     client.headers.pop("X-CSRF-Token")
-    assert client.patch(f"/api/v1/documents/{document_id}/ocr-correction", json={"text": "Sửa"}).status_code == 403
+    assert client.patch(f"/api/v1/documents/{document_id}/ocr-correction", json={"text": "Sửa", "expected_revision": 0}).status_code == 403
     client.headers.update({"X-CSRF-Token": csrf})
     auth_b = client.post("/api/v1/auth/register", json={"email": "other@example.test", "username": "other", "password": "Other-password-123"})
     client.headers.update({"X-CSRF-Token": auth_b.json()["csrf_token"]})
-    assert client.patch(f"/api/v1/documents/{document_id}/ocr-correction", json={"text": "Sửa"}).status_code == 404
+    assert client.patch(f"/api/v1/documents/{document_id}/ocr-correction", json={"text": "Sửa", "expected_revision": 0}).status_code == 404
     assert client.patch(f"/api/v1/documents/{document_id}/extraction", json={"document_type": "unknown", "data": {}}).status_code == 404
 
 
@@ -98,12 +98,12 @@ def test_confirm_locks_review_reopen_and_export_reviewed_values(review_client):
     client, factory, _ = review_client
     document_id = make_processed(client, factory)
     corrected = "Nội dung đã được người dùng hiệu chỉnh"
-    assert client.patch(f"/api/v1/documents/{document_id}/ocr-correction", json={"text": corrected}).status_code == 200
+    assert client.patch(f"/api/v1/documents/{document_id}/ocr-correction", json={"text": corrected, "expected_revision": 0}).status_code == 200
     assert client.patch(f"/api/v1/documents/{document_id}/extraction", json={"document_type": "other", "data": {"Trường mới": "Giá trị mới"}}).status_code == 200
     confirmed = client.post(f"/api/v1/documents/{document_id}/confirm")
     assert confirmed.status_code == 200
     assert confirmed.json()["status"] == "confirmed"
-    assert client.patch(f"/api/v1/documents/{document_id}/ocr-correction", json={"text": "Không được lưu"}).status_code == 409
+    assert client.patch(f"/api/v1/documents/{document_id}/ocr-correction", json={"text": "Không được lưu", "expected_revision": 1}).status_code == 409
     assert client.patch(f"/api/v1/documents/{document_id}/extraction", json={"document_type": "unknown", "data": {}}).status_code == 409
     exported = client.get(f"/api/v1/documents/{document_id}/export")
     assert exported.status_code == 200
@@ -115,4 +115,112 @@ def test_confirm_locks_review_reopen_and_export_reviewed_values(review_client):
     reopened = client.post(f"/api/v1/documents/{document_id}/reopen")
     assert reopened.status_code == 200
     assert reopened.json()["status"] == "reviewed"
-    assert client.patch(f"/api/v1/documents/{document_id}/ocr-correction", json={"text": "Có thể sửa lại"}).status_code == 200
+    assert client.patch(f"/api/v1/documents/{document_id}/ocr-correction", json={"text": "Có thể sửa lại", "expected_revision": 1}).status_code == 200
+
+
+def test_stale_revision_rejected_without_overwriting_persisted_ocr(review_client):
+    client, factory, _ = review_client
+    document_id = make_processed(client, factory)
+    endpoint = f"/api/v1/documents/{document_id}/ocr-correction"
+    saved = client.patch(endpoint, json={"text": "New draft", "expected_revision": 0})
+    assert saved.status_code == 200
+    stale = client.patch(endpoint, json={"text": "Old draft", "expected_revision": 0})
+    assert stale.status_code == 409
+    reloaded = client.get(f"/api/v1/documents/{document_id}").json()
+    assert saved.json()["ocr_revision"] == reloaded["ocr_revision"] == 1
+    assert reloaded["ocr_text_cleaned"] == "New draft"
+    with factory() as db:
+        document = db.get(Document, document_id)
+        assert document.ocr_text_corrected == "New draft"
+        assert document.ocr_text == "HO VA TEN: NGUYEN VAN A\nMST: 0101234567"
+
+
+@pytest.mark.parametrize("revision", [None, -1, 0.5, "0", True, 2_147_483_648, 10**100])
+def test_ocr_correction_requires_valid_revision(review_client, revision):
+    client, factory, _ = review_client
+    document_id = make_processed(client, factory)
+    payload = {"text": "Draft"}
+    if revision is not None:
+        payload["expected_revision"] = revision
+    response = client.patch(f"/api/v1/documents/{document_id}/ocr-correction", json=payload)
+    assert response.status_code == 422
+
+
+def test_ocr_correction_rejects_whitespace(review_client):
+    client, factory, _ = review_client
+    document_id = make_processed(client, factory)
+    response = client.patch(f"/api/v1/documents/{document_id}/ocr-correction", json={"text": " \n\t ", "expected_revision": 0})
+    assert response.status_code == 422
+    with factory() as db:
+        assert db.get(Document, document_id).ocr_text_corrected is None
+
+
+@pytest.mark.parametrize("status,raw", [("uploaded", "OCR"), ("processing", "OCR"), ("failed", "OCR"), ("confirmed", "OCR"), ("processed", None), ("processed", "")])
+def test_ocr_correction_rejects_noneditable_state(review_client, status, raw):
+    client, factory, _ = review_client
+    document_id = make_processed(client, factory)
+    with factory() as db:
+        document = db.get(Document, document_id)
+        document.status = status
+        document.ocr_text = raw
+        db.commit()
+    response = client.patch(f"/api/v1/documents/{document_id}/ocr-correction", json={"text": "Draft", "expected_revision": 0})
+    assert response.status_code == 409
+    with factory() as db:
+        document = db.get(Document, document_id)
+        assert document.ocr_text_corrected is None
+        assert document.status == status
+
+
+def test_ocr_correction_commit_failure_does_not_acknowledge_or_persist(review_client, monkeypatch):
+    from sqlalchemy.exc import OperationalError
+    from app.repositories.documents import DocumentRepository
+
+    client, factory, _ = review_client
+    document_id = make_processed(client, factory)
+
+    def fail_commit(self):
+        raise OperationalError("COMMIT", {}, RuntimeError("Simulated storage failure"))
+
+    monkeypatch.setattr(DocumentRepository, "commit", fail_commit)
+    response = client.patch(f"/api/v1/documents/{document_id}/ocr-correction", json={"text": "Must not persist", "expected_revision": 0})
+    assert response.status_code == 500
+    assert "detail" in response.json()
+    with factory() as db:
+        document = db.get(Document, document_id)
+        assert document.ocr_text_corrected is None
+        assert document.status == "processed"
+
+
+def test_ocr_correction_requires_authentication(review_client):
+    client, factory, _ = review_client
+    document_id = make_processed(client, factory)
+    client.cookies.clear()
+    response = client.patch(f"/api/v1/documents/{document_id}/ocr-correction", json={"text": "Draft", "expected_revision": 0})
+    assert response.status_code == 401
+
+
+def test_ocr_response_acknowledges_exact_write_even_if_later_writer_commits(review_client, monkeypatch):
+    from app.repositories.documents import DocumentRepository
+
+    client, factory, _ = review_client
+    document_id = make_processed(client, factory)
+    original_commit = DocumentRepository.commit
+
+    def commit_then_later_writer(self):
+        original_commit(self)
+        # Simulate another client committing immediately after the transaction
+        # lock is released, before the first response has been serialized.
+        with factory() as db:
+            later = DocumentRepository(db)
+            assert later.save_ocr_correction(document_id, "Later client draft", 1, self.get_by_id(document_id).owner_id) is not None
+            db.commit()
+
+    monkeypatch.setattr(DocumentRepository, "commit", commit_then_later_writer)
+    response = client.patch(f"/api/v1/documents/{document_id}/ocr-correction", json={"text": "First client draft", "expected_revision": 0})
+    assert response.status_code == 200
+    assert response.json()["ocr_revision"] == 1
+    assert response.json()["ocr_text_cleaned"] == "First client draft"
+    reloaded = client.get(f"/api/v1/documents/{document_id}").json()
+    assert reloaded["ocr_revision"] == 2
+    assert reloaded["ocr_text_cleaned"] == "Later client draft"

@@ -68,6 +68,7 @@ def test_document_response_exposes_raw_cleaned_and_legacy_fields():
         file_size=100,
         status="processed",
         ocr_text="VÄƒn  báº£n",
+        ocr_revision=0,
         created_at=now,
         updated_at=now,
     ).model_dump()
@@ -75,6 +76,7 @@ def test_document_response_exposes_raw_cleaned_and_legacy_fields():
     assert response["ocr_text"] == "VÄƒn  báº£n"
     assert response["ocr_text_raw"] == "VÄƒn  báº£n"
     assert response["ocr_text_cleaned"] == "Văn bản"
+    assert response["ocr_revision"] == 0
 
 
 def test_document_detail_exposes_stored_structured_pages():
@@ -87,6 +89,7 @@ def test_document_detail_exposes_stored_structured_pages():
         file_size=100,
         status="processed",
         ocr_text="",
+        ocr_revision=0,
         ocr_boxes=pages,
         created_at=now,
         updated_at=now,

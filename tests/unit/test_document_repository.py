@@ -2,6 +2,7 @@
 from app.models import Document
 from app.repositories.documents import DocumentRepository
 from app.schemas.documents import DocumentCreate
+import pytest
 
 
 def _make_doc(db, filename="file.pdf", status="uploaded"):
@@ -112,3 +113,35 @@ def test_delete_expired(db_session):
     deleted = repo.delete_expired(retention_days=41)
     assert deleted == 1
     assert repo.get_by_id(old.id) is None
+
+
+@pytest.mark.parametrize("guard", ["revision", "owner", "status", "missing_ocr"])
+def test_atomic_ocr_correction_enforces_all_guards(db_session, guard):
+    document = _make_doc(db_session)
+    document.status = "confirmed" if guard == "status" else "processed"
+    document.ocr_text = None if guard == "missing_ocr" else "RAW OCR"
+    db_session.commit()
+    revision = 1 if guard == "revision" else 0
+    owner = "another-owner" if guard == "owner" else None
+    repository = DocumentRepository(db_session)
+    assert repository.save_ocr_correction(document.id, "Rejected draft", revision, owner) is None
+    db_session.commit()
+    db_session.refresh(document)
+    assert document.ocr_revision == 0
+    assert document.ocr_text_corrected is None
+
+
+def test_atomic_ocr_correction_updates_revision_and_preserves_raw(db_session):
+    document = _make_doc(db_session)
+    document.status = "processed"
+    document.ocr_text = "RAW OCR"
+    db_session.commit()
+    repository = DocumentRepository(db_session)
+    saved = repository.save_ocr_correction(document.id, "Human draft", 0, None)
+    assert saved.ocr_revision == 1
+    assert saved.status == "reviewed"
+    assert saved.ocr_text == "RAW OCR"
+    assert saved.ocr_text_corrected == "Human draft"
+    assert saved.ocr_corrected_at is not None
+    db_session.commit()
+    assert repository.save_ocr_correction(document.id, "Stale draft", 0, None) is None

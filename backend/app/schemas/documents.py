@@ -31,6 +31,7 @@ class DocumentOut(BaseModel):
     ocr_text: Optional[str] = None
     ocr_text_corrected: Optional[str] = Field(default=None, exclude=True)
     ocr_corrected_at: Optional[datetime] = None
+    ocr_revision: int
 
     @computed_field(return_type=Optional[str])
     @property
@@ -138,6 +139,9 @@ class ExtractionUpdate(BaseModel):
 
 class OCRCorrectionUpdate(BaseModel):
     text: str = Field(..., min_length=1, max_length=1_000_000)
+    # SQLAlchemy Integer is signed 32-bit on PostgreSQL. Reject oversized input
+    # at the API boundary rather than leaking driver conversion/server errors.
+    expected_revision: int = Field(..., ge=0, le=2_147_483_647, strict=True)
 
     @field_validator("text")
     @classmethod

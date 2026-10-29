@@ -48,6 +48,7 @@ class Document(Base):
     ocr_text: Mapped[str | None] = mapped_column(Text, nullable=True)
     # Human correction is deliberately stored separately from machine OCR.
     ocr_text_corrected: Mapped[str | None] = mapped_column(Text, nullable=True)
+    ocr_revision: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
     ocr_corrected_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
