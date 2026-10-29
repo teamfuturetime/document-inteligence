@@ -1,0 +1,134 @@
+
+> document-intelligence-web@1.0.0 test
+> vitest run --reporter=verbose src/pages/DocumentDetailPage.test.tsx -t preserves a confirmed reload
+
+
+ RUN  v5.0.5 D:/NAM BON/SE/document-inteligence/frontend
+
+ ↓ src/pages/DocumentDetailPage.test.tsx > DocumentDetailPage review > vào chế độ sửa, thêm và xóa trường, sau đó lưu
+ ↓ src/pages/DocumentDetailPage.test.tsx > DocumentDetailPage review > cho phép tạo trường khi classification unknown và chưa có extraction
+ ↓ src/pages/DocumentDetailPage.test.tsx > DocumentDetailPage review > hủy giữ nguyên dữ liệu và hiển thị lỗi backend
+ ↓ src/pages/DocumentDetailPage.test.tsx > DocumentDetailPage review > hiển thị chỉ đọc sau xác nhận và cho phép mở lại rõ ràng
+ ↓ src/pages/DocumentDetailPage.test.tsx > VT-043 DocumentDetailPage autosave integration > passes the acknowledged revision, blocks confirm while saving, and enables confirm only after acknowledgement
+ ↓ src/pages/DocumentDetailPage.test.tsx > VT-043 DocumentDetailPage autosave integration > keeps a conflicted draft and warns when the user tries to leave
+ ↓ src/pages/DocumentDetailPage.test.tsx > VT-043 DocumentDetailPage autosave integration > FT-08/10 ignores the old save when the new document save finishes first
+ ↓ src/pages/DocumentDetailPage.test.tsx > VT-043 DocumentDetailPage autosave integration > FT-09 confirmed documents expose no OCR edit action or autosave
+ × src/pages/DocumentDetailPage.test.tsx > VT-043 DocumentDetailPage autosave integration > preserves a confirmed reload when a reviewed save response with the same revision arrives late 259ms
+   → Unable to find an element with the text: /Kết quả đã được xác nhận/. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <a
+      data-discover="true"
+      href="/documents/doc-2"
+    >
+      Tài liệu tiếp theo
+    </a>
+    <div
+      class="page-title"
+    >
+      <div>
+        <h1
+          class="break-all"
+        >
+          doc-1.pdf
+        </h1>
+        <div
+          class="mt-2 flex flex-wrap gap-2"
+        >
+          <span
+            class="badge status-reviewed"
+          >
+            Đã rà soát
+          </span>
+          <span
+            class="text-sm text-slate-500"
+          >
+            1
+             KB
+          </span>
+        </div>
+      </div>
+      <div
+        class="flex flex-wrap gap-2"
+      >
+        <a
+          class="button-subtle"
+          href="/export/doc-1"
+        [...
+npm.cmd :
+At line:2 char:32
++ ... MIT='1200'; npm.cmd test -- --reporter=verbose src/pages/DocumentDeta ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/DocumentDetailPage.test.tsx > VT-043 DocumentDetailPage autosave integration > preserves a confirmed
+reload when a reviewed save response with the same revision arrives late
+TestingLibraryElementError: Unable to find an element with the text: /Kết quả đã được xác nhận/. This could be because
+the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make
+your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <a
+      data-discover="true"
+      href="/documents/doc-2"
+    >
+      Tài liệu tiếp theo
+    </a>
+    <div
+      class="page-title"
+    >
+      <div>
+        <h1
+          class="break-all"
+        >
+          doc-1.pdf
+        </h1>
+        <div
+          class="mt-2 flex flex-wrap gap-2"
+        >
+          <span
+            class="badge status-reviewed"
+          >
+            Đã rà soát
+          </span>
+          <span
+            class="text-sm text-slate-500"
+          >
+            1
+             KB
+          </span>
+        </div>
+      </div>
+      <div
+        class="flex flex-wrap gap-2"
+      >
+        <a
+          class="button-subtle"
+          href="/export/doc-1"
+        [...
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/pages/DocumentDetailPage.test.tsx:125:17
+    123|   expect(screen.getByText(/Kết quả đã được xác nhận/)).toBeInTheDocume…
+    124|   await act(async()=>old.resolve({...document,filename:'doc-1.pdf',sta…
+    125|   expect(screen.getByText(/Kết quả đã được xác nhận/)).toBeInTheDocume…
+       |                 ^
+    126|   expect(screen.getByRole('textbox')).toBeDisabled()
+    127|  })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 skipped (9)
+   Start at  20:58:10
+   Duration  1.51s (environment 50%, import 23%, tests 19%, transform 8%)

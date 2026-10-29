@@ -1,0 +1,2176 @@
+{
+  "execution_status": "EXECUTED",
+  "started_at_utc": "2026-10-29T13:55:07.369346+00:00",
+  "completed_at_utc": "2026-10-29T13:55:30.893588+00:00",
+  "whole_experiment_seconds": 23.524244699998235,
+  "environment": {
+    "os": "Windows-11-10.0.26300-SP0",
+    "python": "3.14.5",
+    "sqlite_version": "3.50.4",
+    "database": "temporary file SQLite WAL",
+    "transport": "loopback TCP / uvicorn",
+    "concurrency": 80,
+    "packages": {
+      "fastapi": "0.159.1",
+      "sqlalchemy": "2.1.4",
+      "httpx": "0.28.1",
+      "uvicorn": "0.54.0",
+      "anyio": "4.13.0"
+    },
+    "sqlalchemy_pool_size": 20,
+    "sqlalchemy_max_overflow": 80,
+    "busy_timeout_seconds": 20,
+    "request_timeout_seconds": 30
+  },
+  "latency_method": "perf_counter around HTTP PATCH to completed response body; milliseconds; nearest-rank percentiles",
+  "scenarios": [
+    {
+      "scenario": "P-01-independent",
+      "concurrent_operations": 80,
+      "total_requests": 80,
+      "successful_requests": 80,
+      "failed_requests": 0,
+      "expected_conflicts": 0,
+      "http_status_distribution": {
+        "200": 80
+      },
+      "outcome_distribution": {
+        "success": 80
+      },
+      "p50_ms": 413.58819999732077,
+      "p95_ms": 2152.1595000012894,
+      "p99_ms": 2635.1488000000245,
+      "min_ms": 323.0020999981207,
+      "max_ms": 2635.1488000000245,
+      "total_elapsed_seconds": 2.6457478999946034,
+      "throughput_requests_per_second": 30.237196824445434,
+      "database_final_state": [
+        {
+          "document_id": "7dfea4ae-5a51-4335-949b-4bdfc6140c44",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "7891d6da-733c-4508-8911-2051ada23dbd",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "466f5d90-c717-402e-af98-0dcc05ef5aa2",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "b084adac-ef2f-4816-9ea6-ea8156f5fcdb",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "af159186-24ec-4695-9ec3-b601556cc80b",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "2ec5b9a6-5fbb-4480-8f28-1223e299a24c",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "63b686a9-a560-4b34-bec5-53eb078780ba",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "bf3a760f-b144-4a87-9850-1a39d778016b",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "39bca94a-eafe-4336-a802-3c8a58c28e0c",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "9f0658d6-ed5d-40b6-bfb9-4bdebc0a6e4c",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "e46a4f91-7495-49aa-902f-75597336d299",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "cb5f8a6f-b3e7-4526-a512-00d2967d9874",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "94ed585a-ec86-4c4f-9a79-b5f5a44a9f77",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "5f56d90b-d5a3-4cc7-bbeb-75028ee4713b",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "c9ee1bfb-4e3c-4685-adda-0fab0af89936",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "34e124ed-dfa1-4fc2-8680-f09a1de2184d",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "88fb756b-5aed-4db4-a32f-941b30913054",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "e229bf4e-41ea-476e-a8e1-e210a8d01303",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "c50a5dcc-f9a9-4aaa-bc37-0463095ebc68",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "fb56155a-7a2e-4b99-aa05-e27928166c47",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "aba4894a-9f7a-4d84-86b1-d79f85d1cfca",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "d7bc51ef-c055-4180-9659-120f3a2f9e9c",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "680a56af-2ada-4e9c-a28c-73960f313db6",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "dd065fc2-6f05-4db1-8e39-b5cede7800e9",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "c7a916d1-9aa6-4f3e-9bcc-1d3e2e5034b7",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "a8bc7d1e-e9c1-4bae-b079-068e050c5fba",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "b87de02c-e6fd-455b-adce-99ddd34371f8",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "92c662c8-d763-4ec4-81b1-021c89360862",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "3743c0d9-91c3-4a2a-9c4f-8e5563eed62c",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "a4b457c7-b830-4559-9844-8c65bc41d77b",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "0c298c16-69f7-47b6-a184-a35e5fc1db5f",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "0c2a7795-7d36-4fcd-b109-6a9fc454ae21",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "5e150a47-a681-4531-bf68-c9e4977ceb62",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "63afe072-eb37-41f5-b61b-1b4cdd49b217",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "5c359762-35cf-4a40-9918-30a41dda4e84",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "630062ee-dd4b-4012-b932-2ac24e338261",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "3f26852c-b3b5-4eaf-be8f-ee5818148d81",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "eb8edb7f-d807-4091-9ea0-a162977d25bd",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "1f9c35ee-abe5-49de-ad56-ce008021e1af",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "261f7ab5-6bf7-45aa-ae98-acf419b47bf4",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "00f3b180-8d02-44a1-be7d-73780b3df3b3",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "e4c4ba38-a1fc-4e35-9d2e-ef62a24c9ff9",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "cbd08ebb-c88c-446e-a927-80a2cc824645",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "d353b38e-59cf-40c9-8d0d-8ade01b29313",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "2570c97f-e844-419f-927e-8db812b321c5",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "0d999c4e-a068-4983-b962-eb01e49c926c",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "b013b98e-d4b0-47d2-b79f-d47ed922f470",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "8fd66bea-3a70-4986-aa35-785dc8f408e3",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "2276ab38-380f-45f2-862e-e23804af46bc",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "b6f89339-4346-404c-8f34-c108bf001e92",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "36fe99c0-1591-4b72-b859-10920d83dd54",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "034bde99-4e97-4be9-943a-592a4ea44f8f",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "a6de97bd-1cb7-496f-9ffe-bdf722a165cf",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "5db151f0-c135-4092-8c62-9e91b15b88a3",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "c3bbbf9d-cbe0-4ddd-a918-258275dbdd0f",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "1b98043a-097e-4a46-b36e-be467b9b83ef",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "e9017215-ece2-424e-85f1-17d43960e0bf",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "51107f60-f17d-4197-9403-d1bc14d91577",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "7d3f13b6-71cc-444b-a625-7a016861e921",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "880c8d59-5628-4cff-91ee-e76576fab889",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "1ad02e8e-1e19-43d8-bac8-c8d4dc127317",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "32410443-d2d7-43de-8220-6b4fa414fbda",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "ab0c5db4-e589-4646-ac65-3e196de058d2",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "96d665db-fa77-4af6-aa54-6ae9510b9509",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "05da3fcd-0ab6-4e0c-8956-54cb811ec97f",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "6c9388cf-58a6-476f-8d0b-6181de9ad023",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "3e45801f-a39d-4997-aa14-2361dfca7fee",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "c9e348ba-fca1-4a0a-8e68-040e0358e97b",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "0cc0d053-d8fb-44b5-9edd-0fb9d572ea60",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "0b1df810-81b3-4923-af0d-c4d9aa09e057",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "c783c0dd-bfe7-4473-86bf-6c4de8a98d3b",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "ac03963d-2532-4934-b8bb-4dfc98cb4bcd",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "c6ad829c-8543-4db6-b89a-19a88cdd0e54",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "40d01e23-746b-4851-a76b-7f78bc11c9f1",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "48f96b1f-6583-48ca-80c8-513cd30b086f",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "ebad1bd2-8daa-457b-a945-f5ed67b4ba98",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "f4b14fd0-0dd0-467e-8595-531650eb1a95",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "7988bf6b-2b18-4643-85e6-9467bdc92a80",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "987010b5-41c6-4ec1-92d0-bde55aa2ec8e",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        },
+        {
+          "document_id": "c09ca1eb-9e63-42bf-9149-0dc96e4c8764",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        }
+      ],
+      "database_invariant_passed": true,
+      "correctness_passed": true,
+      "p95_target_ms": 2500,
+      "p95_target_passed": true,
+      "requests": [
+        {
+          "index": 0,
+          "document_id": "7dfea4ae-5a51-4335-949b-4bdfc6140c44",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 625.378599994292,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 1,
+          "document_id": "7891d6da-733c-4508-8911-2051ada23dbd",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 1422.2636000049533,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 2,
+          "document_id": "466f5d90-c717-402e-af98-0dcc05ef5aa2",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 575.9935000023688,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 3,
+          "document_id": "b084adac-ef2f-4816-9ea6-ea8156f5fcdb",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 638.0041000011261,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 4,
+          "document_id": "af159186-24ec-4695-9ec3-b601556cc80b",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 459.19230000436073,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 5,
+          "document_id": "2ec5b9a6-5fbb-4480-8f28-1223e299a24c",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 964.8711999980151,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 6,
+          "document_id": "63b686a9-a560-4b34-bec5-53eb078780ba",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 344.54620000178693,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 7,
+          "document_id": "bf3a760f-b144-4a87-9850-1a39d778016b",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 554.8262000011164,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 8,
+          "document_id": "39bca94a-eafe-4336-a802-3c8a58c28e0c",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 410.4711000036332,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 9,
+          "document_id": "9f0658d6-ed5d-40b6-bfb9-4bdebc0a6e4c",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 357.27619999670424,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 10,
+          "document_id": "e46a4f91-7495-49aa-902f-75597336d299",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 2635.1488000000245,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 11,
+          "document_id": "cb5f8a6f-b3e7-4526-a512-00d2967d9874",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 1177.661400004581,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 12,
+          "document_id": "94ed585a-ec86-4c4f-9a79-b5f5a44a9f77",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 581.5767000021879,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 13,
+          "document_id": "5f56d90b-d5a3-4cc7-bbeb-75028ee4713b",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 1965.6184000050416,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 14,
+          "document_id": "c9ee1bfb-4e3c-4685-adda-0fab0af89936",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 844.6540000004461,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 15,
+          "document_id": "34e124ed-dfa1-4fc2-8680-f09a1de2184d",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 514.1913999977987,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 16,
+          "document_id": "88fb756b-5aed-4db4-a32f-941b30913054",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 498.1393999987631,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 17,
+          "document_id": "e229bf4e-41ea-476e-a8e1-e210a8d01303",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 444.00019999739015,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 18,
+          "document_id": "c50a5dcc-f9a9-4aaa-bc37-0463095ebc68",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 965.2375000005122,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 19,
+          "document_id": "fb56155a-7a2e-4b99-aa05-e27928166c47",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 1059.6385000026203,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 20,
+          "document_id": "aba4894a-9f7a-4d84-86b1-d79f85d1cfca",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 423.29379999864614,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 21,
+          "document_id": "d7bc51ef-c055-4180-9659-120f3a2f9e9c",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 728.9084999938495,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 22,
+          "document_id": "680a56af-2ada-4e9c-a28c-73960f313db6",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 1276.4275000008638,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 23,
+          "document_id": "dd065fc2-6f05-4db1-8e39-b5cede7800e9",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 428.5249000022304,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 24,
+          "document_id": "c7a916d1-9aa6-4f3e-9bcc-1d3e2e5034b7",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 2065.3238000013516,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 25,
+          "document_id": "a8bc7d1e-e9c1-4bae-b079-068e050c5fba",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 1287.6651999977184,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 26,
+          "document_id": "b87de02c-e6fd-455b-adce-99ddd34371f8",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 848.2654000035836,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 27,
+          "document_id": "92c662c8-d763-4ec4-81b1-021c89360862",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 358.10879999917233,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 28,
+          "document_id": "3743c0d9-91c3-4a2a-9c4f-8e5563eed62c",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 1616.0444999986794,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 29,
+          "document_id": "a4b457c7-b830-4559-9844-8c65bc41d77b",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 1175.6764000019757,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 30,
+          "document_id": "0c298c16-69f7-47b6-a184-a35e5fc1db5f",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 2393.6403000043356,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 31,
+          "document_id": "0c2a7795-7d36-4fcd-b109-6a9fc454ae21",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 733.5407999999006,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 32,
+          "document_id": "5e150a47-a681-4531-bf68-c9e4977ceb62",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 358.0861000009463,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 33,
+          "document_id": "63afe072-eb37-41f5-b61b-1b4cdd49b217",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 1833.6147000009078,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 34,
+          "document_id": "5c359762-35cf-4a40-9918-30a41dda4e84",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 432.45260000549024,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 35,
+          "document_id": "630062ee-dd4b-4012-b932-2ac24e338261",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 340.88770000380464,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 36,
+          "document_id": "3f26852c-b3b5-4eaf-be8f-ee5818148d81",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 1057.401199999731,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 37,
+          "document_id": "eb8edb7f-d807-4091-9ea0-a162977d25bd",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 2276.284500003385,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 38,
+          "document_id": "1f9c35ee-abe5-49de-ad56-ce008021e1af",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 460.9697999985656,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 39,
+          "document_id": "261f7ab5-6bf7-45aa-ae98-acf419b47bf4",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 1716.367100001662,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 40,
+          "document_id": "00f3b180-8d02-44a1-be7d-73780b3df3b3",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 616.465099999914,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 41,
+          "document_id": "e4c4ba38-a1fc-4e35-9d2e-ef62a24c9ff9",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 379.7257999976864,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 42,
+          "document_id": "cbd08ebb-c88c-446e-a927-80a2cc824645",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 2492.1928999974625,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 43,
+          "document_id": "d353b38e-59cf-40c9-8d0d-8ade01b29313",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 343.8670999967144,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 44,
+          "document_id": "2570c97f-e844-419f-927e-8db812b321c5",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 393.7108000027365,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 45,
+          "document_id": "0d999c4e-a068-4983-b962-eb01e49c926c",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 354.81910000089556,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 46,
+          "document_id": "b013b98e-d4b0-47d2-b79f-d47ed922f470",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 500.7257999968715,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 47,
+          "document_id": "8fd66bea-3a70-4986-aa35-785dc8f408e3",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 350.60710000107065,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 48,
+          "document_id": "2276ab38-380f-45f2-862e-e23804af46bc",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 2152.1595000012894,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 49,
+          "document_id": "b6f89339-4346-404c-8f34-c108bf001e92",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 389.08630000514677,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 50,
+          "document_id": "36fe99c0-1591-4b72-b859-10920d83dd54",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 323.0020999981207,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 51,
+          "document_id": "034bde99-4e97-4be9-943a-592a4ea44f8f",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 391.3764999961131,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 52,
+          "document_id": "a6de97bd-1cb7-496f-9ffe-bdf722a165cf",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 1480.4633000021568,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 53,
+          "document_id": "5db151f0-c135-4092-8c62-9e91b15b88a3",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 350.6245999960811,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 54,
+          "document_id": "c3bbbf9d-cbe0-4ddd-a918-258275dbdd0f",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 364.8668000023463,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 55,
+          "document_id": "1b98043a-097e-4a46-b36e-be467b9b83ef",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 345.94120000110706,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 56,
+          "document_id": "e9017215-ece2-424e-85f1-17d43960e0bf",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 553.5548000043491,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 57,
+          "document_id": "51107f60-f17d-4197-9403-d1bc14d91577",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 366.86290000216104,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 58,
+          "document_id": "7d3f13b6-71cc-444b-a625-7a016861e921",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 401.9237999964389,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 59,
+          "document_id": "880c8d59-5628-4cff-91ee-e76576fab889",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 374.210399997537,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 60,
+          "document_id": "1ad02e8e-1e19-43d8-bac8-c8d4dc127317",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 383.9691000030143,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 61,
+          "document_id": "32410443-d2d7-43de-8220-6b4fa414fbda",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 396.50089999486227,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 62,
+          "document_id": "ab0c5db4-e589-4646-ac65-3e196de058d2",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 358.46480000327574,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 63,
+          "document_id": "96d665db-fa77-4af6-aa54-6ae9510b9509",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 340.0824999989709,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 64,
+          "document_id": "05da3fcd-0ab6-4e0c-8956-54cb811ec97f",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 394.09210000303574,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 65,
+          "document_id": "6c9388cf-58a6-476f-8d0b-6181de9ad023",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 366.67149999993853,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 66,
+          "document_id": "3e45801f-a39d-4997-aa14-2361dfca7fee",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 351.9873000041116,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 67,
+          "document_id": "c9e348ba-fca1-4a0a-8e68-040e0358e97b",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 391.8009999979404,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 68,
+          "document_id": "0cc0d053-d8fb-44b5-9edd-0fb9d572ea60",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 354.50850000052014,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 69,
+          "document_id": "0b1df810-81b3-4923-af0d-c4d9aa09e057",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 373.6590000044089,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 70,
+          "document_id": "c783c0dd-bfe7-4473-86bf-6c4de8a98d3b",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 413.58819999732077,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 71,
+          "document_id": "ac03963d-2532-4934-b8bb-4dfc98cb4bcd",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 380.01810000423575,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 72,
+          "document_id": "c6ad829c-8543-4db6-b89a-19a88cdd0e54",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 389.05849999719067,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 73,
+          "document_id": "40d01e23-746b-4851-a76b-7f78bc11c9f1",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 377.95980000373675,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 74,
+          "document_id": "48f96b1f-6583-48ca-80c8-513cd30b086f",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 383.646400005091,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 75,
+          "document_id": "ebad1bd2-8daa-457b-a945-f5ed67b4ba98",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 366.2373999977717,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 76,
+          "document_id": "f4b14fd0-0dd0-467e-8595-531650eb1a95",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 373.51219999982277,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 77,
+          "document_id": "7988bf6b-2b18-4643-85e6-9467bdc92a80",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 380.050100000517,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 78,
+          "document_id": "987010b5-41c6-4ec1-92d0-bde55aa2ec8e",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 380.6962000016938,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 79,
+          "document_id": "c09ca1eb-9e63-42bf-9149-0dc96e4c8764",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 371.5974000006099,
+          "acknowledgement_valid": true,
+          "error_type": null
+        }
+      ]
+    },
+    {
+      "scenario": "P-02-contention",
+      "concurrent_operations": 80,
+      "total_requests": 80,
+      "successful_requests": 1,
+      "failed_requests": 0,
+      "expected_conflicts": 79,
+      "http_status_distribution": {
+        "200": 1,
+        "409": 79
+      },
+      "outcome_distribution": {
+        "success": 1,
+        "expected_conflict": 79
+      },
+      "p50_ms": 491.9977000026847,
+      "p95_ms": 1191.6806000008364,
+      "p99_ms": 1499.5490000001155,
+      "min_ms": 439.3387000018265,
+      "max_ms": 1499.5490000001155,
+      "total_elapsed_seconds": 1.5515608999994583,
+      "throughput_requests_per_second": 51.56097965605342,
+      "database_final_state": [
+        {
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "revision": 1,
+          "status": "reviewed",
+          "raw_unchanged": true,
+          "exactly_one_success": true,
+          "corrected_matches_success": true
+        }
+      ],
+      "database_invariant_passed": true,
+      "correctness_passed": true,
+      "p95_target_ms": 2500,
+      "p95_target_passed": true,
+      "requests": [
+        {
+          "index": 0,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 200,
+          "outcome": "success",
+          "latency_ms": 439.3387000018265,
+          "acknowledgement_valid": true,
+          "error_type": null
+        },
+        {
+          "index": 1,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 732.1560000054887,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 2,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 466.2211000031675,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 3,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 947.8492999987793,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 4,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 962.5860000014654,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 5,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 587.0692999960738,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 6,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 1303.8805999967735,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 7,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 863.6400000032154,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 8,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 1191.6806000008364,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 9,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 753.3775999982026,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 10,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 565.2580999958445,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 11,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 452.4939000039012,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 12,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 471.8852000005427,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 13,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 641.3011000040569,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 14,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 686.5137999993749,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 15,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 963.7191000001621,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 16,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 462.9421999998158,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 17,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 820.974499998556,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 18,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 664.8437999974703,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 19,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 601.2224000005517,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 20,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 1065.0003999980981,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 21,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 462.39900000364287,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 22,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 782.8747999956249,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 23,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 828.5232999987784,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 24,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 488.9612999977544,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 25,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 889.5874000008916,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 26,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 717.4673000045004,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 27,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 1042.2096000038437,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 28,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 1150.916499995219,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 29,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 573.4593000015593,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 30,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 525.4491000014241,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 31,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 988.8624000013806,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 32,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 600.661399999808,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 33,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 784.0312999978778,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 34,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 1395.4375000030268,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 35,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 1178.83509999956,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 36,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 734.5281999951112,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 37,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 509.9406999943312,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 38,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 1057.8777999980957,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 39,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 465.0469999978668,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 40,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 1499.5490000001155,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 41,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 836.2890999997035,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 42,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 479.86500000115484,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 43,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 664.1978999978164,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 44,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 477.1268000040436,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 45,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 494.9808000019402,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 46,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 491.9977000026847,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 47,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 476.58989999763435,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 48,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 1161.363799998071,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 49,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 1266.098799998872,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 50,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 459.457899996778,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 51,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 459.41820000007283,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 52,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 486.30920000141487,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 53,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 467.1306000018376,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 54,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 475.4456000009668,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 55,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 464.4021000058274,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 56,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 478.7670999940019,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 57,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 463.41150000080233,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 58,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 598.3978000003844,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 59,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 460.8010000010836,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 60,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 459.14430000266293,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 61,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 474.0423999974155,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 62,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 458.67639999778476,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 63,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 462.84839999862015,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 64,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 462.02310000080615,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 65,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 480.25849999976344,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 66,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 458.5287000008975,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 67,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 439.41410000115866,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 68,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 466.2134000027436,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 69,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 911.858100000245,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 70,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 452.8591999987839,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 71,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 471.5950000027078,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 72,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 468.8209000014467,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 73,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 465.8616000015172,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 74,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 465.23030000389554,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 75,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 467.6772000020719,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 76,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 465.6784000035259,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 77,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 466.294799996831,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 78,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 455.8020000040415,
+          "acknowledgement_valid": null,
+          "error_type": null
+        },
+        {
+          "index": 79,
+          "document_id": "421aa53f-e650-446c-97a4-60a60bb0bfbb",
+          "status": 409,
+          "outcome": "expected_conflict",
+          "latency_ms": 465.3055000017048,
+          "acknowledgement_valid": null,
+          "error_type": null
+        }
+      ]
+    }
+  ]
+}

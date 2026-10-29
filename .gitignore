@@ -68,3 +68,9 @@ data/
 # ===== Logs =====
 logs/
 *.log
+
+# VT-043 reproducible verification tools and evidence
+.test-tools/
+.venv/
+frontend/.npm-cache/
+!evidence/bt3-vt043/*.log

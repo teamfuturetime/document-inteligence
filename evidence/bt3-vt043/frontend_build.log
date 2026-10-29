@@ -1,0 +1,14 @@
+
+> document-intelligence-web@1.0.0 build
+> tsc -b && vite build
+
+vite v8.3.5 building client environment for production...
+transforming...
+✓ 1952 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.40 kB │ gzip:  0.29 kB
+dist/assets/index-DCj4ibYN.css   22.61 kB │ gzip:  5.09 kB
+dist/assets/index-C1JNNUA4.js   298.34 kB │ gzip: 94.20 kB
+
+✓ built in 435ms

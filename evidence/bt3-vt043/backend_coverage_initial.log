@@ -1,0 +1,52 @@
+........................................................................ [ 42%]
+............................................FF.....................s.... [ 85%]
+........................                                                 [100%]
+================================== FAILURES ===================================
+________ test_document_response_exposes_raw_cleaned_and_legacy_fields _________
+tests\unit\test_ocr_text.py:64: in test_document_response_exposes_raw_cleaned_and_legacy_fields
+    response = DocumentOut(
+E   pydantic_core._pydantic_core.ValidationError: 1 validation error for DocumentOut
+E   ocr_revision
+E     Field required [type=missing, input_value={'id': 'doc-1', 'filename...=datetime.timezone.utc)}, input_type=dict]
+E       For further information visit https://errors.pydantic.dev/2.14/v/missing
+____________ test_document_detail_exposes_stored_structured_pages _____________
+tests\unit\test_ocr_text.py:83: in test_document_detail_exposes_stored_structured_pages
+    response = DocumentDetailOut(
+E   pydantic_core._pydantic_core.ValidationError: 1 validation error for DocumentDetailOut
+E   ocr_revision
+E     Field required [type=missing, input_value={'id': 'doc-1', 'filename...=datetime.timezone.utc)}, input_type=dict]
+E       For further information visit https://errors.pydantic.dev/2.14/v/missing
+============================== warnings summary ===============================
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\pytest_plugin.py:14
+  C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\pytest_plugin.py:14: PytestRemovedIn10Warning: _pytest.python.CallSpec2 has been renamed to CallSpec.
+  The CallSpec2 alias will be removed in pytest 10.
+  Update imports to use CallSpec instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#callspec2-renamed
+    from _pytest.python import CallSpec2
+
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\testclient.py:1
+  C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/unit/test_ocr_text.py::test_document_response_exposes_raw_cleaned_and_legacy_fields
+FAILED tests/unit/test_ocr_text.py::test_document_detail_exposes_stored_structured_pages
+2 failed, 165 passed, 1 skipped, 2 warnings in 5.48s
+python : D:\NAM BON\SE\document-inteligence\.test-tools\coverage\inorout.py:558: CoverageWarning: Module
+backend/app/api/documents.py was never imported. (module-not-imported); see
+https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-module-not-imported
+At line:2 char:42
++ ... s;backend'; python -m coverage run --branch --source=backend/app/api/ ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (D:\NAM BON\SE\d...le-not-imported:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+  self.warn(f"Module {pkg} was never imported.", slug="module-not-imported")
+D:\NAM BON\SE\document-inteligence\.test-tools\coverage\inorout.py:558: CoverageWarning: Module
+backend/app/services/documents.py was never imported. (module-not-imported); see
+https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-module-not-imported
+  self.warn(f"Module {pkg} was never imported.", slug="module-not-imported")
+D:\NAM BON\SE\document-inteligence\.test-tools\coverage\control.py:967: CoverageWarning: No data was collected.
+(no-data-collected); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-no-data-collected
+  self._warn("No data was collected.", slug="no-data-collected")

@@ -1,0 +1,143 @@
+SOURCE: backend_regression.log
+........................................................................ [ 41%]
+...................................................................s.... [ 83%]
+.............................                                            [100%]
+============================== warnings summary ===============================
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\pytest_plugin.py:14
+  C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\pytest_plugin.py:14: PytestRemovedIn10Warning: _pytest.python.CallSpec2 has been renamed to CallSpec.
+  The CallSpec2 alias will be removed in pytest 10.
+  Update imports to use CallSpec instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#callspec2-renamed
+    from _pytest.python import CallSpec2
+
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\testclient.py:1
+  C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+SKIPPED [1] tests\\unit\\test_storage.py:31: M\xf4i tr\u01b0\u1eddng kh\xf4ng cho ph\xe9p t\u1ea1o symlink
+172 passed, 1 skipped, 2 warnings in 7.57s
+
+
+SOURCE: frontend_test.log
+
+> document-intelligence-web@1.0.0 test:coverage
+> vitest run --coverage --reporter=verbose
+
+
+ RUN  v5.0.5 D:/NAM BON/SE/document-inteligence/frontend
+      Coverage enabled with v8
+
+ ✓ src/utils/files.test.ts > validateUpload > chấp nhận PDF hợp lệ 4ms
+ ✓ src/utils/files.test.ts > validateUpload > từ chối định dạng lạ 1ms
+ ✓ src/utils/files.test.ts > validateUpload > từ chối file quá lớn 5ms
+ ✓ src/api/client.test.ts > VT-043 OCR autosave HTTP contract > sends expected_revision with credentials and the authenticated CSRF token 11ms
+ ✓ src/api/client.test.ts > VT-043 OCR autosave HTTP contract > propagates HTTP 409 as an ApiError without a success payload 3ms
+ ✓ src/api/client.test.ts > VT-043 OCR autosave HTTP contract > propagates HTTP 500 as an ApiError without a success payload 1ms
+ ✓ src/api/client.test.ts > VT-043 OCR autosave HTTP contract > propagates network failure without manufacturing an acknowledgement 2ms
+ ✓ src/api/client.test.ts > VT-043 OCR autosave HTTP contract > preserves structured validation error detail 1ms
+ ✓ src/components/StatusBadge.test.tsx > StatusBadge > hiển thị nhãn tiếng Việt 33ms
+ ✓ src/contexts/AuthContext.test.tsx > OCR draft privacy during authentication changes > allows cancelling logout to keep unsaved draft text 184ms
+ ✓ src/contexts/AuthContext.test.tsx > OCR draft privacy during authentication changes > clears only OCR draft entries after successful logout 26ms
+ ✓ src/contexts/AuthContext.test.tsx > OCR draft privacy during authentication changes > keeps authenticated drafts if logout fails 47ms
+ ✓ src/contexts/AuthContext.test.tsx > OCR draft privacy during authentication changes > clears previous account drafts when a different account signs in 30ms
+ ✓ src/components/OCRTextCard.test.tsx > OCRTextCard > mặc định hiển thị bản dễ đọc và có đủ ba chế độ 152ms
+ ✓ src/components/OCRTextCard.test.tsx > OCRTextCard > hiển thị nguyên văn raw OCR ở chế độ OCR gốc 25ms
+ ✓ src/components/OCRTextCard.test.tsx > OCRTextCard > fallback về raw và hiển thị empty state 23ms
+ ✓ src/components/OCRTextCard.test.tsx > OCRTextCard > hiển thị cấu trúc và confidence OCR thật 21ms
+ ✓ src/components/OCRTextCard.test.tsx > OCRTextCard > không tạo cấu trúc giả khi backend chưa cung cấp 19ms
+ ✓ src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-01/02 waits 800 ms after the last keystroke and sends one draft 247ms
+ ✓ src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-03 only reports saved after the server acknowledges the exact draft 63ms
+ ✓ src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-04 conflict retains the draft and does not report success 33ms
+ ✓ src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-05 server error retains the draft and does not report success 37ms
+ ✓ src/components/OCRTextCard.test.tsx > OCRTextCard > sao chép nội dung của chế độ đang chọn 43ms
+ ✓ src/components/OCRTextCard.test.tsx > OCRTextCard > chỉnh sửa, lưu và hiển thị lỗi backend 91ms
+ ✓ src/pages/DocumentDetailPage.test.tsx > DocumentDetailPage review > vào chế độ sửa, thêm và xóa trường, sau đó lưu 353ms
+ ✓ src/components/OCRTextCard.test.tsx > OCRTextCard > hủy chỉnh sửa và khóa editor khi đã xác nhận 45ms
+ ✓ src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-06 network failure retains the draft and does not report success 35ms
+ ✓ src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-07/08 serializes requests and never acknowledges new typing with an old response 50ms
+ ✓ src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-09 never saves a confirmed document, including a queued edit becoming read-only 33ms
+ ✓ src/pages/DocumentDetailPage.test.tsx > DocumentDetailPage review > cho phép tạo trường khi classification unknown và chưa có extraction 102ms
+ ✓ src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-10 cancels queued work on unmount and ignores an old instance response 64ms
+ ✓ src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > warns before leaving while a draft or request is unacknowledged 36ms
+ ✓ src/pages/DocumentDetailPage.test.tsx > DocumentDetailPage review > hủy giữ nguyên dữ liệu và hiển thị lỗi backend 120ms
+ ✓ src/pages/DocumentDetailPage.test.tsx > DocumentDetailPage review > hiển thị chỉ đọc sau xác nhận và cho phép mở lại rõ ràng 52ms
+ ✓ src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > rejects whitespace locally without losing it 24ms
+ ✓ src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > does not claim success for a response that did not persist the submitted content 27ms
+ ✓ src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > does not silently rebase an unsaved draft onto an externally updated revision 24ms
+ ✓ src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > persists a user revert made while a different draft is in flight 41ms
+ ✓ src/pages/DocumentDetailPage.test.tsx > VT-043 DocumentDetailPage autosave integration > passes the acknowledged revision, blocks confirm while saving, and enables confirm only after acknowledgement 122ms
+ ✓ src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > retains newer typing with the acknowledged revision for recovery after an in-flight save 48ms
+ ✓ src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > keeps recovered confirmed drafts visible and read-only until explicitly discarded 25ms
+ ✓ src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > warns explicitly when browser storage cannot protect a draft during navigation 27ms
+ ✓ src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > copies the visible recovered draft even after the document becomes read-only 19ms
+ ✓ src/pages/DocumentDetailPage.test.tsx > VT-043 DocumentDetailPage autosave integration > keeps a conflicted draft and warns when the user tries to leave 91ms
+ ✓ src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > requires a server acknowledgement for a revert after an ambiguous network failure 33ms
+ ✓ src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > copies the displayed raw OCR after autosave when switching out of the clean editor 43ms
+ ✓ src/pages/DocumentDetailPage.test.tsx > VT-043 DocumentDetailPage autosave integration > FT-08/10 ignores the old save when the new document save finishes first 134ms
+ ✓ src/pages/DocumentDetailPage.test.tsx > VT-043 DocumentDetailPage autosave integration > FT-09 confirmed documents expose no OCR edit action or autosave 17ms
+ ✓ src/pages/DocumentDetailPage.test.tsx > VT-043 DocumentDetailPage autosave integration > preserves a confirmed reload when a reviewed save response with the same revision arrives late 99ms
+ ✓ src/pages/DocumentDetailPage.test.tsx > VT-043 DocumentDetailPage autosave integration > recovers a draft after unguarded SPA navigation before the debounce fires 81ms
+ ✓ src/pages/DocumentDetailPage.test.tsx > VT-043 DocumentDetailPage autosave integration > keeps the recovered original revision when another client has changed the document 25ms
+ ✓ src/pages/DocumentDetailPage.test.tsx > VT-043 DocumentDetailPage autosave integration > prevents OCR edits while confirmation is pending 57ms
+
+ Test Files  7 passed (7)
+      Tests  52 passed (52)
+   Start at  21:06:38
+   Duration  3.38s (environment 63%, tests 20%, import 12%, worker 3%, transform 2%)
+
+ % Coverage report from v8
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   83.83 |    82.62 |   80.32 |   98.24 |
+ api               |   51.85 |    80.95 |      25 |     100 |
+  client.ts        |   51.85 |    80.95 |      25 |     100 | 5
+ components        |   90.11 |    86.51 |   91.89 |     100 |
+  OCRTextCard.tsx  |   90.11 |    86.51 |   91.89 |     100 | ...54,66-67,75-76
+ contexts          |   89.47 |      100 |   77.77 |     100 |
+  AuthContext.tsx  |   89.47 |      100 |   77.77 |     100 |
+ pages             |   86.52 |    77.08 |   92.15 |   97.14 |
+  ...etailPage.tsx |   86.52 |    77.08 |   92.15 |   97.14 | 36
+ utils             |   93.75 |      100 |     100 |      90 |
+  ocrDrafts.ts     |   93.75 |      100 |     100 |      90 | 6
+-------------------|---------|----------|---------|---------|-------------------
+
+=============================== Coverage summary ===============================
+Statements   : 83.83% ( 337/402 )
+Branches     : 82.62% ( 290/351 )
+Functions    : 80.32% ( 98/122 )
+Lines        : 98.24% ( 112/114 )
+================================================================================
+
+
+SOURCE: frontend_typecheck.log
+
+> document-intelligence-web@1.0.0 typecheck
+> tsc --noEmit
+
+
+
+SOURCE: frontend_lint.log
+
+> document-intelligence-web@1.0.0 lint
+> eslint .
+
+
+
+SOURCE: frontend_build.log
+
+> document-intelligence-web@1.0.0 build
+> tsc -b && vite build
+
+vite v8.3.5 building client environment for production...
+transforming...
+✓ 1952 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.40 kB │ gzip:  0.29 kB
+dist/assets/index-DCj4ibYN.css   22.61 kB │ gzip:  5.09 kB
+dist/assets/index-C1JNNUA4.js   298.34 kB │ gzip: 94.20 kB
+
+✓ built in 435ms

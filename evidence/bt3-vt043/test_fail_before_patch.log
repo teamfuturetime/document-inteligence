@@ -1,0 +1,118 @@
+....FFFFFF.........                                                      [100%]
+================================== FAILURES ===================================
+_______ test_stale_revision_rejected_without_overwriting_persisted_ocr ________
+tests\integration\test_document_review.py:128: in test_stale_revision_rejected_without_overwriting_persisted_ocr
+    assert stale.status_code == 409
+E   assert 200 == 409
+E    +  where 200 = <Response [200 OK]>.status_code
+---------------------------- Captured stdout setup ----------------------------
+{"timestamp": "2026-10-29T13:52:40.636909+00:00", "level": "INFO", "logger": "app.main", "message": "Application starting", "app": "Document Intelligence Vietnamese"}
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:23 Application starting
+---------------------------- Captured stdout call -----------------------------
+{"timestamp": "2026-10-29T13:52:40.701518+00:00", "level": "INFO", "logger": "app.services.upload", "message": "Document uploaded", "document_id": "488fe859-3669-4d90-917c-0c95d1f59a57"}
+------------------------------ Captured log call ------------------------------
+INFO     app.services.upload:upload.py:54 Document uploaded
+-------------------------- Captured stdout teardown ---------------------------
+{"timestamp": "2026-10-29T13:52:40.850134+00:00", "level": "INFO", "logger": "app.main", "message": "Application stopped"}
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:25 Application stopped
+______________ test_ocr_correction_requires_valid_revision[None] ______________
+tests\integration\test_document_review.py:146: in test_ocr_correction_requires_valid_revision
+    assert response.status_code == 422
+E   assert 200 == 422
+E    +  where 200 = <Response [200 OK]>.status_code
+---------------------------- Captured stdout setup ----------------------------
+{"timestamp": "2026-10-29T13:52:40.858510+00:00", "level": "INFO", "logger": "app.main", "message": "Application starting", "app": "Document Intelligence Vietnamese"}
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:23 Application starting
+---------------------------- Captured stdout call -----------------------------
+{"timestamp": "2026-10-29T13:52:40.926973+00:00", "level": "INFO", "logger": "app.services.upload", "message": "Document uploaded", "document_id": "0d27baf2-e042-4428-b203-3332d636cfbe"}
+------------------------------ Captured log call ------------------------------
+INFO     app.services.upload:upload.py:54 Document uploaded
+-------------------------- Captured stdout teardown ---------------------------
+{"timestamp": "2026-10-29T13:52:40.945455+00:00", "level": "INFO", "logger": "app.main", "message": "Application stopped"}
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:25 Application stopped
+_______________ test_ocr_correction_requires_valid_revision[-1] _______________
+tests\integration\test_document_review.py:146: in test_ocr_correction_requires_valid_revision
+    assert response.status_code == 422
+E   assert 200 == 422
+E    +  where 200 = <Response [200 OK]>.status_code
+---------------------------- Captured stdout setup ----------------------------
+{"timestamp": "2026-10-29T13:52:40.953666+00:00", "level": "INFO", "logger": "app.main", "message": "Application starting", "app": "Document Intelligence Vietnamese"}
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:23 Application starting
+---------------------------- Captured stdout call -----------------------------
+{"timestamp": "2026-10-29T13:52:41.018943+00:00", "level": "INFO", "logger": "app.services.upload", "message": "Document uploaded", "document_id": "97f5e114-5c5d-4a88-8ae3-b7786e88011b"}
+------------------------------ Captured log call ------------------------------
+INFO     app.services.upload:upload.py:54 Document uploaded
+-------------------------- Captured stdout teardown ---------------------------
+{"timestamp": "2026-10-29T13:52:41.036805+00:00", "level": "INFO", "logger": "app.main", "message": "Application stopped"}
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:25 Application stopped
+______________ test_ocr_correction_requires_valid_revision[0.5] _______________
+tests\integration\test_document_review.py:146: in test_ocr_correction_requires_valid_revision
+    assert response.status_code == 422
+E   assert 200 == 422
+E    +  where 200 = <Response [200 OK]>.status_code
+---------------------------- Captured stdout setup ----------------------------
+{"timestamp": "2026-10-29T13:52:41.044784+00:00", "level": "INFO", "logger": "app.main", "message": "Application starting", "app": "Document Intelligence Vietnamese"}
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:23 Application starting
+---------------------------- Captured stdout call -----------------------------
+{"timestamp": "2026-10-29T13:52:41.123568+00:00", "level": "INFO", "logger": "app.services.upload", "message": "Document uploaded", "document_id": "2f674523-6ca0-41a1-95db-ae5986d13fe0"}
+------------------------------ Captured log call ------------------------------
+INFO     app.services.upload:upload.py:54 Document uploaded
+-------------------------- Captured stdout teardown ---------------------------
+{"timestamp": "2026-10-29T13:52:41.141109+00:00", "level": "INFO", "logger": "app.main", "message": "Application stopped"}
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:25 Application stopped
+_______________ test_ocr_correction_requires_valid_revision[0] ________________
+tests\integration\test_document_review.py:146: in test_ocr_correction_requires_valid_revision
+    assert response.status_code == 422
+E   assert 200 == 422
+E    +  where 200 = <Response [200 OK]>.status_code
+---------------------------- Captured stdout setup ----------------------------
+{"timestamp": "2026-10-29T13:52:41.149012+00:00", "level": "INFO", "logger": "app.main", "message": "Application starting", "app": "Document Intelligence Vietnamese"}
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:23 Application starting
+---------------------------- Captured stdout call -----------------------------
+{"timestamp": "2026-10-29T13:52:41.215761+00:00", "level": "INFO", "logger": "app.services.upload", "message": "Document uploaded", "document_id": "d71620af-d27a-492f-8733-f8d7e155e9b7"}
+------------------------------ Captured log call ------------------------------
+INFO     app.services.upload:upload.py:54 Document uploaded
+-------------------------- Captured stdout teardown ---------------------------
+{"timestamp": "2026-10-29T13:52:41.233750+00:00", "level": "INFO", "logger": "app.main", "message": "Application stopped"}
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:25 Application stopped
+______________ test_ocr_correction_requires_valid_revision[True] ______________
+tests\integration\test_document_review.py:146: in test_ocr_correction_requires_valid_revision
+    assert response.status_code == 422
+E   assert 200 == 422
+E    +  where 200 = <Response [200 OK]>.status_code
+---------------------------- Captured stdout setup ----------------------------
+{"timestamp": "2026-10-29T13:52:41.242346+00:00", "level": "INFO", "logger": "app.main", "message": "Application starting", "app": "Document Intelligence Vietnamese"}
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:23 Application starting
+---------------------------- Captured stdout call -----------------------------
+{"timestamp": "2026-10-29T13:52:41.308045+00:00", "level": "INFO", "logger": "app.services.upload", "message": "Document uploaded", "document_id": "f282c96b-ab9d-4e9c-b3df-82b03541fc90"}
+------------------------------ Captured log call ------------------------------
+INFO     app.services.upload:upload.py:54 Document uploaded
+-------------------------- Captured stdout teardown ---------------------------
+{"timestamp": "2026-10-29T13:52:41.326398+00:00", "level": "INFO", "logger": "app.main", "message": "Application stopped"}
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:25 Application stopped
+============================== warnings summary ===============================
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\testclient.py:1
+  C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/integration/test_document_review.py::test_stale_revision_rejected_without_overwriting_persisted_ocr
+FAILED tests/integration/test_document_review.py::test_ocr_correction_requires_valid_revision[None]
+FAILED tests/integration/test_document_review.py::test_ocr_correction_requires_valid_revision[-1]
+FAILED tests/integration/test_document_review.py::test_ocr_correction_requires_valid_revision[0.5]
+FAILED tests/integration/test_document_review.py::test_ocr_correction_requires_valid_revision[0]
+FAILED tests/integration/test_document_review.py::test_ocr_correction_requires_valid_revision[True]
+6 failed, 13 passed, 1 warning in 2.43s

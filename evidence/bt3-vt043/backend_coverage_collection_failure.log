@@ -1,0 +1,282 @@
+
+=================================== ERRORS ====================================
+_______________ ERROR collecting tests/unit/test_backend_api.py _______________
+tests\unit\test_backend_api.py:11: in <module>
+    from app.api.dependencies import get_storage
+backend\app\api\dependencies.py:5: in <module>
+    from app.repositories.documents import DocumentRepository
+backend\app\repositories\documents.py:8: in <module>
+    from app.models import Document, Extraction
+backend\app\models\__init__.py:2: in <module>
+    from app.models.document import Document, Extraction, User, UserSession
+backend\app\models\document.py:32: in <module>
+    class Document(Base):
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_api.py:979: in __init_subclass__
+    _ORMClassConfigurator._as_declarative(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:294: in _as_declarative
+    return _DeclarativeMapperConfig(registry, cls_, dict_)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:1042: in __init__
+    self._setup_table()
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:1795: in _setup_table
+    table_cls(
+<sqlalchemy generated warned() wrapper for sqlalchemy.sql.schema.Table.__new__>:2: in __new__
+    return target(fn, cls, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\util\deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\sql\schema.py:489: in __new__
+    return cls._new(*args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\sql\schema.py:542: in _new
+    raise exc.InvalidRequestError(
+E   sqlalchemy.exc.InvalidRequestError: Table 'documents' is already defined for this MetaData instance.  Specify 'extend_existing=True' to redefine options and columns on an existing Table object.
+_____________ ERROR collecting tests/unit/test_database_models.py _____________
+tests\unit\test_database_models.py:5: in <module>
+    from app.models import Document, Extraction
+backend\app\models\__init__.py:2: in <module>
+    from app.models.document import Document, Extraction, User, UserSession
+backend\app\models\document.py:32: in <module>
+    class Document(Base):
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_api.py:979: in __init_subclass__
+    _ORMClassConfigurator._as_declarative(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:294: in _as_declarative
+    return _DeclarativeMapperConfig(registry, cls_, dict_)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:1042: in __init__
+    self._setup_table()
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:1795: in _setup_table
+    table_cls(
+<sqlalchemy generated warned() wrapper for sqlalchemy.sql.schema.Table.__new__>:2: in __new__
+    return target(fn, cls, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\util\deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\sql\schema.py:489: in __new__
+    return cls._new(*args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\sql\schema.py:542: in _new
+    raise exc.InvalidRequestError(
+E   sqlalchemy.exc.InvalidRequestError: Table 'documents' is already defined for this MetaData instance.  Specify 'extend_existing=True' to redefine options and columns on an existing Table object.
+___________ ERROR collecting tests/unit/test_document_repository.py ___________
+tests\unit\test_document_repository.py:2: in <module>
+    from app.models import Document
+backend\app\models\__init__.py:2: in <module>
+    from app.models.document import Document, Extraction, User, UserSession
+backend\app\models\document.py:32: in <module>
+    class Document(Base):
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_api.py:979: in __init_subclass__
+    _ORMClassConfigurator._as_declarative(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:294: in _as_declarative
+    return _DeclarativeMapperConfig(registry, cls_, dict_)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:1042: in __init__
+    self._setup_table()
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:1795: in _setup_table
+    table_cls(
+<sqlalchemy generated warned() wrapper for sqlalchemy.sql.schema.Table.__new__>:2: in __new__
+    return target(fn, cls, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\util\deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\sql\schema.py:489: in __new__
+    return cls._new(*args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\sql\schema.py:542: in _new
+    raise exc.InvalidRequestError(
+E   sqlalchemy.exc.InvalidRequestError: Table 'documents' is already defined for this MetaData instance.  Specify 'extend_existing=True' to redefine options and columns on an existing Table object.
+________________ ERROR collecting tests/unit/test_retention.py ________________
+tests\unit\test_retention.py:3: in <module>
+    from app.models import Document
+backend\app\models\__init__.py:2: in <module>
+    from app.models.document import Document, Extraction, User, UserSession
+backend\app\models\document.py:32: in <module>
+    class Document(Base):
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_api.py:979: in __init_subclass__
+    _ORMClassConfigurator._as_declarative(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:294: in _as_declarative
+    return _DeclarativeMapperConfig(registry, cls_, dict_)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:1042: in __init__
+    self._setup_table()
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:1795: in _setup_table
+    table_cls(
+<sqlalchemy generated warned() wrapper for sqlalchemy.sql.schema.Table.__new__>:2: in __new__
+    return target(fn, cls, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\util\deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\sql\schema.py:489: in __new__
+    return cls._new(*args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\sql\schema.py:542: in _new
+    raise exc.InvalidRequestError(
+E   sqlalchemy.exc.InvalidRequestError: Table 'documents' is already defined for this MetaData instance.  Specify 'extend_existing=True' to redefine options and columns on an existing Table object.
+_____________ ERROR collecting tests/unit/test_upload_service.py ______________
+tests\unit\test_upload_service.py:12: in <module>
+    from app.services.upload import DocumentUploadService
+backend\app\services\upload.py:6: in <module>
+    from app.repositories.documents import DocumentRepository
+backend\app\repositories\documents.py:8: in <module>
+    from app.models import Document, Extraction
+backend\app\models\__init__.py:2: in <module>
+    from app.models.document import Document, Extraction, User, UserSession
+backend\app\models\document.py:32: in <module>
+    class Document(Base):
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_api.py:979: in __init_subclass__
+    _ORMClassConfigurator._as_declarative(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:294: in _as_declarative
+    return _DeclarativeMapperConfig(registry, cls_, dict_)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:1042: in __init__
+    self._setup_table()
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:1795: in _setup_table
+    table_cls(
+<sqlalchemy generated warned() wrapper for sqlalchemy.sql.schema.Table.__new__>:2: in __new__
+    return target(fn, cls, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\util\deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\sql\schema.py:489: in __new__
+    return cls._new(*args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\sql\schema.py:542: in _new
+    raise exc.InvalidRequestError(
+E   sqlalchemy.exc.InvalidRequestError: Table 'documents' is already defined for this MetaData instance.  Specify 'extend_existing=True' to redefine options and columns on an existing Table object.
+__________ ERROR collecting tests/integration/test_auth_ownership.py __________
+tests\integration\test_auth_ownership.py:10: in <module>
+    from app.api.dependencies import get_storage
+backend\app\api\dependencies.py:5: in <module>
+    from app.repositories.documents import DocumentRepository
+backend\app\repositories\documents.py:8: in <module>
+    from app.models import Document, Extraction
+backend\app\models\__init__.py:2: in <module>
+    from app.models.document import Document, Extraction, User, UserSession
+backend\app\models\document.py:32: in <module>
+    class Document(Base):
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_api.py:979: in __init_subclass__
+    _ORMClassConfigurator._as_declarative(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:294: in _as_declarative
+    return _DeclarativeMapperConfig(registry, cls_, dict_)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:1042: in __init__
+    self._setup_table()
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:1795: in _setup_table
+    table_cls(
+<sqlalchemy generated warned() wrapper for sqlalchemy.sql.schema.Table.__new__>:2: in __new__
+    return target(fn, cls, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\util\deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\sql\schema.py:489: in __new__
+    return cls._new(*args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\sql\schema.py:542: in _new
+    raise exc.InvalidRequestError(
+E   sqlalchemy.exc.InvalidRequestError: Table 'documents' is already defined for this MetaData instance.  Specify 'extend_existing=True' to redefine options and columns on an existing Table object.
+_________ ERROR collecting tests/integration/test_document_review.py __________
+tests\integration\test_document_review.py:10: in <module>
+    from app.api.dependencies import get_storage
+backend\app\api\dependencies.py:5: in <module>
+    from app.repositories.documents import DocumentRepository
+backend\app\repositories\documents.py:8: in <module>
+    from app.models import Document, Extraction
+backend\app\models\__init__.py:2: in <module>
+    from app.models.document import Document, Extraction, User, UserSession
+backend\app\models\document.py:32: in <module>
+    class Document(Base):
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_api.py:979: in __init_subclass__
+    _ORMClassConfigurator._as_declarative(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:294: in _as_declarative
+    return _DeclarativeMapperConfig(registry, cls_, dict_)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:1042: in __init__
+    self._setup_table()
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:1795: in _setup_table
+    table_cls(
+<sqlalchemy generated warned() wrapper for sqlalchemy.sql.schema.Table.__new__>:2: in __new__
+    return target(fn, cls, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\util\deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\sql\schema.py:489: in __new__
+    return cls._new(*args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\sql\schema.py:542: in _new
+    raise exc.InvalidRequestError(
+E   sqlalchemy.exc.InvalidRequestError: Table 'documents' is already defined for this MetaData instance.  Specify 'extend_existing=True' to redefine options and columns on an existing Table object.
+___________ ERROR collecting tests/integration/test_ocr_autosave.py ___________
+tests\integration\test_ocr_autosave.py:8: in <module>
+    from app.models import Document
+backend\app\models\__init__.py:2: in <module>
+    from app.models.document import Document, Extraction, User, UserSession
+backend\app\models\document.py:32: in <module>
+    class Document(Base):
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_api.py:979: in __init_subclass__
+    _ORMClassConfigurator._as_declarative(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:294: in _as_declarative
+    return _DeclarativeMapperConfig(registry, cls_, dict_)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:1042: in __init__
+    self._setup_table()
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py:1795: in _setup_table
+    table_cls(
+<sqlalchemy generated warned() wrapper for sqlalchemy.sql.schema.Table.__new__>:2: in __new__
+    return target(fn, cls, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\util\deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\sql\schema.py:489: in __new__
+    return cls._new(*args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\sql\schema.py:542: in _new
+    raise exc.InvalidRequestError(
+E   sqlalchemy.exc.InvalidRequestError: Table 'documents' is already defined for this MetaData instance.  Specify 'extend_existing=True' to redefine options and columns on an existing Table object.
+============================== warnings summary ===============================
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\pytest_plugin.py:14
+  C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\pytest_plugin.py:14: PytestRemovedIn10Warning: _pytest.python.CallSpec2 has been renamed to CallSpec.
+  The CallSpec2 alias will be removed in pytest 10.
+  Update imports to use CallSpec instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#callspec2-renamed
+    from _pytest.python import CallSpec2
+
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\testclient.py:1
+  C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+backend\app\models\document.py:32
+backend\app\models\document.py:32
+backend\app\models\document.py:32
+backend\app\models\document.py:32
+backend\app\models\document.py:32
+backend\app\models\document.py:32
+backend\app\models\document.py:32
+backend\app\models\document.py:32
+  D:\NAM BON\SE\document-inteligence\backend\app\models\document.py:32: SAWarning: This declarative base already contains a class with the same class name and module name as app.models.document.Document, and will be replaced in the string-lookup table.
+    class Document(Base):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+!!!!!!!!!!!!!!!!!!! Interrupted: 8 errors during collection !!!!!!!!!!!!!!!!!!!
+10 warnings, 8 errors in 2.08s
+python : D:\NAM BON\SE\document-inteligence\.test-tools\coverage\inorout.py:558: CoverageWarning: Module
+app.api.documents was never imported. (module-not-imported); see
+https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-module-not-imported
+At line:2 char:85
++ ... s;backend'; python -m coverage run --branch --source=app.api.document ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (D:\NAM BON\SE\d...le-not-imported:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+  self.warn(f"Module {pkg} was never imported.", slug="module-not-imported")
+D:\NAM BON\SE\document-inteligence\.test-tools\coverage\inorout.py:558: CoverageWarning: Module app.services.documents
+was never imported. (module-not-imported); see
+https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-module-not-imported
+  self.warn(f"Module {pkg} was never imported.", slug="module-not-imported")

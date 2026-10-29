@@ -1,0 +1,18 @@
+VT-043 baseline inspection
+Client date: 2026-10-29 (Asia/Bangkok)
+Original branch: minhthao
+Original HEAD: 997da9fe1cf617dcf4ec53fe5ed2ce2d5a4469ee
+Working branch created: bt3-vt043-autosave
+Original tracked working tree: clean
+Original untracked files preserved: ocr-review.patch; how 75a0feb -- `
+Prepared BT3 branch: absent before this run
+Existing patch inspected: ocr-review.patch contains earlier OCR readability commit 75a0feb, not autosave.
+No alternate autosave implementation found in repository file inventory.
+Existing OCR correction: manual save, no expected_revision, unconditional ORM write.
+Existing frontend: Vitest, React Testing Library, jsdom; no E2E configuration.
+Existing migrations: 0001_initial, 0002_auth_and_ownership, 0003_human_review.
+Gaps: debounce, OCC migration/API/atomic update, FT01-10, HTTP concurrency, performance harness, mutation and coverage evidence.
+Initial environment: Windows, Python 3.14.5, pytest 9.1.1, SQLAlchemy 2.1.4, Alembic 1.20.1, httpx 0.28.1, Node 24.20.0.
+Environment differs from repository pinned backend requirements; record actual versions, do not claim pinned-environment validation.
+PowerShell npm.ps1 execution is restricted; use npm.cmd.
+Plan: SPEC -> regression tests -> implementation -> targeted verification -> concurrency/performance -> mutation -> coverage/regression -> review and local commits.

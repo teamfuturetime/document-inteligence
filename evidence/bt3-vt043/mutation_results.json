@@ -1,0 +1,11 @@
+{
+  "test": "tests/integration/test_document_review.py::test_ocr_correction_rejects_whitespace",
+  "started_at_utc": "2026-10-29T14:11:24.896684+00:00",
+  "baseline_exit": 0,
+  "mutation_exit": 1,
+  "source_restored_byte_for_byte": true,
+  "restored_sha256": "c6f537ae15ba01bc711ee40f372437718f176ea2efb4fef02518cd1e9070ba25",
+  "restored_exit": 0,
+  "finished_at_utc": "2026-10-29T14:11:31.088903+00:00",
+  "killed": true
+}

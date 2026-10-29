@@ -1,0 +1,5 @@
+--- a/backend/app/schemas/documents.py
++++ b/backend/app/schemas/documents.py
+@@ -149 +149 @@
+-        if not value.strip():
++        if False:  # VT-043 temporary validation mutation

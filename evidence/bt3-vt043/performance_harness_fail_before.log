@@ -1,0 +1,144 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.5, pytest-9.2.0, pluggy-1.7.0 -- C:\Program Files\Python314\python.exe
+rootdir: D:\NAM BON\SE\document-inteligence
+plugins: cov-7.1.0, anyio-4.13.0
+collecting ... collected 7 items / 3 deselected / 4 selected
+
+tests/integration/test_ocr_autosave.py::test_performance_harness_records_invalid_200_without_losing_report[invalid-json] FAILED [ 25%]
+tests/integration/test_ocr_autosave.py::test_performance_harness_records_invalid_200_without_losing_report[wrong-json-type] FAILED [ 50%]
+tests/integration/test_ocr_autosave.py::test_performance_harness_records_invalid_200_without_losing_report[wrong-acknowledgement] FAILED [ 75%]
+tests/integration/test_ocr_autosave.py::test_performance_harness_records_invalid_200_without_losing_report[unexpected-exception] FAILED [100%]
+
+================================== FAILURES ===================================
+_ test_performance_harness_records_invalid_200_without_losing_report[invalid-json] _
+tests\integration\test_ocr_autosave.py:148: in test_performance_harness_records_invalid_200_without_losing_report
+    asyncio.run(asyncio.wait_for(scenario(), timeout=30))
+C:\Program Files\Python314\Lib\asyncio\runners.py:204: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Program Files\Python314\Lib\asyncio\runners.py:127: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Program Files\Python314\Lib\asyncio\base_events.py:719: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+C:\Program Files\Python314\Lib\asyncio\tasks.py:488: in wait_for
+    return await fut
+           ^^^^^^^^^
+tests\integration\test_ocr_autosave.py:136: in scenario
+    report = await measure_scenario(http_environment, [CorruptedClient(first), second], "corrupt-response", False)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\ocr_autosave_performance.py:124: in measure_scenario
+    rows = await asyncio.wait_for(asyncio.gather(*tasks), timeout=45)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Program Files\Python314\Lib\asyncio\tasks.py:488: in wait_for
+    return await fut
+           ^^^^^^^^^
+scripts\ocr_autosave_performance.py:109: in request
+    body = response.json()
+           ^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\httpx\_models.py:832: in json
+    return jsonlib.loads(self.content, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Program Files\Python314\Lib\json\__init__.py:352: in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Program Files\Python314\Lib\json\decoder.py:345: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Program Files\Python314\Lib\json\decoder.py:363: in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+_ test_performance_harness_records_invalid_200_without_losing_report[wrong-json-type] _
+tests\integration\test_ocr_autosave.py:148: in test_performance_harness_records_invalid_200_without_losing_report
+    asyncio.run(asyncio.wait_for(scenario(), timeout=30))
+C:\Program Files\Python314\Lib\asyncio\runners.py:204: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Program Files\Python314\Lib\asyncio\runners.py:127: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Program Files\Python314\Lib\asyncio\base_events.py:719: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+C:\Program Files\Python314\Lib\asyncio\tasks.py:488: in wait_for
+    return await fut
+           ^^^^^^^^^
+tests\integration\test_ocr_autosave.py:136: in scenario
+    report = await measure_scenario(http_environment, [CorruptedClient(first), second], "corrupt-response", False)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\ocr_autosave_performance.py:124: in measure_scenario
+    rows = await asyncio.wait_for(asyncio.gather(*tasks), timeout=45)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Program Files\Python314\Lib\asyncio\tasks.py:488: in wait_for
+    return await fut
+           ^^^^^^^^^
+scripts\ocr_autosave_performance.py:110: in request
+    acknowledgement_valid = body.get("ocr_revision") == 1 and body.get("ocr_text_cleaned") == text
+                            ^^^^^^^^
+E   AttributeError: 'list' object has no attribute 'get'
+_ test_performance_harness_records_invalid_200_without_losing_report[wrong-acknowledgement] _
+tests\integration\test_ocr_autosave.py:148: in test_performance_harness_records_invalid_200_without_losing_report
+    asyncio.run(asyncio.wait_for(scenario(), timeout=30))
+C:\Program Files\Python314\Lib\asyncio\runners.py:204: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Program Files\Python314\Lib\asyncio\runners.py:127: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Program Files\Python314\Lib\asyncio\base_events.py:719: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+C:\Program Files\Python314\Lib\asyncio\tasks.py:488: in wait_for
+    return await fut
+           ^^^^^^^^^
+tests\integration\test_ocr_autosave.py:138: in scenario
+    assert report["successful_requests"] == 1
+E   assert 2 == 1
+_ test_performance_harness_records_invalid_200_without_losing_report[unexpected-exception] _
+tests\integration\test_ocr_autosave.py:148: in test_performance_harness_records_invalid_200_without_losing_report
+    asyncio.run(asyncio.wait_for(scenario(), timeout=30))
+C:\Program Files\Python314\Lib\asyncio\runners.py:204: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Program Files\Python314\Lib\asyncio\runners.py:127: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Program Files\Python314\Lib\asyncio\base_events.py:719: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+C:\Program Files\Python314\Lib\asyncio\tasks.py:488: in wait_for
+    return await fut
+           ^^^^^^^^^
+tests\integration\test_ocr_autosave.py:136: in scenario
+    report = await measure_scenario(http_environment, [CorruptedClient(first), second], "corrupt-response", False)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\ocr_autosave_performance.py:124: in measure_scenario
+    rows = await asyncio.wait_for(asyncio.gather(*tasks), timeout=45)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Program Files\Python314\Lib\asyncio\tasks.py:488: in wait_for
+    return await fut
+           ^^^^^^^^^
+scripts\ocr_autosave_performance.py:103: in request
+    response = await asyncio.wait_for(clients[index].patch(
+C:\Program Files\Python314\Lib\asyncio\tasks.py:488: in wait_for
+    return await fut
+           ^^^^^^^^^
+tests\integration\test_ocr_autosave.py:124: in patch
+    raise RuntimeError("sensitive-response-marker")
+E   RuntimeError: sensitive-response-marker
+============================== warnings summary ===============================
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\pytest_plugin.py:14
+  C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\pytest_plugin.py:14: PytestRemovedIn10Warning: _pytest.python.CallSpec2 has been renamed to CallSpec.
+  The CallSpec2 alias will be removed in pytest 10.
+  Update imports to use CallSpec instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#callspec2-renamed
+    from _pytest.python import CallSpec2
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/integration/test_ocr_autosave.py::test_performance_harness_records_invalid_200_without_losing_report[invalid-json]
+FAILED tests/integration/test_ocr_autosave.py::test_performance_harness_records_invalid_200_without_losing_report[wrong-json-type]
+FAILED tests/integration/test_ocr_autosave.py::test_performance_harness_records_invalid_200_without_losing_report[wrong-acknowledgement]
+FAILED tests/integration/test_ocr_autosave.py::test_performance_harness_records_invalid_200_without_losing_report[unexpected-exception]
+================= 4 failed, 3 deselected, 1 warning in 1.71s ==================

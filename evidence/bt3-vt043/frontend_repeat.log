@@ -1,0 +1,74 @@
+Autosave fake-timer and navigation isolation run 1/5
+
+> document-intelligence-web@1.0.0 test
+> vitest run src/components/OCRTextCard.autosave.test.tsx src/pages/DocumentDetailPage.test.tsx --reporter=dot
+
+
+ RUN  v5.0.5 D:/NAM BON/SE/document-inteligence/frontend
+
+······························
+
+ Test Files  2 passed (2)
+      Tests  30 passed (30)
+   Start at  21:05:52
+   Duration  2.61s (environment 48%, tests 34%, import 13%, transform 5%)
+
+Autosave fake-timer and navigation isolation run 2/5
+
+> document-intelligence-web@1.0.0 test
+> vitest run src/components/OCRTextCard.autosave.test.tsx src/pages/DocumentDetailPage.test.tsx --reporter=dot
+
+
+ RUN  v5.0.5 D:/NAM BON/SE/document-inteligence/frontend
+
+······························
+
+ Test Files  2 passed (2)
+      Tests  30 passed (30)
+   Start at  21:05:55
+   Duration  2.24s (tests 42%, environment 41%, import 16%, transform 1%)
+
+Autosave fake-timer and navigation isolation run 3/5
+
+> document-intelligence-web@1.0.0 test
+> vitest run src/components/OCRTextCard.autosave.test.tsx src/pages/DocumentDetailPage.test.tsx --reporter=dot
+
+
+ RUN  v5.0.5 D:/NAM BON/SE/document-inteligence/frontend
+
+······························
+
+ Test Files  2 passed (2)
+      Tests  30 passed (30)
+   Start at  21:05:58
+   Duration  1.99s (environment 43%, tests 40%, import 15%, transform 1%)
+
+Autosave fake-timer and navigation isolation run 4/5
+
+> document-intelligence-web@1.0.0 test
+> vitest run src/components/OCRTextCard.autosave.test.tsx src/pages/DocumentDetailPage.test.tsx --reporter=dot
+
+
+ RUN  v5.0.5 D:/NAM BON/SE/document-inteligence/frontend
+
+······························
+
+ Test Files  2 passed (2)
+      Tests  30 passed (30)
+   Start at  21:06:01
+   Duration  2.10s (environment 42%, tests 41%, import 15%, transform 1%)
+
+Autosave fake-timer and navigation isolation run 5/5
+
+> document-intelligence-web@1.0.0 test
+> vitest run src/components/OCRTextCard.autosave.test.tsx src/pages/DocumentDetailPage.test.tsx --reporter=dot
+
+
+ RUN  v5.0.5 D:/NAM BON/SE/document-inteligence/frontend
+
+······························
+
+ Test Files  2 passed (2)
+      Tests  30 passed (30)
+   Start at  21:06:04
+   Duration  1.95s (environment 44%, tests 38%, import 16%, transform 1%)

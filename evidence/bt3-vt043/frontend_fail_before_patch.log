@@ -1,0 +1,3574 @@
+
+> document-intelligence-web@1.0.0 test
+> vitest run --reporter=verbose src/components/OCRTextCard.autosave.test.tsx
+
+
+ RUN  v5.0.5 D:/NAM BON/SE/document-inteligence/frontend
+
+ × src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-01/02 waits 800 ms after the last keystroke and sends one draft 164ms
+   → Unable to find an accessible element with the role "status"
+
+Here are the accessible roles:
+
+  region:
+
+  Name "Văn bản OCR":
+  <section
+    aria-labelledby="ocr-heading"
+    class="card overflow-hidden"
+  />
+
+  --------------------------------------------------
+  heading:
+
+  Name "Văn bản OCR":
+  <h2
+    id="ocr-heading"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p
+    class="mt-1 text-sm text-slate-500"
+  />
+
+  --------------------------------------------------
+  button:
+
+  Name "Sao chép":
+  <button
+    class="button-subtle shrink-0"
+    disabled=""
+    type="button"
+  />
+
+  Name "Lưu OCR":
+  <button
+    class="button-primary"
+    type="button"
+  />
+
+  Name "Hủy":
+  <button
+    class="button-subtle"
+    type="button"
+  />
+
+  --------------------------------------------------
+  tablist:
+
+  Name "Chế độ xem OCR":
+  <div
+    aria-label="Chế độ xem OCR"
+    class="border-b border-slate-200 px-3 pt-2"
+    role="tablist"
+  />
+
+  --------------------------------------------------
+  tab:
+
+  Name "Văn bản dễ đọc":
+  <button
+    aria-selected="true"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600 text-blue-700"
+    role="tab"
+    type="button"
+  />
+
+  Name "OCR gốc":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  Name "Cấu trúc tài liệu":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  --------------------------------------------------
+  textbox:
+
+  Name "Nội dung OCR đã hiệu chỉnh":
+  <textarea
+    aria-label="Nội dung OCR đã hiệu chỉnh"
+    class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+    id="ocr-editor"
+    maxlength="1000000"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <section
+      aria-labelledby="ocr-heading"
+      class="card overflow-hidden"
+    >
+      <div
+        class="flex flex-wrap items-start justify-between gap-3 border-b border-slate-200 px-5 py-4"
+      >
+        <div>
+          <div
+            class="flex flex-wrap items-center gap-2"
+          >
+            <h2
+              id="ocr-heading"
+            >
+              Văn bản OCR
+            </h2>
+          </div>
+          <p
+            class="mt-1 text-sm text-slate-500"
+          >
+            Bản dễ đọc có thể được hiệu chỉnh; OCR gốc luôn được giữ nguyên để đối chiếu.
+          </p>
+        </div>
+        <div
+          class="flex flex-wrap gap-2"
+        >
+          <button
+            class="button-subtle shrink-0"
+            disabled=""
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-copy"
+              fill="none"
+              height="16"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="14"
+                rx="2"
+                ry="2"
+                width="14"
+                x="8"
+                y="8"
+              />
+              <path
+                d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
+              />
+            </svg>
+            Sao chép
+          </button>
+        </div>
+      </div>
+      <div
+        aria-label="Chế độ xem OCR"
+        class="border-b border-slate-200 px-3 pt-2"
+        role="tablist"
+      >
+        <div
+          class="flex gap-1 overflow-x-auto"
+        >
+          <button
+            aria-selected="true"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600 text-blue-700"
+            role="tab"
+            type="button"
+          >
+            Văn bản dễ đọc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            OCR gốc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            Cấu trúc tài liệu
+          </button>
+        </div>
+      </div>
+      <div
+        class="p-5"
+      >
+        <div>
+          <label
+            class="block font-medium text-slate-700"
+            for="ocr-editor"
+          >
+            Nội dung OCR đã hiệu chỉnh
+          </label>
+          <textarea
+            aria-label="Nội dung OCR đã hiệu chỉnh"
+            class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+            id="ocr-editor"
+            maxlength="1000000"
+          >
+            Bản 2
+          </textarea>
+          <div
+            class="mt-3 flex flex-wrap gap-2"
+          >
+            <button
+              class="button-primary"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-save"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"
+                />
+                <path
+                  d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"
+                />
+                <path
+                  d="M7 3v4a1 1 0 0 0 1 1h7"
+                />
+              </svg>
+              Lưu OCR
+            </button>
+            <button
+              class="button-subtle"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-x"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18 6 6 18"
+                />
+                <path
+                  d="m6 6 12 12"
+                />
+              </svg>
+              Hủy
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+ × src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-03 only reports saved after the server acknowledges the exact draft 40ms
+   → Unable to find an accessible element with the role "status"
+
+Here are the accessible roles:
+
+  region:
+
+  Name "Văn bản OCR":
+  <section
+    aria-labelledby="ocr-heading"
+    class="card overflow-hidden"
+  />
+
+  --------------------------------------------------
+  heading:
+
+  Name "Văn bản OCR":
+  <h2
+    id="ocr-heading"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p
+    class="mt-1 text-sm text-slate-500"
+  />
+
+  --------------------------------------------------
+  button:
+
+  Name "Sao chép":
+  <button
+    class="button-subtle shrink-0"
+    disabled=""
+    type="button"
+  />
+
+  Name "Lưu OCR":
+  <button
+    class="button-primary"
+    type="button"
+  />
+
+  Name "Hủy":
+  <button
+    class="button-subtle"
+    type="button"
+  />
+
+  --------------------------------------------------
+  tablist:
+
+  Name "Chế độ xem OCR":
+  <div
+    aria-label="Chế độ xem OCR"
+    class="border-b border-slate-200 px-3 pt-2"
+    role="tablist"
+  />
+
+  --------------------------------------------------
+  tab:
+
+  Name "Văn bản dễ đọc":
+  <button
+    aria-selected="true"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600 text-blue-700"
+    role="tab"
+    type="button"
+  />
+
+  Name "OCR gốc":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  Name "Cấu trúc tài liệu":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  --------------------------------------------------
+  textbox:
+
+  Name "Nội dung OCR đã hiệu chỉnh":
+  <textarea
+    aria-label="Nội dung OCR đã hiệu chỉnh"
+    class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+    id="ocr-editor"
+    maxlength="1000000"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <section
+      aria-labelledby="ocr-heading"
+      class="card overflow-hidden"
+    >
+      <div
+        class="flex flex-wrap items-start justify-between gap-3 border-b border-slate-200 px-5 py-4"
+      >
+        <div>
+          <div
+            class="flex flex-wrap items-center gap-2"
+          >
+            <h2
+              id="ocr-heading"
+            >
+              Văn bản OCR
+            </h2>
+          </div>
+          <p
+            class="mt-1 text-sm text-slate-500"
+          >
+            Bản dễ đọc có thể được hiệu chỉnh; OCR gốc luôn được giữ nguyên để đối chiếu.
+          </p>
+        </div>
+        <div
+          class="flex flex-wrap gap-2"
+        >
+          <button
+            class="button-subtle shrink-0"
+            disabled=""
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-copy"
+              fill="none"
+              height="16"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="14"
+                rx="2"
+                ry="2"
+                width="14"
+                x="8"
+                y="8"
+              />
+              <path
+                d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
+              />
+            </svg>
+            Sao chép
+          </button>
+        </div>
+      </div>
+      <div
+        aria-label="Chế độ xem OCR"
+        class="border-b border-slate-200 px-3 pt-2"
+        role="tablist"
+      >
+        <div
+          class="flex gap-1 overflow-x-auto"
+        >
+          <button
+            aria-selected="true"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600 text-blue-700"
+            role="tab"
+            type="button"
+          >
+            Văn bản dễ đọc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            OCR gốc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            Cấu trúc tài liệu
+          </button>
+        </div>
+      </div>
+      <div
+        class="p-5"
+      >
+        <div>
+          <label
+            class="block font-medium text-slate-700"
+            for="ocr-editor"
+          >
+            Nội dung OCR đã hiệu chỉnh
+          </label>
+          <textarea
+            aria-label="Nội dung OCR đã hiệu chỉnh"
+            class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+            id="ocr-editor"
+            maxlength="1000000"
+          >
+            Đã sửa
+          </textarea>
+          <div
+            class="mt-3 flex flex-wrap gap-2"
+          >
+            <button
+              class="button-primary"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-save"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"
+                />
+                <path
+                  d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"
+                />
+                <path
+                  d="M7 3v4a1 1 0 0 0 1 1h7"
+                />
+              </svg>
+              Lưu OCR
+            </button>
+            <button
+              class="button-subtle"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-x"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18 6 6 18"
+                />
+                <path
+                  d="m6 6 12 12"
+                />
+              </svg>
+              Hủy
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+ × src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-04 conflict retains the draft and does not report success 27ms
+   → Unable to find an accessible element with the role "alert"
+
+Here are the accessible roles:
+
+  region:
+
+  Name "Văn bản OCR":
+  <section
+    aria-labelledby="ocr-heading"
+    class="card overflow-hidden"
+  />
+
+  --------------------------------------------------
+  heading:
+
+  Name "Văn bản OCR":
+  <h2
+    id="ocr-heading"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p
+    class="mt-1 text-sm text-slate-500"
+  />
+
+  --------------------------------------------------
+  button:
+
+  Name "Sao chép":
+  <button
+    class="button-subtle shrink-0"
+    disabled=""
+    type="button"
+  />
+
+  Name "Lưu OCR":
+  <button
+    class="button-primary"
+    type="button"
+  />
+
+  Name "Hủy":
+  <button
+    class="button-subtle"
+    type="button"
+  />
+
+  --------------------------------------------------
+  tablist:
+
+  Name "Chế độ xem OCR":
+  <div
+    aria-label="Chế độ xem OCR"
+    class="border-b border-slate-200 px-3 pt-2"
+    role="tablist"
+  />
+
+  --------------------------------------------------
+  tab:
+
+  Name "Văn bản dễ đọc":
+  <button
+    aria-selected="true"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600 text-blue-700"
+    role="tab"
+    type="button"
+  />
+
+  Name "OCR gốc":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  Name "Cấu trúc tài liệu":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  --------------------------------------------------
+  textbox:
+
+  Name "Nội dung OCR đã hiệu chỉnh":
+  <textarea
+    aria-label="Nội dung OCR đã hiệu chỉnh"
+    class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+    id="ocr-editor"
+    maxlength="1000000"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <section
+      aria-labelledby="ocr-heading"
+      class="card overflow-hidden"
+    >
+      <div
+        class="flex flex-wrap items-start justify-between gap-3 border-b border-slate-200 px-5 py-4"
+      >
+        <div>
+          <div
+            class="flex flex-wrap items-center gap-2"
+          >
+            <h2
+              id="ocr-heading"
+            >
+              Văn bản OCR
+            </h2>
+          </div>
+          <p
+            class="mt-1 text-sm text-slate-500"
+          >
+            Bản dễ đọc có thể được hiệu chỉnh; OCR gốc luôn được giữ nguyên để đối chiếu.
+          </p>
+        </div>
+        <div
+          class="flex flex-wrap gap-2"
+        >
+          <button
+            class="button-subtle shrink-0"
+            disabled=""
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-copy"
+              fill="none"
+              height="16"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="14"
+                rx="2"
+                ry="2"
+                width="14"
+                x="8"
+                y="8"
+              />
+              <path
+                d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
+              />
+            </svg>
+            Sao chép
+          </button>
+        </div>
+      </div>
+      <div
+        aria-label="Chế độ xem OCR"
+        class="border-b border-slate-200 px-3 pt-2"
+        role="tablist"
+      >
+        <div
+          class="flex gap-1 overflow-x-auto"
+        >
+          <button
+            aria-selected="true"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600 text-blue-700"
+            role="tab"
+            type="button"
+          >
+            Văn bản dễ đọc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            OCR gốc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            Cấu trúc tài liệu
+          </button>
+        </div>
+      </div>
+      <div
+        class="p-5"
+      >
+        <div>
+          <label
+            class="block font-medium text-slate-700"
+            for="ocr-editor"
+          >
+            Nội dung OCR đã hiệu chỉnh
+          </label>
+          <textarea
+            aria-label="Nội dung OCR đã hiệu chỉnh"
+            class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+            id="ocr-editor"
+            maxlength="1000000"
+          >
+            Bản nháp cần giữ
+          </textarea>
+          <div
+            class="mt-3 flex flex-wrap gap-2"
+          >
+            <button
+              class="button-primary"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-save"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"
+                />
+                <path
+                  d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"
+                />
+                <path
+                  d="M7 3v4a1 1 0 0 0 1 1h7"
+                />
+              </svg>
+              Lưu OCR
+            </button>
+            <button
+              class="button-subtle"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-x"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18 6 6 18"
+                />
+                <path
+                  d="m6 6 12 12"
+                />
+              </svg>
+              Hủy
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+ × src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-05 server error retains the draft and does not report success 50ms
+   → Unable to find an accessible element with the role "alert"
+
+Here are the accessible roles:
+
+  region:
+
+  Name "Văn bản OCR":
+  <section
+    aria-labelledby="ocr-heading"
+    class="card overflow-hidden"
+  />
+
+  --------------------------------------------------
+  heading:
+
+  Name "Văn bản OCR":
+  <h2
+    id="ocr-heading"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p
+    class="mt-1 text-sm text-slate-500"
+  />
+
+  --------------------------------------------------
+  button:
+
+  Name "Sao chép":
+  <button
+    class="button-subtle shrink-0"
+    disabled=""
+    type="button"
+  />
+
+  Name "Lưu OCR":
+  <button
+    class="button-primary"
+    type="button"
+  />
+
+  Name "Hủy":
+  <button
+    class="button-subtle"
+    type="button"
+  />
+
+  --------------------------------------------------
+  tablist:
+
+  Name "Chế độ xem OCR":
+  <div
+    aria-label="Chế độ xem OCR"
+    class="border-b border-slate-200 px-3 pt-2"
+    role="tablist"
+  />
+
+  --------------------------------------------------
+  tab:
+
+  Name "Văn bản dễ đọc":
+  <button
+    aria-selected="true"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600 text-blue-700"
+    role="tab"
+    type="button"
+  />
+
+  Name "OCR gốc":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  Name "Cấu trúc tài liệu":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  --------------------------------------------------
+  textbox:
+
+  Name "Nội dung OCR đã hiệu chỉnh":
+  <textarea
+    aria-label="Nội dung OCR đã hiệu chỉnh"
+    class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+    id="ocr-editor"
+    maxlength="1000000"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <section
+      aria-labelledby="ocr-heading"
+      class="card overflow-hidden"
+    >
+      <div
+        class="flex flex-wrap items-start justify-between gap-3 border-b border-slate-200 px-5 py-4"
+      >
+        <div>
+          <div
+            class="flex flex-wrap items-center gap-2"
+          >
+            <h2
+              id="ocr-heading"
+            >
+              Văn bản OCR
+            </h2>
+          </div>
+          <p
+            class="mt-1 text-sm text-slate-500"
+          >
+            Bản dễ đọc có thể được hiệu chỉnh; OCR gốc luôn được giữ nguyên để đối chiếu.
+          </p>
+        </div>
+        <div
+          class="flex flex-wrap gap-2"
+        >
+          <button
+            class="button-subtle shrink-0"
+            disabled=""
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-copy"
+              fill="none"
+              height="16"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="14"
+                rx="2"
+                ry="2"
+                width="14"
+                x="8"
+                y="8"
+              />
+              <path
+                d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
+              />
+            </svg>
+            Sao chép
+          </button>
+        </div>
+      </div>
+      <div
+        aria-label="Chế độ xem OCR"
+        class="border-b border-slate-200 px-3 pt-2"
+        role="tablist"
+      >
+        <div
+          class="flex gap-1 overflow-x-auto"
+        >
+          <button
+            aria-selected="true"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600 text-blue-700"
+            role="tab"
+            type="button"
+          >
+            Văn bản dễ đọc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            OCR gốc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            Cấu trúc tài liệu
+          </button>
+        </div>
+      </div>
+      <div
+        class="p-5"
+      >
+        <div>
+          <label
+            class="block font-medium text-slate-700"
+            for="ocr-editor"
+          >
+            Nội dung OCR đã hiệu chỉnh
+          </label>
+          <textarea
+            aria-label="Nội dung OCR đã hiệu chỉnh"
+            class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+            id="ocr-editor"
+            maxlength="1000000"
+          >
+            Bản nháp cần giữ
+          </textarea>
+          <div
+            class="mt-3 flex flex-wrap gap-2"
+          >
+            <button
+              class="button-primary"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-save"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"
+                />
+                <path
+                  d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"
+                />
+                <path
+                  d="M7 3v4a1 1 0 0 0 1 1h7"
+                />
+              </svg>
+              Lưu OCR
+            </button>
+            <button
+              class="button-subtle"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-x"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18 6 6 18"
+                />
+                <path
+                  d="m6 6 12 12"
+                />
+              </svg>
+              Hủy
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+ × src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-06 network failure retains the draft and does not report success 47ms
+   → Unable to find an accessible element with the role "alert"
+
+Here are the accessible roles:
+
+  region:
+
+  Name "Văn bản OCR":
+  <section
+    aria-labelledby="ocr-heading"
+    class="card overflow-hidden"
+  />
+
+  --------------------------------------------------
+  heading:
+
+  Name "Văn bản OCR":
+  <h2
+    id="ocr-heading"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p
+    class="mt-1 text-sm text-slate-500"
+  />
+
+  --------------------------------------------------
+  button:
+
+  Name "Sao chép":
+  <button
+    class="button-subtle shrink-0"
+    disabled=""
+    type="button"
+  />
+
+  Name "Lưu OCR":
+  <button
+    class="button-primary"
+    type="button"
+  />
+
+  Name "Hủy":
+  <button
+    class="button-subtle"
+    type="button"
+  />
+
+  --------------------------------------------------
+  tablist:
+
+  Name "Chế độ xem OCR":
+  <div
+    aria-label="Chế độ xem OCR"
+    class="border-b border-slate-200 px-3 pt-2"
+    role="tablist"
+  />
+
+  --------------------------------------------------
+  tab:
+
+  Name "Văn bản dễ đọc":
+  <button
+    aria-selected="true"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600 text-blue-700"
+    role="tab"
+    type="button"
+  />
+
+  Name "OCR gốc":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  Name "Cấu trúc tài liệu":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  --------------------------------------------------
+  textbox:
+
+  Name "Nội dung OCR đã hiệu chỉnh":
+  <textarea
+    aria-label="Nội dung OCR đã hiệu chỉnh"
+    class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+    id="ocr-editor"
+    maxlength="1000000"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <section
+      aria-labelledby="ocr-heading"
+      class="card overflow-hidden"
+    >
+      <div
+        class="flex flex-wrap items-start justify-between gap-3 border-b border-slate-200 px-5 py-4"
+      >
+        <div>
+          <div
+            class="flex flex-wrap items-center gap-2"
+          >
+            <h2
+              id="ocr-heading"
+            >
+              Văn bản OCR
+            </h2>
+          </div>
+          <p
+            class="mt-1 text-sm text-slate-500"
+          >
+            Bản dễ đọc có thể được hiệu chỉnh; OCR gốc luôn được giữ nguyên để đối chiếu.
+          </p>
+        </div>
+        <div
+          class="flex flex-wrap gap-2"
+        >
+          <button
+            class="button-subtle shrink-0"
+            disabled=""
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-copy"
+              fill="none"
+              height="16"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="14"
+                rx="2"
+                ry="2"
+                width="14"
+                x="8"
+                y="8"
+              />
+              <path
+                d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
+              />
+            </svg>
+            Sao chép
+          </button>
+        </div>
+      </div>
+      <div
+        aria-label="Chế độ xem OCR"
+        class="border-b border-slate-200 px-3 pt-2"
+        role="tablist"
+      >
+        <div
+          class="flex gap-1 overflow-x-auto"
+        >
+          <button
+            aria-selected="true"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600 text-blue-700"
+            role="tab"
+            type="button"
+          >
+            Văn bản dễ đọc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            OCR gốc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            Cấu trúc tài liệu
+          </button>
+        </div>
+      </div>
+      <div
+        class="p-5"
+      >
+        <div>
+          <label
+            class="block font-medium text-slate-700"
+            for="ocr-editor"
+          >
+            Nội dung OCR đã hiệu chỉnh
+          </label>
+          <textarea
+            aria-label="Nội dung OCR đã hiệu chỉnh"
+            class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+            id="ocr-editor"
+            maxlength="1000000"
+          >
+            Bản nháp cần giữ
+          </textarea>
+          <div
+            class="mt-3 flex flex-wrap gap-2"
+          >
+            <button
+              class="button-primary"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-save"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"
+                />
+                <path
+                  d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"
+                />
+                <path
+                  d="M7 3v4a1 1 0 0 0 1 1h7"
+                />
+              </svg>
+              Lưu OCR
+            </button>
+            <button
+              class="button-subtle"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-x"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18 6 6 18"
+                />
+                <path
+                  d="m6 6 12 12"
+                />
+              </svg>
+              Hủy
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+ × src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-07/08 serializes requests and never acknowledges new typing with an old response 20ms
+   → expected "vi.fn()" to be called 1 times, but got 0 times
+ × src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-09 never saves a confirmed document, including a queued edit becoming read-only 32ms
+   → expect(element).toBeDisabled()
+
+Received element is not disabled:
+  <textarea
+  aria-label="Nội dung OCR đã hiệu chỉnh"
+  class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+  id="ocr-editor"
+  maxlength="1000000"
+/>
+ × src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-10 cancels queued work on unmount and ignores an old instance response 132ms
+   → Unable to find an accessible element with the role "status"
+
+Here are the accessible roles:
+
+  region:
+
+  Name "Văn bản OCR":
+  <section
+    aria-labelledby="ocr-heading"
+    class="card overflow-hidden"
+  />
+
+  --------------------------------------------------
+  heading:
+
+  Name "Văn bản OCR":
+  <h2
+    id="ocr-heading"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p
+    class="mt-1 text-sm text-slate-500"
+  />
+
+  --------------------------------------------------
+  button:
+
+  Name "Sao chép":
+  <button
+    class="button-subtle shrink-0"
+    disabled=""
+    type="button"
+  />
+
+  Name "Lưu OCR":
+  <button
+    class="button-primary"
+    type="button"
+  />
+
+  Name "Hủy":
+  <button
+    class="button-subtle"
+    type="button"
+  />
+
+  --------------------------------------------------
+  tablist:
+
+  Name "Chế độ xem OCR":
+  <div
+    aria-label="Chế độ xem OCR"
+    class="border-b border-slate-200 px-3 pt-2"
+    role="tablist"
+  />
+
+  --------------------------------------------------
+  tab:
+
+  Name "Văn bản dễ đọc":
+  <button
+    aria-selected="true"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600 text-blue-700"
+    role="tab"
+    type="button"
+  />
+
+  Name "OCR gốc":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  Name "Cấu trúc tài liệu":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  --------------------------------------------------
+  textbox:
+
+  Name "Nội dung OCR đã hiệu chỉnh":
+  <textarea
+    aria-label="Nội dung OCR đã hiệu chỉnh"
+    class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+    id="ocr-editor"
+    maxlength="1000000"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div />
+  <div />
+  <div>
+    <section
+      aria-labelledby="ocr-heading"
+      class="card overflow-hidden"
+    >
+      <div
+        class="flex flex-wrap items-start justify-between gap-3 border-b border-slate-200 px-5 py-4"
+      >
+        <div>
+          <div
+            class="flex flex-wrap items-center gap-2"
+          >
+            <h2
+              id="ocr-heading"
+            >
+              Văn bản OCR
+            </h2>
+          </div>
+          <p
+            class="mt-1 text-sm text-slate-500"
+          >
+            Bản dễ đọc có thể được hiệu chỉnh; OCR gốc luôn được giữ nguyên để đối chiếu.
+          </p>
+        </div>
+        <div
+          class="flex flex-wrap gap-2"
+        >
+          <button
+            class="button-subtle shrink-0"
+            disabled=""
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-copy"
+              fill="none"
+              height="16"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="14"
+                rx="2"
+                ry="2"
+                width="14"
+                x="8"
+                y="8"
+              />
+              <path
+                d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
+              />
+            </svg>
+            Sao chép
+          </button>
+        </div>
+      </div>
+      <div
+        aria-label="Chế độ xem OCR"
+        class="border-b border-slate-200 px-3 pt-2"
+        role="tablist"
+      >
+        <div
+          class="flex gap-1 overflow-x-auto"
+        >
+          <button
+            aria-selected="true"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600 text-blue-700"
+            role="tab"
+            type="button"
+          >
+            Văn bản dễ đọc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            OCR gốc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            Cấu trúc tài liệu
+          </button>
+        </div>
+      </div>
+      <div
+        class="p-5"
+      >
+        <div>
+          <label
+            class="block font-medium text-slate-700"
+            for="ocr-editor"
+          >
+            Nội dung OCR đã hiệu chỉnh
+          </label>
+          <textarea
+            aria-label="Nội dung OCR đã hiệu chỉnh"
+            class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+            id="ocr-editor"
+            maxlength="1000000"
+          >
+            Tài liệu mới
+          </textarea>
+          <div
+            class="mt-3 flex flex-wrap gap-2"
+          >
+            <button
+              class="button-primary"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-save"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"
+                />
+                <path
+                  d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"
+                />
+                <path
+                  d="M7 3v4a1 1 0 0 0 1 1h7"
+                />
+              </svg>
+              Lưu OCR
+            </button>
+            <button
+              class="button-subtle"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-x"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18 6 6 18"
+                />
+                <path
+                  d="m6 6 12 12"
+                />
+              </svg>
+              Hủy
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+ × src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > warns before leaving while a draft or request is unacknowledged 19ms
+   → expected true to be false // Object.is equality
+ × src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > rejects whitespace locally without losing it 26ms
+   → Unable to find an accessible element with the role "alert"
+
+Here are the accessible roles:
+
+  region:
+
+  Name "Văn bản OCR":
+  <section
+    aria-labelledby="ocr-heading"
+    class="card overflow-hidden"
+  />
+
+  --------------------------------------------------
+  heading:
+
+  Name "Văn bản OCR":
+  <h2
+    id="ocr-heading"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p
+    class="mt-1 text-sm text-slate-500"
+  />
+
+  --------------------------------------------------
+  button:
+
+  Name "Sao chép":
+  <button
+    class="button-subtle shrink-0"
+    disabled=""
+    type="button"
+  />
+
+  Name "Lưu OCR":
+  <button
+    class="button-primary"
+    type="button"
+  />
+
+  Name "Hủy":
+  <button
+    class="button-subtle"
+    type="button"
+  />
+
+  --------------------------------------------------
+  tablist:
+
+  Name "Chế độ xem OCR":
+  <div
+    aria-label="Chế độ xem OCR"
+    class="border-b border-slate-200 px-3 pt-2"
+    role="tablist"
+  />
+
+  --------------------------------------------------
+  tab:
+
+  Name "Văn bản dễ đọc":
+  <button
+    aria-selected="true"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600 text-blue-700"
+    role="tab"
+    type="button"
+  />
+
+  Name "OCR gốc":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  Name "Cấu trúc tài liệu":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  --------------------------------------------------
+  textbox:
+
+  Name "Nội dung OCR đã hiệu chỉnh":
+  <textarea
+    aria-label="Nội dung OCR đã hiệu chỉnh"
+    class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+    id="ocr-editor"
+    maxlength="1000000"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <section
+      aria-labelledby="ocr-heading"
+      class="card overflow-hidden"
+    >
+      <div
+        class="flex flex-wrap items-start justify-between gap-3 border-b border-slate-200 px-5 py-4"
+      >
+        <div>
+          <div
+            class="flex flex-wrap items-center gap-2"
+          >
+            <h2
+              id="ocr-heading"
+            >
+              Văn bản OCR
+            </h2>
+          </div>
+          <p
+            class="mt-1 text-sm text-slate-500"
+          >
+            Bản dễ đọc có thể được hiệu chỉnh; OCR gốc luôn được giữ nguyên để đối chiếu.
+          </p>
+        </div>
+        <div
+          class="flex flex-wrap gap-2"
+        >
+          <button
+            class="button-subtle shrink-0"
+            disabled=""
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-copy"
+              fill="none"
+              height="16"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="14"
+                rx="2"
+                ry="2"
+                width="14"
+                x="8"
+                y="8"
+              />
+              <path
+                d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
+              />
+            </svg>
+            Sao chép
+          </button>
+        </div>
+      </div>
+      <div
+        aria-label="Chế độ xem OCR"
+        class="border-b border-slate-200 px-3 pt-2"
+        role="tablist"
+      >
+        <div
+          class="flex gap-1 overflow-x-auto"
+        >
+          <button
+            aria-selected="true"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600 text-blue-700"
+            role="tab"
+            type="button"
+          >
+            Văn bản dễ đọc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            OCR gốc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            Cấu trúc tài liệu
+          </button>
+        </div>
+      </div>
+      <div
+        class="p-5"
+      >
+npm.cmd :
+At line:2 char:1
++ npm.cmd test -- --reporter=verbose src/components/OCRTextCard.autosav ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-01/02 waits 800 ms after the
+last keystroke and sends one draft
+        <div>
+          <label
+            class="block font-medium text-slate-700"
+            for="ocr-editor"
+          >
+            Nội dung OCR đã hiệu chỉnh
+          </label>
+          <textarea
+            aria-label="Nội dung OCR đã hiệu chỉnh"
+            class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+            id="ocr-editor"
+            maxlength="1000000"
+          >
+
+
+          </textarea>
+          <div
+            class="mt-3 flex flex-wrap gap-2"
+          >
+            <button
+              class="button-primary"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-save"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"
+                />
+                <path
+                  d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"
+                />
+                <path
+                  d="M7 3v4a1 1 0 0 0 1 1h7"
+                />
+              </svg>
+              Lưu OCR
+            </button>
+            <button
+              class="button-subtle"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-x"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18 6 6 18"
+                />
+                <path
+                  d="m6 6 12 12"
+                />
+              </svg>
+TestingLibraryElementError: Unable to find an accessible element with the role "status"
+
+Here are the accessible roles:
+
+  region:
+
+  Name "Văn bản OCR":
+              Hủy
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+  <section
+    aria-labelledby="ocr-heading"
+    class="card overflow-hidden"
+  />
+
+  --------------------------------------------------
+  heading:
+
+  Name "Văn bản OCR":
+  <h2
+    id="ocr-heading"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p
+    class="mt-1 text-sm text-slate-500"
+  />
+
+  --------------------------------------------------
+  button:
+
+  Name "Sao chép":
+  <button
+    class="button-subtle shrink-0"
+    disabled=""
+    type="button"
+  />
+
+  Name "Lưu OCR":
+  <button
+    class="button-primary"
+    type="button"
+  />
+
+  Name "Hủy":
+  <button
+    class="button-subtle"
+    type="button"
+  />
+
+  --------------------------------------------------
+  tablist:
+
+  Name "Chế độ xem OCR":
+  <div
+    aria-label="Chế độ xem OCR"
+    class="border-b border-slate-200 px-3 pt-2"
+    role="tablist"
+  />
+
+  --------------------------------------------------
+  tab:
+
+  Name "Văn bản dễ đọc":
+  <button
+    aria-selected="true"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600
+text-blue-700"
+    role="tab"
+    type="button"
+  />
+
+  Name "OCR gốc":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500
+hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  Name "Cấu trúc tài liệu":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500
+hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  --------------------------------------------------
+  textbox:
+
+  Name "Nội dung OCR đã hiệu chỉnh":
+  <textarea
+    aria-label="Nội dung OCR đã hiệu chỉnh"
+    class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+    id="ocr-editor"
+    maxlength="1000000"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <section
+      aria-labelledby="ocr-heading"
+      class="card overflow-hidden"
+    >
+      <div
+        class="flex flex-wrap items-start justify-between gap-3 border-b border-slate-200 px-5
+py-4"
+      >
+        <div>
+          <div
+            class="flex flex-wrap items-center gap-2"
+          >
+            <h2
+              id="ocr-heading"
+            >
+              Văn bản OCR
+            </h2>
+          </div>
+          <p
+            class="mt-1 text-sm text-slate-500"
+          >
+            Bản dễ đọc có thể được hiệu chỉnh; OCR gốc luôn được giữ nguyên để đối chiếu.
+          </p>
+        </div>
+        <div
+          class="flex flex-wrap gap-2"
+        >
+          <button
+            class="button-subtle shrink-0"
+            disabled=""
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-copy"
+              fill="none"
+              height="16"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="14"
+                rx="2"
+                ry="2"
+                width="14"
+                x="8"
+                y="8"
+              />
+              <path
+                d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
+              />
+            </svg>
+            Sao chép
+          </button>
+        </div>
+      </div>
+      <div
+        aria-label="Chế độ xem OCR"
+        class="border-b border-slate-200 px-3 pt-2"
+        role="tablist"
+      >
+        <div
+          class="flex gap-1 overflow-x-auto"
+        >
+          <button
+            aria-selected="true"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600
+text-blue-700"
+            role="tab"
+            type="button"
+          >
+            Văn bản dễ đọc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent
+text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            OCR gốc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent
+text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            Cấu trúc tài liệu
+          </button>
+        </div>
+      </div>
+      <div
+        class="p-5"
+      >
+        <div>
+          <label
+            class="block font-medium text-slate-700"
+            for="ocr-editor"
+          >
+            Nội dung OCR đã hiệu chỉnh
+          </label>
+          <textarea
+            aria-label="Nội dung OCR đã hiệu chỉnh"
+            class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+            id="ocr-editor"
+            maxlength="1000000"
+          >
+            Bản 2
+          </textarea>
+          <div
+            class="mt-3 flex flex-wrap gap-2"
+          >
+            <button
+              class="button-primary"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-save"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0
+1-2-2V5a2 2 0 0 1 2-2z"
+                />
+                <path
+                  d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"
+                />
+                <path
+                  d="M7 3v4a1 1 0 0 0 1 1h7"
+                />
+              </svg>
+              Lưu OCR
+            </button>
+            <button
+              class="button-subtle"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-x"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18 6 6 18"
+                />
+                <path
+                  d="m6 6 12 12"
+                />
+              </svg>
+              Hủy
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/components/OCRTextCard.autosave.test.tsx:32:19
+     30|     type('Bản 2'); await advance(799)
+     31|     expect(onSave).not.toHaveBeenCalled()
+     32|     expect(screen.getByRole('status')).toHaveTextContent('Chưa lưu')
+       |                   ^
+     33|     await advance(1)
+     34|     expect(onSave).toHaveBeenCalledTimes(1)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+ FAIL  src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-03 only reports saved after the
+server acknowledges the exact draft
+TestingLibraryElementError: Unable to find an accessible element with the role "status"
+
+Here are the accessible roles:
+
+  region:
+
+  Name "Văn bản OCR":
+  <section
+    aria-labelledby="ocr-heading"
+    class="card overflow-hidden"
+  />
+
+  --------------------------------------------------
+  heading:
+
+  Name "Văn bản OCR":
+  <h2
+    id="ocr-heading"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p
+    class="mt-1 text-sm text-slate-500"
+  />
+
+  --------------------------------------------------
+  button:
+
+  Name "Sao chép":
+  <button
+    class="button-subtle shrink-0"
+    disabled=""
+    type="button"
+  />
+
+  Name "Lưu OCR":
+  <button
+    class="button-primary"
+    type="button"
+  />
+
+  Name "Hủy":
+  <button
+    class="button-subtle"
+    type="button"
+  />
+
+  --------------------------------------------------
+  tablist:
+
+  Name "Chế độ xem OCR":
+  <div
+    aria-label="Chế độ xem OCR"
+    class="border-b border-slate-200 px-3 pt-2"
+    role="tablist"
+  />
+
+  --------------------------------------------------
+  tab:
+
+  Name "Văn bản dễ đọc":
+  <button
+    aria-selected="true"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600
+text-blue-700"
+    role="tab"
+    type="button"
+  />
+
+  Name "OCR gốc":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500
+hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  Name "Cấu trúc tài liệu":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500
+hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  --------------------------------------------------
+  textbox:
+
+  Name "Nội dung OCR đã hiệu chỉnh":
+  <textarea
+    aria-label="Nội dung OCR đã hiệu chỉnh"
+    class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+    id="ocr-editor"
+    maxlength="1000000"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <section
+      aria-labelledby="ocr-heading"
+      class="card overflow-hidden"
+    >
+      <div
+        class="flex flex-wrap items-start justify-between gap-3 border-b border-slate-200 px-5
+py-4"
+      >
+        <div>
+          <div
+            class="flex flex-wrap items-center gap-2"
+          >
+            <h2
+              id="ocr-heading"
+            >
+              Văn bản OCR
+            </h2>
+          </div>
+          <p
+            class="mt-1 text-sm text-slate-500"
+          >
+            Bản dễ đọc có thể được hiệu chỉnh; OCR gốc luôn được giữ nguyên để đối chiếu.
+          </p>
+        </div>
+        <div
+          class="flex flex-wrap gap-2"
+        >
+          <button
+            class="button-subtle shrink-0"
+            disabled=""
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-copy"
+              fill="none"
+              height="16"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="14"
+                rx="2"
+                ry="2"
+                width="14"
+                x="8"
+                y="8"
+              />
+              <path
+                d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
+              />
+            </svg>
+            Sao chép
+          </button>
+        </div>
+      </div>
+      <div
+        aria-label="Chế độ xem OCR"
+        class="border-b border-slate-200 px-3 pt-2"
+        role="tablist"
+      >
+        <div
+          class="flex gap-1 overflow-x-auto"
+        >
+          <button
+            aria-selected="true"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600
+text-blue-700"
+            role="tab"
+            type="button"
+          >
+            Văn bản dễ đọc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent
+text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            OCR gốc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent
+text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            Cấu trúc tài liệu
+          </button>
+        </div>
+      </div>
+      <div
+        class="p-5"
+      >
+        <div>
+          <label
+            class="block font-medium text-slate-700"
+            for="ocr-editor"
+          >
+            Nội dung OCR đã hiệu chỉnh
+          </label>
+          <textarea
+            aria-label="Nội dung OCR đã hiệu chỉnh"
+            class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+            id="ocr-editor"
+            maxlength="1000000"
+          >
+            Đã sửa
+          </textarea>
+          <div
+            class="mt-3 flex flex-wrap gap-2"
+          >
+            <button
+              class="button-primary"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-save"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0
+1-2-2V5a2 2 0 0 1 2-2z"
+                />
+                <path
+                  d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"
+                />
+                <path
+                  d="M7 3v4a1 1 0 0 0 1 1h7"
+                />
+              </svg>
+              Lưu OCR
+            </button>
+            <button
+              class="button-subtle"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-x"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18 6 6 18"
+                />
+                <path
+                  d="m6 6 12 12"
+                />
+              </svg>
+              Hủy
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/components/OCRTextCard.autosave.test.tsx:43:19
+     41|     edit(vi.fn().mockReturnValue(request.promise)); type('Đã sửa')
+     42|     await advance(800)
+     43|     expect(screen.getByRole('status')).toHaveTextContent('Đang lưu')
+       |                   ^
+     44|     expect(screen.queryByText(/Đã lưu văn bản/)).not.toBeInTheDocument…
+     45|     await act(async () => request.resolve(saved('Đã sửa')))
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯
+
+ FAIL  src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-04 conflict retains the draft
+and does not report success
+ FAIL  src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-05 server error retains the
+draft and does not report success
+ FAIL  src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-06 network failure retains the
+draft and does not report success
+TestingLibraryElementError: Unable to find an accessible element with the role "alert"
+
+Here are the accessible roles:
+
+  region:
+
+  Name "Văn bản OCR":
+  <section
+    aria-labelledby="ocr-heading"
+    class="card overflow-hidden"
+  />
+
+  --------------------------------------------------
+  heading:
+
+  Name "Văn bản OCR":
+  <h2
+    id="ocr-heading"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p
+    class="mt-1 text-sm text-slate-500"
+  />
+
+  --------------------------------------------------
+  button:
+
+  Name "Sao chép":
+  <button
+    class="button-subtle shrink-0"
+    disabled=""
+    type="button"
+  />
+
+  Name "Lưu OCR":
+  <button
+    class="button-primary"
+    type="button"
+  />
+
+  Name "Hủy":
+  <button
+    class="button-subtle"
+    type="button"
+  />
+
+  --------------------------------------------------
+  tablist:
+
+  Name "Chế độ xem OCR":
+  <div
+    aria-label="Chế độ xem OCR"
+    class="border-b border-slate-200 px-3 pt-2"
+    role="tablist"
+  />
+
+  --------------------------------------------------
+  tab:
+
+  Name "Văn bản dễ đọc":
+  <button
+    aria-selected="true"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600
+text-blue-700"
+    role="tab"
+    type="button"
+  />
+
+  Name "OCR gốc":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500
+hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  Name "Cấu trúc tài liệu":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500
+hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  --------------------------------------------------
+  textbox:
+
+  Name "Nội dung OCR đã hiệu chỉnh":
+  <textarea
+    aria-label="Nội dung OCR đã hiệu chỉnh"
+    class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+    id="ocr-editor"
+    maxlength="1000000"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <section
+      aria-labelledby="ocr-heading"
+      class="card overflow-hidden"
+    >
+      <div
+        class="flex flex-wrap items-start justify-between gap-3 border-b border-slate-200 px-5
+py-4"
+      >
+        <div>
+          <div
+            class="flex flex-wrap items-center gap-2"
+          >
+            <h2
+              id="ocr-heading"
+            >
+              Văn bản OCR
+            </h2>
+          </div>
+          <p
+            class="mt-1 text-sm text-slate-500"
+          >
+            Bản dễ đọc có thể được hiệu chỉnh; OCR gốc luôn được giữ nguyên để đối chiếu.
+          </p>
+        </div>
+        <div
+          class="flex flex-wrap gap-2"
+        >
+          <button
+            class="button-subtle shrink-0"
+            disabled=""
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-copy"
+              fill="none"
+              height="16"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="14"
+                rx="2"
+                ry="2"
+                width="14"
+                x="8"
+                y="8"
+              />
+              <path
+                d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
+              />
+            </svg>
+            Sao chép
+          </button>
+        </div>
+      </div>
+      <div
+        aria-label="Chế độ xem OCR"
+        class="border-b border-slate-200 px-3 pt-2"
+        role="tablist"
+      >
+        <div
+          class="flex gap-1 overflow-x-auto"
+        >
+          <button
+            aria-selected="true"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600
+text-blue-700"
+            role="tab"
+            type="button"
+          >
+            Văn bản dễ đọc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent
+text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            OCR gốc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent
+text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            Cấu trúc tài liệu
+          </button>
+        </div>
+      </div>
+      <div
+        class="p-5"
+      >
+        <div>
+          <label
+            class="block font-medium text-slate-700"
+            for="ocr-editor"
+          >
+            Nội dung OCR đã hiệu chỉnh
+          </label>
+          <textarea
+            aria-label="Nội dung OCR đã hiệu chỉnh"
+            class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+            id="ocr-editor"
+            maxlength="1000000"
+          >
+            Bản nháp cần giữ
+          </textarea>
+          <div
+            class="mt-3 flex flex-wrap gap-2"
+          >
+            <button
+              class="button-primary"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-save"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0
+1-2-2V5a2 2 0 0 1 2-2z"
+                />
+                <path
+                  d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"
+                />
+                <path
+                  d="M7 3v4a1 1 0 0 0 1 1h7"
+                />
+              </svg>
+              Lưu OCR
+            </button>
+            <button
+              class="button-subtle"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-x"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18 6 6 18"
+                />
+                <path
+                  d="m6 6 12 12"
+                />
+              </svg>
+              Hủy
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/components/OCRTextCard.autosave.test.tsx:56:19
+     54|     const {onSave} = edit(vi.fn().mockRejectedValue(failure))
+     55|     type('Bản nháp cần giữ'); await advance(800)
+     56|     expect(screen.getByRole('alert')).toHaveTextContent(message)
+       |                   ^
+     57|     expect(editor()).toHaveValue('Bản nháp cần giữ')
+     58|     expect(screen.queryByText(/Đã lưu văn bản/)).not.toBeInTheDocument…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯
+
+ FAIL  src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-07/08 serializes requests and
+never acknowledges new typing with an old response
+AssertionError: expected "vi.fn()" to be called 1 times, but got 0 times
+ ❯ src/components/OCRTextCard.autosave.test.tsx:69:20
+     67|     edit(onSave); type('Bản A'); await advance(800)
+     68|     type('Bản B'); await advance(800)
+     69|     expect(onSave).toHaveBeenCalledTimes(1)
+       |                    ^
+     70|     await act(async () => first.resolve(saved('Bản A', 1)))
+     71|     expect(editor()).toHaveValue('Bản B')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/10]⎯
+
+ FAIL  src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-09 never saves a confirmed
+document, including a queued edit becoming read-only
+Error: expect(element).toBeDisabled()
+
+Received element is not disabled:
+  <textarea
+  aria-label="Nội dung OCR đã hiệu chỉnh"
+  class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+  id="ocr-editor"
+  maxlength="1000000"
+/>
+ ❯ src/components/OCRTextCard.autosave.test.tsx:87:41
+     85|     await advance(800)
+     86|     expect(onSave).not.toHaveBeenCalled()
+     87|     expect(screen.getByRole('textbox')).toBeDisabled()
+       |                                         ^
+     88|     expect(screen.getByRole('textbox')).toHaveValue('Chưa gửi')
+     89|     expect(screen.queryByText(/Đã lưu văn bản/)).not.toBeInTheDocument…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/10]⎯
+
+ FAIL  src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > FT-10 cancels queued work on
+unmount and ignores an old instance response
+TestingLibraryElementError: Unable to find an accessible element with the role "status"
+
+Here are the accessible roles:
+
+  region:
+
+  Name "Văn bản OCR":
+  <section
+    aria-labelledby="ocr-heading"
+    class="card overflow-hidden"
+  />
+
+  --------------------------------------------------
+  heading:
+
+  Name "Văn bản OCR":
+  <h2
+    id="ocr-heading"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p
+    class="mt-1 text-sm text-slate-500"
+  />
+
+  --------------------------------------------------
+  button:
+
+  Name "Sao chép":
+  <button
+    class="button-subtle shrink-0"
+    disabled=""
+    type="button"
+  />
+
+  Name "Lưu OCR":
+  <button
+    class="button-primary"
+    type="button"
+  />
+
+  Name "Hủy":
+  <button
+    class="button-subtle"
+    type="button"
+  />
+
+  --------------------------------------------------
+  tablist:
+
+  Name "Chế độ xem OCR":
+  <div
+    aria-label="Chế độ xem OCR"
+    class="border-b border-slate-200 px-3 pt-2"
+    role="tablist"
+  />
+
+  --------------------------------------------------
+  tab:
+
+  Name "Văn bản dễ đọc":
+  <button
+    aria-selected="true"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600
+text-blue-700"
+    role="tab"
+    type="button"
+  />
+
+  Name "OCR gốc":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500
+hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  Name "Cấu trúc tài liệu":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500
+hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  --------------------------------------------------
+  textbox:
+
+  Name "Nội dung OCR đã hiệu chỉnh":
+  <textarea
+    aria-label="Nội dung OCR đã hiệu chỉnh"
+    class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+    id="ocr-editor"
+    maxlength="1000000"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div />
+  <div />
+  <div>
+    <section
+      aria-labelledby="ocr-heading"
+      class="card overflow-hidden"
+    >
+      <div
+        class="flex flex-wrap items-start justify-between gap-3 border-b border-slate-200 px-5
+py-4"
+      >
+        <div>
+          <div
+            class="flex flex-wrap items-center gap-2"
+          >
+            <h2
+              id="ocr-heading"
+            >
+              Văn bản OCR
+            </h2>
+          </div>
+          <p
+            class="mt-1 text-sm text-slate-500"
+          >
+            Bản dễ đọc có thể được hiệu chỉnh; OCR gốc luôn được giữ nguyên để đối chiếu.
+          </p>
+        </div>
+        <div
+          class="flex flex-wrap gap-2"
+        >
+          <button
+            class="button-subtle shrink-0"
+            disabled=""
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-copy"
+              fill="none"
+              height="16"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="14"
+                rx="2"
+                ry="2"
+                width="14"
+                x="8"
+                y="8"
+              />
+              <path
+                d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
+              />
+            </svg>
+            Sao chép
+          </button>
+        </div>
+      </div>
+      <div
+        aria-label="Chế độ xem OCR"
+        class="border-b border-slate-200 px-3 pt-2"
+        role="tablist"
+      >
+        <div
+          class="flex gap-1 overflow-x-auto"
+        >
+          <button
+            aria-selected="true"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600
+text-blue-700"
+            role="tab"
+            type="button"
+          >
+            Văn bản dễ đọc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent
+text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            OCR gốc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent
+text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            Cấu trúc tài liệu
+          </button>
+        </div>
+      </div>
+      <div
+        class="p-5"
+      >
+        <div>
+          <label
+            class="block font-medium text-slate-700"
+            for="ocr-editor"
+          >
+            Nội dung OCR đã hiệu chỉnh
+          </label>
+          <textarea
+            aria-label="Nội dung OCR đã hiệu chỉnh"
+            class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+            id="ocr-editor"
+            maxlength="1000000"
+          >
+            Tài liệu mới
+          </textarea>
+          <div
+            class="mt-3 flex flex-wrap gap-2"
+          >
+            <button
+              class="button-primary"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-save"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0
+1-2-2V5a2 2 0 0 1 2-2z"
+                />
+                <path
+                  d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"
+                />
+                <path
+                  d="M7 3v4a1 1 0 0 0 1 1h7"
+                />
+              </svg>
+              Lưu OCR
+            </button>
+            <button
+              class="button-subtle"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-x"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18 6 6 18"
+                />
+                <path
+                  d="m6 6 12 12"
+                />
+              </svg>
+              Hủy
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/components/OCRTextCard.autosave.test.tsx:101:19
+     99|     await act(async () => oldRequest.resolve(saved('Tài liệu cũ')))
+    100|     expect(editor()).toHaveValue('Tài liệu mới')
+    101|     expect(screen.getByRole('status')).toHaveTextContent('Chưa lưu')
+       |                   ^
+    102|   })
+    103|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/10]⎯
+
+ FAIL  src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > warns before leaving while a draft
+or request is unacknowledged
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/components/OCRTextCard.autosave.test.tsx:113:41
+    111|     const cleanEvent = new Event('beforeunload', {cancelable: true})
+    112|     window.dispatchEvent(cleanEvent)
+    113|     expect(cleanEvent.defaultPrevented).toBe(false)
+       |                                         ^
+    114|   })
+    115|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/10]⎯
+
+ FAIL  src/components/OCRTextCard.autosave.test.tsx > VT-043 automatic OCR saving > rejects whitespace locally without
+losing it
+TestingLibraryElementError: Unable to find an accessible element with the role "alert"
+
+Here are the accessible roles:
+
+  region:
+
+  Name "Văn bản OCR":
+  <section
+    aria-labelledby="ocr-heading"
+    class="card overflow-hidden"
+  />
+
+  --------------------------------------------------
+  heading:
+
+  Name "Văn bản OCR":
+  <h2
+    id="ocr-heading"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p
+    class="mt-1 text-sm text-slate-500"
+  />
+
+  --------------------------------------------------
+  button:
+
+  Name "Sao chép":
+  <button
+    class="button-subtle shrink-0"
+    disabled=""
+    type="button"
+  />
+
+  Name "Lưu OCR":
+  <button
+    class="button-primary"
+    type="button"
+  />
+
+  Name "Hủy":
+  <button
+    class="button-subtle"
+    type="button"
+  />
+
+  --------------------------------------------------
+  tablist:
+
+  Name "Chế độ xem OCR":
+  <div
+    aria-label="Chế độ xem OCR"
+    class="border-b border-slate-200 px-3 pt-2"
+    role="tablist"
+  />
+
+  --------------------------------------------------
+  tab:
+
+  Name "Văn bản dễ đọc":
+  <button
+    aria-selected="true"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600
+text-blue-700"
+    role="tab"
+    type="button"
+  />
+
+  Name "OCR gốc":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500
+hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  Name "Cấu trúc tài liệu":
+  <button
+    aria-selected="false"
+    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent text-slate-500
+hover:text-slate-800"
+    role="tab"
+    type="button"
+  />
+
+  --------------------------------------------------
+  textbox:
+
+  Name "Nội dung OCR đã hiệu chỉnh":
+  <textarea
+    aria-label="Nội dung OCR đã hiệu chỉnh"
+    class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+    id="ocr-editor"
+    maxlength="1000000"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <section
+      aria-labelledby="ocr-heading"
+      class="card overflow-hidden"
+    >
+      <div
+        class="flex flex-wrap items-start justify-between gap-3 border-b border-slate-200 px-5
+py-4"
+      >
+        <div>
+          <div
+            class="flex flex-wrap items-center gap-2"
+          >
+            <h2
+              id="ocr-heading"
+            >
+              Văn bản OCR
+            </h2>
+          </div>
+          <p
+            class="mt-1 text-sm text-slate-500"
+          >
+            Bản dễ đọc có thể được hiệu chỉnh; OCR gốc luôn được giữ nguyên để đối chiếu.
+          </p>
+        </div>
+        <div
+          class="flex flex-wrap gap-2"
+        >
+          <button
+            class="button-subtle shrink-0"
+            disabled=""
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-copy"
+              fill="none"
+              height="16"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="14"
+                rx="2"
+
+ Test Files  1 failed (1)
+      Tests  10 failed (10)
+   Start at  20:52:09
+   Duration  22.08s (environment 80%, import 17%, tests 3%, transform 1%)
+
+                ry="2"
+                width="14"
+                x="8"
+                y="8"
+              />
+              <path
+                d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
+              />
+            </svg>
+            Sao chép
+          </button>
+        </div>
+      </div>
+      <div
+        aria-label="Chế độ xem OCR"
+        class="border-b border-slate-200 px-3 pt-2"
+        role="tablist"
+      >
+        <div
+          class="flex gap-1 overflow-x-auto"
+        >
+          <button
+            aria-selected="true"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-blue-600
+text-blue-700"
+            role="tab"
+            type="button"
+          >
+            Văn bản dễ đọc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent
+text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            OCR gốc
+          </button>
+          <button
+            aria-selected="false"
+            class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium border-transparent
+text-slate-500 hover:text-slate-800"
+            role="tab"
+            type="button"
+          >
+            Cấu trúc tài liệu
+          </button>
+        </div>
+      </div>
+      <div
+        class="p-5"
+      >
+        <div>
+          <label
+            class="block font-medium text-slate-700"
+            for="ocr-editor"
+          >
+            Nội dung OCR đã hiệu chỉnh
+          </label>
+          <textarea
+            aria-label="Nội dung OCR đã hiệu chỉnh"
+            class="mt-2 min-h-80 w-full whitespace-pre-wrap font-sans leading-7"
+            id="ocr-editor"
+            maxlength="1000000"
+          >
+
+
+          </textarea>
+          <div
+            class="mt-3 flex flex-wrap gap-2"
+          >
+            <button
+              class="button-primary"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-save"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0
+1-2-2V5a2 2 0 0 1 2-2z"
+                />
+                <path
+                  d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"
+                />
+                <path
+                  d="M7 3v4a1 1 0 0 0 1 1h7"
+                />
+              </svg>
+              Lưu OCR
+            </button>
+            <button
+              class="button-subtle"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-x"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18 6 6 18"
+                />
+                <path
+                  d="m6 6 12 12"
+                />
+              </svg>
+              Hủy
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/components/OCRTextCard.autosave.test.tsx:119:19
+    117|     const {onSave} = edit(); type(' \n\t '); await advance(800)
+    118|     expect(onSave).not.toHaveBeenCalled()
+    119|     expect(screen.getByRole('alert')).toHaveTextContent('không được để…
+       |                   ^
+    120|     expect(editor()).toHaveValue(' \n\t ')
+    121|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/10]⎯

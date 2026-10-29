@@ -1,0 +1,33 @@
+VT-043 coverage: real final regression runs
+
+Backend: six relevant modules, coverage.py branch mode.
+Line: 85.51% (484/566)
+Branch: 76.00% (76/100)
+Combined metric displayed by coverage.py: 84.08% (not line-only coverage).
+
+Name                                    Stmts   Miss Branch BrPart  Cover   Missing
+-----------------------------------------------------------------------------------
+backend\app\api\documents.py               98     26      8      1    69%   36-40, 49-52, 56-59, 66, 78-80, 85-87, 95-97, 103-104, 106->exit, 129
+backend\app\models\document.py             69      0      2      0   100%
+backend\app\repositories\documents.py     125      5     28      5    93%   80-83, 112, 195->198, 206, 215
+backend\app\schemas\documents.py           84      4     18      4    92%   112, 119, 125, 136
+backend\app\services\documents.py         133     47     22      4    65%   50-92, 104-106, 135, 139, 145-147, 152, 156, 161-163, 172-173
+backend\app\services\ocr_text.py           57      0     22      0   100%
+-----------------------------------------------------------------------------------
+TOTAL                                     566     82    100     14    84%
+
+Frontend: V8, five relevant modules; all 52 frontend tests.
+Lines: 98.24%; statements: 83.83%; branches: 82.62%.
+Dense JSX makes physical-line coverage higher than statement/branch coverage.
+
+src/api/client.ts: lines 100%; statements 51.85%; branches 80.95%
+src/components/OCRTextCard.tsx: lines 100%; statements 90.11%; branches 86.51%
+src/contexts/AuthContext.tsx: lines 100%; statements 89.47%; branches 100%
+src/pages/DocumentDetailPage.tsx: lines 97.14%; statements 86.52%; branches 77.08%
+src/utils/ocrDrafts.ts: lines 90%; statements 93.75%; branches 100%
+
+Important uncovered paths / regression backlog:
+- Backend: AI process/error path (outside autosave); confirm/reopen DB-failure paths; missing extraction/not-found branches; document deletion/ownership/state changing after a zero-row CAS; long/duplicate/unsupported extraction field validation. API adapter one-line statements also limit branch attribution.
+- Frontend: clipboard denial/non-Error rejection fallback; malformed/unreadable storage and removeItem denial; some table/list rendering; initial load/general extraction-review error paths. Browser/network integration is not measured by mocked jsdom tests.
+- Covered critical risks: debounce and snapshot acknowledgement, 409/500/offline draft retention, typing during flight, stale instance responses, same-revision confirmed status, sessionStorage recovery and auth-change cleanup; OCC revision/owner/status guards, commit rollback, original OCR/export/confirm/reopen, SQLite migration.
+- SQLite results do not measure PostgreSQL transaction isolation or driver behavior. No 100% target was imposed.

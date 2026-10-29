@@ -1,0 +1,20 @@
+{"timestamp": "2026-10-29T14:02:19.938340+00:00", "level": "INFO", "logger": "app.main", "message": "Application starting", "app": "Document Intelligence Vietnamese"}
+{"timestamp": "2026-10-29T14:02:46.194112+00:00", "level": "INFO", "logger": "app.main", "message": "Application stopped"}
+# VT-043: HTTP performance experiment
+
+Run (UTC): 2026-10-29T14:02:19.826490+00:00
+OS: Windows-11-10.0.26300-SP0; Python: 3.14.5; SQLite: 3.50.4 (file DB, WAL).
+Transport: loopback TCP / uvicorn; concurrency: 80 released together by asyncio.Event.
+Every client obtains a distinct real login session; CSRF, ownership and endpoint validation remain enabled.
+
+| Scenario | Requests | 200 | Expected 409 | Failures | p50 ms | p95 ms | p99 ms | Correctness | p95 <= 2500 ms |
+|---|---:|---:|---:|---:|---:|---:|---:|---|---|
+| P-01-independent | 80 | 80 | 0 | 0 | 556.57 | 1834.90 | 2296.79 | PASS | PASS |
+| P-02-contention | 80 | 1 | 79 | 0 | 540.08 | 1306.35 | 1738.55 | PASS | PASS |
+
+Latency: perf_counter immediately before PATCH until response body is received; includes client connection setup, server queueing, auth/CSRF, SQL and serialization. Setup, registration/login and seeding are excluded.
+Percentiles use nearest rank: sorted samples[ceil(p*n)-1]. All raw samples, status/error classes, throughput, min/max, elapsed time and persisted-state assertions are in performance_results.json.
+
+Limits: one local run, disposable SQLite WAL database, single local application process, default AnyIO worker limit (normally 40), SQLAlchemy pool_size=20/max_overflow=80. 80 simultaneous client operations does not imply 80 SQL writers; SQLite serializes writes. PostgreSQL, remote network, production hardware, OCR processing and sustained-load behavior are NOT VERIFIED.
+The 409 responses in P-02 are expected concurrency protection; they are excluded from failed_requests and included in latency percentiles.
+Connection policy: HTTPX max_keepalive_connections=0; every timed request establishes a new TCP connection. No retries. Per-response HTTP version is recorded in the JSON samples.

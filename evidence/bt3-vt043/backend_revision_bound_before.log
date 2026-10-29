@@ -1,0 +1,358 @@
+.....FF                                                                  [100%]
+================================== FAILURES ===================================
+___________ test_ocr_correction_requires_valid_revision[2147483648] ___________
+tests\integration\test_document_review.py:146: in test_ocr_correction_requires_valid_revision
+    assert response.status_code == 422
+E   assert 409 == 422
+E    +  where 409 = <Response [409 Conflict]>.status_code
+---------------------------- Captured stdout setup ----------------------------
+{"timestamp": "2026-10-29T13:54:53.956245+00:00", "level": "INFO", "logger": "app.main", "message": "Application starting", "app": "Document Intelligence Vietnamese"}
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:23 Application starting
+---------------------------- Captured stdout call -----------------------------
+{"timestamp": "2026-10-29T13:54:54.033610+00:00", "level": "INFO", "logger": "app.services.upload", "message": "Document uploaded", "document_id": "0b92ba85-7a0e-404b-a221-85c47713b51f"}
+------------------------------ Captured log call ------------------------------
+INFO     app.services.upload:upload.py:54 Document uploaded
+-------------------------- Captured stdout teardown ---------------------------
+{"timestamp": "2026-10-29T13:54:54.220044+00:00", "level": "INFO", "logger": "app.main", "message": "Application stopped"}
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:25 Application stopped
+_ test_ocr_correction_requires_valid_revision[10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000] _
+tests\integration\test_document_review.py:145: in test_ocr_correction_requires_valid_revision
+    response = client.patch(f"/api/v1/documents/{document_id}/ocr-correction", json=payload)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\httpx\_client.py:1218: in patch
+    return self.request(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\testclient.py:518: in request
+    return super().request(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\httpx\_client.py:825: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\httpx\_client.py:928: in send
+    raise exc
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\httpx\_client.py:922: in send
+    response.read()
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\httpx\_models.py:881: in read
+    self._content = b"".join(self.iter_bytes())
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\httpx\_models.py:897: in iter_bytes
+    for raw_bytes in self.iter_raw():
+                     ^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\httpx\_models.py:951: in iter_raw
+    for raw_stream_bytes in self.stream:
+                            ^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\httpx\_client.py:153: in __iter__
+    for chunk in self._stream:
+                 ^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\testclient.py:384: in iter_body
+    exit_stack.close()
+C:\Program Files\Python314\Lib\contextlib.py:627: in close
+    self.__exit__(None, None, None)
+C:\Program Files\Python314\Lib\contextlib.py:619: in __exit__
+    raise exc
+C:\Program Files\Python314\Lib\contextlib.py:604: in __exit__
+    if cb(*exc_details):
+       ^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\testclient.py:399: in close_app
+    raise exception
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\from_thread.py:259: in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\testclient.py:366: in run_app
+    await self.app(scope, receive, send)
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\applications.py:1194: in __call__
+    await super().__call__(scope, receive, send)
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\errors.py:186: in __call__
+    raise exc
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\telemetry\_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\base.py:203: in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend\app\main.py:51: in request_id_middleware
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\base.py:179: in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\base.py:149: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\cors.py:91: in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\cors.py:149: in simple_response
+    await self.app(scope, receive, send)
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\_exception_handler.py:53: in wrapped_app
+    raise exc
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\middleware\asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\routing.py:678: in __call__
+    await self.middleware_stack(scope, receive, send)
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py:2813: in app
+    await route.handle(scope, receive, send)
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py:1841: in handle
+    await self.original_router.handle(scope, receive, send)
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py:2896: in handle
+    await included_router._handle_selected(scope, receive, send)
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py:1867: in _handle_selected
+    await original_route.handle(scope, receive, send)
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py:1330: in handle
+    await effective_context.app(scope, receive, send)
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py:167: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\_exception_handler.py:53: in wrapped_app
+    raise exc
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py:153: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py:746: in app
+    raw_response = await run_endpoint_function(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py:375: in run_endpoint_function
+    return await run_in_threadpool(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\concurrency.py:34: in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\to_thread.py:63: in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\_backends\_asyncio.py:2518: in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\_backends\_asyncio.py:1002: in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\telemetry\_api.py:244: in _run_sync_endpoint
+    return function(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^
+backend\app\api\documents.py:70: in correct_ocr
+    try: return service.correct_ocr(document_id, update)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend\app\services\documents.py:110: in correct_ocr
+    saved = self.repository.save_ocr_correction(
+backend\app\repositories\documents.py:145: in save_ocr_correction
+    return self.db.execute(stmt).scalar_one_or_none()
+           ^^^^^^^^^^^^^^^^^^^^^
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\session.py:2473: in execute
+    return self._execute_internal(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\session.py:2363: in _execute_internal
+    compile_state_cls.orm_execute_statement(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\bulk_persistence.py:1693: in orm_execute_statement
+    return super().orm_execute_statement(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\context.py:316: in orm_execute_statement
+    result = conn.execute(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\engine\base.py:1451: in execute
+    return meth(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\sql\elements.py:533: in _execute_on_connection
+    return connection._execute_clauseelement(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\engine\base.py:1671: in _execute_clauseelement
+    ret = self._execute_context(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\engine\base.py:1825: in _execute_context
+    return self._exec_single_context(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\engine\base.py:1965: in _exec_single_context
+    self._handle_dbapi_exception(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\engine\base.py:2338: in _handle_dbapi_exception
+    raise exc_info[1].with_traceback(exc_info[2])
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\engine\base.py:1946: in _exec_single_context
+    self.dialect.do_execute(
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\engine\default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+E   OverflowError: Python int too large to convert to SQLite INTEGER
+---------------------------- Captured stdout setup ----------------------------
+{"timestamp": "2026-10-29T13:54:54.231677+00:00", "level": "INFO", "logger": "app.main", "message": "Application starting", "app": "Document Intelligence Vietnamese"}
+----------------------------- Captured log setup ------------------------------
+INFO     app.main:main.py:23 Application starting
+---------------------------- Captured stdout call -----------------------------
+{"timestamp": "2026-10-29T13:54:54.312076+00:00", "level": "INFO", "logger": "app.services.upload", "message": "Document uploaded", "document_id": "29e095f4-4f0e-444b-9387-39ee0f7b2f79"}
+{"timestamp": "2026-10-29T13:54:54.330196+00:00", "level": "ERROR", "logger": "app.main", "message": "Unhandled error", "exc_info": "Traceback (most recent call last):\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\starlette\\middleware\\errors.py\", line 164, in __call__\n    await self.app(scope, receive, _send)\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\fastapi\\telemetry\\_asgi.py\", line 151, in __call__\n    await self.app(scope, receive, send)\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\starlette\\middleware\\base.py\", line 203, in __call__\n    response = await self.dispatch_func(request, call_next)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\NAM BON\\SE\\document-inteligence\\backend\\app\\main.py\", line 51, in request_id_middleware\n    response = await call_next(request)\n               ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\starlette\\middleware\\base.py\", line 179, in call_next\n    raise app_exc from app_exc.__cause__ or app_exc.__context__\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\starlette\\middleware\\base.py\", line 149, in coro\n    await self.app(scope, receive_or_disconnect, send_no_error)\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\starlette\\middleware\\cors.py\", line 91, in __call__\n    await self.simple_response(scope, receive, send, request_headers=headers)\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\starlette\\middleware\\cors.py\", line 149, in simple_response\n    await self.app(scope, receive, send)\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\starlette\\middleware\\exceptions.py\", line 63, in __call__\n    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\starlette\\_exception_handler.py\", line 53, in wrapped_app\n    raise exc\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\starlette\\_exception_handler.py\", line 42, in wrapped_app\n    await app(scope, receive, sender)\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\fastapi\\middleware\\asyncexitstack.py\", line 18, in __call__\n    await self.app(scope, receive, send)\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\starlette\\routing.py\", line 678, in __call__\n    await self.middleware_stack(scope, receive, send)\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\fastapi\\routing.py\", line 2813, in app\n    await route.handle(scope, receive, send)\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\fastapi\\routing.py\", line 1841, in handle\n    await self.original_router.handle(scope, receive, send)\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\fastapi\\routing.py\", line 2896, in handle\n    await included_router._handle_selected(scope, receive, send)\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\fastapi\\routing.py\", line 1867, in _handle_selected\n    await original_route.handle(scope, receive, send)\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\fastapi\\routing.py\", line 1330, in handle\n    await effective_context.app(scope, receive, send)\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\fastapi\\routing.py\", line 167, in app\n    await wrap_app_handling_exceptions(app, request)(scope, receive, send)\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\starlette\\_exception_handler.py\", line 53, in wrapped_app\n    raise exc\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\starlette\\_exception_handler.py\", line 42, in wrapped_app\n    await app(scope, receive, sender)\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\fastapi\\routing.py\", line 153, in app\n    response = await f(request)\n               ^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\fastapi\\routing.py\", line 746, in app\n    raw_response = await run_endpoint_function(\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\fastapi\\routing.py\", line 375, in run_endpoint_function\n    return await run_in_threadpool(\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n        _run_sync_endpoint, function=dependant.call, arguments=values\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\starlette\\concurrency.py\", line 34, in run_in_threadpool\n    return await anyio.to_thread.run_sync(func)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\anyio\\to_thread.py\", line 63, in run_sync\n    return await get_async_backend().run_sync_in_worker_thread(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\anyio\\_backends\\_asyncio.py\", line 2518, in run_sync_in_worker_thread\n    return await future\n           ^^^^^^^^^^^^\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\anyio\\_backends\\_asyncio.py\", line 1002, in run\n    result = context.run(func, *args)\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\fastapi\\telemetry\\_api.py\", line 244, in _run_sync_endpoint\n    return function(**arguments)\n  File \"D:\\NAM BON\\SE\\document-inteligence\\backend\\app\\api\\documents.py\", line 70, in correct_ocr\n    try: return service.correct_ocr(document_id, update)\n                ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\NAM BON\\SE\\document-inteligence\\backend\\app\\services\\documents.py\", line 110, in correct_ocr\n    saved = self.repository.save_ocr_correction(\n        document_id, update.text, update.expected_revision, self.owner_id\n    )\n  File \"D:\\NAM BON\\SE\\document-inteligence\\backend\\app\\repositories\\documents.py\", line 145, in save_ocr_correction\n    return self.db.execute(stmt).scalar_one_or_none()\n           ~~~~~~~~~~~~~~~^^^^^^\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\sqlalchemy\\orm\\session.py\", line 2473, in execute\n    return self._execute_internal(\n           ~~~~~~~~~~~~~~~~~~~~~~^\n        statement,\n        ^^^^^^^^^^\n    ...<4 lines>...\n        _add_event=_add_event,\n        ^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\sqlalchemy\\orm\\session.py\", line 2363, in _execute_internal\n    compile_state_cls.orm_execute_statement(\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^\n        self,\n        ^^^^^\n    ...<4 lines>...\n        conn,\n        ^^^^^\n    )\n    ^\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\sqlalchemy\\orm\\bulk_persistence.py\", line 1693, in orm_execute_statement\n    return super().orm_execute_statement(\n           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^\n        session,\n        ^^^^^^^^\n    ...<4 lines>...\n        conn,\n        ^^^^^\n    )\n    ^\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\sqlalchemy\\orm\\context.py\", line 316, in orm_execute_statement\n    result = conn.execute(\n        statement, params or {}, execution_options=execution_options\n    )\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\sqlalchemy\\engine\\base.py\", line 1451, in execute\n    return meth(\n        self,\n        distilled_parameters,\n        execution_options or NO_OPTIONS,\n    )\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\sqlalchemy\\sql\\elements.py\", line 533, in _execute_on_connection\n    return connection._execute_clauseelement(\n           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^\n        self, distilled_params, execution_options\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\sqlalchemy\\engine\\base.py\", line 1671, in _execute_clauseelement\n    ret = self._execute_context(\n        dialect,\n    ...<9 lines>...\n        param_dict=param_dict,\n    )\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\sqlalchemy\\engine\\base.py\", line 1825, in _execute_context\n    return self._exec_single_context(\n           ~~~~~~~~~~~~~~~~~~~~~~~~~^\n        dialect, context, statement, parameters\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\sqlalchemy\\engine\\base.py\", line 1965, in _exec_single_context\n    self._handle_dbapi_exception(\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^\n        e, str_statement, effective_parameters, cursor, context\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\sqlalchemy\\engine\\base.py\", line 2338, in _handle_dbapi_exception\n    raise exc_info[1].with_traceback(exc_info[2])\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\sqlalchemy\\engine\\base.py\", line 1946, in _exec_single_context\n    self.dialect.do_execute(\n    ~~~~~~~~~~~~~~~~~~~~~~~^\n        cursor, str_statement, effective_parameters, context\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\minht\\AppData\\Roaming\\Python\\Python314\\site-packages\\sqlalchemy\\engine\\default.py\", line 1192, in do_execute\n    cursor.execute(statement, parameters)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\nOverflowError: Python int too large to convert to SQLite INTEGER", "request_id": "0aae9acadfeb44d193b7c2dafa09cf82"}
+------------------------------ Captured log call ------------------------------
+INFO     app.services.upload:upload.py:54 Document uploaded
+ERROR    app.main:main.py:75 Unhandled error
+Traceback (most recent call last):
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\telemetry\_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\base.py", line 203, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\NAM BON\SE\document-inteligence\backend\app\main.py", line 51, in request_id_middleware
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\base.py", line 179, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\cors.py", line 91, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\cors.py", line 149, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\routing.py", line 678, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py", line 2813, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py", line 1841, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py", line 2896, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py", line 1867, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py", line 1330, in handle
+    await effective_context.app(scope, receive, send)
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py", line 167, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py", line 153, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py", line 746, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py", line 375, in run_endpoint_function
+    return await run_in_threadpool(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+        _run_sync_endpoint, function=dependant.call, arguments=values
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\telemetry\_api.py", line 244, in _run_sync_endpoint
+    return function(**arguments)
+  File "D:\NAM BON\SE\document-inteligence\backend\app\api\documents.py", line 70, in correct_ocr
+    try: return service.correct_ocr(document_id, update)
+                ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "D:\NAM BON\SE\document-inteligence\backend\app\services\documents.py", line 110, in correct_ocr
+    saved = self.repository.save_ocr_correction(
+        document_id, update.text, update.expected_revision, self.owner_id
+    )
+  File "D:\NAM BON\SE\document-inteligence\backend\app\repositories\documents.py", line 145, in save_ocr_correction
+    return self.db.execute(stmt).scalar_one_or_none()
+           ~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\session.py", line 2473, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\session.py", line 2363, in _execute_internal
+    compile_state_cls.orm_execute_statement(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\bulk_persistence.py", line 1693, in orm_execute_statement
+    return super().orm_execute_statement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        session,
+        ^^^^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\context.py", line 316, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\engine\base.py", line 1451, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\sql\elements.py", line 533, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\engine\base.py", line 1671, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<9 lines>...
+        param_dict=param_dict,
+    )
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\engine\base.py", line 1825, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\engine\base.py", line 1965, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\engine\base.py", line 2338, in _handle_dbapi_exception
+    raise exc_info[1].with_traceback(exc_info[2])
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\engine\base.py", line 1946, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\engine\default.py", line 1192, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+OverflowError: Python int too large to convert to SQLite INTEGER
+-------------------------- Captured stdout teardown ---------------------------
+{"timestamp": "2026-10-29T13:54:55.460660+00:00", "level": "INFO", "logger": "app.main", "message": "Application stopped"}
+---------------------------- Captured log teardown ----------------------------
+INFO     app.main:main.py:25 Application stopped
+============================== warnings summary ===============================
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\testclient.py:1
+  C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/integration/test_document_review.py::test_ocr_correction_requires_valid_revision[2147483648]
+FAILED tests/integration/test_document_review.py::test_ocr_correction_requires_valid_revision[10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000]
+2 failed, 5 passed, 1 warning in 2.38s

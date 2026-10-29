@@ -1,0 +1,105 @@
+Concurrency repeat 1 of 5
+============================= test session starts =============================
+platform win32 -- Python 3.14.5, pytest-9.2.0, pluggy-1.7.0 -- C:\Program Files\Python314\python.exe
+rootdir: D:\NAM BON\SE\document-inteligence
+plugins: cov-7.1.0, anyio-4.13.0
+collecting ... collected 3 items
+
+tests/integration/test_ocr_autosave.py::test_same_revision_has_exactly_one_persisted_http_winner[CT-01-two-requests] PASSED [ 33%]
+tests/integration/test_ocr_autosave.py::test_same_revision_has_exactly_one_persisted_http_winner[CT-03-independent-sessions] PASSED [ 66%]
+tests/integration/test_ocr_autosave.py::test_CT_02_stale_request_arriving_later_cannot_overwrite PASSED [100%]
+
+============================== warnings summary ===============================
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\pytest_plugin.py:14
+  C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\pytest_plugin.py:14: PytestRemovedIn10Warning: _pytest.python.CallSpec2 has been renamed to CallSpec.
+  The CallSpec2 alias will be removed in pytest 10.
+  Update imports to use CallSpec instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#callspec2-renamed
+    from _pytest.python import CallSpec2
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 3 passed, 1 warning in 1.65s =========================
+Concurrency repeat 2 of 5
+============================= test session starts =============================
+platform win32 -- Python 3.14.5, pytest-9.2.0, pluggy-1.7.0 -- C:\Program Files\Python314\python.exe
+rootdir: D:\NAM BON\SE\document-inteligence
+plugins: cov-7.1.0, anyio-4.13.0
+collecting ... collected 3 items
+
+tests/integration/test_ocr_autosave.py::test_same_revision_has_exactly_one_persisted_http_winner[CT-01-two-requests] PASSED [ 33%]
+tests/integration/test_ocr_autosave.py::test_same_revision_has_exactly_one_persisted_http_winner[CT-03-independent-sessions] PASSED [ 66%]
+tests/integration/test_ocr_autosave.py::test_CT_02_stale_request_arriving_later_cannot_overwrite PASSED [100%]
+
+============================== warnings summary ===============================
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\pytest_plugin.py:14
+  C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\pytest_plugin.py:14: PytestRemovedIn10Warning: _pytest.python.CallSpec2 has been renamed to CallSpec.
+  The CallSpec2 alias will be removed in pytest 10.
+  Update imports to use CallSpec instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#callspec2-renamed
+    from _pytest.python import CallSpec2
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 3 passed, 1 warning in 1.46s =========================
+Concurrency repeat 3 of 5
+============================= test session starts =============================
+platform win32 -- Python 3.14.5, pytest-9.2.0, pluggy-1.7.0 -- C:\Program Files\Python314\python.exe
+rootdir: D:\NAM BON\SE\document-inteligence
+plugins: cov-7.1.0, anyio-4.13.0
+collecting ... collected 3 items
+
+tests/integration/test_ocr_autosave.py::test_same_revision_has_exactly_one_persisted_http_winner[CT-01-two-requests] PASSED [ 33%]
+tests/integration/test_ocr_autosave.py::test_same_revision_has_exactly_one_persisted_http_winner[CT-03-independent-sessions] PASSED [ 66%]
+tests/integration/test_ocr_autosave.py::test_CT_02_stale_request_arriving_later_cannot_overwrite PASSED [100%]
+
+============================== warnings summary ===============================
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\pytest_plugin.py:14
+  C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\pytest_plugin.py:14: PytestRemovedIn10Warning: _pytest.python.CallSpec2 has been renamed to CallSpec.
+  The CallSpec2 alias will be removed in pytest 10.
+  Update imports to use CallSpec instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#callspec2-renamed
+    from _pytest.python import CallSpec2
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 3 passed, 1 warning in 1.35s =========================
+Concurrency repeat 4 of 5
+============================= test session starts =============================
+platform win32 -- Python 3.14.5, pytest-9.2.0, pluggy-1.7.0 -- C:\Program Files\Python314\python.exe
+rootdir: D:\NAM BON\SE\document-inteligence
+plugins: cov-7.1.0, anyio-4.13.0
+collecting ... collected 3 items
+
+tests/integration/test_ocr_autosave.py::test_same_revision_has_exactly_one_persisted_http_winner[CT-01-two-requests] PASSED [ 33%]
+tests/integration/test_ocr_autosave.py::test_same_revision_has_exactly_one_persisted_http_winner[CT-03-independent-sessions] PASSED [ 66%]
+tests/integration/test_ocr_autosave.py::test_CT_02_stale_request_arriving_later_cannot_overwrite PASSED [100%]
+
+============================== warnings summary ===============================
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\pytest_plugin.py:14
+  C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\pytest_plugin.py:14: PytestRemovedIn10Warning: _pytest.python.CallSpec2 has been renamed to CallSpec.
+  The CallSpec2 alias will be removed in pytest 10.
+  Update imports to use CallSpec instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#callspec2-renamed
+    from _pytest.python import CallSpec2
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 3 passed, 1 warning in 1.43s =========================
+Concurrency repeat 5 of 5
+============================= test session starts =============================
+platform win32 -- Python 3.14.5, pytest-9.2.0, pluggy-1.7.0 -- C:\Program Files\Python314\python.exe
+rootdir: D:\NAM BON\SE\document-inteligence
+plugins: cov-7.1.0, anyio-4.13.0
+collecting ... collected 3 items
+
+tests/integration/test_ocr_autosave.py::test_same_revision_has_exactly_one_persisted_http_winner[CT-01-two-requests] PASSED [ 33%]
+tests/integration/test_ocr_autosave.py::test_same_revision_has_exactly_one_persisted_http_winner[CT-03-independent-sessions] PASSED [ 66%]
+tests/integration/test_ocr_autosave.py::test_CT_02_stale_request_arriving_later_cannot_overwrite PASSED [100%]
+
+============================== warnings summary ===============================
+C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\pytest_plugin.py:14
+  C:\Users\minht\AppData\Roaming\Python\Python314\site-packages\anyio\pytest_plugin.py:14: PytestRemovedIn10Warning: _pytest.python.CallSpec2 has been renamed to CallSpec.
+  The CallSpec2 alias will be removed in pytest 10.
+  Update imports to use CallSpec instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#callspec2-renamed
+    from _pytest.python import CallSpec2
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 3 passed, 1 warning in 1.65s =========================
