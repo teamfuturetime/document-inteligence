@@ -56,14 +56,14 @@ describe('OCRTextCard',()=>{
   })
 
   it('chỉnh sửa, lưu và hiển thị lỗi backend',async()=>{
-    const onSave=vi.fn().mockRejectedValueOnce(new Error('Máy chủ từ chối')).mockResolvedValue(undefined)
+    const onSave=vi.fn().mockRejectedValueOnce(new Error('Máy chủ từ chối')).mockResolvedValue({ocr_revision:1,ocr_text_cleaned:'Nội dung tiếng Việt\nđã sửa'})
     render(<OCRTextCard cleanedText="Nội dung cũ" rawText="OCR GỐC" onSave={onSave}/>)
     fireEvent.click(screen.getByRole('button',{name:/Chỉnh sửa văn bản OCR/}))
     fireEvent.change(screen.getByRole('textbox',{name:'Nội dung OCR đã hiệu chỉnh'}),{target:{value:'Nội dung tiếng Việt\nđã sửa'}})
     fireEvent.click(screen.getByRole('button',{name:/Lưu OCR/}))
     expect(await screen.findByRole('alert')).toHaveTextContent('Máy chủ từ chối')
     fireEvent.click(screen.getByRole('button',{name:/Lưu OCR/}))
-    await waitFor(()=>expect(onSave).toHaveBeenLastCalledWith('Nội dung tiếng Việt\nđã sửa'))
+    await waitFor(()=>expect(onSave).toHaveBeenLastCalledWith('Nội dung tiếng Việt\nđã sửa',0))
     expect(await screen.findByRole('status')).toHaveTextContent('Đã lưu văn bản OCR chỉnh sửa')
   })
 
