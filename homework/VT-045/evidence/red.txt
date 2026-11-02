@@ -1,0 +1,27 @@
+COMMAND: E:\HUS\subject\Code\SE\PROJECT\document-inteligence\.venv\Scripts\python.exe -m pytest -c backend/pytest.ini backend/tests/test_invoice_policy.py::test_tc02_json_only_reload_changes_business_outcome -q
+EXIT: 1
+F                                                                        [100%]
+================================== FAILURES ===================================
+_____________ test_tc02_json_only_reload_changes_business_outcome _____________
+
+tmp_path = WindowsPath('C:/Users/TUAN/AppData/Local/Temp/pytest-of-TUAN/pytest-16/test_tc02_json_only_reload_cha0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000027DD05F48A0>
+
+    def test_tc02_json_only_reload_changes_business_outcome(tmp_path, monkeypatch):
+        # This also executes on the unmodified baseline: it MUST fail on business
+        # outcome, not collection/import failure or an unknown keyword argument.
+        path = write_policy(tmp_path / "policy.json", 200000)
+        monkeypatch.setattr(validation, "DEFAULT_POLICY_PATH", path, raising=False)
+        normalized = normalize_invoice(RAW, source_locale="vi-VN")
+        assert validation.validate_invoice(normalized).normalized_values.model_dump() == EXPECTED
+        write_policy(path, 100000)
+        result = validation.validate_invoice(normalized)
+>       assert result.valid is False, "JSON-only policy change must reject 125000 above 100000"
+E       AssertionError: JSON-only policy change must reject 125000 above 100000
+E       assert True is False
+E        +  where True = ValidationResult(valid=True, normalized_values=InvoiceValues(invoice_number='0000123', invoice_date='2026-04-03', seller_name='Cửa hàng Mây Việt', total_amount=125000, currency='VND'), errors=[], warnings=[]).valid
+
+backend\tests\test_invoice_policy.py:44: AssertionError
+=========================== short test summary info ===========================
+FAILED backend\tests\test_invoice_policy.py::test_tc02_json_only_reload_changes_business_outcome
+1 failed in 0.21s
