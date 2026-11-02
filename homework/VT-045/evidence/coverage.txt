@@ -1,0 +1,32 @@
+UTC: 2026-11-02T03:49:10.635904+00:00
+COMMAND: E:\HUS\subject\Code\SE\PROJECT\document-inteligence\.venv\Scripts\python.exe -m coverage report -m --data-file=E:\HUS\subject\Code\SE\PROJECT\document-inteligence\homework\VT-045\evidence\.coverage
+EXIT: 0
+Name                                     Stmts   Miss Branch BrPart  Cover   Missing
+------------------------------------------------------------------------------------
+backend\app\__init__.py                      0      0      0      0   100%
+backend\app\benchmark\__init__.py            0      0      0      0   100%
+backend\app\benchmark\__main__.py           28     28      2      0     0%   3-36
+backend\app\benchmark\contracts.py          87      3     20      3    94%   59, 80, 82
+backend\app\benchmark\fixtures.py           55      8     16      6    80%   24, 26, 30, 39, 41, 69, 71-72
+backend\app\benchmark\metrics.py            44      0     12      0   100%
+backend\app\benchmark\parser.py            119      2     38      2    97%   60, 113
+backend\app\benchmark\runner.py             56      3     16      1    94%   24, 77-78
+backend\app\main.py                          5      0      0      0   100%
+backend\app\ocr_cli.py                      29     29      4      0     0%   3-38
+backend\app\providers\__init__.py            0      0      0      0   100%
+backend\app\providers\contracts.py           9      0      0      0   100%
+backend\app\providers\fake.py               25      1      8      1    94%   14
+backend\app\providers\ocr.py                 6      0      0      0   100%
+backend\app\providers\tesseract.py         114      2     32      2    97%   61, 134
+backend\app\schemas\__init__.py              2      0      0      0   100%
+backend\app\schemas\extraction.py          105      1     20      1    98%   98
+backend\app\schemas\invoice.py              37      0      8      0   100%
+backend\app\schemas\ocr.py                  36      1      2      1    95%   49
+backend\app\schemas\validation.py           23      0      4      0   100%
+backend\app\services\__init__.py             0      0      0      0   100%
+backend\app\services\invoice_policy.py      24      0      4      0   100%
+backend\app\services\normalization.py       90      0     52      0   100%
+backend\app\services\pipeline.py            61      3     12      2    93%   41, 49, 71
+backend\app\services\validation.py          48      1     24      1    97%   30
+------------------------------------------------------------------------------------
+TOTAL                                     1003     82    274     20    92%

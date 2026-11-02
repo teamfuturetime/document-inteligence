@@ -1,12 +1,14 @@
 """Validate normalized candidates using existing canonical models and rules."""
 
 from copy import deepcopy
+from pathlib import Path
 
 from pydantic import ValidationError
 
 from app.schemas.invoice import FinalInvoiceValues, InvoiceValues
 from app.schemas.validation import FieldIssue, ValidationResult
 from app.services.normalization import FIELD_NAMES, NormalizationResult
+from app.services.invoice_policy import DEFAULT_POLICY_PATH, load_invoice_policy
 
 
 def _canonical_issue(field: str, error_type: str, value: object) -> FieldIssue:
@@ -29,12 +31,17 @@ def _canonical_issue(field: str, error_type: str, value: object) -> FieldIssue:
     return FieldIssue(field=field, code=code, message=message)
 
 
-def validate_invoice(normalized: NormalizationResult) -> ValidationResult:
+def validate_invoice(
+    normalized: NormalizationResult, *, policy_path: Path | None = None
+) -> ValidationResult:
     """Return all field errors without changing source or normalized candidates.
 
     Normalization failures remain errors, never silently become successful nulls.
-    No additional tax, total reconciliation or date-range rules are assumed.
+    A JSON policy may narrow the accepted total, never widen canonical bounds.
+    Configuration failures propagate; they must not create default invoice data.
+    No tax, total reconciliation or date-range rules are assumed.
     """
+    policy = load_invoice_policy(DEFAULT_POLICY_PATH if policy_path is None else policy_path)
     errors = deepcopy(normalized.errors)
     values = deepcopy(normalized.candidates)
     failed = {error.field for error in errors if error.field is not None}
@@ -47,6 +54,13 @@ def validate_invoice(normalized: NormalizationResult) -> ValidationResult:
             if field not in failed and not invalid_input:
                 errors.append(_canonical_issue(field, error["type"], values.get(field)))
                 failed.add(field)
+    amount = values.get("total_amount")
+    if not invalid_input and "total_amount" not in failed and amount is not None and amount > policy.max_total_amount:
+        errors.append(FieldIssue(
+            field="total_amount", code="business.amount_exceeds_policy",
+            message="Amount exceeds the configured acceptance ceiling",
+        ))
+        failed.add("total_amount")
     for field in FIELD_NAMES:
         if field in failed or invalid_input:
             values[field] = None

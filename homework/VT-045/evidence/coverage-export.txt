@@ -1,0 +1,4 @@
+UTC: 2026-11-02T03:49:10.345289+00:00
+COMMAND: E:\HUS\subject\Code\SE\PROJECT\document-inteligence\.venv\Scripts\python.exe -m coverage json -o E:\HUS\subject\Code\SE\PROJECT\document-inteligence\homework\VT-045\evidence\coverage.json --data-file=E:\HUS\subject\Code\SE\PROJECT\document-inteligence\homework\VT-045\evidence\.coverage
+EXIT: 0
+Wrote JSON report to E:\HUS\subject\Code\SE\PROJECT\document-inteligence\homework\VT-045\evidence\coverage.json

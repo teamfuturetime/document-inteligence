@@ -49,7 +49,8 @@ def test_tc02_json_only_reload_changes_business_outcome(tmp_path, monkeypatch):
 @pytest.mark.parametrize("amount,valid", [(0, True), (99999, True), (100000, True), (100001, False)])
 def test_tc03_boundary_contract(tmp_path, amount, valid):
     path = write_policy(tmp_path / "policy.json", 100000)
-    raw = {**RAW, "total_amount": amount}
+    # Integer amounts carry no VND suffix: currency must be explicit evidence.
+    raw = {**RAW, "total_amount": amount, "currency": "VND"}
     snapshot = deepcopy(raw)
     result = validate(path, raw)
     assert result.valid is valid
@@ -203,3 +204,17 @@ def test_tc12_zero_ceiling_and_multiple_field_errors(tmp_path):
     result = validate(path, {**EXPECTED, "total_amount": 1, "currency": "USD"})
     assert result.valid is False
     assert {(e.field, e.code) for e in result.errors} == {("currency", "business.unsupported_currency"), ("total_amount", "business.amount_exceeds_policy")}
+
+
+def test_tc13_existing_pipeline_consumer_honors_policy(tmp_path, monkeypatch):
+    from app.providers.fake import FakeExtractionProvider
+    from app.schemas.extraction import DocumentInput, PipelineSuccess
+    from app.services.pipeline import run_pipeline
+    path = write_policy(tmp_path / "policy.json", 100000)
+    monkeypatch.setattr(validation, "DEFAULT_POLICY_PATH", path)
+    result = run_pipeline(DocumentInput(document_id="vt045", media_type="image/png", content=b"synthetic-not-real-image"), FakeExtractionProvider())
+    assert isinstance(result, PipelineSuccess)
+    assert result.status == "succeeded"  # Extraction success is NOT business validity.
+    assert result.validation.valid is False
+    assert result.validation.normalized_values.total_amount is None
+    assert [(e.field, e.code) for e in result.validation.errors] == [("total_amount", "business.amount_exceeds_policy")]

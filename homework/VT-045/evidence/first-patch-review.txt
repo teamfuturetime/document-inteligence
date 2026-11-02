@@ -1,0 +1,86 @@
+COMMAND: E:\HUS\subject\Code\SE\PROJECT\document-inteligence\.venv\Scripts\python.exe -m coverage run --branch --source=backend/app --data-file=homework/VT-045/evidence/.coverage -m pytest -c backend/pytest.ini backend/tests -q
+EXIT: 1
+.......................................................................F [ 12%]
+FFF..................................................................... [ 25%]
+........................................................................ [ 38%]
+........................................................................ [ 51%]
+........................................................................ [ 64%]
+........................................................................ [ 77%]
+........................................................................ [ 90%]
+........................................................                 [100%]
+================================== FAILURES ===================================
+_____________________ test_tc03_boundary_contract[0-True] _____________________
+
+tmp_path = WindowsPath('C:/Users/TUAN/AppData/Local/Temp/pytest-of-TUAN/pytest-17/test_tc03_boundary_contract_0_0')
+amount = 0, valid = True
+
+    @pytest.mark.parametrize("amount,valid", [(0, True), (99999, True), (100000, True), (100001, False)])
+    def test_tc03_boundary_contract(tmp_path, amount, valid):
+        path = write_policy(tmp_path / "policy.json", 100000)
+        raw = {**RAW, "total_amount": amount}
+        snapshot = deepcopy(raw)
+        result = validate(path, raw)
+>       assert result.valid is valid
+E       AssertionError: assert False is True
+E        +  where False = ValidationResult(valid=False, normalized_values=InvoiceValues(invoice_number='0000123', invoice_date='2026-04-03', sel...ncy=None), errors=[FieldIssue(field='currency', code='business.required', message='A value is required')], warnings=[]).valid
+
+backend\tests\test_invoice_policy.py:55: AssertionError
+___________________ test_tc03_boundary_contract[99999-True] ___________________
+
+tmp_path = WindowsPath('C:/Users/TUAN/AppData/Local/Temp/pytest-of-TUAN/pytest-17/test_tc03_boundary_contract_990')
+amount = 99999, valid = True
+
+    @pytest.mark.parametrize("amount,valid", [(0, True), (99999, True), (100000, True), (100001, False)])
+    def test_tc03_boundary_contract(tmp_path, amount, valid):
+        path = write_policy(tmp_path / "policy.json", 100000)
+        raw = {**RAW, "total_amount": amount}
+        snapshot = deepcopy(raw)
+        result = validate(path, raw)
+>       assert result.valid is valid
+E       AssertionError: assert False is True
+E        +  where False = ValidationResult(valid=False, normalized_values=InvoiceValues(invoice_number='0000123', invoice_date='2026-04-03', sel...ncy=None), errors=[FieldIssue(field='currency', code='business.required', message='A value is required')], warnings=[]).valid
+
+backend\tests\test_invoice_policy.py:55: AssertionError
+__________________ test_tc03_boundary_contract[100000-True] ___________________
+
+tmp_path = WindowsPath('C:/Users/TUAN/AppData/Local/Temp/pytest-of-TUAN/pytest-17/test_tc03_boundary_contract_100')
+amount = 100000, valid = True
+
+    @pytest.mark.parametrize("amount,valid", [(0, True), (99999, True), (100000, True), (100001, False)])
+    def test_tc03_boundary_contract(tmp_path, amount, valid):
+        path = write_policy(tmp_path / "policy.json", 100000)
+        raw = {**RAW, "total_amount": amount}
+        snapshot = deepcopy(raw)
+        result = validate(path, raw)
+>       assert result.valid is valid
+E       AssertionError: assert False is True
+E        +  where False = ValidationResult(valid=False, normalized_values=InvoiceValues(invoice_number='0000123', invoice_date='2026-04-03', sel...ncy=None), errors=[FieldIssue(field='currency', code='business.required', message='A value is required')], warnings=[]).valid
+
+backend\tests\test_invoice_policy.py:55: AssertionError
+__________________ test_tc03_boundary_contract[100001-False] __________________
+
+tmp_path = WindowsPath('C:/Users/TUAN/AppData/Local/Temp/pytest-of-TUAN/pytest-17/test_tc03_boundary_contract_101')
+amount = 100001, valid = False
+
+    @pytest.mark.parametrize("amount,valid", [(0, True), (99999, True), (100000, True), (100001, False)])
+    def test_tc03_boundary_contract(tmp_path, amount, valid):
+        path = write_policy(tmp_path / "policy.json", 100000)
+        raw = {**RAW, "total_amount": amount}
+        snapshot = deepcopy(raw)
+        result = validate(path, raw)
+        assert result.valid is valid
+        assert result.normalized_values.total_amount == (amount if valid else None)
+>       assert [(e.field, e.code) for e in result.errors] == ([] if valid else [("total_amount", "business.amount_exceeds_policy")])
+E       AssertionError: assert [('currency',...eeds_policy')] == [('total_amou...eeds_policy')]
+E         
+E         At index 0 diff: ('currency', 'business.required') != ('total_amount', 'business.amount_exceeds_policy')
+E         Left contains one more item: ('total_amount', 'business.amount_exceeds_policy')
+E         Use -v to get more diff
+
+backend\tests\test_invoice_policy.py:57: AssertionError
+=========================== short test summary info ===========================
+FAILED backend\tests\test_invoice_policy.py::test_tc03_boundary_contract[0-True]
+FAILED backend\tests\test_invoice_policy.py::test_tc03_boundary_contract[99999-True]
+FAILED backend\tests\test_invoice_policy.py::test_tc03_boundary_contract[100000-True]
+FAILED backend\tests\test_invoice_policy.py::test_tc03_boundary_contract[100001-False]
+4 failed, 556 passed in 5.27s
