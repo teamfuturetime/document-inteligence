@@ -85,7 +85,8 @@ def mutate():
             mutation_hash = execute(["git", "rev-parse", "HEAD"], cwd=target).stdout.strip()
             (EVIDENCE / "mutation.patch").write_text(execute(["git", "show", "--format=fuller", "HEAD"], cwd=target).stdout, encoding="utf-8")
             nodes = [TEST + "::test_tc05_read_failure_is_not_swallowed", TEST + "::test_tc09_http_contract_business_rejection_and_failure"]
-            p = save_run("mutation", [PYTHON, "-m", "pytest", "-c", "backend/pytest.ini", *nodes, "-q"], cwd=target)
+            p = save_run("mutation", [PYTHON, "-m", "pytest", "-c", "backend/pytest.ini",
+                                      "--basetemp=" + str(target / "pytest-temp"), *nodes, "-q"], cwd=target)
             killed = p.returncode == 1 and "2 failed" in p.stdout and "ERROR collecting" not in p.stdout
             (EVIDENCE / "mutation.json").write_text(json.dumps({
                 "base_commit": execute(["git", "rev-parse", "HEAD"]).stdout.strip(),

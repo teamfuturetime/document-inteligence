@@ -1,0 +1,5 @@
+# Optional evidence/PDF tools only; not production dependencies.
+coverage==7.17.0
+reportlab==5.1.0
+pypdf==6.21.4
+charset-normalizer==3.5.2

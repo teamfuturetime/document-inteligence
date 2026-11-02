@@ -1,0 +1,9 @@
+Confidence tăng khi bằng chứng gắn với hành vi nghiệp vụ cụ thể. Baseline có 531 test pass, nhưng chưa bảo vệ cấu hình mới. Test red chỉ ra hóa đơn 125000 vẫn được chấp nhận sau khi ngưỡng giảm xuống 100000. Sau patch, kết quả đổi đúng, có lỗi theo field và giữ nguyên các trường khác. Đây là bằng chứng trực tiếp hơn số lượng test.
+
+Mutation giúp kiểm tra oracle. Khi exception bị nuốt và policy mặc định được trả về, hai test thất bại: thiếu exception và HTTP trả 200 thay vì 503. Vì vậy, suite phát hiện được lỗi bắt buộc của biến thể. Một mutation bị bắt chưa chứng minh mọi cách trả dữ liệu mặc định đều được phát hiện.
+
+Fixture sai cũng cho thấy giới hạn của AI. Khi thay chuỗi tiền có hậu tố bằng số nguyên, currency trống không còn chứng cứ để thành VND. Bốn test thất bại vì dữ liệu kỳ vọng sai. Cần đối chiếu requirements, sửa fixture và giữ assertion mạnh thay vì sửa implementation để chiều test.
+
+Ba lượt tải đạt mục tiêu p95 với mọi outcome đúng, nhưng chỉ đo validation qua HTTP loopback. Kết quả chưa chứng minh khả năng chịu tải của OCR, VLM, trình duyệt hoặc môi trường triển khai. Coverage cao và năm lần lặp ổn định cũng chưa loại hết race condition hay lỗi vận hành.
+
+Test tiếp theo có giá trị cao là thay policy bằng atomic replacement trong lúc nhiều request chạy, xác minh mỗi request dùng một snapshot hoàn chỉnh hoặc thất bại rõ ràng. Cần bổ sung policy hash vào metadata để truy vết kết quả sau đổi cấu hình. Sinh viên vẫn cần rà soát diff, xác nhận ý nghĩa ngưỡng và chịu trách nhiệm về nội dung do AI hỗ trợ.

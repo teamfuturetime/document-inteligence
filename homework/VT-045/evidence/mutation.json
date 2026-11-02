@@ -1,0 +1,12 @@
+{
+  "base_commit": "178cd3abac8af94be089ae45ca15a911d782a5f0",
+  "temporary_commit": "dd9f082a4616c3c56ca3080c3c03281652f03ec0",
+  "mutation": "swallow exception and return default policy",
+  "test_exit": 1,
+  "killed": true,
+  "tests": [
+    "backend/tests/test_invoice_policy.py::test_tc05_read_failure_is_not_swallowed",
+    "backend/tests/test_invoice_policy.py::test_tc09_http_contract_business_rejection_and_failure"
+  ],
+  "scope": "One prescribed non-equivalent manual mutation, not an exhaustive mutation score"
+}

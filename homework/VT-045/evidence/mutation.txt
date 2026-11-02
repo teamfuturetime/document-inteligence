@@ -1,0 +1,50 @@
+UTC: 2026-11-02T03:53:30.586875+00:00
+COMMAND: E:\HUS\subject\Code\SE\PROJECT\document-inteligence\.venv\Scripts\python.exe -m pytest -c backend/pytest.ini --basetemp=C:\Users\TUAN\AppData\Local\Temp\vt045-mutation-4d6rjvg5\worktree\pytest-temp backend/tests/test_invoice_policy.py::test_tc05_read_failure_is_not_swallowed backend/tests/test_invoice_policy.py::test_tc09_http_contract_business_rejection_and_failure -q
+EXIT: 1
+FF                                                                       [100%]
+================================== FAILURES ===================================
+___________________ test_tc05_read_failure_is_not_swallowed ___________________
+
+tmp_path = WindowsPath('C:/Users/TUAN/AppData/Local/Temp/vt045-mutation-4d6rjvg5/worktree/pytest-temp/test_tc05_read_failure_is_not_0')
+
+    def test_tc05_read_failure_is_not_swallowed(tmp_path):
+        from app.services.invoice_policy import InvoicePolicyError
+>       with pytest.raises(InvoicePolicyError, match="Invoice policy is unavailable or invalid"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE InvoicePolicyError
+
+backend\tests\test_invoice_policy.py:91: Failed
+___________ test_tc09_http_contract_business_rejection_and_failure ____________
+
+tmp_path = WindowsPath('C:/Users/TUAN/AppData/Local/Temp/vt045-mutation-4d6rjvg5/worktree/pytest-temp/test_tc09_http_contract_busine0')
+
+    def test_tc09_http_contract_business_rejection_and_failure(tmp_path):
+        import importlib.util
+        from starlette.testclient import TestClient
+        harness_path = Path(__file__).resolve().parents[2] / "homework/VT-045/harness.py"
+        spec = importlib.util.spec_from_file_location("vt045_harness", harness_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        path = write_policy(tmp_path / "policy.json", 100000)
+        with TestClient(module.create_app(path)) as client:
+            response = client.post("/validate", json=RAW)
+            assert response.status_code == 200
+            result = ValidationResult.model_validate(response.json())
+            assert result.valid is False
+            assert result.normalized_values.total_amount is None
+            assert [(e.field, e.code) for e in result.errors] == [("total_amount", "business.amount_exceeds_policy")]
+            write_policy(path, 200000)
+            accepted = ValidationResult.model_validate(client.post("/validate", json=RAW).json())
+            assert accepted.valid is True
+            assert accepted.normalized_values.model_dump() == EXPECTED
+            path.write_text("{", encoding="utf-8")
+            failure = client.post("/validate", json=RAW)
+>           assert failure.status_code == 503
+E           assert 200 == 503
+E            +  where 200 = <Response [200 OK]>.status_code
+
+backend\tests\test_invoice_policy.py:169: AssertionError
+=========================== short test summary info ===========================
+FAILED backend\tests\test_invoice_policy.py::test_tc05_read_failure_is_not_swallowed
+FAILED backend\tests\test_invoice_policy.py::test_tc09_http_contract_business_rejection_and_failure
+2 failed in 0.51s

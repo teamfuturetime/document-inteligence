@@ -1,0 +1,13 @@
+{
+  "main_pages": 8,
+  "appendix_pages": 3,
+  "reflection_words": 308,
+  "full_regression": "561 passed",
+  "mutation_killed": true,
+  "load_rounds": 3,
+  "load_tasks_per_round": 100,
+  "all_load_outcomes_correct": true,
+  "render_review": "Every page visually inspected; no clipped text or overflow observed.",
+  "user_docs_testing_edit": "Preserved; not part of homework commits",
+  "pdf_sha256": "7f230341cee9b4879a4b5562c3aebf24e26ab47126b436571b1ce410616e565a"
+}

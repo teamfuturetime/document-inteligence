@@ -1,0 +1,18 @@
+commit dd9f082a4616c3c56ca3080c3c03281652f03ec0
+Author:     tuanqtb123 <tuanqtb123@gmail.com>
+AuthorDate: Mon Nov 2 10:53:29 2026 +0700
+Commit:     tuanqtb123 <tuanqtb123@gmail.com>
+CommitDate: Mon Nov 2 10:53:29 2026 +0700
+
+    experiment(vt045): swallow policy exception and return defaults
+
+diff --git a/backend/app/services/invoice_policy.py b/backend/app/services/invoice_policy.py
+index ecaa6d9..b48fa32 100644
+--- a/backend/app/services/invoice_policy.py
++++ b/backend/app/services/invoice_policy.py
+@@ -37,4 +37,4 @@ def load_invoice_policy(path: Path = DEFAULT_POLICY_PATH) -> InvoicePolicy:
+         data = json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=_unique_keys)
+         return InvoicePolicy.model_validate(data)
+     except (OSError, ValueError, ValidationError) as exc:
+-        raise InvoicePolicyError("Invoice policy is unavailable or invalid") from exc
++        return InvoicePolicy(policy_version="invoice-policy-1", max_total_amount=MAX_SAFE_INTEGER)

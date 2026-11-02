@@ -1,0 +1,35 @@
+{
+  "runs": [
+    {
+      "iteration": 1,
+      "hash_seed": "1",
+      "TZ": "UTC",
+      "exit": 0
+    },
+    {
+      "iteration": 2,
+      "hash_seed": "17",
+      "TZ": "Asia/Ho_Chi_Minh",
+      "exit": 0
+    },
+    {
+      "iteration": 3,
+      "hash_seed": "2026",
+      "TZ": "UTC",
+      "exit": 0
+    },
+    {
+      "iteration": 4,
+      "hash_seed": "1",
+      "TZ": "Asia/Ho_Chi_Minh",
+      "exit": 0
+    },
+    {
+      "iteration": 5,
+      "hash_seed": "17",
+      "TZ": "UTC",
+      "exit": 0
+    }
+  ],
+  "note": "Windows TZ env alone does not prove timezone conversion. Service has no clock calls; tc11 forbids clock/sleep/random/network, tc10 checks reversed order and concurrent independent policies."
+}
