@@ -1,0 +1,74 @@
+{
+  "factors": [
+    [
+      "kind",
+      [
+        "hoa_don",
+        "don_de_nghi"
+      ]
+    ],
+    [
+      "key",
+      [
+        "same",
+        "new"
+      ]
+    ],
+    [
+      "payload",
+      [
+        "same",
+        "different"
+      ]
+    ],
+    [
+      "queue",
+      [
+        "free",
+        "full"
+      ]
+    ]
+  ],
+  "full_combinations": 16,
+  "selected_rows": [
+    [
+      "hoa_don",
+      "same",
+      "same",
+      "free"
+    ],
+    [
+      "hoa_don",
+      "new",
+      "different",
+      "full"
+    ],
+    [
+      "don_de_nghi",
+      "same",
+      "same",
+      "full"
+    ],
+    [
+      "don_de_nghi",
+      "new",
+      "different",
+      "free"
+    ],
+    [
+      "hoa_don",
+      "same",
+      "different",
+      "free"
+    ],
+    [
+      "hoa_don",
+      "new",
+      "same",
+      "free"
+    ]
+  ],
+  "required_pairs": 24,
+  "covered_pairs": 24,
+  "method": "deterministic greedy; ties follow predefined product order"
+}

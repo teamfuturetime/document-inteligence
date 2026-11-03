@@ -1,0 +1,3071 @@
+{
+  "fetched_command": "git fetch origin --prune",
+  "checked_at_utc": "2026-11-03T15:34:45.659843+00:00",
+  "branches": [
+    {
+      "ref": "origin/bt3-vt043-autosave",
+      "sha": "55e9c74daed487af675a15c276bf6830448e6cea",
+      "files": 234,
+      "implementation_files": 79,
+      "test_paths_only": [
+        "frontend/src/api/client.test.ts",
+        "frontend/src/components/OCRTextCard.autosave.test.tsx",
+        "frontend/src/components/OCRTextCard.test.tsx",
+        "frontend/src/components/StatusBadge.test.tsx",
+        "frontend/src/contexts/AuthContext.test.tsx",
+        "frontend/src/pages/DocumentDetailPage.test.tsx",
+        "frontend/src/utils/files.test.ts",
+        "tests/conftest.py",
+        "tests/e2e/__init__.py",
+        "tests/integration/__init__.py",
+        "tests/integration/test_auth_ownership.py",
+        "tests/integration/test_document_review.py",
+        "tests/integration/test_ocr_autosave.py",
+        "tests/integration/test_ocr_revision_migration.py",
+        "tests/unit/__init__.py",
+        "tests/unit/test_ai_api.py",
+        "tests/unit/test_backend_api.py",
+        "tests/unit/test_classification.py",
+        "tests/unit/test_classification_contract.py",
+        "tests/unit/test_database_models.py",
+        "tests/unit/test_document_repository.py",
+        "tests/unit/test_evaluation_metrics.py",
+        "tests/unit/test_extraction.py",
+        "tests/unit/test_file_validation.py",
+        "tests/unit/test_ocr.py",
+        "tests/unit/test_ocr_layout.py",
+        "tests/unit/test_ocr_text.py",
+        "tests/unit/test_preprocessing.py",
+        "tests/unit/test_retention.py",
+        "tests/unit/test_storage.py",
+        "tests/unit/test_upload_service.py"
+      ],
+      "sources": [
+        {
+          "path": "ai_service/__init__.py",
+          "sha256": "eeabc856f32fe8c6a1abc86f88169ff1569a632e1b0436e5e7f24d179bf220a1",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "ai_service/classification/__init__.py",
+          "sha256": "b2707af0a025efe3a748589a24992fbc62014828958546e9d66506510836244f",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "ai_service/classification/confidence.py",
+          "sha256": "ac807f96d1979a64cd2c5b4eadd59552209630140db91b82061095c74681ab05",
+          "lines": 73,
+          "hits": []
+        },
+        {
+          "path": "ai_service/classification/engine.py",
+          "sha256": "0bc4a53ab32b0112db48aca6298684ac303a1db2c983ccb3f2060e751d1cb665",
+          "lines": 120,
+          "hits": []
+        },
+        {
+          "path": "ai_service/classification/rules.py",
+          "sha256": "ac6e42b527f37c0f5965abe331a02be74b1c5e553327a0911b2bf91f20c78578",
+          "lines": 136,
+          "hits": []
+        },
+        {
+          "path": "ai_service/config.py",
+          "sha256": "4839636120c31c829df1443db1a1d0c62284453d4a9d3f8def70abcdf4d77d39",
+          "lines": 19,
+          "hits": []
+        },
+        {
+          "path": "ai_service/evaluation/__init__.py",
+          "sha256": "714d5dffe274dd4e80879d5f34ac21344c87dc51587f06bf84b6a1f53439284b",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "ai_service/evaluation/metrics.py",
+          "sha256": "336b4236b38f74659d9ef79c11f8904e42cba236bdc9a7e5d99397597e646654",
+          "lines": 73,
+          "hits": []
+        },
+        {
+          "path": "ai_service/extraction/__init__.py",
+          "sha256": "ed7dd313ffe983402e59ba07b4e98ece63517a06e82e925c90d3c21b36e182e5",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "ai_service/extraction/confidence.py",
+          "sha256": "36a266012a62c9dd0031ab3e02b9d0ebbc25a35f9990b3bc372b7ce07b60b848",
+          "lines": 134,
+          "hits": []
+        },
+        {
+          "path": "ai_service/extraction/engine.py",
+          "sha256": "9f8e700bbd9165299b1d46098c02d2fdefe473a5ee5b412e9d3e4326d0e2af15",
+          "lines": 81,
+          "hits": []
+        },
+        {
+          "path": "ai_service/extraction/rules.py",
+          "sha256": "b8a173501bb83e7a05d99326f1f2d65a947989469143ee3b17c74141bd84e010",
+          "lines": 89,
+          "hits": []
+        },
+        {
+          "path": "ai_service/main.py",
+          "sha256": "d2a53f5e189dc80f3c463de463e66b26a2ab068d7316ad6b16cc54c01e575483",
+          "lines": 66,
+          "hits": [
+            {
+              "line": 35,
+              "source": "async def process_document(file: UploadFile = File(...)) -> dict:"
+            }
+          ]
+        },
+        {
+          "path": "ai_service/ocr/__init__.py",
+          "sha256": "9ee182fdb2922e5884ae007726e51c4aa4c77d11ae899d35e8c1f0fc7ce77671",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "ai_service/ocr/confidence.py",
+          "sha256": "2c03d6c67ba2f7d87fc9e35e6d29b909ee8f290c75f5669b7b54ee87c383e925",
+          "lines": 73,
+          "hits": []
+        },
+        {
+          "path": "ai_service/ocr/engine.py",
+          "sha256": "10ebf8122df36ed036cd466e389097489f17e9b10b5925cb3c5b1aa97dd5f61d",
+          "lines": 255,
+          "hits": []
+        },
+        {
+          "path": "ai_service/ocr/layout.py",
+          "sha256": "1db59603cd5aad0833cf179a6e6122caf1f89fe1fe9c964c58f64414e6d5f24a",
+          "lines": 281,
+          "hits": []
+        },
+        {
+          "path": "ai_service/ocr/postprocess.py",
+          "sha256": "0940a585ffba6ec1b019421e4aff62ce62aca8a14766cf1758f6169352e23771",
+          "lines": 84,
+          "hits": []
+        },
+        {
+          "path": "ai_service/pipeline.py",
+          "sha256": "b784bdda6064960a42c70c6fe7196f4c8eeebcc28bb21e15614eff3081bc1b8e",
+          "lines": 104,
+          "hits": [
+            {
+              "line": 44,
+              "source": "def process(self, path: str | Path) -> dict:"
+            }
+          ]
+        },
+        {
+          "path": "ai_service/preprocessing/__init__.py",
+          "sha256": "91cc35e2a1492231a00103247ac495d41a1869496a4013d20498557fb4b07db3",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "ai_service/preprocessing/document.py",
+          "sha256": "3e016609a73952cbd3c3fb05b41e490fbfb94b0b94b2cad0d14bde986d013ed2",
+          "lines": 131,
+          "hits": []
+        },
+        {
+          "path": "ai_service/preprocessing/image.py",
+          "sha256": "52d5c8cc74435ff9c34377a3c41839c1bfa3a5b351faf781d0a180718df9fa4a",
+          "lines": 157,
+          "hits": []
+        },
+        {
+          "path": "ai_service/validation.py",
+          "sha256": "2a55afa5bd59fcbcc90c6fe7d90e99814a1a71e15a2c8732c44eeb8864fb25da",
+          "lines": 23,
+          "hits": []
+        },
+        {
+          "path": "backend/app/__init__.py",
+          "sha256": "a5c721f646c7a0e9b60cedd09224f8f971ac4f7d8f1af5bb35870420c9f11e73",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/api/__init__.py",
+          "sha256": "ea9cd2a3163b8255f22807c20a14feba2f8deb8a8991d11497247589b3752b2c",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/api/auth.py",
+          "sha256": "f9fcc80b4649a403c01815b34d7b835d781d3449d15d544c83bf63387176be7a",
+          "lines": 69,
+          "hits": []
+        },
+        {
+          "path": "backend/app/api/dependencies.py",
+          "sha256": "17a844f229b1010bd031ac8b687cc5c4ce77b565a7bae957dcc32b34d2c22efc",
+          "lines": 25,
+          "hits": []
+        },
+        {
+          "path": "backend/app/api/documents.py",
+          "sha256": "ffdc0ce9eac62fc09d213ef8d6cac5841943bef1d0f2d52b32e9f83509e9c4e8",
+          "lines": 130,
+          "hits": [
+            {
+              "line": 48,
+              "source": "async def process_document(document_id: str, service: DocumentService = Depends(get_document_service)):"
+            }
+          ]
+        },
+        {
+          "path": "backend/app/api/security.py",
+          "sha256": "ae53da1c6c4a041a198b44ed5c8f7261173f74c8fe08efb158e1352ea20058b2",
+          "lines": 29,
+          "hits": []
+        },
+        {
+          "path": "backend/app/core/__init__.py",
+          "sha256": "7e43348f2af46cce74effd9e1826cb31efe26690042fd95af087b01a8bf2e9f0",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/core/config.py",
+          "sha256": "59998aa92f358d0c7660f382e8cd1626b9351a59770d5349904ead1894987f47",
+          "lines": 95,
+          "hits": []
+        },
+        {
+          "path": "backend/app/core/database.py",
+          "sha256": "cc135ce3df1dcc2cb2dc81e49bbfc384e5d1d2db271ccba3259cb6d2fea1007b",
+          "lines": 30,
+          "hits": []
+        },
+        {
+          "path": "backend/app/core/logging.py",
+          "sha256": "363d6ad079df4672e348a8c26692d2d08bef567a8629490ce654d04d1360ab33",
+          "lines": 61,
+          "hits": []
+        },
+        {
+          "path": "backend/app/core/security.py",
+          "sha256": "9606e1820d3bb555e7d9832e166f4b5e7ef4da7c649684ef4bfebe989b034aab",
+          "lines": 32,
+          "hits": []
+        },
+        {
+          "path": "backend/app/main.py",
+          "sha256": "368208e42dac95e10f26f2addb1a7efab5fbe6665cb1ae650a2db42027464ae5",
+          "lines": 83,
+          "hits": []
+        },
+        {
+          "path": "backend/app/models/__init__.py",
+          "sha256": "4573be6ce0129dbb0d9d695ecf9ab07b112b03f0a66c96701bb2380f8136a7eb",
+          "lines": 5,
+          "hits": []
+        },
+        {
+          "path": "backend/app/models/document.py",
+          "sha256": "bc2a553b501baf93f2ad8417ecf0228df925f533cef4629d33f55548e578c74c",
+          "lines": 133,
+          "hits": []
+        },
+        {
+          "path": "backend/app/repositories/__init__.py",
+          "sha256": "25a05d18dcb066555306abe2b0bde6baf854ecac16aba7376ab060e98c808fb1",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/repositories/documents.py",
+          "sha256": "531359c26c3281a5d91f57ea92cb318be6c0860bc2525714ddc2e73a7303c4e1",
+          "lines": 247,
+          "hits": [
+            {
+              "line": 119,
+              "source": "self, document_id: str, text: str, expected_revision: int, owner_id: str | None"
+            },
+            {
+              "line": 131,
+              "source": "Document.ocr_revision == expected_revision,"
+            }
+          ]
+        },
+        {
+          "path": "backend/app/retention_cli.py",
+          "sha256": "e0a7f15aadb95fcda199fa010baec67bc17688569540c2a17fad35ad2c771ff4",
+          "lines": 19,
+          "hits": []
+        },
+        {
+          "path": "backend/app/schemas/__init__.py",
+          "sha256": "f510c0928414bd512f691d0dabd39b847d6cecbe162fc9fca1dcced84989eb63",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/schemas/auth.py",
+          "sha256": "77c0cd52e0acbecbf4f29dd6885788b562dd6809a381ae09f4e13bbd276cedb9",
+          "lines": 26,
+          "hits": []
+        },
+        {
+          "path": "backend/app/schemas/documents.py",
+          "sha256": "c6f537ae15ba01bc711ee40f372437718f176ea2efb4fef02518cd1e9070ba25",
+          "lines": 163,
+          "hits": [
+            {
+              "line": 144,
+              "source": "expected_revision: int = Field(..., ge=0, le=2_147_483_647, strict=True)"
+            }
+          ]
+        },
+        {
+          "path": "backend/app/seed_demo.py",
+          "sha256": "83ae83e8a5e06c650f3f4d7fd332fb64806ccd1460013e4930622579f6432446",
+          "lines": 28,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/__init__.py",
+          "sha256": "3368189ec7c0dc6c74845b60bffe04e86ee82ceba8f6ca06cdbe9449cda42640",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/documents.py",
+          "sha256": "87e4551a97227f20330ed969df61dc3081b1b85bb36b804e32ea3b03a6ed8273",
+          "lines": 174,
+          "hits": [
+            {
+              "line": 49,
+              "source": "async def process(self, document_id: str):"
+            },
+            {
+              "line": 111,
+              "source": "document_id, update.text, update.expected_revision, self.owner_id"
+            }
+          ]
+        },
+        {
+          "path": "backend/app/services/file_validation.py",
+          "sha256": "39eddd371dd534f72e2090ad8e46e3eea831787ee6d823e113d2f7d3f230b586",
+          "lines": 95,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/ocr_text.py",
+          "sha256": "0ae118c31e624ca003fb193c08be7782505816b5a33df2e821821d52c81bddf9",
+          "lines": 92,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/retention.py",
+          "sha256": "8e622c414d55a2c3990196bae13255d8bf37ecf1f73acf710b2d6b7f735e80e3",
+          "lines": 45,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/search.py",
+          "sha256": "8c50153e784c0f6de659965191bc4b4dc5bfa5e137166afe666c8dd2d5d97273",
+          "lines": 105,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/storage.py",
+          "sha256": "868d67e7677e69a7b417d23d47231f45c3ea3995e6693b75dea09ef9bd3597a1",
+          "lines": 85,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/upload.py",
+          "sha256": "1163a72cc95779e28f00df907d91174fba52754ac080e73cca56366252caff9f",
+          "lines": 55,
+          "hits": []
+        },
+        {
+          "path": "backend/migrations/env.py",
+          "sha256": "7429fdc58ec9a1b8315335b40f6955928b14132192702f7f71e5bf8fb50e8f8f",
+          "lines": 50,
+          "hits": []
+        },
+        {
+          "path": "backend/migrations/versions/0001_initial.py",
+          "sha256": "f18cdd070b65cb7bbfdfde17bf06d629fe5fb2306264bbed605521d363fd8a19",
+          "lines": 64,
+          "hits": []
+        },
+        {
+          "path": "backend/migrations/versions/0002_auth_and_ownership.py",
+          "sha256": "b7e8d2ee8efaede9b2e5f8369a10258879e05f2448132a6de6a13c5fb54ac9d9",
+          "lines": 39,
+          "hits": []
+        },
+        {
+          "path": "backend/migrations/versions/0003_human_review.py",
+          "sha256": "09674971a59e4abd11cba377283608b71f37a8eb8b447e846a4c718ed058e934",
+          "lines": 29,
+          "hits": []
+        },
+        {
+          "path": "backend/migrations/versions/0004_ocr_revision.py",
+          "sha256": "46351a65b9b3492ac1a36293390ad5814c6431deb5b2e21ccc7882bbfdb57569",
+          "lines": 23,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "sha256": "600e08e85cae822b19c03d951a07e261d3176e80d04930504bc8fd6997100336",
+          "lines": 2,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/api/client.ts",
+          "sha256": "bc580bbc08d1e1b7f7abb0e430bf22fe6125475e0f154af8c5f32d703698e77e",
+          "lines": 8,
+          "hits": [
+            {
+              "line": 8,
+              "source": "dashboard:()=>request<Dashboard>('/documents/dashboard/summary'),list:(query:string)=>request<DocumentList>('/documents?'+query),get:(id:string)=>request<Document>('/documents/'+id),extraction:(id:string)=>request<Extrac"
+            }
+          ]
+        },
+        {
+          "path": "frontend/src/components/Layout.tsx",
+          "sha256": "8f50d11dbb8b3574afb926444febcdd0171804168a69fdc13fb6eabda168792e",
+          "lines": 2,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/components/OCRTextCard.tsx",
+          "sha256": "c62f3e445d5ac193e3c865fb864370152e8594ed6615701c96e9b2ba3f744779",
+          "lines": 77,
+          "hits": [
+            {
+              "line": 9,
+              "source": "type StoredDraft={text:string;expected_revision:number}"
+            },
+            {
+              "line": 12,
+              "source": "try{const value=JSON.parse(sessionStorage.getItem(key)||'null');if(value&&typeof value.text==='string'&&value.text.length<=1000000&&Number.isInteger(value.expected_revision)&&value.expected_revision>=0)return value}catch"
+            },
+            {
+              "line": 28,
+              "source": "const mounted=useRef(false);const inFlight=useRef(false);const currentRevision=useRef(recovery?.expected_revision??revision);const draftRef=useRef(draft)"
+            },
+            {
+              "line": 41,
+              "source": "const persistDraft=useCallback((text:string,expected_revision:number)=>{"
+            },
+            {
+              "line": 43,
+              "source": "try{sessionStorage.setItem(storageKey,JSON.stringify({text,expected_revision}))}"
+            }
+          ]
+        },
+        {
+          "path": "frontend/src/components/StatusBadge.tsx",
+          "sha256": "d6ca5718691fa713b567113e18bfe31145a62c6b63001e2cb09fa99eb9e6436b",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/contexts/AuthContext.tsx",
+          "sha256": "06a062f6871cbdf256019bed87e80166997a9e327caf98e9ae6574ca310563ae",
+          "lines": 12,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/main.tsx",
+          "sha256": "3e11caccf7df3b02bfd498ef5495d817c15f9fe25604d61536a3d00940918abc",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/pages/DashboardPage.tsx",
+          "sha256": "10e5c36951ab6f3601835ac46f7d32c401e8653bb56b36fed34b9cc02895d216",
+          "lines": 2,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/pages/DocumentDetailPage.tsx",
+          "sha256": "ef4d54cfeeb6516eec33460372037d6f320e38d4fee4bf4c16f4278bb804c882",
+          "lines": 51,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/pages/DocumentsPage.tsx",
+          "sha256": "7c8ea54c5e66b7ff68d95940d083ec97e242034237306818a17afc699157b140",
+          "lines": 2,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/pages/LoginPage.tsx",
+          "sha256": "bc33e5fdd17d207e0384aa798ed17b4625240f7e318bc3a0cb6e20bbeefb42bb",
+          "lines": 2,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/pages/UploadPage.tsx",
+          "sha256": "c01ac69a446c623f9fddb17f2e9e284dd0e6bee895827f55d98eb0d9676d7b5e",
+          "lines": 52,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/types/index.ts",
+          "sha256": "50b41aa81714bf033ca28372f9a291531ed0915de0b11460e7228499a18e0fe8",
+          "lines": 9,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/utils/files.ts",
+          "sha256": "f1176b07b90b5138be77729b93ee093647b1cdf7b4c4fc7afe6989dd887b2e1f",
+          "lines": 2,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/utils/ocrDrafts.ts",
+          "sha256": "e7d40db1f2b8b0e7080983b243af881673002cfd9504577bf52599a5fe350bcd",
+          "lines": 22,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/vite-env.d.ts",
+          "sha256": "424faf9241dd699dda995b367ed36665732da1e6ec1f33b2fd40394488ecac92",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "frontend/vite.config.ts",
+          "sha256": "d6aeaa09568dbc52597372bc0bb574f34eceba8e311f7437cb438759ae92a342",
+          "lines": 5,
+          "hits": []
+        },
+        {
+          "path": "scripts/evaluate_ocr.py",
+          "sha256": "d8c5d5f8ac15ee1b58d21818c00b82bd37fac138aa5f7effe806c18ebbd32f99",
+          "lines": 121,
+          "hits": []
+        },
+        {
+          "path": "scripts/generate_demo_fixtures.py",
+          "sha256": "6204cedd9b0bb5fc3e408d19d73d5fad5015f625965a6392dcb2a9f86a8bd5f8",
+          "lines": 114,
+          "hits": []
+        },
+        {
+          "path": "scripts/ocr_autosave_performance.py",
+          "sha256": "77c41154c29c4ed07e4d2aa47fab735d88743382276799ba3ddcb4fff441ecd0",
+          "lines": 296,
+          "hits": [
+            {
+              "line": 107,
+              "source": "json={\"text\": text, \"expected_revision\": 0},"
+            },
+            {
+              "line": 197,
+              "source": "# connection, with no retry hiding transport failures."
+            }
+          ]
+        },
+        {
+          "path": "scripts/ocr_autosave_support.py",
+          "sha256": "1ed82125fe78ef231d00e4b02ccb656e104011e21627f13e6d6e0342364c4f6f",
+          "lines": 112,
+          "hits": []
+        },
+        {
+          "path": "scripts/ocr_validation_mutation.py",
+          "sha256": "83e7801731aa23a091165899d232550a59a2456545f34323d085921969f9d9a8",
+          "lines": 73,
+          "hits": []
+        }
+      ]
+    },
+    {
+      "ref": "origin/chore/ci-checks",
+      "sha": "55ae3c6ccfb2d17b521880d068629267558fa8a9",
+      "files": 155,
+      "implementation_files": 27,
+      "test_paths_only": [
+        "backend/tests/test_api.py",
+        "backend/tests/test_contracts.py",
+        "backend/tests/test_upload.py",
+        "data/tests/test_samples.py",
+        "frontend/src/App.test.tsx",
+        "frontend/src/api/client.test.ts",
+        "frontend/src/features/documents/fileSelection.test.ts",
+        "frontend/src/features/documents/upload.test.tsx",
+        "frontend/src/test/setup.ts"
+      ],
+      "sources": [
+        {
+          "path": "backend/__init__.py",
+          "sha256": "1b133bc918ee8e6c67c3a7030af46c2eef02e603611344b09e15eea10b1ec9d3",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/__init__.py",
+          "sha256": "f8c91bbd69fc99a580fc9b723ab6df7e9571c72ca4d23374c1dc765135d69e2e",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/models/__init__.py",
+          "sha256": "50ba34a91ad7947297a97faf4405f049d9299f2eb09073299bc95dbdb6fe76a7",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/models/contracts.py",
+          "sha256": "97258bd8d29d945271bf4b612f8937ae8aba3a611884a825f220cd54d041be34",
+          "lines": 10,
+          "hits": []
+        },
+        {
+          "path": "backend/export_schemas.py",
+          "sha256": "5e434944e806e6b8245ca6db31dd00f53a8062e948476101a913efe4de93b488",
+          "lines": 38,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/__init__.py",
+          "sha256": "e939f75a70cc0b319698aa96ae49a6140790d36c4a5312f4369c3f86afad13f5",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/api/__init__.py",
+          "sha256": "5420f769255222a276580534861e900ad8345f0c2afb23b437f060ac9aa560a4",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/api/extract.py",
+          "sha256": "8b4b7ad39231157fc979afe48a93d02a4bf528961a0e3d2fb19a5d13f527ffa0",
+          "lines": 60,
+          "hits": [
+            {
+              "line": 5,
+              "source": "from starlette.concurrency import run_in_threadpool"
+            },
+            {
+              "line": 57,
+              "source": "await run_in_threadpool(validate_document, data)"
+            }
+          ]
+        },
+        {
+          "path": "backend/src/document_backend/api/health.py",
+          "sha256": "666c2c84387bba22edbffb8a5d4f2e7e05a3eecbf865d62226cdf49663dec6ad",
+          "lines": 16,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/errors.py",
+          "sha256": "c4744f18aae11530ded9492df77f937debc97989a697cd8bd1e411dd8c484863",
+          "lines": 35,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/main.py",
+          "sha256": "8ecde20dc0e605caf26389ac5ccd22cf228aba6b8389570276a429beed6fbc6f",
+          "lines": 25,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/services/__init__.py",
+          "sha256": "ba0b484cf1340277f59ee2899fdc7a3aa18da51e1cf55acd6c7e417955151b93",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/services/documents.py",
+          "sha256": "41841842d80feb8c56f09a05a53597bc22eafd9c46025ca3ec35c1fca0e4f1c6",
+          "lines": 47,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/services/mock_extraction.py",
+          "sha256": "1b5e3650bd4b9bbf4c8e1775afd30170c2ec465bffac9c4fd36c9853d2835b65",
+          "lines": 21,
+          "hits": []
+        },
+        {
+          "path": "data/create_samples.py",
+          "sha256": "1accc857809727350847904a3239b9bb9d3108786f66cd23db99a748df9fc0da",
+          "lines": 115,
+          "hits": []
+        },
+        {
+          "path": "evaluation/src/document_evaluation/__init__.py",
+          "sha256": "c8a06902a9fa742c0b3d16069ffba0e1a07e4f2ebac3254f6bf0bd5250818d11",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "sha256": "4860664fcba5876c40a5d3d43a8f613034dbd650622d904117d4544e1c904af1",
+          "lines": 26,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/api/client.ts",
+          "sha256": "99e1f93d10f6e2b89866301dbc22d5fb65fc851b78464f085dbad425469f6b04",
+          "lines": 72,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/features/documents/DocumentSelection.tsx",
+          "sha256": "de5785f44718ce6012945620afc90275cd93412688679debbc5ed584b0cb4d74",
+          "lines": 80,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/features/documents/ExtractionResult.tsx",
+          "sha256": "340214834d0b0057b1296e003a5e49afdb6adbdf530f9ce0a4ec28a3eae40153",
+          "lines": 25,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/features/documents/fileSelection.ts",
+          "sha256": "33f8bc4600bc0ffc8350b8f931322ec9f470bd3a420b2adb2b10c55ccb19bddc",
+          "lines": 11,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/features/health/BackendStatus.tsx",
+          "sha256": "b8a19b292b463113875adefb2860094ae951c50eab6964a7de796a093463edc0",
+          "lines": 54,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/main.tsx",
+          "sha256": "c76aaa0f81beebde6bdc5b020199f3bbc4c12171fdf9c8bb30cc417df23800ef",
+          "lines": 8,
+          "hits": []
+        },
+        {
+          "path": "frontend/vite.config.ts",
+          "sha256": "3a6de44888c134afa9b3ced22083b1c8784221a9218d919939f85967018faa70",
+          "lines": 19,
+          "hits": []
+        },
+        {
+          "path": "pipeline/src/document_pipeline/__init__.py",
+          "sha256": "cc9131eacb10431edd94a5a55f39a3f276709b57f835a8ed5b97d7b19f5503c2",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "schemas/src/document_contracts/__init__.py",
+          "sha256": "af000c91ff5ece0f695948a66a6f6f20c9c6f8dd5164f8626044b36eaae22367",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "schemas/src/document_contracts/models.py",
+          "sha256": "1537a57f11ca2e30573b090b1de7aad871ed7f3078170d8912ced7f47bd843ed",
+          "lines": 225,
+          "hits": []
+        }
+      ]
+    },
+    {
+      "ref": "origin/congtri",
+      "sha": "5e184457fe5d8be5357773aed2d37659577b935d",
+      "files": 137,
+      "implementation_files": 53,
+      "test_paths_only": [
+        "tests/__init__.py",
+        "tests/conftest.py",
+        "tests/e2e/test_document_workflow.py",
+        "tests/integration/test_documents_api.py",
+        "tests/unit/test_config.py",
+        "tests/unit/test_database.py",
+        "tests/unit/test_document_repository.py",
+        "tests/unit/test_extraction.py",
+        "tests/unit/test_file_validation.py",
+        "tests/unit/test_ocr.py",
+        "tests/unit/test_preprocessing.py",
+        "tests/unit/test_security.py",
+        "tests/unit/test_storage.py"
+      ],
+      "sources": [
+        {
+          "path": "ai_service/__init__.py",
+          "sha256": "a39524c43205ef2d0ffdae28ece026e7d7577227744bc33fab329da01328283f",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "ai_service/classification/__init__.py",
+          "sha256": "c4c16f1d9cf06898d9452ebd6f759d0804bf5670a80c040238df24c8ace3615b",
+          "lines": 3,
+          "hits": []
+        },
+        {
+          "path": "ai_service/classification/rules.py",
+          "sha256": "9d29b072cbc7b8fe0c858b59672b5ebcc6bb36f1a3a616e403c6b21f8c1424c8",
+          "lines": 30,
+          "hits": []
+        },
+        {
+          "path": "ai_service/evaluation/__init__.py",
+          "sha256": "cea4936f608e46a40add44866487bc546c13a01d34b7d6498f28ba77450c4008",
+          "lines": 4,
+          "hits": []
+        },
+        {
+          "path": "ai_service/evaluation/extraction_metrics.py",
+          "sha256": "2b326084b6d2f60b986dfb5f4bf6d8fe33bfa536a72c189c0c8a5fb959085045",
+          "lines": 18,
+          "hits": []
+        },
+        {
+          "path": "ai_service/evaluation/text_metrics.py",
+          "sha256": "e2b03562b9c80f624bba3b800484ed8402883a9a799fa4b77437a62951533a6d",
+          "lines": 23,
+          "hits": []
+        },
+        {
+          "path": "ai_service/extraction/__init__.py",
+          "sha256": "c33a635eafb6e28bcf0c42c23eca3c84730c02ab6db0ab3f8873d4452e7dbf14",
+          "lines": 4,
+          "hits": []
+        },
+        {
+          "path": "ai_service/extraction/rules.py",
+          "sha256": "d5fae76451b608f6ed3c7f87eb68c538995f620d592c88badf17f6ff99447ac8",
+          "lines": 43,
+          "hits": []
+        },
+        {
+          "path": "ai_service/extraction/schemas.py",
+          "sha256": "2df3820a7f436da9932dd15bea3895b56b6862fa01365c5e70a341972f4535e7",
+          "lines": 31,
+          "hits": []
+        },
+        {
+          "path": "ai_service/main.py",
+          "sha256": "96ad56f0219af3c74b827bf0e31135dfe44240019155836e1d6e8f37ac015faf",
+          "lines": 30,
+          "hits": []
+        },
+        {
+          "path": "ai_service/ocr/__init__.py",
+          "sha256": "bda1f84070c26693d0b0e26f855a9dd884f73e20a4636bb6b3e6c1fb40a35e29",
+          "lines": 4,
+          "hits": []
+        },
+        {
+          "path": "ai_service/ocr/engines.py",
+          "sha256": "59af791bc28b80e2489317749857a4d996649c510b31b248a78db3a970819747",
+          "lines": 41,
+          "hits": []
+        },
+        {
+          "path": "ai_service/ocr/geometry.py",
+          "sha256": "2266c1db9d5136bf175553f3a595a724bcadaa7b5ce42e2008380f8947277856",
+          "lines": 29,
+          "hits": []
+        },
+        {
+          "path": "ai_service/ocr/normalization.py",
+          "sha256": "4f56afc88858de1c03ef6ccaf229d2c34236189d45eb3a643b3e3b7ec034867e",
+          "lines": 14,
+          "hits": []
+        },
+        {
+          "path": "ai_service/ocr/service.py",
+          "sha256": "bbff0bb1cf4b4891edec507d20cac2610c1cfac20a6dca1cc4cc110a6f4beb1e",
+          "lines": 37,
+          "hits": [
+            {
+              "line": 27,
+              "source": "def process_pages(self, pages: list[np.ndarray]) -> list[OcrPage]:"
+            }
+          ]
+        },
+        {
+          "path": "ai_service/preprocessing/__init__.py",
+          "sha256": "25bc6a8faa588ec3f1522cbf50aea3d3c1dffed0499312ee35d8e5d4ef3fd70d",
+          "lines": 4,
+          "hits": []
+        },
+        {
+          "path": "ai_service/preprocessing/document.py",
+          "sha256": "e96c9ebf7a2522aede0a123271f77476ed958c1fb89eab3ff25a1874d277099d",
+          "lines": 38,
+          "hits": []
+        },
+        {
+          "path": "ai_service/preprocessing/image.py",
+          "sha256": "4d467fe5ebe35110021962903159e8912ff742620c8e04977a9a98ee08be6555",
+          "lines": 26,
+          "hits": []
+        },
+        {
+          "path": "backend/app/__init__.py",
+          "sha256": "7e05049262b073a56e34cadcdc597f34ece6deaac554e4708d48e867074005b3",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/api/__init__.py",
+          "sha256": "287dde60ec7ec6256b313b37631ec8ac5e38c23a37c454824eee8d1723bc760d",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/api/documents.py",
+          "sha256": "110294e69a5a434ef4306159c413d921f5ccac54deeb1a699b9aafea9ee4a596",
+          "lines": 169,
+          "hits": []
+        },
+        {
+          "path": "backend/app/core/__init__.py",
+          "sha256": "1fc6d509babab883fa61664a93d78280de1234ad4256ad940a4f4a52654d3573",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/core/config.py",
+          "sha256": "5fabb1b59d3517fd3f3565a98dbe8d3755fdbb8dd35f95c407d84709595324b3",
+          "lines": 23,
+          "hits": []
+        },
+        {
+          "path": "backend/app/core/database.py",
+          "sha256": "22c2e5e42766003014a080c349597323253744285c27a04799b59e519b7cad61",
+          "lines": 42,
+          "hits": []
+        },
+        {
+          "path": "backend/app/core/logging.py",
+          "sha256": "02b3d83399f4bebd6ad0e893e84e992c023ff99caf297d741d8b8838e3de3a1c",
+          "lines": 24,
+          "hits": []
+        },
+        {
+          "path": "backend/app/core/security.py",
+          "sha256": "e42d04f1443fec30cbb1ea42dea305e5872122aadaa821d065ce8d2308e3c96e",
+          "lines": 12,
+          "hits": []
+        },
+        {
+          "path": "backend/app/main.py",
+          "sha256": "6d1a24f0dcd6f3eb9d318a6a5a431d072ac507db21f150aca4ed013eef2b983f",
+          "lines": 35,
+          "hits": []
+        },
+        {
+          "path": "backend/app/models/__init__.py",
+          "sha256": "6380af7faf33666fe691b222e762e125316e6b47f903e015cdd0fa01e283f677",
+          "lines": 3,
+          "hits": []
+        },
+        {
+          "path": "backend/app/models/document.py",
+          "sha256": "40b188145e0495114232c0412e002c32400b5a2714649e7fe79a04ddb1770ffe",
+          "lines": 37,
+          "hits": []
+        },
+        {
+          "path": "backend/app/repositories/__init__.py",
+          "sha256": "01673a26a5a4506fa4cdd95669732850aacff877ba5723e892ac94c6de9b6f85",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/repositories/documents.py",
+          "sha256": "3499da2caab95d0061dee318261e33c0648c755b678d64b54b20c7819a0f16bc",
+          "lines": 76,
+          "hits": []
+        },
+        {
+          "path": "backend/app/schemas/__init__.py",
+          "sha256": "9f748feb54c66564e5275180b41c895861e160eb032f66e68ac08265bfa849e9",
+          "lines": 3,
+          "hits": []
+        },
+        {
+          "path": "backend/app/schemas/documents.py",
+          "sha256": "90bc5d90a987a3cc2d8d7e7192cd00143ac75238c48ffa883c689ef57cabbae2",
+          "lines": 33,
+          "hits": []
+        },
+        {
+          "path": "backend/app/schemas/extractions.py",
+          "sha256": "ccb9760bd2ea28601d228a1bea7d8fc5ed4678b267d64db5e06779ba9ef75025",
+          "lines": 21,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/__init__.py",
+          "sha256": "ba9a6b7d97164bdb9877eea9af7857923784c555ef8f8c0b1a82d3bfbfddfd29",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/file_validation.py",
+          "sha256": "8bf62b38bb2f58975c41e1deb62e022112fb8c6ef99ffaed29750e4bed8ed1f5",
+          "lines": 110,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/processing.py",
+          "sha256": "ace2a8f399822a7a5dc9cfb8669d4ea5d8526c16c742654abcaa05994c022bac",
+          "lines": 36,
+          "hits": [
+            {
+              "line": 12,
+              "source": "def process_document(db: Session, document: Document) -> Extraction:"
+            }
+          ]
+        },
+        {
+          "path": "backend/app/services/storage.py",
+          "sha256": "239b91ef35a2df546bc4369066fc94e24069bd974656a438a4adbceb6c1c0b75",
+          "lines": 46,
+          "hits": []
+        },
+        {
+          "path": "backend/migrations/env.py",
+          "sha256": "88bd910af7245aecf8d0467e8a5821446c77a437c690afb906ca9a3b74a039bd",
+          "lines": 40,
+          "hits": []
+        },
+        {
+          "path": "backend/migrations/versions/0001_initial.py",
+          "sha256": "167c66d427f577a1e0f0f332114275940afe04f317457aa43115d918c6665aa2",
+          "lines": 41,
+          "hits": []
+        },
+        {
+          "path": "backend/migrations/versions/0002_extraction_document_index.py",
+          "sha256": "69a01e26636858f9ee448b23660a928901a402e7a9f2881f5b1c6952d8d3e5f5",
+          "lines": 16,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "sha256": "96d5e3e8044de5b31cb97a01dc71ae575f055d398d946fa7a62a742d1d59c850",
+          "lines": 10,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/components/DocumentPreview.tsx",
+          "sha256": "eab5f323cb5be46d06d377a3eccae062bffcf2e66da831d30a7763e1cdb0e3e9",
+          "lines": 12,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/main.tsx",
+          "sha256": "9e3eb1ea0f9f7d1743b187d1e59e6bf7ca01c91311c4d2d466ab2b017c48e36f",
+          "lines": 9,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/pages/DocumentsPage.tsx",
+          "sha256": "f7b779aa9c3eb3209eb17ae88b71cc0f1144ebca6fef43f150af7d1b49642336",
+          "lines": 23,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/pages/ReviewPage.tsx",
+          "sha256": "e78e8616b3e71e3305786cb2322297504edacdf150868d34291162890d907ca4",
+          "lines": 21,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/pages/UploadPage.tsx",
+          "sha256": "ffd67b21556166839cfa185533d00d9510504d248f0b765142993cd61053fcf1",
+          "lines": 33,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/services/api.ts",
+          "sha256": "6f5e08a8d59b5748dea2d2e5e01d4ee00bcb925d5494a874abcd12a970bb4947",
+          "lines": 39,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/types/document.ts",
+          "sha256": "a2ed262e4fd5565b4cc27ec15c212a0cbde34ac6977f51227f1f1d34715cf9c3",
+          "lines": 18,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/vite-env.d.ts",
+          "sha256": "424faf9241dd699dda995b367ed36665732da1e6ec1f33b2fd40394488ecac92",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "frontend/vite.config.ts",
+          "sha256": "5f07311845a836d9c18c63e8c7f962f48f0c47ed0752bdf63fdde18dfcc33bd4",
+          "lines": 4,
+          "hits": []
+        },
+        {
+          "path": "scripts/create_demo_files.py",
+          "sha256": "05ddee7b5f3e3469f5cd644a42acca01a0eba12558159e2c816b11c7c9aaeeca",
+          "lines": 285,
+          "hits": []
+        },
+        {
+          "path": "scripts/retention.py",
+          "sha256": "28635c9e54e59762b4f3492c8f60e3b8b637274be4601cb1021bf2b7bc0ba3f9",
+          "lines": 27,
+          "hits": []
+        }
+      ]
+    },
+    {
+      "ref": "origin/feat/backend-skeleton",
+      "sha": "a2810298ff71f18950cc1502359f0f53f505ab9d",
+      "files": 109,
+      "implementation_files": 15,
+      "test_paths_only": [
+        "backend/tests/test_api.py",
+        "backend/tests/test_contracts.py",
+        "data/tests/test_samples.py"
+      ],
+      "sources": [
+        {
+          "path": "backend/__init__.py",
+          "sha256": "1b133bc918ee8e6c67c3a7030af46c2eef02e603611344b09e15eea10b1ec9d3",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/__init__.py",
+          "sha256": "f8c91bbd69fc99a580fc9b723ab6df7e9571c72ca4d23374c1dc765135d69e2e",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/models/__init__.py",
+          "sha256": "50ba34a91ad7947297a97faf4405f049d9299f2eb09073299bc95dbdb6fe76a7",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/models/contracts.py",
+          "sha256": "97258bd8d29d945271bf4b612f8937ae8aba3a611884a825f220cd54d041be34",
+          "lines": 10,
+          "hits": []
+        },
+        {
+          "path": "backend/export_schemas.py",
+          "sha256": "5e434944e806e6b8245ca6db31dd00f53a8062e948476101a913efe4de93b488",
+          "lines": 38,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/__init__.py",
+          "sha256": "e939f75a70cc0b319698aa96ae49a6140790d36c4a5312f4369c3f86afad13f5",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/api/__init__.py",
+          "sha256": "5420f769255222a276580534861e900ad8345f0c2afb23b437f060ac9aa560a4",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/api/health.py",
+          "sha256": "666c2c84387bba22edbffb8a5d4f2e7e05a3eecbf865d62226cdf49663dec6ad",
+          "lines": 16,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/errors.py",
+          "sha256": "edbb3e3244e64733192c518649d9a2081a0ff578ebde57b1e45e52c5fdeeac2a",
+          "lines": 24,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/main.py",
+          "sha256": "ed10fc433169be59e53ae79c3e25e2583f5c03c0cfbdf21ae6c009a8d7610d9b",
+          "lines": 23,
+          "hits": []
+        },
+        {
+          "path": "data/create_samples.py",
+          "sha256": "1accc857809727350847904a3239b9bb9d3108786f66cd23db99a748df9fc0da",
+          "lines": 115,
+          "hits": []
+        },
+        {
+          "path": "evaluation/src/document_evaluation/__init__.py",
+          "sha256": "c8a06902a9fa742c0b3d16069ffba0e1a07e4f2ebac3254f6bf0bd5250818d11",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "pipeline/src/document_pipeline/__init__.py",
+          "sha256": "cc9131eacb10431edd94a5a55f39a3f276709b57f835a8ed5b97d7b19f5503c2",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "schemas/src/document_contracts/__init__.py",
+          "sha256": "af000c91ff5ece0f695948a66a6f6f20c9c6f8dd5164f8626044b36eaae22367",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "schemas/src/document_contracts/models.py",
+          "sha256": "1537a57f11ca2e30573b090b1de7aad871ed7f3078170d8912ced7f47bd843ed",
+          "lines": 225,
+          "hits": []
+        }
+      ]
+    },
+    {
+      "ref": "origin/hw3/23001948-vt045-config-contract",
+      "sha": "69106d4e94243d2a12ab55a71158a853264d3816",
+      "files": 123,
+      "implementation_files": 29,
+      "test_paths_only": [
+        "backend/tests/conftest.py",
+        "backend/tests/test_benchmark.py",
+        "backend/tests/test_health.py",
+        "backend/tests/test_invoice_policy.py",
+        "backend/tests/test_normalization.py",
+        "backend/tests/test_ocr.py",
+        "backend/tests/test_ocr_real.py",
+        "backend/tests/test_pipeline.py",
+        "backend/tests/test_schemas.py",
+        "backend/tests/test_validation.py"
+      ],
+      "sources": [
+        {
+          "path": "backend/app/__init__.py",
+          "sha256": "a5629e053a622e8127e25c53c56fae229be7f1f27935ee71e0253a46711d0c97",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/benchmark/__init__.py",
+          "sha256": "943603223d6735abf8b6f8f3caff7325515f29d202fec274b5398fd3d85bea30",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/benchmark/__main__.py",
+          "sha256": "cc9f311f18c818641a710c6c6ad484568591dbd2ebc20fd77b7d728f2d733f9b",
+          "lines": 36,
+          "hits": []
+        },
+        {
+          "path": "backend/app/benchmark/contracts.py",
+          "sha256": "8c9bea34de06563224abb5e3620a216815b6a4a047d94fd621a376f4cd46e08d",
+          "lines": 126,
+          "hits": []
+        },
+        {
+          "path": "backend/app/benchmark/fixtures.py",
+          "sha256": "647f0e695ecdd7eb45f0e408df451ddd3b4470463ce85d01b2e36ff088079c51",
+          "lines": 72,
+          "hits": []
+        },
+        {
+          "path": "backend/app/benchmark/metrics.py",
+          "sha256": "f50416173a3b1ab8cc0a441617a539814ab5ca3d72b54c8fb0525d76b59100cf",
+          "lines": 95,
+          "hits": []
+        },
+        {
+          "path": "backend/app/benchmark/parser.py",
+          "sha256": "dd9eb9736f00af838ffbf219c00ba274f641beaa66d68909f3f6b75558bf4170",
+          "lines": 158,
+          "hits": []
+        },
+        {
+          "path": "backend/app/benchmark/runner.py",
+          "sha256": "1c9c51bd8f06583e7c2786405245fbab8d03b78783c2d21e1224c6fb1177c4a8",
+          "lines": 103,
+          "hits": []
+        },
+        {
+          "path": "backend/app/main.py",
+          "sha256": "1e42b55c0ed732800b02697df4f3667184b6bf4c897e340d0d2ed1a42c32ff36",
+          "lines": 11,
+          "hits": []
+        },
+        {
+          "path": "backend/app/ocr_cli.py",
+          "sha256": "f17624cfc3765cf2e6f9104330052794bc5b73aba9d03927973aa94c155d4548",
+          "lines": 38,
+          "hits": []
+        },
+        {
+          "path": "backend/app/providers/__init__.py",
+          "sha256": "94edb1e9c20a32b861197982281d50fba784d9d10c5f8e79da60acea31c86ee3",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/providers/contracts.py",
+          "sha256": "c884e2246b6a1fb238c1db4142a4d90383c5750f6bd9442e01bdb1dbbf610da4",
+          "lines": 25,
+          "hits": []
+        },
+        {
+          "path": "backend/app/providers/fake.py",
+          "sha256": "4d6c9876acffff2c0f47da2ab6085608fe73e3498100a8ba87ed745a66b96846",
+          "lines": 43,
+          "hits": []
+        },
+        {
+          "path": "backend/app/providers/ocr.py",
+          "sha256": "4586e45e4cff7042abdfcc3311893fc362aea484ee2fd667ca94c9af20d08a43",
+          "lines": 16,
+          "hits": []
+        },
+        {
+          "path": "backend/app/providers/tesseract.py",
+          "sha256": "ee8356c62038da9baf260c8cf624f460710c38b03498717e44dfd81f14e35ae3",
+          "lines": 162,
+          "hits": []
+        },
+        {
+          "path": "backend/app/schemas/__init__.py",
+          "sha256": "3610c075a067cec43247525bec5a61685fa8114ccbf58f9df98c1b8f8bf59b4c",
+          "lines": 5,
+          "hits": []
+        },
+        {
+          "path": "backend/app/schemas/extraction.py",
+          "sha256": "6d284867f4417bdcb62c4c122136bbdb6a496e20e00fa4fcdc2028e9c93ed987",
+          "lines": 152,
+          "hits": []
+        },
+        {
+          "path": "backend/app/schemas/invoice.py",
+          "sha256": "e0263b9919472278ebf6a2f39995e4226933b503972a4d05e13c670f7e4dc873",
+          "lines": 75,
+          "hits": []
+        },
+        {
+          "path": "backend/app/schemas/ocr.py",
+          "sha256": "09f63b951dc2df396f14dd2847b61dfa5f3cc89987be7cb835051f74cefffdc4",
+          "lines": 50,
+          "hits": []
+        },
+        {
+          "path": "backend/app/schemas/validation.py",
+          "sha256": "69c49fa7c5da6a475cbd11732ae560e91b8951516eef7985199919f5fe8e1589",
+          "lines": 37,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/__init__.py",
+          "sha256": "c9f8b35f093de02343f478c7b18c511a32679718b2af9f7df50961c5c4a45432",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/invoice_policy.py",
+          "sha256": "d881caa2057a83de280531ff7c08dad3b398b28ebc521b90f4c97ff3e5bd9d5c",
+          "lines": 40,
+          "hits": [
+            {
+              "line": 34,
+              "source": "def load_invoice_policy(path: Path = DEFAULT_POLICY_PATH) -> InvoicePolicy:"
+            }
+          ]
+        },
+        {
+          "path": "backend/app/services/normalization.py",
+          "sha256": "a1a2aa3073c8a0c9255b7d24e6318c086ef08884797dbb15a6801f78b5b32179",
+          "lines": 125,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/pipeline.py",
+          "sha256": "f51472ce1262227bc1ff3f4ce6e38ed8fc475c661d905e7f5f8a5a5b0d52746c",
+          "lines": 101,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/validation.py",
+          "sha256": "8686ab69b9334dc0e3aafe11dc3a834a006375cef4bf586c9e8771b0a6033f17",
+          "lines": 74,
+          "hits": [
+            {
+              "line": 11,
+              "source": "from app.services.invoice_policy import DEFAULT_POLICY_PATH, load_invoice_policy"
+            },
+            {
+              "line": 44,
+              "source": "policy = load_invoice_policy(DEFAULT_POLICY_PATH if policy_path is None else policy_path)"
+            }
+          ]
+        },
+        {
+          "path": "data/ocr-smoke/generate.py",
+          "sha256": "4108314c04087db307caae2dae31bdab62f826b00b0afc1376089815fab17ee3",
+          "lines": 57,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "sha256": "aec8eb522dbb277a0e0e1b9e74f58361db79e6df49749601ae7faeea33c1b9f9",
+          "lines": 46,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/main.tsx",
+          "sha256": "f91188e1ca903013b1c2be549627e6360ac2d83c33979cacf3534671478b95b1",
+          "lines": 11,
+          "hits": []
+        },
+        {
+          "path": "frontend/vite.config.ts",
+          "sha256": "537bcf934522a5030ec0d25e9957be60e5489bfb40d25b31033ef97618bd1bb1",
+          "lines": 6,
+          "hits": []
+        }
+      ]
+    },
+    {
+      "ref": "origin/main",
+      "sha": "94c5101b94a43f1b0e2814d1cdfeee4139289673",
+      "files": 1,
+      "implementation_files": 0,
+      "test_paths_only": [],
+      "sources": []
+    },
+    {
+      "ref": "origin/minhthao",
+      "sha": "997da9fe1cf617dcf4ec53fe5ed2ce2d5a4469ee",
+      "files": 171,
+      "implementation_files": 74,
+      "test_paths_only": [
+        "frontend/src/components/OCRTextCard.test.tsx",
+        "frontend/src/components/StatusBadge.test.tsx",
+        "frontend/src/pages/DocumentDetailPage.test.tsx",
+        "frontend/src/utils/files.test.ts",
+        "tests/conftest.py",
+        "tests/e2e/__init__.py",
+        "tests/integration/__init__.py",
+        "tests/integration/test_auth_ownership.py",
+        "tests/integration/test_document_review.py",
+        "tests/unit/__init__.py",
+        "tests/unit/test_ai_api.py",
+        "tests/unit/test_backend_api.py",
+        "tests/unit/test_classification.py",
+        "tests/unit/test_classification_contract.py",
+        "tests/unit/test_database_models.py",
+        "tests/unit/test_document_repository.py",
+        "tests/unit/test_evaluation_metrics.py",
+        "tests/unit/test_extraction.py",
+        "tests/unit/test_file_validation.py",
+        "tests/unit/test_ocr.py",
+        "tests/unit/test_ocr_layout.py",
+        "tests/unit/test_ocr_text.py",
+        "tests/unit/test_preprocessing.py",
+        "tests/unit/test_retention.py",
+        "tests/unit/test_storage.py",
+        "tests/unit/test_upload_service.py"
+      ],
+      "sources": [
+        {
+          "path": "ai_service/__init__.py",
+          "sha256": "eeabc856f32fe8c6a1abc86f88169ff1569a632e1b0436e5e7f24d179bf220a1",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "ai_service/classification/__init__.py",
+          "sha256": "b2707af0a025efe3a748589a24992fbc62014828958546e9d66506510836244f",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "ai_service/classification/confidence.py",
+          "sha256": "ac807f96d1979a64cd2c5b4eadd59552209630140db91b82061095c74681ab05",
+          "lines": 73,
+          "hits": []
+        },
+        {
+          "path": "ai_service/classification/engine.py",
+          "sha256": "0bc4a53ab32b0112db48aca6298684ac303a1db2c983ccb3f2060e751d1cb665",
+          "lines": 120,
+          "hits": []
+        },
+        {
+          "path": "ai_service/classification/rules.py",
+          "sha256": "ac6e42b527f37c0f5965abe331a02be74b1c5e553327a0911b2bf91f20c78578",
+          "lines": 136,
+          "hits": []
+        },
+        {
+          "path": "ai_service/config.py",
+          "sha256": "4839636120c31c829df1443db1a1d0c62284453d4a9d3f8def70abcdf4d77d39",
+          "lines": 19,
+          "hits": []
+        },
+        {
+          "path": "ai_service/evaluation/__init__.py",
+          "sha256": "714d5dffe274dd4e80879d5f34ac21344c87dc51587f06bf84b6a1f53439284b",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "ai_service/evaluation/metrics.py",
+          "sha256": "336b4236b38f74659d9ef79c11f8904e42cba236bdc9a7e5d99397597e646654",
+          "lines": 73,
+          "hits": []
+        },
+        {
+          "path": "ai_service/extraction/__init__.py",
+          "sha256": "ed7dd313ffe983402e59ba07b4e98ece63517a06e82e925c90d3c21b36e182e5",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "ai_service/extraction/confidence.py",
+          "sha256": "36a266012a62c9dd0031ab3e02b9d0ebbc25a35f9990b3bc372b7ce07b60b848",
+          "lines": 134,
+          "hits": []
+        },
+        {
+          "path": "ai_service/extraction/engine.py",
+          "sha256": "9f8e700bbd9165299b1d46098c02d2fdefe473a5ee5b412e9d3e4326d0e2af15",
+          "lines": 81,
+          "hits": []
+        },
+        {
+          "path": "ai_service/extraction/rules.py",
+          "sha256": "b8a173501bb83e7a05d99326f1f2d65a947989469143ee3b17c74141bd84e010",
+          "lines": 89,
+          "hits": []
+        },
+        {
+          "path": "ai_service/main.py",
+          "sha256": "d2a53f5e189dc80f3c463de463e66b26a2ab068d7316ad6b16cc54c01e575483",
+          "lines": 66,
+          "hits": [
+            {
+              "line": 35,
+              "source": "async def process_document(file: UploadFile = File(...)) -> dict:"
+            }
+          ]
+        },
+        {
+          "path": "ai_service/ocr/__init__.py",
+          "sha256": "9ee182fdb2922e5884ae007726e51c4aa4c77d11ae899d35e8c1f0fc7ce77671",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "ai_service/ocr/confidence.py",
+          "sha256": "2c03d6c67ba2f7d87fc9e35e6d29b909ee8f290c75f5669b7b54ee87c383e925",
+          "lines": 73,
+          "hits": []
+        },
+        {
+          "path": "ai_service/ocr/engine.py",
+          "sha256": "10ebf8122df36ed036cd466e389097489f17e9b10b5925cb3c5b1aa97dd5f61d",
+          "lines": 255,
+          "hits": []
+        },
+        {
+          "path": "ai_service/ocr/layout.py",
+          "sha256": "1db59603cd5aad0833cf179a6e6122caf1f89fe1fe9c964c58f64414e6d5f24a",
+          "lines": 281,
+          "hits": []
+        },
+        {
+          "path": "ai_service/ocr/postprocess.py",
+          "sha256": "0940a585ffba6ec1b019421e4aff62ce62aca8a14766cf1758f6169352e23771",
+          "lines": 84,
+          "hits": []
+        },
+        {
+          "path": "ai_service/pipeline.py",
+          "sha256": "b784bdda6064960a42c70c6fe7196f4c8eeebcc28bb21e15614eff3081bc1b8e",
+          "lines": 104,
+          "hits": [
+            {
+              "line": 44,
+              "source": "def process(self, path: str | Path) -> dict:"
+            }
+          ]
+        },
+        {
+          "path": "ai_service/preprocessing/__init__.py",
+          "sha256": "91cc35e2a1492231a00103247ac495d41a1869496a4013d20498557fb4b07db3",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "ai_service/preprocessing/document.py",
+          "sha256": "3e016609a73952cbd3c3fb05b41e490fbfb94b0b94b2cad0d14bde986d013ed2",
+          "lines": 131,
+          "hits": []
+        },
+        {
+          "path": "ai_service/preprocessing/image.py",
+          "sha256": "52d5c8cc74435ff9c34377a3c41839c1bfa3a5b351faf781d0a180718df9fa4a",
+          "lines": 157,
+          "hits": []
+        },
+        {
+          "path": "ai_service/validation.py",
+          "sha256": "2a55afa5bd59fcbcc90c6fe7d90e99814a1a71e15a2c8732c44eeb8864fb25da",
+          "lines": 23,
+          "hits": []
+        },
+        {
+          "path": "backend/app/__init__.py",
+          "sha256": "a5c721f646c7a0e9b60cedd09224f8f971ac4f7d8f1af5bb35870420c9f11e73",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/api/__init__.py",
+          "sha256": "ea9cd2a3163b8255f22807c20a14feba2f8deb8a8991d11497247589b3752b2c",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/api/auth.py",
+          "sha256": "f9fcc80b4649a403c01815b34d7b835d781d3449d15d544c83bf63387176be7a",
+          "lines": 69,
+          "hits": []
+        },
+        {
+          "path": "backend/app/api/dependencies.py",
+          "sha256": "17a844f229b1010bd031ac8b687cc5c4ce77b565a7bae957dcc32b34d2c22efc",
+          "lines": 25,
+          "hits": []
+        },
+        {
+          "path": "backend/app/api/documents.py",
+          "sha256": "ffdc0ce9eac62fc09d213ef8d6cac5841943bef1d0f2d52b32e9f83509e9c4e8",
+          "lines": 130,
+          "hits": [
+            {
+              "line": 48,
+              "source": "async def process_document(document_id: str, service: DocumentService = Depends(get_document_service)):"
+            }
+          ]
+        },
+        {
+          "path": "backend/app/api/security.py",
+          "sha256": "ae53da1c6c4a041a198b44ed5c8f7261173f74c8fe08efb158e1352ea20058b2",
+          "lines": 29,
+          "hits": []
+        },
+        {
+          "path": "backend/app/core/__init__.py",
+          "sha256": "7e43348f2af46cce74effd9e1826cb31efe26690042fd95af087b01a8bf2e9f0",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/core/config.py",
+          "sha256": "59998aa92f358d0c7660f382e8cd1626b9351a59770d5349904ead1894987f47",
+          "lines": 95,
+          "hits": []
+        },
+        {
+          "path": "backend/app/core/database.py",
+          "sha256": "cc135ce3df1dcc2cb2dc81e49bbfc384e5d1d2db271ccba3259cb6d2fea1007b",
+          "lines": 30,
+          "hits": []
+        },
+        {
+          "path": "backend/app/core/logging.py",
+          "sha256": "363d6ad079df4672e348a8c26692d2d08bef567a8629490ce654d04d1360ab33",
+          "lines": 61,
+          "hits": []
+        },
+        {
+          "path": "backend/app/core/security.py",
+          "sha256": "9606e1820d3bb555e7d9832e166f4b5e7ef4da7c649684ef4bfebe989b034aab",
+          "lines": 32,
+          "hits": []
+        },
+        {
+          "path": "backend/app/main.py",
+          "sha256": "368208e42dac95e10f26f2addb1a7efab5fbe6665cb1ae650a2db42027464ae5",
+          "lines": 83,
+          "hits": []
+        },
+        {
+          "path": "backend/app/models/__init__.py",
+          "sha256": "4573be6ce0129dbb0d9d695ecf9ab07b112b03f0a66c96701bb2380f8136a7eb",
+          "lines": 5,
+          "hits": []
+        },
+        {
+          "path": "backend/app/models/document.py",
+          "sha256": "d1017466d2ebd8cd8cc8dc7eb614557ad2cd1c2136f1b8048735ffb2c92d03c8",
+          "lines": 132,
+          "hits": []
+        },
+        {
+          "path": "backend/app/repositories/__init__.py",
+          "sha256": "25a05d18dcb066555306abe2b0bde6baf854ecac16aba7376ab060e98c808fb1",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/repositories/documents.py",
+          "sha256": "95f0fe7c47e067ee0d3aa4aa2940e2ab1e0e98c5b4d72a966c9427f99f229e90",
+          "lines": 228,
+          "hits": []
+        },
+        {
+          "path": "backend/app/retention_cli.py",
+          "sha256": "e0a7f15aadb95fcda199fa010baec67bc17688569540c2a17fad35ad2c771ff4",
+          "lines": 19,
+          "hits": []
+        },
+        {
+          "path": "backend/app/schemas/__init__.py",
+          "sha256": "f510c0928414bd512f691d0dabd39b847d6cecbe162fc9fca1dcced84989eb63",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/schemas/auth.py",
+          "sha256": "77c0cd52e0acbecbf4f29dd6885788b562dd6809a381ae09f4e13bbd276cedb9",
+          "lines": 26,
+          "hits": []
+        },
+        {
+          "path": "backend/app/schemas/documents.py",
+          "sha256": "bb1e7aaa0a3d800026cfd159fe3b6a60836ffeb91aec6523b53fd89209b85485",
+          "lines": 159,
+          "hits": []
+        },
+        {
+          "path": "backend/app/seed_demo.py",
+          "sha256": "83ae83e8a5e06c650f3f4d7fd332fb64806ccd1460013e4930622579f6432446",
+          "lines": 28,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/__init__.py",
+          "sha256": "3368189ec7c0dc6c74845b60bffe04e86ee82ceba8f6ca06cdbe9449cda42640",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/documents.py",
+          "sha256": "5499b5c7a4ef75ddeea6c7743d1b1a76ec4078fe1bd41d024f212644392e9da9",
+          "lines": 168,
+          "hits": [
+            {
+              "line": 49,
+              "source": "async def process(self, document_id: str):"
+            }
+          ]
+        },
+        {
+          "path": "backend/app/services/file_validation.py",
+          "sha256": "39eddd371dd534f72e2090ad8e46e3eea831787ee6d823e113d2f7d3f230b586",
+          "lines": 95,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/ocr_text.py",
+          "sha256": "0ae118c31e624ca003fb193c08be7782505816b5a33df2e821821d52c81bddf9",
+          "lines": 92,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/retention.py",
+          "sha256": "8e622c414d55a2c3990196bae13255d8bf37ecf1f73acf710b2d6b7f735e80e3",
+          "lines": 45,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/search.py",
+          "sha256": "8c50153e784c0f6de659965191bc4b4dc5bfa5e137166afe666c8dd2d5d97273",
+          "lines": 105,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/storage.py",
+          "sha256": "868d67e7677e69a7b417d23d47231f45c3ea3995e6693b75dea09ef9bd3597a1",
+          "lines": 85,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/upload.py",
+          "sha256": "1163a72cc95779e28f00df907d91174fba52754ac080e73cca56366252caff9f",
+          "lines": 55,
+          "hits": []
+        },
+        {
+          "path": "backend/migrations/env.py",
+          "sha256": "7429fdc58ec9a1b8315335b40f6955928b14132192702f7f71e5bf8fb50e8f8f",
+          "lines": 50,
+          "hits": []
+        },
+        {
+          "path": "backend/migrations/versions/0001_initial.py",
+          "sha256": "f18cdd070b65cb7bbfdfde17bf06d629fe5fb2306264bbed605521d363fd8a19",
+          "lines": 64,
+          "hits": []
+        },
+        {
+          "path": "backend/migrations/versions/0002_auth_and_ownership.py",
+          "sha256": "b7e8d2ee8efaede9b2e5f8369a10258879e05f2448132a6de6a13c5fb54ac9d9",
+          "lines": 39,
+          "hits": []
+        },
+        {
+          "path": "backend/migrations/versions/0003_human_review.py",
+          "sha256": "09674971a59e4abd11cba377283608b71f37a8eb8b447e846a4c718ed058e934",
+          "lines": 29,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "sha256": "600e08e85cae822b19c03d951a07e261d3176e80d04930504bc8fd6997100336",
+          "lines": 2,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/api/client.ts",
+          "sha256": "6f8af7ed3a82d7b7e562d01d52443f9c0e29bfa7431aba60aceb955acd667e2c",
+          "lines": 8,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/components/Layout.tsx",
+          "sha256": "8f50d11dbb8b3574afb926444febcdd0171804168a69fdc13fb6eabda168792e",
+          "lines": 2,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/components/OCRTextCard.tsx",
+          "sha256": "08fb2cc3e6c61b692c888791676c0e813165c1f1d9bce4ddc2dfe1d23955fdad",
+          "lines": 26,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/components/StatusBadge.tsx",
+          "sha256": "d6ca5718691fa713b567113e18bfe31145a62c6b63001e2cb09fa99eb9e6436b",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/contexts/AuthContext.tsx",
+          "sha256": "748a08d2542ac4c58a36b5b32376e7c8739ee4e80e919561f3cb514563d680b3",
+          "lines": 3,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/main.tsx",
+          "sha256": "3e11caccf7df3b02bfd498ef5495d817c15f9fe25604d61536a3d00940918abc",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/pages/DashboardPage.tsx",
+          "sha256": "10e5c36951ab6f3601835ac46f7d32c401e8653bb56b36fed34b9cc02895d216",
+          "lines": 2,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/pages/DocumentDetailPage.tsx",
+          "sha256": "a651aad6ddde3b6fdcf0ad243f280a24acdf6fd9eed6ee268ca3c813fa88b1a6",
+          "lines": 34,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/pages/DocumentsPage.tsx",
+          "sha256": "7c8ea54c5e66b7ff68d95940d083ec97e242034237306818a17afc699157b140",
+          "lines": 2,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/pages/LoginPage.tsx",
+          "sha256": "bc33e5fdd17d207e0384aa798ed17b4625240f7e318bc3a0cb6e20bbeefb42bb",
+          "lines": 2,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/pages/UploadPage.tsx",
+          "sha256": "c01ac69a446c623f9fddb17f2e9e284dd0e6bee895827f55d98eb0d9676d7b5e",
+          "lines": 52,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/types/index.ts",
+          "sha256": "2fa6f1d001fa8dce893295403ad91d3006a2094306f889b461ba55a6c573e647",
+          "lines": 9,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/utils/files.ts",
+          "sha256": "f1176b07b90b5138be77729b93ee093647b1cdf7b4c4fc7afe6989dd887b2e1f",
+          "lines": 2,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/vite-env.d.ts",
+          "sha256": "424faf9241dd699dda995b367ed36665732da1e6ec1f33b2fd40394488ecac92",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "frontend/vite.config.ts",
+          "sha256": "2a4529e4dea33096c10535def4afe8402e8657aadbfb9e246c97edfaf3d65037",
+          "lines": 5,
+          "hits": []
+        },
+        {
+          "path": "scripts/evaluate_ocr.py",
+          "sha256": "d8c5d5f8ac15ee1b58d21818c00b82bd37fac138aa5f7effe806c18ebbd32f99",
+          "lines": 121,
+          "hits": []
+        },
+        {
+          "path": "scripts/generate_demo_fixtures.py",
+          "sha256": "6204cedd9b0bb5fc3e408d19d73d5fad5015f625965a6392dcb2a9f86a8bd5f8",
+          "lines": 114,
+          "hits": []
+        }
+      ]
+    },
+    {
+      "ref": "origin/nhatquang",
+      "sha": "db727496312087af6495aa12e7c9a52df3dfa230",
+      "files": 590,
+      "implementation_files": 62,
+      "test_paths_only": [
+        "backend/tests/test_api.py",
+        "backend/tests/test_domain.py",
+        "backend/tests/test_evaluation.py",
+        "backend/tests/test_manifest.py",
+        "backend/tests/test_product.py",
+        "backend/tests/test_product_evaluation.py",
+        "frontend/src/app/App.test.tsx",
+        "frontend/src/features/documents/ReviewPanel.test.tsx",
+        "pipeline/tests/test_pipeline.py"
+      ],
+      "sources": [
+        {
+          "path": "backend/src/docintel/__init__.py",
+          "sha256": "909f48e86075ad8c3cdf4c82edb841e52a36499632806eb9d6a4d2a3fad9e1b1",
+          "lines": 3,
+          "hits": []
+        },
+        {
+          "path": "backend/src/docintel/adapters/fixture.py",
+          "sha256": "7e0b20aa5a579184570ccb8486d0a8dcfe6ac9790f1bf5fb38fd0225a4348caa",
+          "lines": 36,
+          "hits": []
+        },
+        {
+          "path": "backend/src/docintel/adapters/interfaces.py",
+          "sha256": "856ff37cb8155f0afe0206b294eac816dde348fa5cbc4781557790f155e3dcdc",
+          "lines": 12,
+          "hits": []
+        },
+        {
+          "path": "backend/src/docintel/adapters/pipeline.py",
+          "sha256": "9656d587c1df887e1905872e25ae7956d129ce0093e86b2518cc671dd27ed149",
+          "lines": 47,
+          "hits": []
+        },
+        {
+          "path": "backend/src/docintel/api/app.py",
+          "sha256": "00d64163f9b03aa127b05f4cf28dd604ff823b7d784eb3be622dd474282f2d68",
+          "lines": 215,
+          "hits": [
+            {
+              "line": 53,
+              "source": "allow_headers=[\"Content-Type\", \"Idempotency-Key\"],"
+            }
+          ]
+        },
+        {
+          "path": "backend/src/docintel/api/documents.py",
+          "sha256": "61d7d71088bd12d854681a0f2599fabdbcd669c23659999ae74d25cdda40cd2c",
+          "lines": 121,
+          "hits": [
+            {
+              "line": 6,
+              "source": "from starlette.concurrency import run_in_threadpool"
+            },
+            {
+              "line": 43,
+              "source": "status: Literal[\"queued\", \"running\", \"succeeded\", \"failed\", \"unavailable\"] | None = None,"
+            },
+            {
+              "line": 54,
+              "source": "idempotency_key: Annotated[str | None, Header(pattern=r\"^[A-Za-z0-9_-]{1,96}$\")] = None,"
+            },
+            {
+              "line": 64,
+              "source": "return await run_in_threadpool("
+            },
+            {
+              "line": 65,
+              "source": "service(request).upload, bytes(data), document_type, data_origin, filename, idempotency_key"
+            },
+            {
+              "line": 106,
+              "source": "document_id, RevisionRequest(run_id=run_id, expected_revision=revision)"
+            }
+          ]
+        },
+        {
+          "path": "backend/src/docintel/api/models.py",
+          "sha256": "fba21796a103063ac13eddc52b3bbadd098c5d56fd714434988ff9cabae9d25a",
+          "lines": 39,
+          "hits": []
+        },
+        {
+          "path": "backend/src/docintel/config.py",
+          "sha256": "c7b5e7994ebc065edb1bc630d8d71d3da056ffaa51e03c9e019b590281fcb69c",
+          "lines": 33,
+          "hits": []
+        },
+        {
+          "path": "backend/src/docintel/domain/documents.py",
+          "sha256": "ad31133c9495dba9ffda816bb9320beb86ac353b77dfa9dd75687c41212e16f6",
+          "lines": 289,
+          "hits": [
+            {
+              "line": 96,
+              "source": "status: Literal[\"queued\", \"running\", \"succeeded\", \"failed\", \"unavailable\"]"
+            },
+            {
+              "line": 128,
+              "source": "expected_revision: Annotated[int, Field(ge=1)]"
+            },
+            {
+              "line": 134,
+              "source": "expected_revision: Annotated[int, Field(ge=1)]"
+            }
+          ]
+        },
+        {
+          "path": "backend/src/docintel/domain/models.py",
+          "sha256": "653aa25cdfb25fbc8713a16cba3f4964086b10a2cb754ab2fc31c002ee2e1ded",
+          "lines": 279,
+          "hits": []
+        },
+        {
+          "path": "backend/src/docintel/domain/normalization.py",
+          "sha256": "d3007c924c877eb42cb794de1592dd570b9303b7848c86e3723e79baf63a933b",
+          "lines": 34,
+          "hits": []
+        },
+        {
+          "path": "backend/src/docintel/domain/review.py",
+          "sha256": "8fd6a52a2e1fc6abe6adf8b76a42c4133c4f3e2909afd95757fea9b115dd5580",
+          "lines": 6,
+          "hits": []
+        },
+        {
+          "path": "backend/src/docintel/domain/validation.py",
+          "sha256": "acbc88935b5a26425d8c9b2c2fbbdb2323b63d60ebda8af05d9614fcb2415423",
+          "lines": 34,
+          "hits": []
+        },
+        {
+          "path": "backend/src/docintel/domain/versioning.py",
+          "sha256": "74ff3ac413bced360ee37aec429f713ff69c1ca85f6e3f8aaa24c7e482e6f3dd",
+          "lines": 37,
+          "hits": []
+        },
+        {
+          "path": "backend/src/docintel/evaluation/cli.py",
+          "sha256": "f6a82f333fb01242767f0913186bd975196aaabccb02532623f41879a3a56b2d",
+          "lines": 97,
+          "hits": []
+        },
+        {
+          "path": "backend/src/docintel/evaluation/manifest.py",
+          "sha256": "13d37d68a7aeb912c4b7e37f25a067071d9e6c99bd311bf3af74e6eebb026edf",
+          "lines": 54,
+          "hits": []
+        },
+        {
+          "path": "backend/src/docintel/evaluation/metrics.py",
+          "sha256": "20f36e2210fe3c210cee3075aeb688aef8a840e9ab12656c2659a65402de8d9b",
+          "lines": 155,
+          "hits": []
+        },
+        {
+          "path": "backend/src/docintel/evaluation/product.py",
+          "sha256": "30aaa3850fa45151a461b41c8713f611e0b580b9b96f5fc262df83dc07817862",
+          "lines": 182,
+          "hits": []
+        },
+        {
+          "path": "backend/src/docintel/repositories/locking.py",
+          "sha256": "136bb05bd5b69b8a78929084b70cf5b3c7bad3951ebce23836c049560d7558bb",
+          "lines": 46,
+          "hits": []
+        },
+        {
+          "path": "backend/src/docintel/repositories/sqlite.py",
+          "sha256": "e3faa10760a449dbc68d9fd8bd719cefa6e700a8d1b503a44ef4192a4462219e",
+          "lines": 60,
+          "hits": [
+            {
+              "line": 53,
+              "source": "connection.execute(\"BEGIN IMMEDIATE\" if write else \"BEGIN\")"
+            }
+          ]
+        },
+        {
+          "path": "backend/src/docintel/services/documents.py",
+          "sha256": "b8fa0ab89880b52ecfeec07f97347ddc74ae639a7c581d2acb21d5f9d9480893",
+          "lines": 537,
+          "hits": [
+            {
+              "line": 188,
+              "source": "idempotency_key: str | None,"
+            },
+            {
+              "line": 194,
+              "source": "\"SELECT * FROM documents WHERE idempotency_key=?\", (idempotency_key,)"
+            },
+            {
+              "line": 196,
+              "source": "if idempotency_key"
+            },
+            {
+              "line": 205,
+              "source": "raise ProductError(409, \"IDEMPOTENCY_CONFLICT\", \"Khóa đã dùng cho tài liệu khác.\")"
+            },
+            {
+              "line": 238,
+              "source": "idempotency_key,"
+            },
+            {
+              "line": 242,
+              "source": "\"INSERT INTO runs(run_id,document_id,status,created_at) VALUES(?,?,'queued',?)\","
+            },
+            {
+              "line": 249,
+              "source": "if idempotency_key:"
+            },
+            {
+              "line": 250,
+              "source": "return self.upload(data, document_type, data_origin, filename, idempotency_key)"
+            },
+            {
+              "line": 259,
+              "source": "\"SELECT count(*) FROM runs WHERE status IN ('queued','running')\""
+            },
+            {
+              "line": 277,
+              "source": "if expected_run_id != run[\"run_id\"] or run[\"status\"] in (\"queued\", \"running\"):"
+            },
+            {
+              "line": 282,
+              "source": "\"INSERT INTO runs(run_id,document_id,status,created_at) VALUES(?,?,'queued',?)\","
+            },
+            {
+              "line": 319,
+              "source": "if revision[\"revision\"] != request.expected_revision:"
+            },
+            {
+              "line": 332,
+              "source": "expected_revision=request.expected_revision,"
+            },
+            {
+              "line": 374,
+              "source": "(run.run_id, request.expected_revision),"
+            },
+            {
+              "line": 377,
+              "source": "connection, document_id, run.run_id, request.expected_revision, \"confirmed\", {}"
+            },
+            {
+              "line": 480,
+              "source": "def process_next(self) -> bool:"
+            },
+            {
+              "line": 485,
+              "source": "\"WHERE r.status='queued' ORDER BY r.created_at LIMIT 1\""
+            }
+          ]
+        },
+        {
+          "path": "backend/src/docintel/services/fixtures.py",
+          "sha256": "2edc84f1e803c9744919c44fdf31e5dc19b5b204086443b246aab6559c961b33",
+          "lines": 42,
+          "hits": []
+        },
+        {
+          "path": "backend/src/docintel/services/worker.py",
+          "sha256": "b9e5da3e7da6db0752ad146c32047b46836d4e225632add07bc1e887f3a027c8",
+          "lines": 40,
+          "hits": []
+        },
+        {
+          "path": "backend/src/docintel/storage/local.py",
+          "sha256": "16acb5ae733d3a3a1d1a229b0ae23c6655798caf39f8d7593f4b64191d6f1552",
+          "lines": 28,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/app/App.tsx",
+          "sha256": "ce17f6822a56589e2b0ab3eec52010a3119763da632baff4c57ff7600ebfdc98",
+          "lines": 182,
+          "hits": [
+            {
+              "line": 80,
+              "source": "retry={() => setAttempt(attempt + 1)}"
+            }
+          ]
+        },
+        {
+          "path": "frontend/src/components/Notice.tsx",
+          "sha256": "14a42054755fa7930a187e7238d07475b8c57441b29f78d9d67b2d3a3afdcb45",
+          "lines": 8,
+          "hits": [
+            {
+              "line": 1,
+              "source": "export function Notice({ message, retry }: { message: string; retry?: () => void }) {"
+            },
+            {
+              "line": 5,
+              "source": "{retry && <button onClick={retry}>Thử lại</button>}"
+            }
+          ]
+        },
+        {
+          "path": "frontend/src/features/FixtureViewer.tsx",
+          "sha256": "40e6b84c93e6c7a0cf2546bfaa754e581f0bcc9a0f819cfa6d63a710f2a0912a",
+          "lines": 194,
+          "hits": [
+            {
+              "line": 73,
+              "source": "{error && <Notice message={error} retry={() => setAttempt(attempt + 1)} />}"
+            }
+          ]
+        },
+        {
+          "path": "frontend/src/features/documents/HistoryPanel.tsx",
+          "sha256": "48908506aa9a3a286b0b643efe7721113acfb0b884779857da3d7f1695de4579",
+          "lines": 100,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/features/documents/ReviewPanel.tsx",
+          "sha256": "7441b6ce97571935f0fc43e9ba7330f67b365046c834c445cc76102923205913",
+          "lines": 329,
+          "hits": [
+            {
+              "line": 79,
+              "source": "expected_revision: review.revision,"
+            },
+            {
+              "line": 300,
+              "source": "expected_revision: review!.revision,"
+            }
+          ]
+        },
+        {
+          "path": "frontend/src/features/documents/SourcePreview.tsx",
+          "sha256": "bbc635b08889dbe524be97d00a695b894435e565b58b6885d3fed17d3a0c3b0c",
+          "lines": 72,
+          "hits": [
+            {
+              "line": 44,
+              "source": "src={`${document.image_url}?retry=${attempt}`}"
+            }
+          ]
+        },
+        {
+          "path": "frontend/src/features/documents/Workspace.tsx",
+          "sha256": "b23b83181f7e749222bc011f26c2979d2d5b5f7aa161b0c251400234193ffca9",
+          "lines": 402,
+          "hits": [
+            {
+              "line": 64,
+              "source": "const processing = document?.run.status === 'queued' || document?.run.status === 'running';"
+            },
+            {
+              "line": 68,
+              "source": "const timer = window.setInterval(() => {"
+            },
+            {
+              "line": 72,
+              "source": "if (!['queued', 'running'].includes(result.run.status)) setRefresh((old) => old + 1);"
+            },
+            {
+              "line": 132,
+              "source": "'Idempotency-Key': uploadKey.current!.key,"
+            },
+            {
+              "line": 260,
+              "source": "{['queued', 'running', 'succeeded', 'failed', 'unavailable'].map((value) => ("
+            }
+          ]
+        },
+        {
+          "path": "frontend/src/features/documents/api.ts",
+          "sha256": "f77d5602f55bfed1b8434eacf18bc39f0b65f3f329d07e857b56eb633f46245b",
+          "lines": 75,
+          "hits": [
+            {
+              "line": 68,
+              "source": "queued: 'Đang chờ',"
+            }
+          ]
+        },
+        {
+          "path": "frontend/src/lib/api.ts",
+          "sha256": "28ebdaa6c9d6b1ad2ad5341fb2818af825ffb48e7f64f48ed878cd8c047e6e88",
+          "lines": 15,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/main.tsx",
+          "sha256": "4186ac43fb420646c462600ac7343023ad2be81630f393ef6f93e3d92dd73447",
+          "lines": 10,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/test-setup.ts",
+          "sha256": "268e7200d092daa3225eb06790ed72842e5d3234a53980c90ff463d7b81528d3",
+          "lines": 5,
+          "hits": []
+        },
+        {
+          "path": "frontend/vite.config.ts",
+          "sha256": "f04a3e9abc056ef615525bbf2cba41b6aba2c155fd5b27f1b1ff8616283fe2e8",
+          "lines": 12,
+          "hits": []
+        },
+        {
+          "path": "pipeline/src/document_pipeline/__init__.py",
+          "sha256": "f8786846149311e892dfd29702d3e23f757820362ada0bc78c08bba926d03d72",
+          "lines": 3,
+          "hits": []
+        },
+        {
+          "path": "pipeline/src/document_pipeline/cli.py",
+          "sha256": "9a3bb4157775d2ff2bc16f87f0ddc265a4948656220c52f908f5ee30ea6e5c7a",
+          "lines": 40,
+          "hits": []
+        },
+        {
+          "path": "pipeline/src/document_pipeline/config.py",
+          "sha256": "d81f740524e0dbdad280e01d47b95e50f4ccc98080ef25bce0034f5dc94f6242",
+          "lines": 37,
+          "hits": []
+        },
+        {
+          "path": "pipeline/src/document_pipeline/errors.py",
+          "sha256": "caac7a5ab45eca160642be5215ae541614ba19077168127f4b9610920533c3ae",
+          "lines": 6,
+          "hits": []
+        },
+        {
+          "path": "pipeline/src/document_pipeline/extraction.py",
+          "sha256": "b29d4f645412b7fc1fcd875ce41a5223dd59186cb9f7cb4f9f28e472c7a28f0e",
+          "lines": 127,
+          "hits": []
+        },
+        {
+          "path": "pipeline/src/document_pipeline/image_worker.py",
+          "sha256": "606366af84faefa64d159ead61edf39d01cd4514e2a0c6017fb299cd26a0aa7a",
+          "lines": 66,
+          "hits": []
+        },
+        {
+          "path": "pipeline/src/document_pipeline/models.py",
+          "sha256": "671294073bc3829095b06724bac83da50a9ddd1f80abee93b86741cc51abe34d",
+          "lines": 41,
+          "hits": []
+        },
+        {
+          "path": "pipeline/src/document_pipeline/normalization.py",
+          "sha256": "b1604ceeca1d044b322112d941d589fba9563c3b14acbf2dc7bf72d07145713d",
+          "lines": 42,
+          "hits": []
+        },
+        {
+          "path": "pipeline/src/document_pipeline/preprocessing.py",
+          "sha256": "8e0eba7fd3e003d08c48e00948e3c008adbc15a81f89854bc86d9cf0ef6cbc2c",
+          "lines": 80,
+          "hits": []
+        },
+        {
+          "path": "pipeline/src/document_pipeline/provenance.py",
+          "sha256": "fd4927ddfef54551a8c7fbb017b5d259b2349fc6ced506f5f352e0f00c867a80",
+          "lines": 49,
+          "hits": []
+        },
+        {
+          "path": "pipeline/src/document_pipeline/service.py",
+          "sha256": "56245880f3cb1f51deb92e04a2f5b0ddd23a306f37bb8999abd820b4fa524fd7",
+          "lines": 71,
+          "hits": []
+        },
+        {
+          "path": "pipeline/src/document_pipeline/tesseract.py",
+          "sha256": "0e54066c3be841f852da6957b64b38a842678bb08bff1f9f60e03e541f58489a",
+          "lines": 168,
+          "hits": []
+        },
+        {
+          "path": "scripts/backup_runtime.py",
+          "sha256": "3e3e34650aeed2e2488b3288814bcfeb6e514b9441be3e2f297b1a4260edf8d5",
+          "lines": 78,
+          "hits": []
+        },
+        {
+          "path": "scripts/build_release_manifest.py",
+          "sha256": "2cfcab7f8328922f5c6e0b647b30f9c80cc30a6d988f8faca301d1971da367ae",
+          "lines": 68,
+          "hits": []
+        },
+        {
+          "path": "scripts/check_data.py",
+          "sha256": "82d4eb65f045a7b52a9b34016d9162696e3cb24f8f479892b5ad32696dffe7c5",
+          "lines": 12,
+          "hits": []
+        },
+        {
+          "path": "scripts/check_repository.py",
+          "sha256": "aff78f2b7e24b3e764e2956d29e69a3123a1d9ec82338f8d3785617f98da6d2d",
+          "lines": 62,
+          "hits": []
+        },
+        {
+          "path": "scripts/evaluate_fixtures.py",
+          "sha256": "3a2e96bc9142b1761895a56524fade2d9e2093e8caeb03dc00c2b795451a4644",
+          "lines": 4,
+          "hits": []
+        },
+        {
+          "path": "scripts/evaluate_model.py",
+          "sha256": "ff0234a69ffdd3f2d0b7c35e68673b6f70bcf53e7883a4cb68baffb637fe6da4",
+          "lines": 106,
+          "hits": []
+        },
+        {
+          "path": "scripts/fetch_ocr_models.py",
+          "sha256": "4287e1e0b45552e9bf488be0888be8e93413b13b192c3ea038ac0c9db9bba287",
+          "lines": 65,
+          "hits": []
+        },
+        {
+          "path": "scripts/generate_contracts.py",
+          "sha256": "07263e5ea77116a209a65ed5d940a3b3ecfb4f735c095bc38646087a170908d3",
+          "lines": 71,
+          "hits": []
+        },
+        {
+          "path": "scripts/generate_examples.py",
+          "sha256": "6ec65cf56af41854b0838069dd01227f003f4f14f5742ddd0c63683510ea1c8c",
+          "lines": 40,
+          "hits": []
+        },
+        {
+          "path": "scripts/generate_fixtures.py",
+          "sha256": "0edc0625eb50fbc80ea9d51944587fd22e2a7a6627b3859e78926ea3f60c46ea",
+          "lines": 266,
+          "hits": []
+        },
+        {
+          "path": "scripts/generate_product_dataset.py",
+          "sha256": "904485fcf331011d2146450b54a099b7b8028b8f1db2b4c76616bd4934ca3b4c",
+          "lines": 181,
+          "hits": []
+        },
+        {
+          "path": "scripts/select_confidence_policy.py",
+          "sha256": "83e0c27bebdd582275e0d4c0c1fb9857c6a991f40206572047e9158d7458cade",
+          "lines": 79,
+          "hits": []
+        },
+        {
+          "path": "scripts/verify_foundation.py",
+          "sha256": "b6004d72e5968d8c407c6ce00d2abf418865c6f3a266d19454a23488ea370a37",
+          "lines": 66,
+          "hits": []
+        },
+        {
+          "path": "scripts/verify_product.py",
+          "sha256": "b5fe38cede01241447e765a95cfc77539e4e6ff292b5fd90486e026101bfc4f6",
+          "lines": 255,
+          "hits": [
+            {
+              "line": 25,
+              "source": "if document[\"run\"][\"status\"] not in (\"queued\", \"running\"):"
+            },
+            {
+              "line": 55,
+              "source": "headers={\"Idempotency-Key\": \"native-invoice\"},"
+            },
+            {
+              "line": 68,
+              "source": "headers={\"Idempotency-Key\": \"native-invoice\"},"
+            },
+            {
+              "line": 80,
+              "source": "\"upload_idempotency\","
+            },
+            {
+              "line": 85,
+              "source": "request = {\"run_id\": document[\"run\"][\"run_id\"], \"expected_revision\": 1}"
+            },
+            {
+              "line": 121,
+              "source": "\"expected_revision\": saved[\"review\"][\"revision\"],"
+            },
+            {
+              "line": 136,
+              "source": "\"expected_revision\": cleared[\"review\"][\"revision\"],"
+            },
+            {
+              "line": 146,
+              "source": "\"expected_revision\": cleared[\"review\"][\"revision\"],"
+            },
+            {
+              "line": 160,
+              "source": "json={\"run_id\": request[\"run_id\"], \"expected_revision\": revision},"
+            },
+            {
+              "line": 219,
+              "source": "\"expected_revision\": application[\"review\"][\"revision\"],"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "origin/personal/canhtung-main",
+      "sha": "61a31ab5888b925f35259b6e9966d0f979bb9cad",
+      "files": 268,
+      "implementation_files": 45,
+      "test_paths_only": [
+        "backend/tests/test_api.py",
+        "backend/tests/test_contracts.py",
+        "backend/tests/test_real_pipeline.py",
+        "backend/tests/test_review_validation.py",
+        "backend/tests/test_upload.py",
+        "data/tests/test_golden.py",
+        "data/tests/test_samples.py",
+        "evaluation/tests/test_dataset.py",
+        "evaluation/tests/test_metrics.py",
+        "evaluation/tests/test_regression.py",
+        "evaluation/tests/test_report.py",
+        "frontend/e2e/invoice.spec.ts",
+        "frontend/src/App.test.tsx",
+        "frontend/src/api/client.test.ts",
+        "frontend/src/features/documents/fileSelection.test.ts",
+        "frontend/src/features/documents/review.test.tsx",
+        "frontend/src/features/documents/upload.test.tsx",
+        "frontend/src/test/setup.ts",
+        "pipeline/tests/test_extraction.py",
+        "pipeline/tests/test_extraction_integration.py",
+        "pipeline/tests/test_ocr.py",
+        "pipeline/tests/test_ocr_integration.py",
+        "pipeline/tests/test_ocr_models.py",
+        "pipeline/tests/test_preprocessing.py"
+      ],
+      "sources": [
+        {
+          "path": "backend/__init__.py",
+          "sha256": "1b133bc918ee8e6c67c3a7030af46c2eef02e603611344b09e15eea10b1ec9d3",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/__init__.py",
+          "sha256": "f8c91bbd69fc99a580fc9b723ab6df7e9571c72ca4d23374c1dc765135d69e2e",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/models/__init__.py",
+          "sha256": "50ba34a91ad7947297a97faf4405f049d9299f2eb09073299bc95dbdb6fe76a7",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/models/contracts.py",
+          "sha256": "97258bd8d29d945271bf4b612f8937ae8aba3a611884a825f220cd54d041be34",
+          "lines": 10,
+          "hits": []
+        },
+        {
+          "path": "backend/export_schemas.py",
+          "sha256": "5e434944e806e6b8245ca6db31dd00f53a8062e948476101a913efe4de93b488",
+          "lines": 38,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/__init__.py",
+          "sha256": "e939f75a70cc0b319698aa96ae49a6140790d36c4a5312f4369c3f86afad13f5",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/api/__init__.py",
+          "sha256": "5420f769255222a276580534861e900ad8345f0c2afb23b437f060ac9aa560a4",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/api/extract.py",
+          "sha256": "3ac24024d3fb9a2a6ffa3a20c1b7446b5156a009160d4aef90deb61ef80d3629",
+          "lines": 79,
+          "hits": [
+            {
+              "line": 6,
+              "source": "from starlette.concurrency import run_in_threadpool"
+            },
+            {
+              "line": 65,
+              "source": "await run_in_threadpool(prepare_document, data,"
+            },
+            {
+              "line": 68,
+              "source": "run = await run_in_threadpool(run_document, data, settings.tessdata_dir,"
+            }
+          ]
+        },
+        {
+          "path": "backend/src/document_backend/api/health.py",
+          "sha256": "756d4eb39c324fa7bb6941354049c8063aef5bd2e86eda2c06097ac0c945a402",
+          "lines": 27,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/api/validate.py",
+          "sha256": "7d7ac9e9de6ed70edd0ced6497743e50fcd466b8a168b9c4b0ebd111b502179e",
+          "lines": 12,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/errors.py",
+          "sha256": "c4744f18aae11530ded9492df77f937debc97989a697cd8bd1e411dd8c484863",
+          "lines": 35,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/main.py",
+          "sha256": "0a1691f46cb0c998a8b06a11f471919924bdcd38438b141c29086c5c70ad51bd",
+          "lines": 29,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/services/__init__.py",
+          "sha256": "ba0b484cf1340277f59ee2899fdc7a3aa18da51e1cf55acd6c7e417955151b93",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/services/documents.py",
+          "sha256": "41841842d80feb8c56f09a05a53597bc22eafd9c46025ca3ec35c1fca0e4f1c6",
+          "lines": 47,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/services/mock_extraction.py",
+          "sha256": "1b5e3650bd4b9bbf4c8e1775afd30170c2ec465bffac9c4fd36c9853d2835b65",
+          "lines": 21,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/services/validation.py",
+          "sha256": "6fbec3abf1cab55ab711ec39c86f572072bf5afd2c2780c106e8e1410569e7f3",
+          "lines": 57,
+          "hits": []
+        },
+        {
+          "path": "backend/src/document_backend/settings.py",
+          "sha256": "a2f6123ffeecc1afd7f1428c12e0fb8c1999137334dcb1fc729c59f3a05df370",
+          "lines": 22,
+          "hits": []
+        },
+        {
+          "path": "conftest.py",
+          "sha256": "bbbfbce304774f6e671f902e88d48d8b583cc67809a82d10adc8faee75b7f4c0",
+          "lines": 20,
+          "hits": []
+        },
+        {
+          "path": "data/create_golden.py",
+          "sha256": "c500648b3c4aac5dacfed3f0d71af0f59a23c274c1b69b3885f065fa69d73da2",
+          "lines": 111,
+          "hits": []
+        },
+        {
+          "path": "data/create_samples.py",
+          "sha256": "1accc857809727350847904a3239b9bb9d3108786f66cd23db99a748df9fc0da",
+          "lines": 115,
+          "hits": []
+        },
+        {
+          "path": "evaluation/src/document_evaluation/__init__.py",
+          "sha256": "9f3a464ea8f7e1d00ea36c63617290484003cb0582285356e13e267a1f278a77",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "evaluation/src/document_evaluation/cli.py",
+          "sha256": "e087ab1bbe15fe44855b29829e13839a97c34a1160c31aa958dfc65e523c1981",
+          "lines": 96,
+          "hits": []
+        },
+        {
+          "path": "evaluation/src/document_evaluation/dataset.py",
+          "sha256": "bf6c8325c88238e26a81c93008e62fc7eabbcdc873d1259a3c7ab798bee91eff",
+          "lines": 37,
+          "hits": []
+        },
+        {
+          "path": "evaluation/src/document_evaluation/metrics.py",
+          "sha256": "9334dd2ea1a88a910cd500ed6c93ba7bac42214a155056471ec2a0bc7472ed5b",
+          "lines": 44,
+          "hits": []
+        },
+        {
+          "path": "frontend/playwright.config.ts",
+          "sha256": "67a77881c26ba1216134aff0f00aa0ad36715afc53e1888733d0f711aa3762cb",
+          "lines": 17,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "sha256": "3b1f56a779bdfe4140d43ce7bf123c3494e629b94a25d4ede8151c5898a89cde",
+          "lines": 26,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/api/client.ts",
+          "sha256": "e5792c06ebbe76105d340b757d97d5fd7f1dde1f5475054d9a4f1db056eb2264",
+          "lines": 110,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/features/documents/DocumentPreview.tsx",
+          "sha256": "6155017686eadb2ea9502065cddf9737391ad1c6ee6dcca16e5c748ae92d0fc0",
+          "lines": 19,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/features/documents/DocumentSelection.tsx",
+          "sha256": "2f216928326e24555cbd3481d5ad07f279e40b4264e90a0ff1f42144b08d1b11",
+          "lines": 82,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/features/documents/ExtractionResult.tsx",
+          "sha256": "69c6f28f79c397376a7a06139287bfbfb0b4d9bea9a74d50c7408cb62d1953b0",
+          "lines": 27,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/features/documents/InvoiceReview.tsx",
+          "sha256": "d5691563419a56ee555661d094be9f3b8ad8bbca2c62b55edd32a83fb9dbe26e",
+          "lines": 100,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/features/documents/fileSelection.ts",
+          "sha256": "33f8bc4600bc0ffc8350b8f931322ec9f470bd3a420b2adb2b10c55ccb19bddc",
+          "lines": 11,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/features/health/BackendStatus.tsx",
+          "sha256": "acdf3afa326b3c6452d1ced12b69bcad5c0f8cc742657ae2d69a76518f8bbb0d",
+          "lines": 54,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/main.tsx",
+          "sha256": "c76aaa0f81beebde6bdc5b020199f3bbc4c12171fdf9c8bb30cc417df23800ef",
+          "lines": 8,
+          "hits": []
+        },
+        {
+          "path": "frontend/vite.config.ts",
+          "sha256": "268447466c493d26547c1ab1b15104a318b4e39ed21568c988f1bb83be8f9614",
+          "lines": 21,
+          "hits": []
+        },
+        {
+          "path": "pipeline/src/document_pipeline/__init__.py",
+          "sha256": "b351ac8056ed8ed52635b84568272dc5f8c7c6666be6254a835d647a0e9cc93c",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "pipeline/src/document_pipeline/_pipeline_worker.py",
+          "sha256": "6be9c3c53cf19fc74a7fd078e032e1fba4a2fc4bbf6525ab24435b2f3e2c435b",
+          "lines": 33,
+          "hits": []
+        },
+        {
+          "path": "pipeline/src/document_pipeline/_preprocess_worker.py",
+          "sha256": "cb6bb63aeddf63597e3ed4866b945dc9ea84c63329bb08941115abcd6dc5254d",
+          "lines": 115,
+          "hits": []
+        },
+        {
+          "path": "pipeline/src/document_pipeline/extraction.py",
+          "sha256": "1730dcaebb16e77886012c4149980fb4920ab8fe635d55abda45f218fdb1750b",
+          "lines": 205,
+          "hits": []
+        },
+        {
+          "path": "pipeline/src/document_pipeline/ocr.py",
+          "sha256": "46395eebfcc19a9eef5fd85b0b2631cac826e72567c5bccaca900866aae6a532",
+          "lines": 176,
+          "hits": [
+            {
+              "line": 131,
+              "source": "# Do not expose stderr, source text, paths, or silently retry another model."
+            }
+          ]
+        },
+        {
+          "path": "pipeline/src/document_pipeline/ocr_models.py",
+          "sha256": "217577e82079258c8ee85c39debbdfdb62091c35ee1628d990f0d5247c82d938",
+          "lines": 90,
+          "hits": []
+        },
+        {
+          "path": "pipeline/src/document_pipeline/preprocessing.py",
+          "sha256": "70dead8d5e26820d17b82a7224af52b793f052ae2ac5b4681c5cb434b5a53d5e",
+          "lines": 116,
+          "hits": []
+        },
+        {
+          "path": "pipeline/src/document_pipeline/runner.py",
+          "sha256": "2d02f83cf70bdfa121c8450f4a75c40895980a16afd72d6f66e4c133356b0555",
+          "lines": 73,
+          "hits": []
+        },
+        {
+          "path": "schemas/src/document_contracts/__init__.py",
+          "sha256": "af000c91ff5ece0f695948a66a6f6f20c9c6f8dd5164f8626044b36eaae22367",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "schemas/src/document_contracts/models.py",
+          "sha256": "1537a57f11ca2e30573b090b1de7aad871ed7f3078170d8912ced7f47bd843ed",
+          "lines": 225,
+          "hits": []
+        }
+      ]
+    },
+    {
+      "ref": "origin/tuannguyen",
+      "sha": "52067697c1e4505eb36042e5fbe525ed984d2637",
+      "files": 83,
+      "implementation_files": 28,
+      "test_paths_only": [
+        "backend/tests/conftest.py",
+        "backend/tests/test_benchmark.py",
+        "backend/tests/test_health.py",
+        "backend/tests/test_normalization.py",
+        "backend/tests/test_ocr.py",
+        "backend/tests/test_ocr_real.py",
+        "backend/tests/test_pipeline.py",
+        "backend/tests/test_schemas.py",
+        "backend/tests/test_validation.py"
+      ],
+      "sources": [
+        {
+          "path": "backend/app/__init__.py",
+          "sha256": "a5629e053a622e8127e25c53c56fae229be7f1f27935ee71e0253a46711d0c97",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/benchmark/__init__.py",
+          "sha256": "943603223d6735abf8b6f8f3caff7325515f29d202fec274b5398fd3d85bea30",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/benchmark/__main__.py",
+          "sha256": "cc9f311f18c818641a710c6c6ad484568591dbd2ebc20fd77b7d728f2d733f9b",
+          "lines": 36,
+          "hits": []
+        },
+        {
+          "path": "backend/app/benchmark/contracts.py",
+          "sha256": "8c9bea34de06563224abb5e3620a216815b6a4a047d94fd621a376f4cd46e08d",
+          "lines": 126,
+          "hits": []
+        },
+        {
+          "path": "backend/app/benchmark/fixtures.py",
+          "sha256": "647f0e695ecdd7eb45f0e408df451ddd3b4470463ce85d01b2e36ff088079c51",
+          "lines": 72,
+          "hits": []
+        },
+        {
+          "path": "backend/app/benchmark/metrics.py",
+          "sha256": "f50416173a3b1ab8cc0a441617a539814ab5ca3d72b54c8fb0525d76b59100cf",
+          "lines": 95,
+          "hits": []
+        },
+        {
+          "path": "backend/app/benchmark/parser.py",
+          "sha256": "dd9eb9736f00af838ffbf219c00ba274f641beaa66d68909f3f6b75558bf4170",
+          "lines": 158,
+          "hits": []
+        },
+        {
+          "path": "backend/app/benchmark/runner.py",
+          "sha256": "1c9c51bd8f06583e7c2786405245fbab8d03b78783c2d21e1224c6fb1177c4a8",
+          "lines": 103,
+          "hits": []
+        },
+        {
+          "path": "backend/app/main.py",
+          "sha256": "1e42b55c0ed732800b02697df4f3667184b6bf4c897e340d0d2ed1a42c32ff36",
+          "lines": 11,
+          "hits": []
+        },
+        {
+          "path": "backend/app/ocr_cli.py",
+          "sha256": "f17624cfc3765cf2e6f9104330052794bc5b73aba9d03927973aa94c155d4548",
+          "lines": 38,
+          "hits": []
+        },
+        {
+          "path": "backend/app/providers/__init__.py",
+          "sha256": "94edb1e9c20a32b861197982281d50fba784d9d10c5f8e79da60acea31c86ee3",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/providers/contracts.py",
+          "sha256": "c884e2246b6a1fb238c1db4142a4d90383c5750f6bd9442e01bdb1dbbf610da4",
+          "lines": 25,
+          "hits": []
+        },
+        {
+          "path": "backend/app/providers/fake.py",
+          "sha256": "4d6c9876acffff2c0f47da2ab6085608fe73e3498100a8ba87ed745a66b96846",
+          "lines": 43,
+          "hits": []
+        },
+        {
+          "path": "backend/app/providers/ocr.py",
+          "sha256": "4586e45e4cff7042abdfcc3311893fc362aea484ee2fd667ca94c9af20d08a43",
+          "lines": 16,
+          "hits": []
+        },
+        {
+          "path": "backend/app/providers/tesseract.py",
+          "sha256": "ee8356c62038da9baf260c8cf624f460710c38b03498717e44dfd81f14e35ae3",
+          "lines": 162,
+          "hits": []
+        },
+        {
+          "path": "backend/app/schemas/__init__.py",
+          "sha256": "3610c075a067cec43247525bec5a61685fa8114ccbf58f9df98c1b8f8bf59b4c",
+          "lines": 5,
+          "hits": []
+        },
+        {
+          "path": "backend/app/schemas/extraction.py",
+          "sha256": "6d284867f4417bdcb62c4c122136bbdb6a496e20e00fa4fcdc2028e9c93ed987",
+          "lines": 152,
+          "hits": []
+        },
+        {
+          "path": "backend/app/schemas/invoice.py",
+          "sha256": "e0263b9919472278ebf6a2f39995e4226933b503972a4d05e13c670f7e4dc873",
+          "lines": 75,
+          "hits": []
+        },
+        {
+          "path": "backend/app/schemas/ocr.py",
+          "sha256": "09f63b951dc2df396f14dd2847b61dfa5f3cc89987be7cb835051f74cefffdc4",
+          "lines": 50,
+          "hits": []
+        },
+        {
+          "path": "backend/app/schemas/validation.py",
+          "sha256": "69c49fa7c5da6a475cbd11732ae560e91b8951516eef7985199919f5fe8e1589",
+          "lines": 37,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/__init__.py",
+          "sha256": "c9f8b35f093de02343f478c7b18c511a32679718b2af9f7df50961c5c4a45432",
+          "lines": 1,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/normalization.py",
+          "sha256": "a1a2aa3073c8a0c9255b7d24e6318c086ef08884797dbb15a6801f78b5b32179",
+          "lines": 125,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/pipeline.py",
+          "sha256": "f51472ce1262227bc1ff3f4ce6e38ed8fc475c661d905e7f5f8a5a5b0d52746c",
+          "lines": 101,
+          "hits": []
+        },
+        {
+          "path": "backend/app/services/validation.py",
+          "sha256": "a4d49be73dd00507928652891dc5acf052b0cec0e2d3c9b05c79d027c25e4545",
+          "lines": 60,
+          "hits": []
+        },
+        {
+          "path": "data/ocr-smoke/generate.py",
+          "sha256": "4108314c04087db307caae2dae31bdab62f826b00b0afc1376089815fab17ee3",
+          "lines": 57,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "sha256": "aec8eb522dbb277a0e0e1b9e74f58361db79e6df49749601ae7faeea33c1b9f9",
+          "lines": 46,
+          "hits": []
+        },
+        {
+          "path": "frontend/src/main.tsx",
+          "sha256": "f91188e1ca903013b1c2be549627e6360ac2d83c33979cacf3534671478b95b1",
+          "lines": 11,
+          "hits": []
+        },
+        {
+          "path": "frontend/vite.config.ts",
+          "sha256": "537bcf934522a5030ec0d25e9957be60e5489bfb40d25b31033ef97618bd1bb1",
+          "lines": 6,
+          "hits": []
+        }
+      ]
+    }
+  ]
+}
