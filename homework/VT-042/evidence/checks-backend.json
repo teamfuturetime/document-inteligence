@@ -1,0 +1,42 @@
+[
+  {
+    "name": "python-lint",
+    "command": "uv run --project backend --locked ruff check backend scripts pipeline",
+    "exit_code": 0
+  },
+  {
+    "name": "python-format",
+    "command": "uv run --project backend --locked ruff format --check backend scripts pipeline",
+    "exit_code": 0
+  },
+  {
+    "name": "contracts",
+    "command": "uv run --project backend --locked python scripts/generate_contracts.py --check",
+    "exit_code": 0
+  },
+  {
+    "name": "data",
+    "command": "uv run --project backend --locked python scripts/check_data.py",
+    "exit_code": 0
+  },
+  {
+    "name": "fixture-evaluator",
+    "command": "uv run --project backend --locked python scripts/evaluate_fixtures.py --output runtime/vt042/fixture-contract.json",
+    "exit_code": 0
+  },
+  {
+    "name": "repository",
+    "command": "uv run --project backend --locked python scripts/check_repository.py",
+    "exit_code": 0
+  },
+  {
+    "name": "experiment-lint",
+    "command": "uv run --project backend --locked ruff check homework/VT-042/experiments.py homework/VT-042/performance.py",
+    "exit_code": 0
+  },
+  {
+    "name": "experiment-format",
+    "command": "uv run --project backend --locked ruff format --check homework/VT-042/experiments.py homework/VT-042/performance.py",
+    "exit_code": 0
+  }
+]

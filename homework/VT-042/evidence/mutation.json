@@ -1,0 +1,11 @@
+{
+  "file": "backend/src/docintel/api/documents.py",
+  "operator": "> to >=",
+  "expression": "len(data) + len(chunk) > maximum",
+  "before_exit": 0,
+  "mutated_exit": 1,
+  "restored_exit": 0,
+  "restored_bytes_match": true,
+  "api_sha256": "61d7d71088bd12d854681a0f2599fabdbcd669c23659999ae74d25cdda40cd2c",
+  "killed_by": "test_upload_byte_boundary_is_inclusive[0-202]"
+}

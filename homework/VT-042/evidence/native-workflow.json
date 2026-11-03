@@ -1,0 +1,76 @@
+{
+  "report_type": "native_workflow_check",
+  "status": "passed",
+  "checked_at": "2026-11-03T15:41:53.124188+00:00",
+  "checks": [
+    "real_vie_eng_ocr",
+    "persisted_async_run",
+    "upload_idempotency",
+    "source_evidence",
+    "draft_save_reload",
+    "explicit_review_null",
+    "two_client_conflict_409",
+    "invalid_confirm_rejected",
+    "backend_confirmed_export",
+    "no_client_approval_bypass",
+    "reprocess_keeps_review_history",
+    "stale_run_export_rejected",
+    "both_document_schemas_real_pipeline",
+    "sqlite_persistence_after_restart"
+  ],
+  "native_run_metadata": {
+    "engine_version": "5.4.0.20240606",
+    "model_revision": "87416418657359cb625c412a48b6e1d6d41c29bd",
+    "model_sha256": {
+      "vie": "79df64caf7bcfb2a27df5042ecb6121e196eada34da774956995747636d5bfa1",
+      "eng": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+    },
+    "git_commit": "9a76a6ed5d064336df5ba3eb275f7ee9996e5615",
+    "git_dirty": true,
+    "pipeline_source_sha256": "8576b1df9b1d327f5119f6d8ae686920a2a7f4469363b1a73b828f5bbae33fcf",
+    "runtime": {
+      "python": "3.14.5",
+      "pillow": "12.3.0",
+      "pydantic": "2.13.5"
+    },
+    "hardware": {
+      "architecture": "AMD64",
+      "processor": "Intel64 Family 6 Model 141 Stepping 1, GenuineIntel",
+      "platform": "Windows",
+      "acceleration": "CPU"
+    },
+    "reproducibility_limitations": [
+      "OCR confidence is heuristic, not calibrated"
+    ],
+    "input_sha256": "e3aedcd764f7466491623de17437031ecc532a67e0fea2f009a30fadd7898969",
+    "config": {
+      "version": "inference-config-1.1.0",
+      "max_upload_bytes": 5242880,
+      "max_image_pixels": 16000000,
+      "timeout_seconds": 30.0,
+      "psm": 6,
+      "rotation": 0,
+      "scale": 1.0,
+      "autocontrast": false,
+      "minimum_field_ocr_score": 0.5
+    },
+    "config_sha256": "3615bd047d1f1e3897482040368f991002d12cfc9bc2e8a9591e871308d1b5ff",
+    "rules_version": "label-rules-1.0.0",
+    "rules_sha256": "10e7c040a535cbdbeac240f68a24d0f7149041619d131ec190e6a2d5937eebcd",
+    "confidence_version": "evidence-minimum-ocr-abstain-1.1.0",
+    "preprocessing": {
+      "version": "image-preprocessing-1.0.0",
+      "width": 1200,
+      "height": 1550,
+      "processed_width": 1200,
+      "processed_height": 1550,
+      "rotation": 0,
+      "scale": 1.0,
+      "source_frame": "exif_normalized_pixels_top_left"
+    },
+    "elapsed_seconds": 0.7353,
+    "prediction_source": "model",
+    "report_type": "inference_run"
+  },
+  "note": "Actual Tesseract inference and HTTP workflow; scripted review is not AI accuracy"
+}

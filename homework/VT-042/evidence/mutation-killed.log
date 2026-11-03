@@ -1,0 +1,10 @@
+.F.                                                                      [100%]
+================================== FAILURES ===================================
+________________ test_upload_byte_boundary_is_inclusive[0-202] ________________
+backend\tests\test_async_retry_vt042.py:195: in test_upload_byte_boundary_is_inclusive
+    assert response.status_code == expected
+E   assert 413 == 202
+E    +  where 413 = <Response [413 Content Too Large]>.status_code
+=========================== short test summary info ===========================
+FAILED backend\tests\test_async_retry_vt042.py::test_upload_byte_boundary_is_inclusive[0-202]
+1 failed, 2 passed, 21 deselected in 0.91s

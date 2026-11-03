@@ -1,0 +1,5 @@
+
+> docintel-frontend@0.2.0 contracts:check
+> node scripts/contracts.mjs --check
+
+Frontend contracts CHECK PASS

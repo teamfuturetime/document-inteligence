@@ -1,0 +1,35 @@
+{
+  "results": [
+    {
+      "order": "normal",
+      "run": 1,
+      "exit": 0,
+      "summary": "24 passed in 2.47s"
+    },
+    {
+      "order": "normal",
+      "run": 2,
+      "exit": 0,
+      "summary": "24 passed in 2.45s"
+    },
+    {
+      "order": "normal",
+      "run": 3,
+      "exit": 0,
+      "summary": "24 passed in 2.45s"
+    },
+    {
+      "order": "reverse",
+      "run": 4,
+      "exit": 0,
+      "summary": "24 passed in 2.46s"
+    }
+  ],
+  "cases_per_run": 24,
+  "controls": {
+    "time_concurrency": "Barrier and Event; timeout only as a safety ceiling",
+    "order_state": "Fresh tmp_path, fixture monkeypatch cleanup, reverse node order",
+    "network": "In-process API tests; TCP load is separate; no WAN",
+    "data": "Fixed synthetic PNG/pairwise order; UUIDs compared relationally"
+  }
+}

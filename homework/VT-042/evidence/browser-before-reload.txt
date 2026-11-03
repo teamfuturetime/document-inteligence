@@ -1,0 +1,157 @@
+- banner:
+  - link "D Document Intelligence AI-02 · Biểu mẫu tiếng Việt":
+    - /url: "#"
+    - generic: D
+    - text: Document Intelligence
+    - generic: AI-02 · Biểu mẫu tiếng Việt
+  - navigation "Điều hướng chính":
+    - button "Giới thiệu"
+    - button "Xử lý tài liệu"
+    - button "Mẫu minh họa"
+  - generic: LOCAL · 0.2.0
+- main:
+  - paragraph: KHÔNG GIAN LÀM VIỆC
+  - heading "Từ ảnh nguồn đến dữ liệu đã kiểm tra." [level=1]
+  - paragraph: Nhận dạng thật, giữ bằng chứng và xuất đúng bản bạn xác nhận.
+  - generic: OCR SẴN SÀNG
+  - region "Thống kê vận hành":
+    - article:
+      - strong: "1"
+      - generic: Tài liệu
+    - article:
+      - strong: "1"
+      - generic: Lần xử lý thành công
+    - article:
+      - strong: "0"
+      - generic: Tài liệu đã xác nhận
+    - article:
+      - strong: "0"
+      - generic: Trường đã sửa
+    - paragraph: Thống kê vận hành và review; không phải độ chính xác của mô hình.
+  - region "Tải tài liệu":
+    - heading "Thêm tài liệu" [level=2]
+    - text: Loại tài liệu
+    - combobox "Loại tài liệu":
+      - option "Hóa đơn · 5 trường" [selected]
+      - option "Đơn đề nghị · 7 trường"
+    - text: Nguồn dữ liệu
+    - combobox "Nguồn dữ liệu":
+      - option "Tự tạo · danh tính hư cấu" [selected]
+      - option "Sample có quyền sử dụng"
+    - text: Ảnh PNG/JPG một trang
+    - button "Ảnh PNG/JPG một trang"
+    - button "Tải lên và nhận dạng"
+    - checkbox "Tôi xác nhận đây là dữ liệu synthetic/sample hợp lệ, không chứa hồ sơ cá nhân thật." [checked]
+    - text: Tôi xác nhận đây là dữ liệu synthetic/sample hợp lệ, không chứa hồ sơ cá nhân thật.
+    - paragraph: Tối đa 5 MiB · một trang · chưa hỗ trợ PDF/chữ viết tay.
+  - heading "Tài liệu của phiên làm việc local" [level=2]
+  - text: Trạng thái
+  - combobox "Trạng thái":
+    - option "Tất cả" [selected]
+    - option "Đang chờ"
+    - option "Đang nhận dạng"
+    - option "Đã xử lý"
+    - option "Xử lý lỗi"
+    - option "OCR chưa sẵn sàng"
+  - table:
+    - rowgroup:
+      - row "Tài liệu Loại Trạng thái Bản lưu Thao tác":
+        - columnheader "Tài liệu"
+        - columnheader "Loại"
+        - columnheader "Trạng thái"
+        - columnheader "Bản lưu"
+        - columnheader "Thao tác"
+    - rowgroup:
+      - row "hoa_don_007.png 22:45:07 3/11/2026 Hóa đơn Đã xử lý Bản nháp Mở tài liệu":
+        - cell "hoa_don_007.png 22:45:07 3/11/2026":
+          - text: hoa_don_007.png
+          - generic: 22:45:07 3/11/2026
+        - cell "Hóa đơn"
+        - cell "Đã xử lý"
+        - cell "Bản nháp"
+        - cell "Mở tài liệu":
+          - button "Mở tài liệu"
+  - button "Trang trước" [disabled]
+  - generic: 1–1 / 1
+  - button "Trang sau" [disabled]
+  - paragraph: ĐANG ĐỐI CHIẾU
+  - heading "hoa_don_007.png" [level=2]
+  - paragraph: Run c777901b2fcb · Đã xử lý · SHA e3aedcd764f7
+  - button "Tải bản mới nhất"
+  - button "Chạy OCR lại"
+  - region "Đối chiếu ảnh nguồn":
+    - heading "Ảnh nguồn" [level=2]
+    - paragraph: Chọn một trường để xem bằng chứng OCR.
+    - text: Thu phóng
+    - combobox "Thu phóng":
+      - option "100%" [selected]
+      - option "150%"
+      - option "200%"
+    - img "Ảnh nguồn hoa_don_007.png"
+    - img "Bằng chứng OCR của trường đang chọn"
+    - paragraph: 4 vùng chữ được dùng làm bằng chứng.
+  - region "Kiểm tra và sửa kết quả":
+    - heading "Kiểm tra dữ liệu" [level=2]
+    - paragraph: Revision 1 · Bản nháp
+    - generic: HÓA ĐƠN
+    - paragraph: Điểm OCR là tín hiệu heuristic từ vùng chữ, chưa phải xác suất trường đúng. Hãy kiểm tra ảnh trước khi xác nhận.
+    - article:
+      - generic: Số hóa đơn *
+      - button "Xem vùng nguồn"
+      - textbox "Số hóa đơn *": "0041007"
+      - generic: "Máy: 0041007"
+      - generic: "OCR nhỏ nhất: 96/100"
+      - checkbox "Đã đối chiếu trường này"
+      - text: Đã đối chiếu trường này
+      - button "Xóa giá trị"
+      - button "Dùng dự đoán máy"
+    - article:
+      - generic: Ngày hóa đơn *
+      - button "Xem vùng nguồn"
+      - textbox "Ngày hóa đơn *": 2026-10-08
+      - generic: "Máy: 2026-10-08"
+      - generic: "OCR nhỏ nhất: 96/100"
+      - checkbox "Đã đối chiếu trường này"
+      - text: Đã đối chiếu trường này
+      - button "Xóa giá trị"
+      - button "Dùng dự đoán máy"
+    - article:
+      - generic: Đơn vị bán hàng *
+      - button "Xem vùng nguồn"
+      - textbox "Đơn vị bán hàng *": Công ty Giả Lập 107
+      - generic: "Máy: Công ty Giả Lập 107"
+      - generic: "OCR nhỏ nhất: 90/100"
+      - checkbox "Đã đối chiếu trường này"
+      - text: Đã đối chiếu trường này
+      - button "Xóa giá trị"
+      - button "Dùng dự đoán máy"
+    - article:
+      - generic: Tổng thanh toán *
+      - button "Xem vùng nguồn"
+      - textbox "Tổng thanh toán *": "1000000"
+      - generic: "Máy: 1000000"
+      - generic: "OCR nhỏ nhất: 96/100"
+      - checkbox "Đã đối chiếu trường này"
+      - text: Đã đối chiếu trường này
+      - button "Xóa giá trị"
+      - button "Dùng dự đoán máy"
+    - article:
+      - generic: Tiền tệ *
+      - button "Xem vùng nguồn"
+      - textbox "Tiền tệ *": VND
+      - generic: "Máy: VND"
+      - generic: "OCR nhỏ nhất: 92/100"
+      - checkbox "Đã đối chiếu trường này"
+      - text: Đã đối chiếu trường này
+      - button "Xóa giá trị"
+      - button "Dùng dự đoán máy"
+    - button "Lưu nháp" [disabled]
+    - button "Bỏ chỉnh sửa" [disabled]
+    - button "Xác nhận bản lưu"
+    - button "Xuất JSON đã xác nhận" [disabled]
+    - status: Không có thay đổi chưa lưu.
+  - generic "Lịch sử xử lý và thay đổi"
+  - generic "Phiên bản và thông tin lần chạy"
+- contentinfo:
+  - generic: AI-02 · Document Intelligence
+  - generic: "OCR thật: sẵn sàng · Confidence chưa hiệu chỉnh · Provider: tesseract"

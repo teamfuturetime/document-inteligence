@@ -1,0 +1,79 @@
+- banner:
+  - link "D Document Intelligence AI-02 · Biểu mẫu tiếng Việt":
+    - /url: "#"
+    - generic: D
+    - text: Document Intelligence
+    - generic: AI-02 · Biểu mẫu tiếng Việt
+  - navigation "Điều hướng chính":
+    - button "Giới thiệu"
+    - button "Xử lý tài liệu" [active]
+    - button "Mẫu minh họa"
+  - generic: LOCAL · 0.2.0
+- main:
+  - paragraph: KHÔNG GIAN LÀM VIỆC
+  - heading "Từ ảnh nguồn đến dữ liệu đã kiểm tra." [level=1]
+  - paragraph: Nhận dạng thật, giữ bằng chứng và xuất đúng bản bạn xác nhận.
+  - generic: OCR SẴN SÀNG
+  - region "Thống kê vận hành":
+    - article:
+      - strong: "1"
+      - generic: Tài liệu
+    - article:
+      - strong: "1"
+      - generic: Lần xử lý thành công
+    - article:
+      - strong: "0"
+      - generic: Tài liệu đã xác nhận
+    - article:
+      - strong: "0"
+      - generic: Trường đã sửa
+    - paragraph: Thống kê vận hành và review; không phải độ chính xác của mô hình.
+  - region "Tải tài liệu":
+    - heading "Thêm tài liệu" [level=2]
+    - text: Loại tài liệu
+    - combobox "Loại tài liệu":
+      - option "Hóa đơn · 5 trường" [selected]
+      - option "Đơn đề nghị · 7 trường"
+    - text: Nguồn dữ liệu
+    - combobox "Nguồn dữ liệu":
+      - option "Tự tạo · danh tính hư cấu" [selected]
+      - option "Sample có quyền sử dụng"
+    - text: Ảnh PNG/JPG một trang
+    - button "Ảnh PNG/JPG một trang"
+    - button "Tải lên và nhận dạng" [disabled]
+    - checkbox "Tôi xác nhận đây là dữ liệu synthetic/sample hợp lệ, không chứa hồ sơ cá nhân thật."
+    - text: Tôi xác nhận đây là dữ liệu synthetic/sample hợp lệ, không chứa hồ sơ cá nhân thật.
+    - paragraph: Tối đa 5 MiB · một trang · chưa hỗ trợ PDF/chữ viết tay.
+  - heading "Tài liệu của phiên làm việc local" [level=2]
+  - text: Trạng thái
+  - combobox "Trạng thái":
+    - option "Tất cả" [selected]
+    - option "Đang chờ"
+    - option "Đang nhận dạng"
+    - option "Đã xử lý"
+    - option "Xử lý lỗi"
+    - option "OCR chưa sẵn sàng"
+  - table:
+    - rowgroup:
+      - row "Tài liệu Loại Trạng thái Bản lưu Thao tác":
+        - columnheader "Tài liệu"
+        - columnheader "Loại"
+        - columnheader "Trạng thái"
+        - columnheader "Bản lưu"
+        - columnheader "Thao tác"
+    - rowgroup:
+      - row "hoa_don_007.png 22:45:07 3/11/2026 Hóa đơn Đã xử lý Bản nháp Mở tài liệu":
+        - cell "hoa_don_007.png 22:45:07 3/11/2026":
+          - text: hoa_don_007.png
+          - generic: 22:45:07 3/11/2026
+        - cell "Hóa đơn"
+        - cell "Đã xử lý"
+        - cell "Bản nháp"
+        - cell "Mở tài liệu":
+          - button "Mở tài liệu"
+  - button "Trang trước" [disabled]
+  - generic: 1–1 / 1
+  - button "Trang sau" [disabled]
+- contentinfo:
+  - generic: AI-02 · Document Intelligence
+  - generic: "OCR thật: sẵn sàng · Confidence chưa hiệu chỉnh · Provider: tesseract"

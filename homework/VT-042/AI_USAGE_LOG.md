@@ -8,6 +8,9 @@ Sinh viên: Phạm Nhật Quang, 23001920. Công cụ: OpenAI Codex; Git CLI, uv
 | 03/11/2026 | Người dùng: “git fetch origin --prune ... tất cả các remote branch ... tạo branch mới ... tự động push commit branch đó ... không trùng ... các thành viên”. | Audit 10 remote branches, nhánh riêng từ db727496. | Chỉ đối chiếu implementation của VT-043/VT-045, không sử dụng test/data/prompt/reflection của họ; `evidence/remote-audit.json`. |
 | 03/11/2026 | Prompt P1 tại spec-and-plan.md: sinh test async/retry, real SQLite, Barrier, biên và red trước patch. | `backend/tests/test_async_retry_vt042.py`, 24 tests. | W1 thêm IDs/counts/files, W2 conflict bất biến. Thêm mất ACK sau commit, schema/origin conflict, preview write fault và provider unavailable. |
 | 03/11/2026 | Thử baseline bằng suite VT-042 trước thay đổi implementation. | `evidence/red.log`. | Hai lỗi concurrency đúng nguyên nhân: 429 thay cho replay 202 hoặc conflict 409; các test còn lại pass. |
+| 03/11/2026 | Sửa nhỏ sau red, kiểm tra diff và chạy lại suite. | 19 dòng trong service upload; `evidence/green.log`, `fix.patch`, `patch-review.json`. | Giữ UNIQUE và capacity; re-read key dưới BEGIN IMMEDIATE; thêm cleanup của request thua, không đổi expected để che lỗi. |
+| 03/11/2026 | Đổi biên > thành >=, đo coverage và kiểm thứ tự/lặp tests. | `mutation.json`, `coverage.json`, `repeat.json`. | Boundary đúng B phát hiện mutant; API bytes được khôi phục. Runner thử đầu dùng node IDs theo backend rootdir nên exit 4; đã chuẩn hóa prefix và chạy lại 4 lượt thành công, giữ log thử đầu. |
+| 03/11/2026 | Kiểm tải TCP150, native OCR, frontend và browser flow. | `performance.json`, `native-workflow.json`, `checks-*.json`, `browser-e2e.json`. | Tách p95 phản hồi khỏi OCR completion; giữ 429 trong mẫu; audit dependency được ghi riêng, không sửa lockfile ngoài slice. |
 
 Draft trước khi sửa (AI đã sinh, lưu để đối chiếu):
 

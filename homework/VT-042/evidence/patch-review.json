@@ -1,0 +1,16 @@
+{
+  "baseline": "db727496312087af6495aa12e7c9a52df3dfa230",
+  "test_commit": "9a76a6ed5d064336df5ba3eb275f7ee9996e5615",
+  "branch": "codex/bt3-vt042-async-retry",
+  "implementation_sha256": "f92b39b3ddf56a41bd0f6596aed6ee5cd841a06123f61da80dc02ee2c747192a",
+  "test_file_sha256": "91ab4390d67cfc2c243ab0c3d5074816e7adffa25443fbafff830e2844917c35",
+  "scope": "19 added service lines; tests, homework evidence/tools only; public API, schemas, model/data/config unchanged",
+  "review": [
+    "Re-read key under existing BEGIN IMMEDIATE before capacity",
+    "Compare hash/type/origin before replay",
+    "Discard losing request source and preview",
+    "Keep existing UNIQUE constraint and new-key capacity check",
+    "Mutation restored; no expected assertions weakened"
+  ],
+  "checked_at_utc": "2026-11-03T15:46:04.932725+00:00"
+}

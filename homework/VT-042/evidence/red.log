@@ -1,0 +1,20 @@
+.........FF.............                                                 [100%]
+================================== FAILURES ===================================
+__________ test_concurrent_retry_at_full_capacity_replays_the_winner __________
+backend\tests\test_async_retry_vt042.py:175: in test_concurrent_retry_at_full_capacity_replays_the_winner
+    assert sorted(response.status_code for response in responses) == [202, 202]
+E   assert [202, 429] == [202, 202]
+E     
+E     At index 1 diff: 429 != 202
+E     Use -v to get more diff
+________ test_concurrent_conflicting_key_at_capacity_returns_conflict _________
+backend\tests\test_async_retry_vt042.py:184: in test_concurrent_conflicting_key_at_capacity_returns_conflict
+    assert sorted(response.status_code for response in responses) == [202, 409]
+E   assert [202, 429] == [202, 409]
+E     
+E     At index 1 diff: 429 != 409
+E     Use -v to get more diff
+=========================== short test summary info ===========================
+FAILED backend\tests\test_async_retry_vt042.py::test_concurrent_retry_at_full_capacity_replays_the_winner
+FAILED backend\tests\test_async_retry_vt042.py::test_concurrent_conflicting_key_at_capacity_returns_conflict
+2 failed, 22 passed in 6.79s
