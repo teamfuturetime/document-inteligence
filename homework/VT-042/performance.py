@@ -22,16 +22,12 @@ from docintel.config import Settings
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
-PATH = (
-    "/api/v1/documents?document_type=hoa_don&data_origin=synthetic&filename=sample.png"
-)
+PATH = "/api/v1/documents?document_type=hoa_don&data_origin=synthetic&filename=sample.png"
 
 
 async def measure(scenario):
     with tempfile.TemporaryDirectory(prefix="vt042-load-") as folder:
-        settings = Settings(
-            _env_file=None, provider_mode="tesseract", runtime_dir=Path(folder)
-        )
+        settings = Settings(_env_file=None, provider_mode="tesseract", runtime_dir=Path(folder))
         with (
             patch(
                 "docintel.services.documents.DocumentService.ensure_ready",
@@ -46,9 +42,7 @@ async def measure(scenario):
             listener = socket.socket()
             listener.bind(("127.0.0.1", 0))
             port = listener.getsockname()[1]
-            server = uvicorn.Server(
-                uvicorn.Config(app, log_level="error", access_log=False)
-            )
+            server = uvicorn.Server(uvicorn.Config(app, log_level="error", access_log=False))
             thread = threading.Thread(
                 target=server.run, kwargs={"sockets": [listener]}, daemon=True
             )
@@ -68,9 +62,7 @@ async def measure(scenario):
                     base_url=f"http://127.0.0.1:{port}",
                     timeout=30,
                     trust_env=False,
-                    limits=httpx2.Limits(
-                        max_connections=150, max_keepalive_connections=150
-                    ),
+                    limits=httpx2.Limits(max_connections=150, max_keepalive_connections=150),
                 ) as client:
                     document_id = None
                     if scenario != "unique_upload":
@@ -88,15 +80,9 @@ async def measure(scenario):
                         started = time.perf_counter()
                         try:
                             if scenario == "status_poll":
-                                response = await client.get(
-                                    "/api/v1/documents/" + document_id
-                                )
+                                response = await client.get("/api/v1/documents/" + document_id)
                             else:
-                                key = (
-                                    "REPLAY"
-                                    if scenario == "same_key_retry"
-                                    else f"K{number:03}"
-                                )
+                                key = "REPLAY" if scenario == "same_key_retry" else f"K{number:03}"
                                 response = await client.post(
                                     PATH, headers={"Idempotency-Key": key}, content=data
                                 )
@@ -127,9 +113,7 @@ async def measure(scenario):
                     elapsed = time.perf_counter() - started
                 with app.state.documents.repository.transaction() as connection:
                     counts = {
-                        name: connection.execute(
-                            "SELECT count(*) FROM " + name
-                        ).fetchone()[0]
+                        name: connection.execute("SELECT count(*) FROM " + name).fetchone()[0]
                         for name in ("documents", "runs", "events")
                     }
                 ordered = sorted(row["elapsed_ms"] for row in rows)
@@ -140,13 +124,9 @@ async def measure(scenario):
                     else ({"200": 150} if scenario == "status_poll" else {"202": 150})
                 )
                 count = 5 if scenario == "unique_upload" else 1
-                correct = statuses == expected and all(
-                    value == count for value in counts.values()
-                )
+                correct = statuses == expected and all(value == count for value in counts.values())
                 if scenario != "unique_upload":
-                    correct = (
-                        correct and len({row.get("document_id") for row in rows}) == 1
-                    )
+                    correct = correct and len({row.get("document_id") for row in rows}) == 1
                     correct = correct and len({row.get("run_id") for row in rows}) == 1
                 return {
                     "scenario": scenario,
@@ -178,18 +158,14 @@ async def measure(scenario):
 
 async def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--output", type=Path, default=ROOT / "runtime/vt042/performance.json"
-    )
+    parser.add_argument("--output", type=Path, default=ROOT / "runtime/vt042/performance.json")
     args = parser.parse_args()
     results = []
     for scenario in ("unique_upload", "same_key_retry", "status_poll"):
         result = await measure(scenario)
         results.append(result)
         print(
-            json.dumps(
-                {key: value for key, value in result.items() if key != "rows"}, indent=2
-            ),
+            json.dumps({key: value for key, value in result.items() if key != "rows"}, indent=2),
             flush=True,
         )
     report = {
@@ -198,7 +174,10 @@ async def main():
         "processor": platform.processor(),
         "percentile": "nearest rank ceil(p*N); all statuses included",
         "runs": results,
-        "scope": "Control-plane response latency, actual TCP/SQLite/files; readiness/decode doubles; no OCR completion measured",
+        "scope": (
+            "Control-plane response latency, actual TCP/SQLite/files; "
+            "readiness/decode doubles; no OCR completion measured"
+        ),
         "limitations": [
             "One local Windows machine",
             "150 clients, not 150 workers",

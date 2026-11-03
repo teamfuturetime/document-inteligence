@@ -29,9 +29,7 @@ def run(output, name, arguments):
         encoding="utf-8",
         errors="replace",
     )
-    (output / name).write_text(
-        result.stdout + result.stderr, encoding="utf-8", newline="\n"
-    )
+    (output / name).write_text(result.stdout + result.stderr, encoding="utf-8", newline="\n")
     print(name, "exit", result.returncode, flush=True)
     return result
 
@@ -55,15 +53,11 @@ def mutation(output):
         raise RuntimeError("Baseline boundary tests failed; no mutation applied")
     mutated = None
     try:
-        target.write_bytes(
-            original.replace(needle, b"len(data) + len(chunk) >= maximum")
-        )
+        target.write_bytes(original.replace(needle, b"len(data) + len(chunk) >= maximum"))
         mutated = run(output, "mutation-killed.log", args)
     finally:
         target.write_bytes(original)
-    restored = run(
-        output, "mutation-restored.log", ["-m", "pytest", TEST, "-q", "--tb=short"]
-    )
+    restored = run(output, "mutation-restored.log", ["-m", "pytest", TEST, "-q", "--tb=short"])
     result = {
         "file": str(target.relative_to(ROOT)).replace("\\", "/"),
         "operator": "> to >=",
@@ -77,9 +71,7 @@ def mutation(output):
     }
     write_json(output / "mutation.json", result)
     assert (
-        result["mutated_exit"] == 1
-        and restored.returncode == 0
-        and result["restored_bytes_match"]
+        result["mutated_exit"] == 1 and restored.returncode == 0 and result["restored_bytes_match"]
     )
 
 
@@ -123,9 +115,7 @@ def coverage(output):
     selected = []
     for name, entry in report["files"].items():
         normal = name.replace("\\", "/")
-        if normal.endswith(
-            ("services/documents.py", "api/documents.py", "repositories/sqlite.py")
-        ):
+        if normal.endswith(("services/documents.py", "api/documents.py", "repositories/sqlite.py")):
             selected.append({"file": normal, **entry["summary"]})
     write_json(output / "coverage-summary.json", selected)
 
@@ -133,9 +123,7 @@ def coverage(output):
 def repeat(output):
     results = []
     for number in range(1, 4):
-        result = run(
-            output, f"repeat-{number}.log", ["-m", "pytest", TEST, "-q", "--tb=short"]
-        )
+        result = run(output, f"repeat-{number}.log", ["-m", "pytest", TEST, "-q", "--tb=short"])
         results.append(
             {
                 "order": "normal",
@@ -145,9 +133,7 @@ def repeat(output):
             }
         )
         assert result.returncode == 0
-    collected = run(
-        output, "collection.log", ["-m", "pytest", TEST, "--collect-only", "-q"]
-    )
+    collected = run(output, "collection.log", ["-m", "pytest", TEST, "--collect-only", "-q"])
     assert collected.returncode == 0
     # pytest reports IDs relative to its backend rootdir; invoke them from the repository root.
     ids = [
@@ -192,9 +178,7 @@ def main():
     args = parser.parse_args()
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
-    {"mutation": mutation, "coverage": coverage, "repeat": repeat}[args.experiment](
-        output
-    )
+    {"mutation": mutation, "coverage": coverage, "repeat": repeat}[args.experiment](output)
 
 
 if __name__ == "__main__":

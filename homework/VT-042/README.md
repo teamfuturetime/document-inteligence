@@ -4,6 +4,8 @@ Phạm Nhật Quang - 23001920 - SE2026-T11. Baseline `db727496312087af6495aa12e
 
 Nhánh: https://github.com/teamfuturetime/document-inteligence/tree/codex/bt3-vt042-async-retry
 
+Bài nộp: [BT3_23001920_VT-042.pdf](../../output/pdf/BT3_23001920_VT-042.pdf). Commit test/spec: `9a76a6ed5d064336df5ba3eb275f7ee9996e5615`; commit patch: `6289d84e3da04690472506f07c3107549db92181`.
+
 ## Chạy
 
 ```powershell
@@ -45,3 +47,11 @@ Tải: 150 client tasks đồng thời qua TCP loopback, SQLite/file thật; rea
 ## Phạm vi diff
 
 Implementation chỉ thêm 19 dòng ở `backend/src/docintel/services/documents.py`: re-read key dưới write transaction trước capacity, đối chiếu fingerprint và xóa file của request thua. Không đổi API/schema, pipeline AI, model/data/config. Hai bài VT-043 autosave và VT-045 config-contract chỉ được đối chiếu source để tránh trùng phạm vi; không sử dụng test/data/reflection của các bài đó.
+
+## Sinh PDF
+
+```powershell
+uv run --with-requirements homework/VT-042/report-requirements.txt python homework/VT-042/build_report.py
+```
+
+Renderer dùng Times New Roman từ `C:/Windows/Fonts`; có thể truyền `--font-dir` trỏ tới thư mục có `times.ttf` và `timesbd.ttf`. Nguồn nội dung đọc các số liệu đã lưu trong evidence, không tự sinh test results khi dựng PDF.

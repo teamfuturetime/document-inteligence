@@ -1,0 +1,79 @@
+{
+  "scenario": "unique_upload",
+  "concurrency": 150,
+  "peak_inflight_client": 150,
+  "requests": 150,
+  "payload_bytes": 80,
+  "queue_capacity": 5,
+  "worker_started": false,
+  "transport": "TCP loopback HTTP/1.1 Uvicorn",
+  "statuses": {
+    "202": 5,
+    "429": 145
+  },
+  "p50_ms": 546.1939999950118,
+  "p95_ms": 1554.4125000014901,
+  "p99_ms": 2093.4000000124797,
+  "wall_seconds": 2.2774560999823734,
+  "requests_per_second": 65.86295999345978,
+  "db_counts": {
+    "documents": 5,
+    "runs": 5,
+    "events": 5
+  },
+  "correctness_passed": true,
+  "response_p95_target_ms": 4000,
+  "response_p95_passed": true
+}
+{
+  "scenario": "same_key_retry",
+  "concurrency": 150,
+  "peak_inflight_client": 150,
+  "requests": 150,
+  "payload_bytes": 80,
+  "queue_capacity": 5,
+  "worker_started": false,
+  "transport": "TCP loopback HTTP/1.1 Uvicorn",
+  "statuses": {
+    "202": 150
+  },
+  "p50_ms": 691.558399994392,
+  "p95_ms": 772.0508999773301,
+  "p99_ms": 782.4205000069924,
+  "wall_seconds": 0.8308337000198662,
+  "requests_per_second": 180.54154519299507,
+  "db_counts": {
+    "documents": 1,
+    "runs": 1,
+    "events": 1
+  },
+  "correctness_passed": true,
+  "response_p95_target_ms": 4000,
+  "response_p95_passed": true
+}
+{
+  "scenario": "status_poll",
+  "concurrency": 150,
+  "peak_inflight_client": 150,
+  "requests": 150,
+  "payload_bytes": 80,
+  "queue_capacity": 5,
+  "worker_started": false,
+  "transport": "TCP loopback HTTP/1.1 Uvicorn",
+  "statuses": {
+    "200": 150
+  },
+  "p50_ms": 587.3932999675162,
+  "p95_ms": 692.1807999606244,
+  "p99_ms": 706.705000018701,
+  "wall_seconds": 0.7578772999695502,
+  "requests_per_second": 197.92122023713688,
+  "db_counts": {
+    "documents": 1,
+    "runs": 1,
+    "events": 1
+  },
+  "correctness_passed": true,
+  "response_p95_target_ms": 4000,
+  "response_p95_passed": true
+}

@@ -11,6 +11,7 @@ Sinh viên: Phạm Nhật Quang, 23001920. Công cụ: OpenAI Codex; Git CLI, uv
 | 03/11/2026 | Sửa nhỏ sau red, kiểm tra diff và chạy lại suite. | 19 dòng trong service upload; `evidence/green.log`, `fix.patch`, `patch-review.json`. | Giữ UNIQUE và capacity; re-read key dưới BEGIN IMMEDIATE; thêm cleanup của request thua, không đổi expected để che lỗi. |
 | 03/11/2026 | Đổi biên > thành >=, đo coverage và kiểm thứ tự/lặp tests. | `mutation.json`, `coverage.json`, `repeat.json`. | Boundary đúng B phát hiện mutant; API bytes được khôi phục. Runner thử đầu dùng node IDs theo backend rootdir nên exit 4; đã chuẩn hóa prefix và chạy lại 4 lượt thành công, giữ log thử đầu. |
 | 03/11/2026 | Kiểm tải TCP150, native OCR, frontend và browser flow. | `performance.json`, `native-workflow.json`, `checks-*.json`, `browser-e2e.json`. | Tách p95 phản hồi khỏi OCR completion; giữ 429 trong mẫu; audit dependency được ghi riêng, không sửa lockfile ngoài slice. |
+| 03/11/2026 | Chạy tải tuần tự sau checks, xuất bản nhánh và hoàn thiện PDF theo đề. | Nhánh GitHub thật, commit test/patch, renderer và PDF 8 trang chính + 3 phụ lục. | Lưu cả lượt đo cũ; đối chiếu metrics/commits, kiểm font Times New Roman, đen trắng, reflection 307 từ và nội dung không còn ghi thiếu nhánh/PR. |
 
 Draft trước khi sửa (AI đã sinh, lưu để đối chiếu):
 
@@ -18,6 +19,7 @@ Draft trước khi sửa (AI đã sinh, lưu để đối chiếu):
 # W1: status-only, không chứng minh retry giữ cùng record.
 def test_retry_status_only(api):
     assert upload(api).status_code == 202
+
 
 # W2: lặp happy path bằng key khác.
 def test_upload_again(api):

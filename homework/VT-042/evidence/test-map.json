@@ -1,82 +1,98 @@
 [
   {
+    "case_id": "T07",
+    "file": "backend/tests/test_async_retry_vt042.py",
     "function": "test_pairwise_covers_every_value_pair",
-    "line": 93,
-    "file": "backend/tests/test_async_retry_vt042.py"
+    "line": 93
   },
   {
+    "case_id": "PW01-06",
+    "file": "backend/tests/test_async_retry_vt042.py",
     "function": "test_pairwise_retry_contract",
-    "line": 105,
-    "file": "backend/tests/test_async_retry_vt042.py"
+    "line": 105
   },
   {
+    "case_id": "T08/W1",
+    "file": "backend/tests/test_async_retry_vt042.py",
     "function": "test_w1_retry_replays_ids_without_duplicate_records_or_files",
-    "line": 130,
-    "file": "backend/tests/test_async_retry_vt042.py"
+    "line": 130
   },
   {
+    "case_id": "T09/W2",
+    "file": "backend/tests/test_async_retry_vt042.py",
     "function": "test_w2_conflicting_retry_cannot_mutate_the_original",
-    "line": 140,
-    "file": "backend/tests/test_async_retry_vt042.py"
+    "line": 140
   },
   {
+    "case_id": "T10",
+    "file": "backend/tests/test_async_retry_vt042.py",
     "function": "test_concurrent_retry_at_full_capacity_replays_the_winner",
-    "line": 173,
-    "file": "backend/tests/test_async_retry_vt042.py"
+    "line": 173
   },
   {
+    "case_id": "T11",
+    "file": "backend/tests/test_async_retry_vt042.py",
     "function": "test_concurrent_conflicting_key_at_capacity_returns_conflict",
-    "line": 182,
-    "file": "backend/tests/test_async_retry_vt042.py"
+    "line": 182
   },
   {
+    "case_id": "T12-14",
+    "file": "backend/tests/test_async_retry_vt042.py",
     "function": "test_upload_byte_boundary_is_inclusive",
-    "line": 190,
-    "file": "backend/tests/test_async_retry_vt042.py"
+    "line": 190
   },
   {
+    "case_id": "T15",
+    "file": "backend/tests/test_async_retry_vt042.py",
     "function": "test_invalid_key_is_rejected_before_side_effects",
-    "line": 199,
-    "file": "backend/tests/test_async_retry_vt042.py"
+    "line": 199
   },
   {
+    "case_id": "T16",
+    "file": "backend/tests/test_async_retry_vt042.py",
     "function": "test_full_queue_rejects_a_new_key_without_side_effects",
-    "line": 205,
-    "file": "backend/tests/test_async_retry_vt042.py"
+    "line": 205
   },
   {
+    "case_id": "T17",
+    "file": "backend/tests/test_async_retry_vt042.py",
     "function": "test_failed_worker_retry_keeps_the_original_run",
-    "line": 215,
-    "file": "backend/tests/test_async_retry_vt042.py"
+    "line": 215
   },
   {
+    "case_id": "T18",
+    "file": "backend/tests/test_async_retry_vt042.py",
     "function": "test_running_status_is_readable_before_inference_finishes",
-    "line": 232,
-    "file": "backend/tests/test_async_retry_vt042.py"
+    "line": 232
   },
   {
+    "case_id": "T19",
+    "file": "backend/tests/test_async_retry_vt042.py",
     "function": "test_preview_write_failure_cleans_source_then_retry_succeeds",
-    "line": 257,
-    "file": "backend/tests/test_async_retry_vt042.py"
+    "line": 257
   },
   {
+    "case_id": "T20",
+    "file": "backend/tests/test_async_retry_vt042.py",
     "function": "test_restart_preserves_queued_and_marks_interrupted_running",
-    "line": 275,
-    "file": "backend/tests/test_async_retry_vt042.py"
+    "line": 275
   },
   {
+    "case_id": "T21",
+    "file": "backend/tests/test_async_retry_vt042.py",
     "function": "test_retry_after_lost_response_reuses_the_committed_upload",
-    "line": 289,
-    "file": "backend/tests/test_async_retry_vt042.py"
+    "line": 289
   },
   {
+    "case_id": "T22/23",
+    "file": "backend/tests/test_async_retry_vt042.py",
     "function": "test_key_fingerprint_also_includes_schema_and_origin",
-    "line": 314,
-    "file": "backend/tests/test_async_retry_vt042.py"
+    "line": 314
   },
   {
+    "case_id": "T24",
+    "file": "backend/tests/test_async_retry_vt042.py",
     "function": "test_provider_unavailable_does_not_admit_or_create_files",
-    "line": 324,
-    "file": "backend/tests/test_async_retry_vt042.py"
+    "line": 324
   }
 ]

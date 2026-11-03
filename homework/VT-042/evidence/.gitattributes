@@ -1,0 +1,2 @@
+# Preserve tool stdout, including pytest's whitespace-only diagnostic lines.
+*.log -whitespace
