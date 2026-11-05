@@ -16,16 +16,19 @@ class ExtractedField(BaseModel):
 
 class ExtractionResult(BaseModel):
     document_type: Literal[
-        "identity_card", "birth_certificate", "application_form", "unknown"
+        "identity_card", "birth_certificate", "application_form", "invoice", "unknown"
     ]
     fields: dict[str, ExtractedField]
     warnings: list[str] = Field(default_factory=list)
     model_version: str = "rules-v1"
+    raw_text: str = ""
+    pages: list[dict[str, Any]] = Field(default_factory=list)
 
 
 DOCUMENT_FIELDS = {
     "identity_card": {"id_number", "full_name", "date_of_birth", "address"},
     "birth_certificate": {"full_name", "date_of_birth", "place_of_birth", "father_name", "mother_name"},
     "application_form": {"applicant_name", "recipient", "subject", "date"},
+    "invoice": {"customer", "payment_recipient", "total_amount", "date"},
     "unknown": set(),
 }

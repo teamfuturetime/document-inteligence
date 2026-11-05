@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from ai_service.ocr.normalization import normalize_vietnamese_text
+from ai_service.ocr.normalization import fold_vietnamese_for_matching
 
 
 @dataclass(frozen=True)
@@ -14,13 +14,16 @@ KEYWORDS = {
     "identity_card": ("căn cước công dân", "số định danh cá nhân", "quê quán"),
     "birth_certificate": ("giấy khai sinh", "nơi sinh", "họ và tên cha"),
     "application_form": ("đơn đề nghị", "kính gửi", "người làm đơn"),
+    "invoice": ("hóa đơn", "thanh toán cho", "tổng cộng", "đơn giá"),
 }
 
 
 def classify_document(text: str) -> Classification:
-    haystack = normalize_vietnamese_text(text).casefold()
+    haystack = fold_vietnamese_for_matching(text)
     scores = {
-        kind: tuple(keyword for keyword in keywords if keyword in haystack)
+        kind: tuple(
+            keyword for keyword in keywords if fold_vietnamese_for_matching(keyword) in haystack
+        )
         for kind, keywords in KEYWORDS.items()
     }
     kind, matches = max(scores.items(), key=lambda item: len(item[1]))

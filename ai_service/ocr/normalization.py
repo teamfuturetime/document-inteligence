@@ -12,3 +12,10 @@ def normalize_vietnamese_text(text: str) -> str:
 
 def normalize_identifier(value: str) -> str:
     return re.sub(r"[^0-9A-Za-z]", "", normalize_vietnamese_text(value))
+
+
+def fold_vietnamese_for_matching(text: str) -> str:
+    """Remove Vietnamese tone marks for OCR-tolerant keyword matching."""
+    decomposed = unicodedata.normalize("NFD", normalize_vietnamese_text(text).casefold())
+    without_marks = "".join(char for char in decomposed if not unicodedata.combining(char))
+    return without_marks.replace("đ", "d")

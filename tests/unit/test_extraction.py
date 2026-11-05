@@ -20,3 +20,19 @@ def test_field_metrics_are_computed_from_labeled_values() -> None:
     assert metrics.precision == 0.5
     assert metrics.recall == 0.5
     assert metrics.f1 == 0.5
+
+
+def test_classifies_and_extracts_invoice() -> None:
+    text = "HÓA ĐƠN\nHóa đơn được gửi cho: Công ty An Phú\nTổng cộng: 12.000.000đ"
+    classification = classify_document(text)
+    result = extract_fields(text, classification.document_type)
+
+    assert classification.document_type == "invoice"
+    assert result.fields["customer"].value == "Công ty An Phú"
+    assert result.fields["total_amount"].value == "12.000.000đ"
+
+
+def test_classifies_invoice_when_ocr_drops_tone_marks() -> None:
+    classification = classify_document("HOA DON DUOC GUI CHO\nDON GIA\nTONG CONG")
+
+    assert classification.document_type == "invoice"

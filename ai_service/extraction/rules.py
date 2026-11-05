@@ -16,6 +16,9 @@ PATTERNS = {
     "mother_name": r"họ và tên mẹ[.:\s]*([^\n]+)",
     "recipient": r"kính gửi[.:\s]*([^\n]+)",
     "subject": r"(?:về việc|nội dung)[.:\s]*([^\n]+)",
+    "customer": r"(?:hóa đơn được gửi cho|khách hàng)[.:\t ]+([^\n:][^\n]*)",
+    "payment_recipient": r"thanh toán cho[.:\t ]+([^\n:][^\n]*)",
+    "total_amount": r"(?:tổng cộng|thành tiền)[.:\s]*([0-9][0-9.,\s]*(?:đ|vnd)?)",
     "date": r"ngày\s+(\d{1,2})\s+tháng\s+(\d{1,2})\s+năm\s+(\d{4})",
 }
 
@@ -26,7 +29,10 @@ def _extract(pattern: str, text: str) -> tuple[str | None, str | None]:
         return None, None
     groups = match.groups()
     if len(groups) == 3 and "tháng" in match.group(0).casefold():
-        value = datetime(int(groups[2]), int(groups[1]), int(groups[0])).date().isoformat()
+        try:
+            value = datetime(int(groups[2]), int(groups[1]), int(groups[0])).date().isoformat()
+        except ValueError:
+            return None, None
     else:
         value = groups[0].strip(" .:-")
     return value, match.group(0)
