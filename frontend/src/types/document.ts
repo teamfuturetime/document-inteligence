@@ -12,7 +12,7 @@ export type DocumentRecord = {
 export type Extraction = {
   id: string;
   document_id: string;
-  data: { fields?: Record<string, { value: unknown; confidence: number }> };
+  data: { document_type?: string; raw_text?: string; fields?: Record<string, { value: unknown; confidence: number; source_text?: string | null; reviewed?: boolean }> };
   warnings: string[];
   confirmed: boolean;
 };
