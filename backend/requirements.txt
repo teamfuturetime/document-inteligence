@@ -9,3 +9,4 @@ pillow==11.0.0
 PyMuPDF==1.25.1
 opencv-python-headless==4.10.0.84
 numpy==2.2.1
+pytesseract==0.3.13

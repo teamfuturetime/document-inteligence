@@ -26,7 +26,12 @@ def deskew(image: np.ndarray) -> np.ndarray:
     if len(points) < 20:
         return image.copy()
     angle = cv2.minAreaRect(points[:, ::-1].astype(np.float32))[-1]
-    angle = -(90 + angle) if angle < -45 else -angle
+    if angle > 45:
+        angle -= 90
+    elif angle < -45:
+        angle += 90
+    if abs(angle) > 15:
+        return image.copy()
     height, width = image.shape[:2]
     matrix = cv2.getRotationMatrix2D((width / 2, height / 2), angle, 1.0)
     return cv2.warpAffine(image, matrix, (width, height), flags=cv2.INTER_CUBIC, borderValue=255)

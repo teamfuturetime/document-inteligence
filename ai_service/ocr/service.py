@@ -27,7 +27,11 @@ class OcrService:
     def process_pages(self, pages: list[np.ndarray]) -> list[OcrPage]:
         results: list[OcrPage] = []
         for index, page in enumerate(pages, start=1):
-            prepared = enhance_image(deskew(page))
+            prepared = (
+                enhance_image(deskew(page))
+                if getattr(self.engine, "uses_preprocessing", True)
+                else page
+            )
             height, width = prepared.shape[:2]
             lines = [
                 TextBlock(normalize_vietnamese_text(line.text), line.confidence, line.box)
