@@ -8,6 +8,7 @@ from app.core.logging import configure_logging
 from app.api.documents import router as documents_router
 from app.core.database import engine
 from app.models import Base
+from sqlalchemy import text
 
 settings = get_settings()
 configure_logging(settings.log_level)
@@ -15,7 +16,10 @@ configure_logging(settings.log_level)
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    Base.metadata.create_all(engine)
+    with engine.begin() as connection:
+        if connection.dialect.name == "postgresql":
+            connection.execute(text("SELECT pg_advisory_xact_lock(724103)"))
+        Base.metadata.create_all(connection)
     yield
 
 
@@ -25,7 +29,7 @@ app.add_middleware(
     allow_origins=[origin.strip() for origin in settings.cors_origins.split(",")],
     allow_credentials=False,
     allow_methods=["GET", "POST", "PATCH"],
-    allow_headers=["Content-Type"],
+    allow_headers=["Content-Type", "X-API-Key"],
 )
 app.include_router(documents_router, prefix="/api/v1")
 

@@ -12,7 +12,7 @@ from app.core.security import require_api_key
 from app.repositories.documents import DocumentRepository
 from app.schemas.documents import DocumentList, DocumentRead
 from app.schemas.extractions import ExtractionRead, ExtractionUpdate
-from app.models import Extraction
+from app.models import Document, Extraction
 from app.services.file_validation import InvalidDocument, validate_document
 from app.services.storage import LocalStorage
 from app.services.processing import process_document
@@ -110,11 +110,13 @@ def get_document_content(document_id: str, db: Session = Depends(get_db)):
 
 @router.post("/{document_id}/process", status_code=status.HTTP_202_ACCEPTED)
 def run_processing(document_id: str, db: Session = Depends(get_db)):
-    document = DocumentRepository(db).get(document_id)
+    document = db.scalar(select(Document).where(Document.id == document_id).with_for_update())
     if not document:
         raise HTTPException(status_code=404, detail="Không tìm thấy tài liệu")
     if document.status == "processing":
         raise HTTPException(status_code=409, detail="Tài liệu đang được xử lý")
+    if document.status == "confirmed":
+        raise HTTPException(status_code=409, detail="Tài liệu đã xác nhận; hãy tải bản mới để xử lý lại")
     try:
         extraction = process_document(db, document)
     except Exception as error:
@@ -153,7 +155,8 @@ def update_extraction(document_id: str, payload: ExtractionUpdate, db: Session =
     if extraction.confirmed:
         raise HTTPException(status_code=409, detail="Kết quả đã xác nhận")
     extraction.data = payload.data
-    extraction.warnings = payload.warnings
+    extraction.warnings = [warning for warning in extraction.warnings if not warning.startswith("Không tìm thấy trường:")]
+    extraction.warnings += [f"Không tìm thấy trường: {name}" for name, field in payload.data.get("fields", {}).items() if field.get("value") in (None, "")]
     db.commit()
     db.refresh(extraction)
     return extraction
