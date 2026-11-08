@@ -1,5 +1,5 @@
 import importlib
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pytest
@@ -384,3 +384,31 @@ def test_confirmation_is_repeatable_and_prevents_further_edits(client, review_do
     assert client.get(base).json()["status"] == "confirmed"
     assert client.patch(f"{base}/extraction", json={"data": {"fields": {}}}).status_code == 409
     assert client.post(f"{base}/process").status_code == 409
+
+
+def test_history_combines_filters_and_paginates_equal_timestamps(client, api_engine) -> None:
+    created_at = datetime(2026, 1, 1, tzinfo=timezone.utc)
+    ids = [f"00000000-0000-0000-0000-{index:012d}" for index in range(14)]
+    with Session(api_engine) as db:
+        for index, document_id in enumerate(ids):
+            db.add(Document(
+                id=document_id, original_name=f"Tháng 11 - tài liệu {index}.png",
+                stored_name=f"{document_id}.png", mime_type="image/png", size_bytes=64,
+                document_type="invoice" if index < 13 else "identity_card",
+                status="review" if index != 12 else "confirmed",
+                created_at=created_at, expires_at=created_at + timedelta(days=41),
+            ))
+        db.commit()
+
+    params = {"q": "Tháng 11", "status": "review", "document_type": "invoice", "limit": 10}
+    first = client.get("/api/v1/documents", params=params).json()
+    second = client.get("/api/v1/documents", params={**params, "offset": 10}).json()
+
+    assert first["total"] == second["total"] == 12
+    assert [item["id"] for item in first["items"] + second["items"]] == list(reversed(ids[:12]))
+    assert client.get("/api/v1/documents", params={**params, "offset": 20}).json() == {
+        "items": [], "total": 12,
+    }
+    exact = client.get("/api/v1/documents", params={"q": ids[0]}).json()
+    assert exact["total"] == 1
+    assert exact["items"][0]["id"] == ids[0]

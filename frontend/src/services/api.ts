@@ -32,8 +32,17 @@ export async function updateExtraction(id: string, extraction: Extraction) {
   return (await api.patch<Extraction>(`/documents/${id}/extraction`, { data: extraction.data, warnings: extraction.warnings })).data;
 }
 export async function confirmExtraction(id: string) { return (await api.post<Extraction>(`/documents/${id}/confirm`)).data; }
-export async function listDocuments(query = "", status = "", offset = 0, limit = 20) {
+export async function listDocuments({
+  query = "", status = "", documentType = "", offset = 0, limit = 20, signal,
+}: {
+  query?: string; status?: string; documentType?: string;
+  offset?: number; limit?: number; signal?: AbortSignal;
+} = {}) {
   return (await api.get<{ items: DocumentRecord[]; total: number }>("/documents", {
-    params: { q: query || undefined, status: status || undefined, offset, limit },
+    params: {
+      q: query || undefined, status: status || undefined,
+      document_type: documentType || undefined, offset, limit,
+    },
+    signal,
   })).data;
 }

@@ -69,7 +69,7 @@ class DocumentRepository:
         statement = (
             select(Document)
             .where(*filters)
-            .order_by(Document.created_at.desc())
+            .order_by(Document.created_at.desc(), Document.id.desc())
             .offset(max(offset, 0))
             .limit(min(max(limit, 1), 100))
         )
