@@ -2,7 +2,7 @@ import logging
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
 from fastapi.responses import FileResponse
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
@@ -129,15 +129,7 @@ def run_processing(document_id: str, db: Session = Depends(get_db)):
 
 @router.get("/{document_id}/extraction", response_model=ExtractionRead)
 def get_latest_extraction(document_id: str, db: Session = Depends(get_db)):
-    extraction = db.scalar(
-        select(Extraction)
-        .where(Extraction.document_id == document_id)
-        .order_by(Extraction.updated_at.desc())
-        .limit(1)
-    )
-    if not extraction:
-        raise HTTPException(status_code=404, detail="Chưa có kết quả trích xuất")
-    return extraction
+    return _find_extraction(db, document_id)
 
 
 def _find_extraction(db: Session, document_id: str) -> Extraction:
@@ -152,14 +144,49 @@ def _find_extraction(db: Session, document_id: str) -> Extraction:
     return extraction
 
 
+def _find_review_extraction(
+    db: Session, document_id: str, *, allow_confirmed: bool = False
+) -> Extraction:
+    # Serialize review mutations with the processing claim. A no-op UPDATE also
+    # takes a write lock on SQLite, unlike SELECT FOR UPDATE.
+    allowed = ["review", "confirmed"] if allow_confirmed else ["review"]
+    locked = db.execute(
+        update(Document)
+        .where(Document.id == document_id, Document.status.in_(allowed))
+        .values(status=Document.status)
+        .execution_options(synchronize_session=False)
+    )
+    if locked.rowcount != 1:
+        if not DocumentRepository(db).get(document_id):
+            raise HTTPException(status_code=404, detail="Không tìm thấy tài liệu")
+        raise HTTPException(status_code=409, detail="Tài liệu không ở trạng thái kiểm tra")
+    return _find_extraction(db, document_id)
+
+
 @router.patch("/{document_id}/extraction", response_model=ExtractionRead)
 def update_extraction(document_id: str, payload: ExtractionUpdate, db: Session = Depends(get_db)):
-    extraction = _find_extraction(db, document_id)
+    extraction = _find_review_extraction(db, document_id)
     if extraction.confirmed:
         raise HTTPException(status_code=409, detail="Kết quả đã xác nhận")
-    extraction.data = payload.data
-    extraction.warnings = [warning for warning in extraction.warnings if not warning.startswith("Không tìm thấy trường:")]
-    extraction.warnings += [f"Không tìm thấy trường: {name}" for name, field in payload.data.get("fields", {}).items() if field.get("value") in (None, "")]
+    fields = {name: dict(field) for name, field in extraction.data.get("fields", {}).items()}
+    if payload.data["fields"].keys() - fields.keys():
+        raise HTTPException(status_code=422, detail="Không thể thêm trường ngoài kết quả trích xuất")
+    for name, incoming in payload.data["fields"].items():
+        field = fields[name]
+        if incoming["value"] != field.get("value"):
+            field["value"] = incoming["value"]
+            field["reviewed"] = True
+    warnings = [
+        warning for warning in extraction.warnings
+        if not warning.startswith("Không tìm thấy trường:")
+    ]
+    warnings += [
+        f"Không tìm thấy trường: {name}" for name, field in sorted(fields.items())
+        if field.get("value") in (None, "")
+    ]
+    # OCR text, page geometry, confidence and source text remain server-owned.
+    extraction.data = {**extraction.data, "fields": fields, "warnings": warnings}
+    extraction.warnings = warnings
     db.commit()
     db.refresh(extraction)
     return extraction
@@ -167,7 +194,7 @@ def update_extraction(document_id: str, payload: ExtractionUpdate, db: Session =
 
 @router.post("/{document_id}/confirm", response_model=ExtractionRead)
 def confirm_extraction(document_id: str, db: Session = Depends(get_db)):
-    extraction = _find_extraction(db, document_id)
+    extraction = _find_review_extraction(db, document_id, allow_confirmed=True)
     extraction.confirmed = True
     extraction.document.status = "confirmed"
     db.commit()

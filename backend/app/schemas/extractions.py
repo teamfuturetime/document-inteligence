@@ -24,9 +24,13 @@ class ExtractionUpdate(BaseModel):
     @field_validator("data")
     @classmethod
     def validate_fields(cls, data):
-        fields = data.get("fields", {})
+        fields = data.get("fields")
         if not isinstance(fields, dict) or len(fields) > 100:
             raise ValueError("fields phải là object, tối đa 100 trường")
-        for value in fields.values():
-            ExtractedField.model_validate(value)
-        return data
+        return {
+            **data,
+            "fields": {
+                name: ExtractedField.model_validate(value).model_dump()
+                for name, value in fields.items()
+            },
+        }

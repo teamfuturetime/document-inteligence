@@ -297,3 +297,90 @@ def test_failed_extraction_transaction_rolls_back_and_can_be_retried(
 
     assert client.post(f"/api/v1/documents/{document_id}/process").status_code == 202
     assert client.get(f"/api/v1/documents/{document_id}").json()["status"] == "review"
+
+
+@pytest.fixture
+def review_document(client, api_engine, document_contents):
+    document_id = upload_png(client, document_contents)
+    assert client.post(f"/api/v1/documents/{document_id}/process").status_code == 202
+    with Session(api_engine) as db:
+        extraction = db.scalar(select(Extraction).where(Extraction.document_id == document_id))
+        extraction.document.document_type = "invoice"
+        extraction.warnings = ["Cần đối chiếu bản gốc", "Không tìm thấy trường: total_amount"]
+        extraction.data = {
+            "document_type": "invoice", "raw_text": "Khách hàng: An\nTổng cộng:",
+            "pages": [{"width": 100, "height": 200, "lines": []}],
+            "model_version": "rules-v1", "warnings": extraction.warnings,
+            "fields": {
+                "customer": {"value": "An", "confidence": 0.8, "source_text": "Khách hàng: An"},
+                "total_amount": {"value": None, "confidence": 0.0, "source_text": None},
+            },
+        }
+        db.commit()
+    return document_id
+
+
+def test_review_edits_values_and_preserves_ocr_evidence(client, review_document) -> None:
+    endpoint = f"/api/v1/documents/{review_document}/extraction"
+    original = client.get(endpoint).json()
+    response = client.patch(endpoint, json={
+        "data": {
+            "raw_text": "forged text", "pages": [], "document_type": "identity_card",
+            "model_version": "forged-version",
+            "fields": {"total_amount": {"value": "100.000", "confidence": 1, "source_text": "forged"}},
+        },
+        "warnings": [],
+    })
+
+    assert response.status_code == 200
+    result = response.json()
+    for key in ("raw_text", "pages", "document_type", "model_version"):
+        assert result["data"][key] == original["data"][key]
+    assert result["data"]["fields"]["customer"] == original["data"]["fields"]["customer"]
+    assert result["data"]["fields"]["total_amount"] == {
+        "value": "100.000", "confidence": 0.0, "source_text": None, "reviewed": True,
+    }
+    assert result["warnings"] == result["data"]["warnings"] == ["Cần đối chiếu bản gốc"]
+
+    cleared = client.patch(endpoint, json={"data": {"fields": {
+        "customer": {"value": "", "confidence": 0.8},
+    }}}).json()
+    assert cleared["warnings"] == ["Cần đối chiếu bản gốc", "Không tìm thấy trường: customer"]
+    assert cleared["data"]["fields"]["total_amount"]["value"] == "100.000"
+
+
+@pytest.mark.parametrize("data", [
+    {}, {"fields": []}, {"fields": {"customer": {"value": "A", "confidence": 2}}},
+    {"fields": {"invented_field": {"value": "A", "confidence": 0.8}}},
+])
+def test_review_rejects_invalid_updates_without_changes(client, review_document, data) -> None:
+    endpoint = f"/api/v1/documents/{review_document}/extraction"
+    original = client.get(endpoint).json()
+
+    assert client.patch(endpoint, json={"data": data}).status_code == 422
+    assert client.get(endpoint).json() == original
+
+
+@pytest.mark.parametrize("document_status", ["processing", "failed", "uploaded"])
+def test_review_mutations_reject_documents_outside_review(
+    client, api_engine, review_document, document_status
+) -> None:
+    with Session(api_engine) as db:
+        db.get(Document, review_document).status = document_status
+        db.commit()
+
+    base = f"/api/v1/documents/{review_document}"
+    assert client.patch(f"{base}/extraction", json={"data": {"fields": {}}}).status_code == 409
+    assert client.post(f"{base}/confirm").status_code == 409
+    assert not client.get(f"{base}/extraction").json()["confirmed"]
+
+
+def test_confirmation_is_repeatable_and_prevents_further_edits(client, review_document) -> None:
+    base = f"/api/v1/documents/{review_document}"
+    confirmed = client.post(f"{base}/confirm")
+    assert confirmed.status_code == 200
+    assert confirmed.json()["confirmed"]
+    assert client.post(f"{base}/confirm").json() == confirmed.json()
+    assert client.get(base).json()["status"] == "confirmed"
+    assert client.patch(f"{base}/extraction", json={"data": {"fields": {}}}).status_code == 409
+    assert client.post(f"{base}/process").status_code == 409
