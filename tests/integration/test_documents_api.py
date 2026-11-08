@@ -4,15 +4,16 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, func, inspect, select
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import create_engine, event, func, inspect, select
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
 
 from app.core.config import get_settings
 from app.core.database import get_db
 from app.main import app
-from app.models import Document
+from app.models import Document, Extraction
+from app.services.processing import ProcessingConflict, process_document
 from app.services.storage import LocalStorage
 
 
@@ -39,6 +40,7 @@ def client(tmp_path: Path, api_engine, monkeypatch):
     monkeypatch.setattr(settings, "storage_dir", str(tmp_path))
     monkeypatch.setattr(settings, "max_upload_mb", 1)
     monkeypatch.setattr(settings, "api_key", "")
+    monkeypatch.setattr(settings, "ocr_engine", "mock")
     monkeypatch.setattr(importlib.import_module("app.main"), "engine", api_engine)
     try:
         with TestClient(app) as test_client:
@@ -222,3 +224,76 @@ def test_list_rejects_invalid_pagination(client) -> None:
     assert client.get("/api/v1/documents", params={"offset": -1}).status_code == 422
     assert client.get("/api/v1/documents", params={"limit": 0}).status_code == 422
     assert client.get("/api/v1/documents", params={"limit": 101}).status_code == 422
+
+
+def upload_png(client, document_contents) -> str:
+    response = client.post(
+        "/api/v1/documents",
+        files={"file": ("scan.png", document_contents["png"], "image/png")},
+    )
+    assert response.status_code == 201
+    return response.json()["id"]
+
+
+@pytest.mark.parametrize("document_status", ["processing", "confirmed"])
+def test_processing_rejects_unavailable_documents(
+    client, api_engine, document_contents, document_status
+) -> None:
+    document_id = upload_png(client, document_contents)
+    with Session(api_engine) as db:
+        db.get(Document, document_id).status = document_status
+        db.commit()
+
+    assert client.post(f"/api/v1/documents/{document_id}/process").status_code == 409
+    with Session(api_engine) as db:
+        assert db.scalar(select(func.count()).select_from(Extraction)) == 0
+
+
+def test_processing_claim_rejects_a_stale_session(
+    client, api_engine, document_contents, monkeypatch
+) -> None:
+    from ai_service.main import DocumentIntelligence
+
+    document_id = upload_png(client, document_contents)
+    analyze = DocumentIntelligence.analyze
+    with Session(api_engine, expire_on_commit=False) as competing_db:
+        stale_document = competing_db.get(Document, document_id)
+        assert stale_document.status == "uploaded"
+
+        def analyze_with_competing_request(pipeline, pages):
+            with pytest.raises(ProcessingConflict):
+                process_document(competing_db, stale_document)
+            return analyze(pipeline, pages)
+
+        monkeypatch.setattr(DocumentIntelligence, "analyze", analyze_with_competing_request)
+        assert client.post(f"/api/v1/documents/{document_id}/process").status_code == 202
+
+    with Session(api_engine) as db:
+        assert db.get(Document, document_id).status == "review"
+        assert db.scalar(select(func.count()).select_from(Extraction)) == 1
+
+
+def test_failed_extraction_transaction_rolls_back_and_can_be_retried(
+    client, api_engine, document_contents
+) -> None:
+    document_id = upload_png(client, document_contents)
+
+    def reject_extraction(mapper, connection, target):
+        raise IntegrityError("insert extraction", {}, Exception("private database detail"))
+
+    event.listen(Extraction, "before_insert", reject_extraction)
+    try:
+        response = client.post(f"/api/v1/documents/{document_id}/process")
+    finally:
+        event.remove(Extraction, "before_insert", reject_extraction)
+
+    assert response.status_code == 503
+    assert "private database detail" not in response.text
+    with Session(api_engine) as db:
+        document = db.get(Document, document_id)
+        assert document.status == "failed"
+        assert document.document_type is None
+        assert db.scalar(select(func.count()).select_from(Extraction)) == 0
+
+    assert client.post(f"/api/v1/documents/{document_id}/process").status_code == 202
+    assert client.get(f"/api/v1/documents/{document_id}").json()["status"] == "review"

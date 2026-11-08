@@ -1,3 +1,7 @@
+import logging
+
+from sqlalchemy import update
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from ai_service.main import DocumentIntelligence
@@ -8,12 +12,30 @@ from app.core.config import get_settings
 from app.models import Document, Extraction
 from app.services.storage import LocalStorage
 
+logger = logging.getLogger(__name__)
+
+
+class ProcessingConflict(RuntimeError):
+    """The document cannot be claimed for processing in its current state."""
+
 
 def process_document(db: Session, document: Document) -> Extraction:
     settings = get_settings()
-    document.status = "processing"
+    document_id = document.id
+    # A conditional UPDATE claims the document across workers, including SQLite
+    # where SELECT FOR UPDATE does not lock rows. Commit before running OCR.
+    claimed = db.execute(
+        update(Document)
+        .where(Document.id == document_id, Document.status.in_(["uploaded", "review", "failed"]))
+        .values(status="processing")
+        .execution_options(synchronize_session=False)
+    )
+    if claimed.rowcount != 1:
+        db.rollback()
+        raise ProcessingConflict("Tài liệu đang xử lý hoặc đã xác nhận")
     db.commit()
     try:
+        db.refresh(document)
         path = LocalStorage(settings.storage_dir).resolve(document.stored_name)
         pages = load_pages(path.read_bytes(), document.original_name)
         engines = {
@@ -35,10 +57,22 @@ def process_document(db: Session, document: Document) -> Extraction:
             model_version=analysis.extraction.model_version,
         )
         db.add(extraction)
-        db.commit()
+        db.flush()
         db.refresh(extraction)
+        db.commit()
         return extraction
     except Exception:
-        document.status = "failed"
-        db.commit()
+        # Discard pending extraction/type changes and recover an inactive session
+        # before persisting the failure state in a separate transaction.
+        db.rollback()
+        try:
+            db.execute(
+                update(Document)
+                .where(Document.id == document_id, Document.status == "processing")
+                .values(status="failed")
+            )
+            db.commit()
+        except SQLAlchemyError:
+            db.rollback()
+            logger.exception("document_failure_status_unavailable")
         raise

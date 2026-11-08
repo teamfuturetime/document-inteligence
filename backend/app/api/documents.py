@@ -15,7 +15,7 @@ from app.schemas.extractions import ExtractionRead, ExtractionUpdate
 from app.models import Document, Extraction
 from app.services.file_validation import InvalidDocument, validate_document
 from app.services.storage import LocalStorage
-from app.services.processing import process_document
+from app.services.processing import ProcessingConflict, process_document
 
 router = APIRouter(prefix="/documents", tags=["documents"], dependencies=[Depends(require_api_key)])
 logger = logging.getLogger(__name__)
@@ -110,7 +110,7 @@ def get_document_content(document_id: str, db: Session = Depends(get_db)):
 
 @router.post("/{document_id}/process", status_code=status.HTTP_202_ACCEPTED)
 def run_processing(document_id: str, db: Session = Depends(get_db)):
-    document = db.scalar(select(Document).where(Document.id == document_id).with_for_update())
+    document = DocumentRepository(db).get(document_id)
     if not document:
         raise HTTPException(status_code=404, detail="Không tìm thấy tài liệu")
     if document.status == "processing":
@@ -119,7 +119,10 @@ def run_processing(document_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=409, detail="Tài liệu đã xác nhận; hãy tải bản mới để xử lý lại")
     try:
         extraction = process_document(db, document)
+    except ProcessingConflict as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
     except Exception as error:
+        logger.exception("document_processing_failed")
         raise HTTPException(status_code=503, detail="Không thể xử lý tài liệu") from error
     return {"document_id": document.id, "extraction_id": extraction.id, "status": document.status}
 
