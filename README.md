@@ -31,7 +31,7 @@
 - Chuẩn hóa Unicode tiếng Việt, confidence và bounding box về tọa độ `[0, 1]`.
 - Phân loại theo từ khóa, trích xuất bằng regex và rule theo bố cục có version.
 - Xem tài liệu gốc cạnh kết quả, sửa trường, lưu, xác nhận và xuất JSON.
-- Tìm theo tên hoặc ID, lọc trạng thái và phân trang lịch sử tài liệu.
+- Tìm theo tên hoặc ID, lọc trạng thái/loại tài liệu và phân trang lịch sử.
 - PostgreSQL khi chạy Docker, SQLite khi phát triển cục bộ.
 - OpenAPI/Swagger, health check, CORS, API key tùy chọn và retention 41 ngày.
 
@@ -201,7 +201,9 @@ Backend đọc biến môi trường và file `.env` qua `pydantic-settings`.
 3. Ở trang review, đối chiếu từng trường với preview tài liệu bên trái.
 4. Sửa dữ liệu sai/thiếu và chọn **Lưu sửa đổi** hoặc **Lưu và xác nhận**.
 5. Có thể tải kết quả hiện tại bằng **Xuất JSON**.
-6. Trang **Lịch sử** hỗ trợ tìm tên/ID, lọc trạng thái và phân trang.
+6. Trang **Lịch sử** hỗ trợ tìm tên/ID, lọc trạng thái/loại tài liệu và phân trang.
+   Bấm **Tìm** để áp dụng bộ lọc; chuyển trang giữ nguyên bộ lọc đã áp dụng.
+   Nếu tải dữ liệu thất bại, chọn **Thử lại**.
 
 Thư mục [`demo_documents`](demo_documents/) chứa file PNG/PDF phục vụ demo. Không dùng giấy tờ chứa dữ liệu cá nhân thật trong môi trường không được bảo vệ.
 
@@ -256,6 +258,11 @@ Extractor trả mỗi trường dưới dạng `{ value, confidence, source_text
 
 Kết quả còn có `warnings`, `model_version`, `raw_text` và OCR từng trang (kích thước, text, confidence, bounding box) để review/audit.
 
+Khi lưu sửa đổi, API chỉ cập nhật giá trị các trường đã tồn tại và đánh dấu
+`reviewed` nếu giá trị thay đổi. Văn bản OCR, confidence, nguồn và tọa độ trang
+được giữ nguyên. API chỉ cho sửa/xác nhận trong trạng thái `review`; request xử
+lý trùng hoặc thao tác trong trạng thái không phù hợp trả `409`.
+
 ## Kiểm thử
 
 ```bash
@@ -272,11 +279,18 @@ npm run build
 
 Test suite gồm unit tests cho preprocessing, OCR, extraction, storage, security và repository; integration tests cho API; E2E test cho luồng upload → process → confirm. Module evaluation có CER, WER và field precision/recall/F1.
 
-Trạng thái kiểm tra gần nhất trên worktree ngày **22/10/2026**:
+GitHub Actions tại [`.github/workflows/ci.yml`](.github/workflows/ci.yml) chạy
+test backend với Python 3.12 và build frontend với Node.js 22 trên mỗi push,
+pull request hoặc lần chạy thủ công. Test dùng OCR mock, SQLite và thư mục tạm;
+không cần PostgreSQL, Tesseract hay model tải từ bên ngoài.
 
-- Frontend production build: đạt.
-- Docker Compose config: hợp lệ.
-- Backend: 24/25 test đạt; một test so sánh chính xác số thực nhận `0.8500000000000001` thay vì `0.85` khi tính confidence Tesseract.
+Các ca regression bao gồm tách cột OCR, tranh chấp quyền xử lý giữa các session,
+rollback khi lưu extraction thất bại, giữ nguyên bằng chứng OCR khi chỉnh sửa,
+khóa kết quả đã xác nhận và lọc/phân trang khi các tài liệu có cùng timestamp.
+
+Kiểm tra cục bộ ngày **09/11/2026**: 99 test đạt, coverage backend/AI tổng hợp
+87%, TypeScript và frontend production build đạt. Workflow CI mới cần được
+push lên GitHub để chạy trên runner.
 
 Repository chưa có dataset/ground truth đủ để công bố accuracy OCR hay extraction.
 
