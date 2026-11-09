@@ -1,5 +1,6 @@
 import io
 import json
+import threading
 from concurrent.futures import ThreadPoolExecutor
 
 import pytest
@@ -8,6 +9,7 @@ from document_pipeline.models import InferenceResult, Prediction, Token
 from fastapi.testclient import TestClient
 from PIL import Image
 
+import docintel.services.documents as document_module
 from docintel.api.app import create_app
 from docintel.config import Settings
 from docintel.services.documents import DocumentService
@@ -21,9 +23,9 @@ INVOICE = {
 }
 
 
-def image_bytes():
+def image_bytes(color="white"):
     stream = io.BytesIO()
-    Image.new("RGB", (300, 200), "white").save(stream, format="PNG")
+    Image.new("RGB", (300, 200), color).save(stream, format="PNG")
     return stream.getvalue()
 
 
@@ -267,6 +269,41 @@ def test_upload_limits_idempotency_queue_and_safe_errors(product):
         api.post("/api/v1/documents", headers={"Origin": "https://untrusted.example"}).status_code
         == 403
     )
+
+
+@pytest.mark.parametrize(("second_color", "expected_status"), [("white", 202), ("black", 409)])
+def test_concurrent_upload_retries_when_queue_fills(
+    product, monkeypatch, second_color, expected_status
+):
+    api, settings = product
+    settings.max_pending_runs = 1
+    service = api.app.state.documents
+    barrier = threading.Barrier(2, timeout=15)
+    prepare_image = document_module.prepare_image
+
+    def prepare_concurrent_image(data, config):
+        page = prepare_image(data, config)
+        # Both requests have missed the initial key lookup before either can admit a run.
+        barrier.wait()
+        return page
+
+    monkeypatch.setattr(document_module, "prepare_image", prepare_concurrent_image)
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        futures = [
+            pool.submit(upload, api, key="race", content=image_bytes(color))
+            for color in ("white", second_color)
+        ]
+        responses = [future.result(timeout=20) for future in futures]
+
+    assert sorted(response.status_code for response in responses) == [202, expected_status]
+    admitted = [response.json() for response in responses if response.status_code == 202]
+    assert len({item["document_id"] for item in admitted}) == 1
+    assert len({item["run"]["run_id"] for item in admitted}) == 1
+    assert api.get("/api/v1/documents").json()["total"] == 1
+    history = api.get(f"/api/v1/documents/{admitted[0]['document_id']}/history").json()
+    assert len(history["runs"]) == 1
+    assert [event["action"] for event in history["events"]] == ["uploaded"]
+    assert len(list(service.storage.root.iterdir())) == 2
 
 
 def test_provider_failure_never_falls_back_and_restart_recovery(product, monkeypatch):

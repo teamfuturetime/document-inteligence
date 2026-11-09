@@ -222,6 +222,25 @@ class DocumentService:
             self.storage.write(document_id, "source", data)
             self.storage.write(document_id, "preview", page.png)
             with self.repository.transaction(write=True) as connection:
+                # Serialize the retry decision with admission, before capacity rejection.
+                replay = (
+                    connection.execute(
+                        "SELECT * FROM documents WHERE idempotency_key=?", (idempotency_key,)
+                    ).fetchone()
+                    if idempotency_key
+                    else None
+                )
+                if replay:
+                    if (replay["input_sha256"], replay["document_type"], replay["data_origin"]) != (
+                        digest,
+                        document_type,
+                        data_origin,
+                    ):
+                        raise ProductError(
+                            409, "IDEMPOTENCY_CONFLICT", "Khóa đã dùng cho tài liệu khác."
+                        )
+                    self.storage.discard(document_id)
+                    return self.detail(replay["document_id"])
                 self.check_capacity(connection)
                 connection.execute(
                     "INSERT INTO documents VALUES(?,?,?,?,?,?,?,?,?,?)",
