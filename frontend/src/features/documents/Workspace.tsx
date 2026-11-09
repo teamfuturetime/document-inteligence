@@ -6,6 +6,14 @@ import { SourcePreview } from './SourcePreview';
 import { jsonRequest, request, statusLabels } from './api';
 import type { DocumentDetail, DocumentList, ProductInsights, ProductSchema } from './api';
 
+const POLL_INTERVAL_MS = 1200;
+const MAX_POLL_INTERVAL_MS = 9600;
+const POLL_TIMEOUT_MS = 8000;
+
+function isProcessing(status: DocumentDetail['run']['status'] | undefined) {
+  return status === 'queued' || status === 'running';
+}
+
 export function Workspace({
   capabilities,
   onUnsavedChange,
@@ -28,6 +36,7 @@ export function Workspace({
   const [busy, setBusy] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [error, setError] = useState('');
+  const [pollErrorRunId, setPollErrorRunId] = useState<string | null>(null);
   const uploadKey = useRef<{ signature: string; key: string } | null>(null);
   const onDirtyChange = useCallback(
     (value: boolean) => {
@@ -61,25 +70,47 @@ export function Workspace({
       });
     return () => controller.abort();
   }, [filter, offset, refresh]);
-  const processing = document?.run.status === 'queued' || document?.run.status === 'running';
+  const documentId = document?.document_id;
+  const runId = document?.run.run_id;
+  const processing = isProcessing(document?.run.status);
   useEffect(() => {
-    if (!document || !processing) return;
+    if (!documentId || !runId || !processing || busy) return;
     const controller = new AbortController();
-    const timer = window.setInterval(() => {
-      request<DocumentDetail>(`/documents/${document.document_id}`, { signal: controller.signal })
-        .then((result) => {
-          setDocument(result);
-          if (!['queued', 'running'].includes(result.run.status)) setRefresh((old) => old + 1);
-        })
-        .catch((reason: Error) => {
-          if (!controller.signal.aborted) setError(`Mất kết nối khi chờ OCR: ${reason.message}`);
+    const query = new URLSearchParams({ run_id: runId });
+    let delay = POLL_INTERVAL_MS;
+    let timer: number;
+
+    const poll = async () => {
+      try {
+        const result = await request<DocumentDetail>(`/documents/${documentId}?${query}`, {
+          signal: AbortSignal.any([controller.signal, AbortSignal.timeout(POLL_TIMEOUT_MS)]),
         });
-    }, 1200);
+        if (controller.signal.aborted) return;
+        setPollErrorRunId(null);
+        setDocument((current) =>
+          current && current.run.run_id === runId && isProcessing(current.run.status)
+            ? result
+            : current,
+        );
+        if (!isProcessing(result.run.status)) {
+          setRefresh((old) => old + 1);
+          return;
+        }
+        delay = POLL_INTERVAL_MS;
+      } catch {
+        if (controller.signal.aborted) return;
+        setPollErrorRunId(runId);
+        delay = Math.min(delay * 2, MAX_POLL_INTERVAL_MS);
+      }
+      timer = window.setTimeout(poll, delay);
+    };
+
+    timer = window.setTimeout(poll, delay);
     return () => {
       controller.abort();
-      window.clearInterval(timer);
+      window.clearTimeout(timer);
     };
-  }, [document?.document_id, processing]);
+  }, [documentId, runId, processing, busy]);
   function updated(value: DocumentDetail) {
     setDocument(value);
     setRefresh((old) => old + 1);
@@ -95,6 +126,7 @@ export function Workspace({
       const query = run ? `?run_id=${encodeURIComponent(run)}` : '';
       const result = await request<DocumentDetail>(`/documents/${id}${query}`);
       setDocument(result);
+      setPollErrorRunId(null);
       setActive(result.definitions[0].field_id);
     } catch (reason) {
       setError((reason as Error).message);
@@ -365,8 +397,13 @@ export function Workspace({
           </div>
           {processing && (
             <p className="processing-state" role="status">
-              Đang xử lý ảnh bằng OCR thật. Bạn có thể mở lại tài liệu sau; trạng thái được lưu trên
-              máy chủ.
+              {document.run.status === 'queued' ? 'Ảnh đang chờ xử lý.' : 'OCR đang nhận dạng ảnh.'}{' '}
+              Bạn có thể mở lại tài liệu sau để xem kết quả.
+            </p>
+          )}
+          {processing && pollErrorRunId === runId && (
+            <p className="notice" role="alert">
+              Chưa cập nhật được trạng thái OCR. Hệ thống sẽ tự thử lại.
             </p>
           )}
           {document.run.error_code && (
