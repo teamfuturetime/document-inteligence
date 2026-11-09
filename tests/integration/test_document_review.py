@@ -224,3 +224,96 @@ def test_ocr_response_acknowledges_exact_write_even_if_later_writer_commits(revi
     reloaded = client.get(f"/api/v1/documents/{document_id}").json()
     assert reloaded["ocr_revision"] == 2
     assert reloaded["ocr_text_cleaned"] == "Later client draft"
+
+
+@pytest.mark.parametrize("extension,mime,pages", [
+    ("webp", "image/webp", 1), ("bmp", "image/bmp", 1),
+    ("tif", "image/tiff", 1), ("tiff", "image/tiff", 2),
+    ("png", "image/png", 1), ("jpg", "image/jpeg", 1), ("jpeg", "image/jpeg", 1),
+])
+def test_image_upload_process_review_export_lifecycle(review_client, image_bytes, monkeypatch, extension, mime, pages):
+    import httpx
+    from ai_service.main import app as ai_app
+    from ai_service.ocr.engine import OCRResult, VietnameseOCREngine
+
+    def recognize(self, candidates, *, page_number, **kwargs):
+        height, width = candidates[0].shape[:2]
+        return OCRResult(text=f"Trang {page_number}: Họ và tên: Nguyễn Văn A", engine="test", pages=[
+            {"page_number": page_number, "width": width, "height": height, "blocks": []}
+        ])
+
+    monkeypatch.setattr(VietnameseOCREngine, "recognize_candidates", recognize)
+
+    class LocalAIClient:
+        def __init__(self, **kwargs): pass
+        async def __aenter__(self): return self
+        async def __aexit__(self, *args): pass
+        async def post(self, url, files):
+            return TestClient(ai_app).post("/process", files=files)
+
+    monkeypatch.setattr(httpx, "AsyncClient", LocalAIClient)
+    client, _, csrf = review_client
+    content = image_bytes(extension, pages=pages)
+    uploaded = client.post("/api/v1/documents", files={"file": ("document." + extension, content, mime)})
+    assert uploaded.status_code == 201
+    base = "/api/v1/documents/" + uploaded.json()["id"]
+    assert client.post(base + "/process").status_code == 200
+    detail = client.get(base).json()
+    assert detail["status"] == "processed"
+    assert [page["page_number"] for page in detail["ocr_pages"]] == list(range(1, pages + 1))
+    raw = detail["ocr_text_raw"]
+    assert "Trang 1" in raw
+    if pages > 1:
+        assert raw.index("Trang 1") < raw.index("Trang 2")
+    assert client.get(base + "/preview").status_code == 200
+    assert client.patch(base + "/ocr-correction", json={"text": "Văn bản đã sửa", "expected_revision": 0}).status_code == 200
+    assert client.patch(base + "/extraction", json={"document_type": "other", "data": {"Họ tên": "Nguyễn Văn B"}}).status_code == 200
+    assert client.post(base + "/confirm").status_code == 200
+    exported = client.get(base + "/export").json()
+    assert exported["ocr_text_raw"] == raw
+    assert exported["ocr_text"] == "Văn bản đã sửa"
+    assert exported["fields"] == {"Họ tên": "Nguyễn Văn B"}
+    assert client.patch(base + "/ocr-correction", json={"text": "Không được sửa", "expected_revision": 1}).status_code == 409
+    assert client.post(base + "/reopen").status_code == 200
+    assert client.get(base).json()["ocr_text_cleaned"] == "Văn bản đã sửa"
+    # New previews and image workflows retain the same CSRF/auth/owner boundary.
+    client.headers.pop("X-CSRF-Token")
+    assert client.post("/api/v1/documents", files={"file": ("scan." + extension, content, mime)}).status_code == 403
+    client.headers.update({"X-CSRF-Token": csrf})
+    client.cookies.clear()
+    assert client.get(base + "/preview").status_code == 401
+    auth = client.post("/api/v1/auth/register", json={"email": "foreign@example.test", "username": "foreign", "password": "Foreign-password-123"})
+    client.headers.update({"X-CSRF-Token": auth.json()["csrf_token"]})
+    for endpoint in [base, base + "/preview", base + "/preview?page=2", base + "/export"]:
+        assert client.get(endpoint).status_code == 404
+    assert client.post(base + "/process").status_code == 404
+
+
+@pytest.mark.parametrize("previous_correction", [None, "Previously saved OCR"])
+def test_reads_never_persist_ocr_and_only_explicit_patch_changes_correction(review_client, previous_correction):
+    client, factory, _ = review_client
+    document_id = make_processed(client, factory)
+    base = f"/api/v1/documents/{document_id}"
+    assert client.patch(base + "/extraction", json={"document_type": "other", "data": {"checked": True}}).status_code == 200
+    if previous_correction is not None:
+        assert client.patch(base + "/ocr-correction", json={"text": previous_correction, "expected_revision": 0}).status_code == 200
+
+    def snapshot():
+        with factory() as db:
+            doc = db.get(Document, document_id)
+            return (doc.ocr_text, doc.ocr_text_corrected, doc.ocr_revision, doc.ocr_corrected_at, doc.status, doc.updated_at)
+
+    before = snapshot()
+    for _ in range(3):
+        for endpoint in [base, "/api/v1/documents", base + "/preview", base + "/extraction", base + "/export"]:
+            assert client.get(endpoint).status_code == 200
+    assert snapshot() == before
+
+    response = client.patch(base + "/ocr-correction", json={"text": "Explicitly saved OCR", "expected_revision": before[2]})
+    assert response.status_code == 200
+    after = snapshot()
+    assert after[0] == before[0]
+    assert after[1] == "Explicitly saved OCR"
+    assert after[2] == before[2] + 1
+    assert after[4] == "reviewed"
+    assert response.json()["status"] != "confirmed"

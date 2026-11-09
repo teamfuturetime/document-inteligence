@@ -29,3 +29,16 @@ def test_process_coordinates_pipeline(monkeypatch):
     )
     assert response.status_code == 200
     assert response.json() == expected
+
+
+@pytest.mark.parametrize("extension,mime", [("webp", "image/webp"), ("bmp", "image/bmp"), ("tif", "image/tiff"), ("tiff", "application/octet-stream")])
+def test_ai_accepts_new_signatures(image_bytes, monkeypatch, extension, mime):
+    expected = {"ocr": {}, "classification": {}, "extraction": {}}
+    monkeypatch.setattr(DocumentPipeline, "process", lambda self, path: expected)
+    response = TestClient(app).post("/process", files={"file": ("scan." + extension, image_bytes(extension), mime)})
+    assert response.status_code == 200
+
+
+def test_ai_rejects_inconsistent_mime(image_bytes):
+    response = TestClient(app).post("/process", files={"file": ("scan.webp", image_bytes("webp"), "image/png")})
+    assert response.status_code == 400

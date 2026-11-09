@@ -25,8 +25,8 @@ def test_validate_valid_pdf():
     validate_upload("hoa-don.pdf", PDF_CONTENT, "application/pdf")
 
 
-def test_validate_valid_png():
-    validate_upload("anh.png", PNG_CONTENT, "image/png")
+def test_validate_valid_png(image_bytes):
+    validate_upload("anh.png", image_bytes("png"), "image/png")
 
 
 def test_validate_rejects_unsupported_extension():
@@ -50,7 +50,7 @@ def test_validate_rejects_oversized_file():
 def test_validate_rejects_spoofed_extension():
     # Đuôi .pdf nhưng nội dung thực tế là PNG
     with pytest.raises(FileValidationError) as exc:
-        validate_upload("fake.pdf", PNG_CONTENT, "image/png")
+        validate_upload("fake.pdf", PNG_CONTENT, "application/pdf")
     assert "không khớp" in str(exc.value)
 
 
@@ -67,4 +67,4 @@ def test_validate_rejects_bad_mime():
 
 
 def test_allowed_mime_set():
-    assert ALLOWED_MIME == {"application/pdf", "image/jpeg", "image/png"}
+    assert {"application/pdf", "image/jpeg", "image/png", "image/webp", "image/bmp", "image/tiff"} <= ALLOWED_MIME

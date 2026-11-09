@@ -1,7 +1,8 @@
 """HTTP adapter for authenticated document workflows."""
 from typing import Annotated
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
+from pathlib import Path
 from app.api.dependencies import get_document_service, get_repository, get_storage
 from app.api.security import get_current_user
 from app.models import User
@@ -12,6 +13,7 @@ from app.services.file_validation import FileValidationError
 from app.services.ocr_text import clean_ocr_text
 from app.services.storage import StorageService
 from app.services.upload import DocumentUploadService
+from app.services.preview import image_preview
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -87,13 +89,21 @@ def reopen_document(document_id: str, service: DocumentService = Depends(get_doc
     except ReviewPersistenceError as exc: raise HTTPException(500, str(exc)) from exc
 
 @router.get("/{document_id}/preview")
-def preview_document(document_id: str, service: DocumentService = Depends(get_document_service)):
+def preview_document(document_id: str, page: int = Query(1, ge=1), service: DocumentService = Depends(get_document_service)):
     try:
         document = service.get(document_id)
     except DocumentNotFoundError as exc:
         raise _not_found(exc) from exc
     path = service.storage.path_for(document.file_path)
     if not path.exists(): raise HTTPException(404, "File tài liệu không tồn tại")
+    if Path(document.filename).suffix.lower() in {".bmp", ".tif", ".tiff"}:
+        try:
+            content, count = image_preview(path, page)
+        except IndexError as exc:
+            raise HTTPException(404, str(exc)) from exc
+        except ValueError as exc:
+            raise HTTPException(422, str(exc)) from exc
+        return Response(content, media_type="image/png", headers={"Cache-Control": "private, no-store", "X-Page-Count": str(count)})
     return FileResponse(path, media_type=document.content_type, filename=document.filename, content_disposition_type="inline", headers={"Cache-Control": "private, no-store"})
 
 @router.get("/{document_id}/export")

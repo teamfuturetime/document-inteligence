@@ -24,6 +24,9 @@ services:
       AI_SERVICE_URL: http://ai_service:8001
       STORAGE_PATH: /app/storage/uploads
       SECRET_KEY: ${SECRET_KEY:-dev-secret-key}
+      MAX_IMAGE_PIXELS: ${MAX_IMAGE_PIXELS:-40000000}
+      MAX_IMAGE_PAGES: ${MAX_IMAGE_PAGES:-20}
+      MAX_TOTAL_IMAGE_PIXELS: ${MAX_TOTAL_IMAGE_PIXELS:-80000000}
     ports:
       - "8000:8000"
     volumes:
@@ -53,6 +56,8 @@ services:
       MAX_UPLOAD_SIZE_MB: ${MAX_UPLOAD_SIZE_MB:-10}
       MAX_PDF_PAGES: ${MAX_PDF_PAGES:-20}
       MAX_IMAGE_PIXELS: ${MAX_IMAGE_PIXELS:-40000000}
+      MAX_IMAGE_PAGES: ${MAX_IMAGE_PAGES:-20}
+      MAX_TOTAL_IMAGE_PIXELS: ${MAX_TOTAL_IMAGE_PIXELS:-80000000}
     ports:
       - "8001:8001"
     healthcheck:

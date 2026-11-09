@@ -3,6 +3,7 @@ import {cleanup, fireEvent, render, screen, waitFor} from '@testing-library/reac
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
 import '@testing-library/jest-dom/vitest'
 import {AuthProvider, useAuth} from './AuthContext'
+import OCRTextCard from '../components/OCRTextCard'
 
 const mocks = vi.hoisted(() => ({me: vi.fn(), login: vi.fn(), register: vi.fn(), logout: vi.fn()}))
 vi.mock('../api/client', () => ({api: mocks}))
@@ -53,5 +54,26 @@ describe('OCR draft privacy during authentication changes', () => {
     fireEvent.click(screen.getByRole('button', {name: 'Login other'}))
     await waitFor(() => expect(screen.getByText('other')).toBeInTheDocument())
     expect(sessionStorage.getItem('vt043:ocr-draft:doc')).toBeNull()
+  })
+
+  it('warns before logout for a React-only OCR draft without storing or saving its text', async () => {
+    const onSave = vi.fn()
+    vi.spyOn(window, 'confirm').mockReturnValue(false)
+    render(<AuthProvider><Controls/><OCRTextCard cleanedText="Saved" rawText="RAW" onSave={onSave}/></AuthProvider>)
+    await screen.findByText('reviewer')
+    fireEvent.click(screen.getByRole('button', {name: /Chỉnh sửa văn bản OCR/}))
+    fireEvent.change(screen.getByRole('textbox'), {target: {value: 'Unsaved'}})
+    fireEvent.click(screen.getByRole('button', {name: 'Logout'}))
+    expect(window.confirm).toHaveBeenCalledTimes(1)
+    expect(mocks.logout).not.toHaveBeenCalled()
+    expect(onSave).not.toHaveBeenCalled()
+    expect(sessionStorage.getItem('vt043:ocr-draft:doc')).toBeNull()
+    expect(screen.getByRole('textbox')).toHaveValue('Unsaved')
+    fireEvent.click(screen.getByRole('button', {name: 'Hủy'}))
+    expect(screen.getByRole('textbox')).toHaveValue('Saved')
+    fireEvent.click(screen.getByRole('button', {name: 'Logout'}))
+    await screen.findByText('Logged out')
+    expect(window.confirm).toHaveBeenCalledTimes(1)
+    expect(onSave).not.toHaveBeenCalled()
   })
 })

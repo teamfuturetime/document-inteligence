@@ -20,6 +20,25 @@ from app.core.database import Base  # noqa: E402
 
 
 @pytest.fixture()
+def image_bytes():
+    """Small real encoded images, including distinct pages for TIFF ordering."""
+    from io import BytesIO
+    from PIL import Image
+
+    def encode(extension="png", pages=1, size=(80, 60), colors=None, mode="RGB", **save_options):
+        formats = {"jpg": "JPEG", "jpeg": "JPEG", "png": "PNG", "webp": "WEBP",
+                   "bmp": "BMP", "tif": "TIFF", "tiff": "TIFF"}
+        images = [Image.new(mode, size, (colors or ["white"])[i % len(colors or ["white"])]) for i in range(pages)]
+        output = BytesIO()
+        if pages > 1:
+            save_options.update(save_all=True, append_images=images[1:])
+        images[0].save(output, format=formats[extension], **save_options)
+        return output.getvalue()
+
+    return encode
+
+
+@pytest.fixture()
 def db_session():
     """Tạo database SQLite in-memory cho từng test."""
     from sqlalchemy import create_engine

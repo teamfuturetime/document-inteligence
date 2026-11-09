@@ -16,6 +16,7 @@ COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/ .
+COPY document_images.py /app/document_images.py
 
 EXPOSE 8000
 

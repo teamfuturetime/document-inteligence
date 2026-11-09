@@ -38,7 +38,10 @@ class Settings(BaseSettings):
     STORAGE_BACKEND: str = "local"
     STORAGE_PATH: str = "./storage/uploads"
     MAX_UPLOAD_SIZE_MB: int = 10
-    ALLOWED_EXTENSIONS: Annotated[List[str], NoDecode] = ["pdf", "jpg", "jpeg", "png"]
+    ALLOWED_EXTENSIONS: Annotated[List[str], NoDecode] = ["pdf", "jpg", "jpeg", "png", "webp", "bmp", "tif", "tiff"]
+    MAX_IMAGE_PIXELS: int = 40_000_000
+    MAX_IMAGE_PAGES: int = 20
+    MAX_TOTAL_IMAGE_PIXELS: int = 80_000_000
 
     # AI Service
     AI_SERVICE_URL: str = "http://localhost:8001"
@@ -81,6 +84,10 @@ class Settings(BaseSettings):
     @classmethod
     def _parse_extensions(cls, value: object) -> object:
         if isinstance(value, str):
+            import json
+
+            if value.strip().startswith("["):
+                return json.loads(value)
             return [item.strip().lower() for item in value.split(",") if item.strip()]
         return value
 

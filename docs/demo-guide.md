@@ -34,7 +34,8 @@ $env:DEMO_USER_EMAIL = "demo@example.test"
 $env:DEMO_USER_NAME = "demo"
 $env:DEMO_USER_PASSWORD = "Thay-bang-mat-khau-demo-2026"
 python -m app.seed_demo
-uvicorn app.main:app --reload --port 8000
+Set-Location ..
+python -m uvicorn app.main:app --app-dir backend --reload --port 8000
 ```
 
 Mở terminal thứ hai tại gốc repository:

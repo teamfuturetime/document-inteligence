@@ -16,6 +16,7 @@ COPY ai_service/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY ai_service/ /app/ai_service/
+COPY document_images.py /app/document_images.py
 
 EXPOSE 8001
 

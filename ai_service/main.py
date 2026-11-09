@@ -49,7 +49,7 @@ async def process_document(file: UploadFile = File(...)) -> dict:
                 temporary.write(chunk)
         if size == 0:
             raise DocumentValidationError("File rỗng")
-        validate_document(filename, header)
+        validate_document(filename, header, file.content_type or "")
         engine = VietnameseOCREngine(
             prefer=OCR_ENGINE,
             tesseract_lang=OCR_LANG,

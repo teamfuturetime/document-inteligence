@@ -80,3 +80,73 @@ def test_upload_rejects_spoofed_content_and_cleans_file(api_client):
 def test_missing_document_returns_404(api_client):
     client, _ = api_client
     assert client.get("/api/v1/documents/missing").status_code == 404
+
+
+@pytest.mark.parametrize("extension,mime,pages", [
+    ("webp", "image/webp", 1), ("bmp", "image/bmp", 1),
+    ("tif", "image/tiff", 1), ("tiff", "image/tiff", 2),
+    ("png", "image/png", 1), ("jpg", "image/jpeg", 1), ("jpeg", "image/jpeg", 1),
+    ("tif", "application/octet-stream", 1),
+])
+def test_upload_preview_preserves_original(api_client, image_bytes, extension, mime, pages):
+    from io import BytesIO
+    from PIL import Image
+
+    client, storage = api_client
+    data = image_bytes(extension, pages=pages, colors=["red", "blue"])
+    upload = client.post("/api/v1/documents", files={"file": ("Bản gốc." + extension, data, mime)})
+    assert upload.status_code == 201
+    doc = upload.json()
+    assert doc["filename"] == "Bản gốc." + extension
+    assert doc["file_size"] == len(data)
+    assert doc["content_type"] != "application/octet-stream"
+    path = next(storage.base_path.iterdir())
+    assert path.read_bytes() == data
+    preview_url = f"/api/v1/documents/{doc['id']}/preview"
+    preview = client.get(preview_url)
+    assert preview.status_code == 200
+    assert preview.headers["cache-control"] == "private, no-store"
+    if extension in {"bmp", "tif", "tiff"}:
+        assert preview.headers["content-type"] == "image/png"
+        assert int(preview.headers["x-page-count"]) == pages
+        assert Image.open(BytesIO(preview.content)).getpixel((0, 0)) == (255, 0, 0)
+        assert client.get(preview_url + "?page=0").status_code == 422
+        assert client.get(preview_url + f"?page={pages + 1}").status_code == 404
+        if pages > 1:
+            page2 = client.get(preview_url + "?page=2")
+            assert Image.open(BytesIO(page2.content)).getpixel((0, 0)) == (0, 0, 255)
+    else:
+        assert preview.content == data
+    assert path.read_bytes() == data
+    assert client.delete(f"/api/v1/documents/{doc['id']}").status_code == 200
+    assert list(storage.base_path.iterdir()) == []
+
+
+@pytest.mark.parametrize("case", ["unsupported", "mime", "mismatch", "corrupt", "empty", "oversize", "pixels", "pages", "later_corrupt"])
+def test_invalid_images_leave_no_file_or_record(api_client, image_bytes, monkeypatch, case):
+    from app.services.file_validation import settings
+
+    client, storage = api_client
+    filename, mime, data = "scan.tiff", "image/tiff", image_bytes("tiff", pages=2)
+    if case == "unsupported":
+        filename = "scan.gif"
+    if case == "mime":
+        mime = "text/html"
+    if case == "mismatch":
+        data = image_bytes("webp")
+    if case == "corrupt":
+        data = b"II*\x00broken"
+    if case == "empty":
+        data = b""
+    if case == "oversize":
+        data += b"0" * (10 * 1024 * 1024)
+    if case == "pixels":
+        monkeypatch.setattr(settings, "MAX_IMAGE_PIXELS", 100)
+    if case == "pages":
+        monkeypatch.setattr(settings, "MAX_IMAGE_PAGES", 1)
+    if case == "later_corrupt":
+        data = data[:-100]
+    response = client.post("/api/v1/documents", files={"file": (filename, data, mime)})
+    assert response.status_code == (413 if case == "oversize" else 400)
+    assert list(storage.base_path.iterdir()) == []
+    assert client.get("/api/v1/documents").json()["total"] == 0

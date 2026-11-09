@@ -5,11 +5,12 @@ from dataclasses import asdict
 from pathlib import Path
 import os
 
-from ai_service.config import MAX_IMAGE_PIXELS, OCR_MAX_ATTEMPTS, OCR_PSM_MODES, PDF_DPI
+from ai_service.config import MAX_IMAGE_PIXELS, MAX_IMAGE_PAGES, MAX_TOTAL_IMAGE_PIXELS, OCR_MAX_ATTEMPTS, OCR_PSM_MODES, PDF_DPI
+from document_images import open_image, rgb_page
 
 os.environ.setdefault("OPENCV_IO_MAX_IMAGE_PIXELS", str(MAX_IMAGE_PIXELS))
 
-import cv2
+import numpy as np
 
 from ai_service.classification.engine import build_vietnamese_classifier
 from ai_service.extraction.confidence import assess_extraction
@@ -33,29 +34,33 @@ class DocumentPipeline:
 
     def _load_pages(self, path: Path):
         if path.suffix.lower() == ".pdf":
-            return preprocess_document(str(path), dpi=PDF_DPI, deskew_enabled=False)
-        image = cv2.imread(str(path), cv2.IMREAD_COLOR)
-        if image is not None and image.shape[0] * image.shape[1] > MAX_IMAGE_PIXELS:
-            raise PipelineError("Ảnh vượt quá giới hạn số điểm ảnh")
-        if image is None:
-            raise PipelineError("Không thể giải mã ảnh")
-        return [image]
+            yield from preprocess_document(str(path), dpi=PDF_DPI, deskew_enabled=False)
+            return
+        with open_image(path, path.suffix.lower().lstrip("."), max_pixels=MAX_IMAGE_PIXELS,
+                        max_pages=MAX_IMAGE_PAGES, max_total_pixels=MAX_TOTAL_IMAGE_PIXELS) as (image, count):
+            for index in range(count):
+                image.seek(index)
+                # The preprocessing functions expect BGR, as with cv2.imread.
+                yield np.asarray(rgb_page(image))[:, :, ::-1].copy()
 
     def process(self, path: str | Path) -> dict:
         try:
             source_pages = self._load_pages(Path(path))
             page_results = []
-            for page_number, source_page in enumerate(source_pages, start=1):
-                corrected = deskew(source_page)
-                candidates = build_preprocessing_candidates(corrected)
-                page_results.append(
-                    self.ocr_engine.recognize_candidates(
-                        candidates,
-                        page_number=page_number,
-                        psm_modes=OCR_PSM_MODES,
-                        max_attempts=OCR_MAX_ATTEMPTS,
+            try:
+                for page_number, source_page in enumerate(source_pages, start=1):
+                    corrected = deskew(source_page)
+                    candidates = build_preprocessing_candidates(corrected)
+                    page_results.append(
+                        self.ocr_engine.recognize_candidates(
+                            candidates,
+                            page_number=page_number,
+                            psm_modes=OCR_PSM_MODES,
+                            max_attempts=OCR_MAX_ATTEMPTS,
+                        )
                     )
-                )
+            finally:
+                source_pages.close()
         except PipelineError:
             raise
         except Exception as exc:
