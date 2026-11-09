@@ -39,7 +39,7 @@ function deferredResponse() {
   return { promise, resolve };
 }
 
-function mockWorkspace() {
+function mockWorkspace(sendUpload?: (options?: RequestInit) => Promise<Response>) {
   const queued = document('invoice-a', 'queued');
   const completed = document('invoice-b', 'succeeded');
   const poll = vi.fn<(options?: RequestInit) => Promise<Response>>();
@@ -54,6 +54,7 @@ function mockWorkspace() {
         case '/api/v1/insights':
           return response({ documents: 2 });
         case '/api/v1/documents':
+          if (options?.method === 'POST' && sendUpload) return sendUpload(options);
           return response({ items: [queued, completed], total: 2, offset: 0, limit: 10 });
         case '/api/v1/documents/invoice-a':
           if (openedA || searchParams.has('run_id')) return poll(options);
@@ -63,13 +64,26 @@ function mockWorkspace() {
           return response(completed);
         case '/api/v1/documents/invoice-a/history':
         case '/api/v1/documents/invoice-b/history':
+        case '/api/v1/documents/uploaded/history':
           return response({ runs: [], events: [] });
         default:
           throw new Error(`Unexpected request: ${path}`);
       }
     }),
   );
-  render(<Workspace capabilities={null} onUnsavedChange={vi.fn()} />);
+  render(
+    <Workspace
+      capabilities={{
+        features: {},
+        max_upload_bytes: 5_242_880,
+        model_benchmark_status: 'not_measured',
+        ocr_ready: true,
+        provider_mode: 'tesseract',
+        supported_schemas: [],
+      }}
+      onUnsavedChange={vi.fn()}
+    />,
+  );
   return poll;
 }
 
@@ -152,5 +166,64 @@ describe('Theo dõi trạng thái OCR', () => {
     expect(screen.queryByRole('heading', { name: 'invoice-a.png' })).not.toBeInTheDocument();
     await advance(5000);
     expect(poll).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('Gửi lại upload', () => {
+  const select = (file: File) =>
+    fireEvent.change(screen.getByLabelText('Ảnh PNG/JPG một trang'), {
+      target: { files: [file] },
+    });
+
+  async function send() {
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Tải lên và nhận dạng|Thử tải lại/ }));
+    });
+  }
+
+  it('giữ khóa khi gửi lại cùng file sau lỗi mạng và bỏ chọn file khi thành công', async () => {
+    const sendUpload = vi
+      .fn<(options?: RequestInit) => Promise<Response>>()
+      .mockRejectedValueOnce(new TypeError('Network offline'))
+      .mockResolvedValueOnce(response(document('uploaded', 'succeeded')));
+    mockWorkspace(sendUpload);
+    select(new File(['a'], 'sample.png', { type: 'image/png' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: /Tôi xác nhận/ }));
+
+    await send();
+    expect(screen.getByRole('alert')).toHaveTextContent('Mất kết nối khi tải ảnh');
+    expect(screen.getByRole('button', { name: 'Thử tải lại' })).toBeEnabled();
+    await send();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    const keys = sendUpload.mock.calls.map(([options]) =>
+      new Headers(options?.headers).get('Idempotency-Key'),
+    );
+    expect(keys).toHaveLength(2);
+    expect(keys[0]).toBeTruthy();
+    expect(keys[1]).toBe(keys[0]);
+    expect(screen.getByRole('heading', { name: 'uploaded.png' })).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Tải lên và nhận dạng' })).toBeDisabled();
+  });
+
+  it('dùng khóa mới khi chọn file khác nội dung dù metadata giống nhau', async () => {
+    const sendUpload = vi
+      .fn<(options?: RequestInit) => Promise<Response>>()
+      .mockRejectedValueOnce(new TypeError('Network offline'))
+      .mockResolvedValueOnce(response(document('uploaded', 'succeeded')));
+    mockWorkspace(sendUpload);
+    const options = { type: 'image/png', lastModified: 123 };
+    select(new File(['a'], 'sample.png', options));
+    fireEvent.click(screen.getByRole('checkbox', { name: /Tôi xác nhận/ }));
+    await send();
+
+    select(new File(['b'], 'sample.png', options));
+    await send();
+    const keys = sendUpload.mock.calls.map(([requestOptions]) =>
+      new Headers(requestOptions?.headers).get('Idempotency-Key'),
+    );
+    expect(keys).toHaveLength(2);
+    expect(keys[0]).toBeTruthy();
+    expect(keys[1]).toBeTruthy();
+    expect(keys[1]).not.toBe(keys[0]);
   });
 });

@@ -3,7 +3,7 @@ import type { Capabilities } from '../../lib/api';
 import { HistoryPanel } from './HistoryPanel';
 import { ReviewPanel } from './ReviewPanel';
 import { SourcePreview } from './SourcePreview';
-import { jsonRequest, request, statusLabels } from './api';
+import { APIError, jsonRequest, request, statusLabels } from './api';
 import type { DocumentDetail, DocumentList, ProductInsights, ProductSchema } from './api';
 
 const POLL_INTERVAL_MS = 1200;
@@ -37,7 +37,13 @@ export function Workspace({
   const [dirty, setDirty] = useState(false);
   const [error, setError] = useState('');
   const [pollErrorRunId, setPollErrorRunId] = useState<string | null>(null);
-  const uploadKey = useRef<{ signature: string; key: string } | null>(null);
+  const [uploadError, setUploadError] = useState<{ message: string; retryable: boolean } | null>(
+    null,
+  );
+  const fileInput = useRef<HTMLInputElement>(null);
+  const uploadAttempt = useRef<{ file: File; type: string; origin: string; key: string } | null>(
+    null,
+  );
   const onDirtyChange = useCallback(
     (value: boolean) => {
       setDirty(value);
@@ -142,14 +148,20 @@ export function Workspace({
     }
     const maximum = capabilities?.max_upload_bytes ?? 5_242_880;
     if (file.size > maximum) {
-      setError(`Ảnh vượt giới hạn ${(maximum / 1024 / 1024).toFixed(0)} MiB.`);
+      setUploadError({
+        message: `Ảnh vượt giới hạn ${(maximum / 1024 / 1024).toFixed(0)} MiB.`,
+        retryable: false,
+      });
       return;
     }
-    const signature = `${file.name}:${file.size}:${file.lastModified}:${type}:${origin}`;
-    if (uploadKey.current?.signature !== signature)
-      uploadKey.current = { signature, key: crypto.randomUUID() };
+    let attempt = uploadAttempt.current;
+    if (!attempt || attempt.file !== file || attempt.type !== type || attempt.origin !== origin) {
+      attempt = { file, type, origin, key: crypto.randomUUID() };
+      uploadAttempt.current = attempt;
+    }
     setBusy(true);
     setError('');
+    setUploadError(null);
     try {
       const query = new URLSearchParams({
         document_type: type,
@@ -161,14 +173,26 @@ export function Workspace({
         body: file,
         headers: {
           'Content-Type': 'application/octet-stream',
-          'Idempotency-Key': uploadKey.current!.key,
+          'Idempotency-Key': attempt.key,
         },
       });
       updated(result);
       setActive(result.definitions[0].field_id);
-      uploadKey.current = null;
+      uploadAttempt.current = null;
+      setFile(null);
+      if (fileInput.current) fileInput.current.value = '';
     } catch (reason) {
-      setError((reason as Error).message);
+      setUploadError(
+        reason instanceof APIError
+          ? {
+              message: reason.message,
+              retryable: reason.status === 408 || reason.status === 429 || reason.status >= 500,
+            }
+          : {
+              message: 'Mất kết nối khi tải ảnh. Bạn có thể gửi lại ảnh đang chọn.',
+              retryable: true,
+            },
+      );
     } finally {
       setBusy(false);
     }
@@ -224,7 +248,14 @@ export function Workspace({
         <div className="upload-grid">
           <label>
             Loại tài liệu
-            <select value={type} onChange={(event) => setType(event.target.value)}>
+            <select
+              value={type}
+              disabled={busy}
+              onChange={(event) => {
+                setType(event.target.value);
+                setUploadError(null);
+              }}
+            >
               {schemas.map((schema) => (
                 <option key={schema.document_type} value={schema.document_type}>
                   {schema.document_type === 'hoa_don'
@@ -236,7 +267,14 @@ export function Workspace({
           </label>
           <label>
             Nguồn dữ liệu
-            <select value={origin} onChange={(event) => setOrigin(event.target.value)}>
+            <select
+              value={origin}
+              disabled={busy}
+              onChange={(event) => {
+                setOrigin(event.target.value);
+                setUploadError(null);
+              }}
+            >
               <option value="synthetic">Tự tạo · danh tính hư cấu</option>
               <option value="sample">Sample có quyền sử dụng</option>
             </select>
@@ -244,9 +282,14 @@ export function Workspace({
           <label>
             Ảnh PNG/JPG một trang
             <input
+              ref={fileInput}
               type="file"
               accept="image/png,image/jpeg"
-              onChange={(event) => setFile(event.target.files?.[0] ?? null)}
+              disabled={busy}
+              onChange={(event) => {
+                setFile(event.target.files?.[0] ?? null);
+                setUploadError(null);
+              }}
             />
           </label>
           <button
@@ -254,13 +297,19 @@ export function Workspace({
             disabled={busy || !file || !acknowledged || !capabilities?.ocr_ready}
             onClick={() => void upload()}
           >
-            {busy ? 'Đang gửi…' : 'Tải lên và nhận dạng'}
+            {busy ? 'Đang gửi…' : uploadError?.retryable ? 'Thử tải lại' : 'Tải lên và nhận dạng'}
           </button>
         </div>
+        {uploadError && (
+          <p className="notice" role="alert">
+            {uploadError.message}
+          </p>
+        )}
         <label className="data-ack">
           <input
             type="checkbox"
             checked={acknowledged}
+            disabled={busy}
             onChange={(event) => setAcknowledged(event.target.checked)}
           />
           Tôi xác nhận đây là dữ liệu synthetic/sample hợp lệ, không chứa hồ sơ cá nhân thật.
