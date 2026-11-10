@@ -9,6 +9,7 @@
 - Dashboard thật, upload kéo-thả, tìm kiếm/lọc/phân trang, preview PDF/ảnh, chỉnh sửa field và xuất JSON.
 - Tesseract `vie`, xử lý PDF nhiều trang, chống file giả định dạng, giới hạn dung lượng/trang/pixel.
 - Upload PDF, PNG, JPG/JPEG, WebP, BMP và TIF/TIFF (kể cả TIFF nhiều trang), tối đa 10 MB; preview BMP/TIFF bằng PNG theo trang, giữ nguyên file gốc.
+- Tự động trích xuất trường hóa đơn, CCCD và đơn/biểu mẫu bằng rule từ OCR; người dùng rà soát, sửa và xác nhận trước khi xuất JSON. Xem [chiến lược và kết quả kiểm thử extraction](docs/automatic-extraction.md).
 - PostgreSQL + Alembic; extraction được upsert nên xử lý lại không tạo bản ghi trùng.
 - Docker Compose phục vụ UI tại `http://localhost:3000`, API tại `http://localhost:8000` và Swagger tại `http://localhost:8000/docs`.
 

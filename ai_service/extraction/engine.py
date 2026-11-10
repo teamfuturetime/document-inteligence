@@ -16,6 +16,7 @@ class ExtractedField:
     confidence: float = 0.0
     source: str = "regex"  # "regex" | "rule" | "llm"
     matched_pattern: Optional[str] = None
+    confidence_type: str = "heuristic"
 
 
 @dataclass

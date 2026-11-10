@@ -23,7 +23,7 @@ STANDARD_CASES = {
         ["HỢP ĐỒNG LAO ĐỘNG", "Bên A: CÔNG TY MẪU", "Bên B: TRẦN THỊ THỬ NGHIỆM", "Điều 1: Thời hạn hợp đồng", "Tiền lương: 10.000.000 đồng"],
     ),
     "bieu-mau-hanh-chinh.png": (
-        "unknown",
+        "application_form",
         "administrative_form",
         ["CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM", "BIỂU MẪU HÀNH CHÍNH TỔNG HỢP", "Mã hồ sơ: DEMO-0001", "Nội dung chỉ dùng để kiểm thử OCR tiếng Việt."],
     ),
@@ -86,7 +86,7 @@ def main() -> None:
             draw.text((columns[column_index], y), value, fill="#111827", font=_font(28))
     draw.text((900, 680), invoice_lines[-1], fill="#111827", font=_font(30))
     image.save(ROOT / "hoa-don-bang-tong-hop.png", dpi=(200, 200))
-    manifest.append({"file": "hoa-don-bang-tong-hop.png", "expected_document_type": "unknown", "category": "invoice_table", "synthetic": True, "ground_truth": "\n".join(invoice_lines), "reading_order": invoice_lines, "expected_structure": ["heading", "key_value", "table"], "expected_fields": {"tax_code": "0101234567"}})
+    manifest.append({"file": "hoa-don-bang-tong-hop.png", "expected_document_type": "hoa_don", "category": "invoice_table", "synthetic": True, "ground_truth": "\n".join(invoice_lines), "reading_order": invoice_lines, "expected_structure": ["heading", "key_value", "table"], "expected_fields": {"tax_code": "0101234567", "total_amount": "1.000.000"}})
 
     column_lines = ["VĂN BẢN HAI CỘT", "Cột trái dòng một", "Cột trái dòng hai", "Cột phải dòng một", "Cột phải dòng hai"]
     image, draw = _base()

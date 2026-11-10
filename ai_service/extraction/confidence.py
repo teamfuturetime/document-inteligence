@@ -111,6 +111,7 @@ def assess_extraction(result: ExtractionResult) -> dict:
     if not result.fields:
         return {
             "overall_confidence": 0.0,
+            "confidence_type": "not_estimated",
             "quality": "low",
             "valid_count": 0,
             "invalid_count": 0,
@@ -127,8 +128,11 @@ def assess_extraction(result: ExtractionResult) -> dict:
 
     return {
         "overall_confidence": round(mean_conf, 2),
+        "confidence_type": "not_estimated" if all(f.confidence_type == "not_estimated" for f in result.fields) else "heuristic",
         "quality": quality,
         "valid_count": len(valid),
         "invalid_count": len(invalid),
-        "reports": [{"name": r.name, "validity": r.validity, "reason": r.reason} for r in reports],
+        "reports": [{"name": r.name, "validity": r.validity, "reason": r.reason,
+                     "confidence_type": f.confidence_type, "matched_label": f.matched_pattern}
+                    for r, f in zip(reports, result.fields)],
     }

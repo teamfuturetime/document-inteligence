@@ -6,7 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.config import get_settings
 from app.core.logging import get_logger
-from app.repositories.documents import DocumentRepository
+from app.repositories.documents import DocumentRepository, ReviewedExtractionError
 from app.schemas.documents import DocumentDetailOut, ExtractionUpdate, OCRCorrectionUpdate
 from app.services.storage import StorageService
 
@@ -52,6 +52,11 @@ class DocumentService:
             raise InvalidStateError("Tài liệu đang được xử lý")
         if document.status == "confirmed":
             raise InvalidStateError("Tài liệu đã được xác nhận")
+        existing = self.repository.get_extraction(document_id, self.owner_id)
+        if document.status == "reviewed" or document.ocr_text_corrected is not None or (
+            existing is not None and (existing.status in {"reviewed", "confirmed"} or existing.reviewed_document_type is not None)
+        ):
+            raise InvalidStateError("Tài liệu đã có dữ liệu người dùng rà soát; xử lý lại sẽ ghi đè dữ liệu nên không được phép")
         self.repository.update_status(document_id, "processing")
         self.repository.commit()
         logger.info("Processing started", extra={"document_id": document_id})
@@ -84,6 +89,11 @@ class DocumentService:
             self.repository.refresh(saved)
             logger.info("Processing completed", extra={"document_id": document_id})
             return saved
+        except ReviewedExtractionError as exc:
+            # A review may have committed while the AI request was running.
+            # Roll back the proposed raw OCR as well; retain the review status.
+            self.repository.rollback()
+            raise InvalidStateError("Dữ liệu đã được rà soát trong lúc xử lý; kết quả người dùng được giữ nguyên") from exc
         except (httpx.HTTPError, KeyError, ValueError, OSError, SQLAlchemyError) as exc:
             self.repository.rollback()
             self.repository.update_status(document_id, "failed")

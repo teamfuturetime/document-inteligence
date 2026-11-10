@@ -68,6 +68,8 @@ class DocumentTypeDetector:
     def detect(self, text: str) -> ClassificationResult:
         """Phát hiện loại tài liệu từ văn bản."""
         keyword_result = self.classifier.classify(text)
+        if keyword_result.document_type != "unknown" and keyword_result.document_type not in _SPECIFIC_PATTERNS:
+            return keyword_result
 
         # Đếm pattern đặc thù cho từng loại
         pattern_scores: Dict[str, float] = {}
@@ -90,6 +92,8 @@ class DocumentTypeDetector:
 
         ranked = sorted(combined.items(), key=lambda item: item[1], reverse=True)
         best_type, best_score = ranked[0]
+        if best_type not in _SPECIFIC_PATTERNS:
+            return keyword_result
         second_score = ranked[1][1] if len(ranked) > 1 else 0.0
         margin = (best_score - second_score) / max(best_score, 1e-9)
         confidence = round(

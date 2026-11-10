@@ -66,6 +66,21 @@ def test_save_extraction_creates_and_updates(db_session):
     assert ext2.confidence == 0.95
 
 
+@pytest.mark.parametrize("state", ["reviewed", "confirmed", "reviewed_type"])
+def test_machine_extraction_cannot_replace_reviewed_fields(db_session, state):
+    document = _make_doc(db_session)
+    repo = DocumentRepository(db_session)
+    ext = repo.save_extraction(document.id, "hoa_don", {"total_amount": "250.000"}, 0.7)
+    ext.status = state if state != "reviewed_type" else "pending_review"
+    ext.reviewed_document_type = "other" if state == "reviewed_type" else None
+    db_session.commit()
+    with pytest.raises(ValueError, match="rà soát"):
+        repo.save_extraction(document.id, "cccd", {"cccd": "012345678901"}, 0.9)
+    db_session.refresh(ext)
+    assert ext.data == {"total_amount": "250.000"}
+    assert ext.ai_document_type == "hoa_don"
+
+
 def test_list_documents_pagination(db_session):
     for i in range(5):
         _make_doc(db_session, f"doc-{i}.pdf")

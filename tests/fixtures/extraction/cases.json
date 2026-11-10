@@ -1,0 +1,20 @@
+[
+  {
+    "name": "invoice_full",
+    "type": "hoa_don",
+    "text": "HÓA ĐƠN GIÁ TRỊ GIA TĂNG\nSố hóa đơn: HD-2026-0142\nNgày lập: 06/11/2026\nĐơn vị bán hàng: CÔNG TY MINH HỌA\nMã số thuế: 0101234567\nĐịa chỉ: 12 Đường Mẫu, Phường Minh Họa\nQuận Thử Nghiệm, TP. Hà Nội\nNgười mua hàng: KHÁCH HÀNG TỔNG HỢP\nĐịa chỉ người mua: 99 Phố Mẫu, TP. Khác\nHạng mục Số lượng Đơn giá Thành tiền\nDịch vụ A 2 500.000 1.000.000\nCộng tiền hàng: 1.000.000 đồng\nThuế suất GTGT: 10%\nTiền thuế GTGT: 100.000 đồng\nTổng tiền thanh toán: 1.100.000 đồng\nPhương thức thanh toán: Chuyển khoản",
+    "fields": {"invoice_number":"HD-2026-0142","issue_date":"06/11/2026","seller":"CÔNG TY MINH HỌA","tax_code":"0101234567","address":"12 Đường Mẫu, Phường Minh Họa Quận Thử Nghiệm, TP. Hà Nội","vat_rate":"10%","vat":"100.000","total_amount":"1.100.000","payment_method":"Chuyển khoản"}
+  },
+  {
+    "name":"identity_full",
+    "type":"cccd",
+    "text":"CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nCĂN CƯỚC CÔNG DÂN\nSố / No.: 079201012345\nHọ và tên / Full name:\nNGUYỄN THỊ MINH HỌA\nNgày sinh / Date of birth: 15/08/1990\nGiới tính / Sex: Nữ    Quốc tịch / Nationality: Việt Nam\nQuê quán / Place of origin: Hà Nội\nNơi thường trú / Place of residence: 25 Đường Mẫu, Phường Thử Nghiệm\nQuận Minh Họa, TP. Hà Nội\nNgày cấp: 10/02/2021",
+    "fields":{"cccd":"079201012345","full_name":"NGUYỄN THỊ MINH HỌA","birth_date":"15/08/1990","gender":"Nữ","nationality":"Việt Nam","hometown":"Hà Nội","address":"25 Đường Mẫu, Phường Thử Nghiệm Quận Minh Họa, TP. Hà Nội"}
+  },
+  {
+    "name":"application_full",
+    "type":"application_form",
+    "text":"CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐƠN ĐỀ NGHỊ XÁC NHẬN\nKính gửi: Bộ phận tiếp nhận hồ sơ\nTôi tên là: TRẦN VĂN MINH HỌA\nĐịa chỉ: 45 Phố Tổng Hợp, Hà Nội\nNội dung đề nghị: Đề nghị xác nhận thông tin trong hồ sơ.\nTài liệu đính kèm chỉ dùng để kiểm thử hệ thống.\nHà Nội, ngày 07 tháng 11 năm 2026\nNgười làm đơn\n(Ký và ghi rõ họ tên)",
+    "fields":{"form_name":"ĐƠN ĐỀ NGHỊ XÁC NHẬN","full_name":"TRẦN VĂN MINH HỌA","address":"45 Phố Tổng Hợp, Hà Nội","content":"Đề nghị xác nhận thông tin trong hồ sơ. Tài liệu đính kèm chỉ dùng để kiểm thử hệ thống.","issue_date":"07/11/2026"}
+  }
+]

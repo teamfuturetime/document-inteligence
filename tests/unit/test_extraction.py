@@ -94,7 +94,9 @@ Email: nam.nguyen@example.com
         field = engine.extract(sample_text).get("cccd")
         assert field is not None
         assert field.value == "079201012345"
-        assert field.confidence > 80
+        assert field.confidence_type == "not_estimated"
+        assert field.source == "rule"
+        assert field.matched_pattern == "so/no"
 
     def test_extract_birth_date(self, engine, sample_text):
         field = engine.extract(sample_text).get("birth_date")

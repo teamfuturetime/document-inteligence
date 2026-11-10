@@ -77,7 +77,7 @@ class DocumentPipeline:
             config=", ".join(result.config for result in page_results if result.config),
         )
         classification = self.classifier.classify(analysis_text)
-        extraction = self.extractor.extract(analysis_text)
+        extraction = self.extractor.extract(analysis_text, document_type=classification.document_type)
         extraction.document_type = classification.document_type
         return {
             "ocr": {

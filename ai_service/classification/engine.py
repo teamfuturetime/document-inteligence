@@ -39,12 +39,16 @@ class DocumentClass:
     weight: float = 1.0
 
 
-def normalize_text(text: str) -> str:
-    """Chuẩn hóa Unicode, bỏ dấu và nhiễu khoảng trắng của OCR."""
+def fold_diacritics(text: str) -> str:
+    """Remove Vietnamese marks without removing regex syntax or punctuation."""
     normalized = unicodedata.normalize("NFKD", text or "")
     without_marks = "".join(char for char in normalized if not unicodedata.combining(char))
-    without_marks = without_marks.replace("đ", "d").replace("Đ", "D")
-    return re.sub(r"[^a-z0-9]+", " ", without_marks.casefold()).strip()
+    return without_marks.replace("đ", "d").replace("Đ", "D")
+
+
+def normalize_text(text: str) -> str:
+    """Chuẩn hóa Unicode, bỏ dấu và nhiễu khoảng trắng của OCR."""
+    return re.sub(r"[^a-z0-9]+", " ", fold_diacritics(text).casefold()).strip()
 
 
 class DocumentClassifier:
@@ -56,13 +60,14 @@ class DocumentClassifier:
 
     def register(self, doc_class: DocumentClass) -> None:
         self.classes.append(doc_class)
-        self._compiled[doc_class.name] = [re.compile(pattern, re.IGNORECASE) for pattern in doc_class.patterns]
+        self._compiled[doc_class.name] = [re.compile(fold_diacritics(pattern), re.IGNORECASE | re.MULTILINE) for pattern in doc_class.patterns]
 
     def _normalize(self, text: str) -> str:
         return normalize_text(text)
 
     def classify(self, text: str) -> ClassificationResult:
         normalized = normalize_text(text)
+        folded = fold_diacritics(text)
         if not normalized:
             return ClassificationResult("unknown", 0.0)
 
@@ -76,7 +81,7 @@ class DocumentClassifier:
                 if keyword and re.search(rf"\b{re.escape(keyword)}\b", normalized):
                     matched.append(f"keyword:{keyword}")
             for index, pattern in enumerate(self._compiled.get(doc_class.name, [])):
-                if pattern.search(text):
+                if pattern.search(folded):
                     matched.append(f"pattern:{doc_class.patterns[index]}")
             keyword_score = sum(rule.startswith("keyword:") for rule in matched)
             pattern_score = sum(rule.startswith("pattern:") for rule in matched) * 1.5
@@ -112,9 +117,16 @@ class DocumentClassifier:
 
 def build_vietnamese_classifier() -> DocumentClassifier:
     classifier = DocumentClassifier()
-    classifier.register(DocumentClass("cccd", ["căn cước công dân", "căn cước", "cccd", "gắn chip"], [r"Số[:\s]*[0-9]{12}", r"Ngày cấp", r"Nơi cấp"]))
-    classifier.register(DocumentClass("cmnd", ["chứng minh nhân dân", "cmnd"], [r"Số[:\s]*[0-9]{9}"]))
+    classifier.register(DocumentClass("cccd", ["căn cước công dân", "căn cước", "cccd", "gắn chip"], [r"\bSố(?:\s*/\s*No\.?)?[:\s]*[0-9]{12}(?!\d)", r"Ngày cấp", r"Nơi cấp"]))
+    classifier.register(DocumentClass("cmnd", ["chứng minh nhân dân", "cmnd"], [r"\bSố[:\s]*[0-9]{9}(?!\d)"]))
     classifier.register(DocumentClass("hop_dong_lao_dong", ["hợp đồng lao động", "hđld"], [r"Hợp đồng lao động", r"Nghĩa vụ", r"Quyền lợi"]))
-    classifier.register(DocumentClass("don_xin_viec", ["đơn xin việc", "kính gửi"], [r"Đơn xin việc", r"Kính gửi"]))
+    classifier.register(DocumentClass("don_xin_viec", ["đơn xin việc"], [r"Đơn xin việc"]))
     classifier.register(DocumentClass("ho_khau", ["hộ khẩu", "sổ hộ khẩu"], [r"Sổ hộ khẩu", r"Chủ hộ"]))
+    classifier.register(DocumentClass("hoa_don", ["hóa đơn giá trị gia tăng", "hóa đơn bán hàng", "hóa đơn dịch vụ", "vat invoice"], [
+        r"^\s*(?:h[o0]a\s+d[o0]n|(?:VAT\s+)?invoice)\b",
+        r"\b(?:s[o0]\s*(?:h[o0]a\s+d[o0]n|HD)|invoice\s*(?:no\.?|number))\s*:",
+    ]))
+    classifier.register(DocumentClass("application_form", ["biểu mẫu", "đơn đề nghị", "đơn xin xác nhận", "đơn đăng ký", "phiếu đăng ký", "tờ khai"], [
+        r"^\s*(?:đơn\s+(?!xin\s+việc\b)[^\n]{2,80}|biểu\s+mẫu[^\n]{0,80}|tờ\s+khai[^\n]{0,80}|phiếu\s+đăng\s+ký[^\n]{0,80})$",
+    ]))
     return classifier

@@ -9,6 +9,10 @@ from app.models import Document, Extraction
 from app.schemas.documents import DocumentCreate
 
 
+class ReviewedExtractionError(ValueError):
+    """A machine result must not replace an already reviewed extraction."""
+
+
 class DocumentRepository:
     """Thao tác dữ liệu trên bảng documents và extractions."""
 
@@ -154,6 +158,8 @@ class DocumentRepository:
     ) -> Extraction:
         """Tạo hoặc cập nhật kết quả trích xuất."""
         extraction = self.get_extraction(document_id)
+        if extraction is not None and (extraction.status in {"reviewed", "confirmed"} or extraction.reviewed_document_type is not None):
+            raise ReviewedExtractionError("Không được thay thế kết quả đã được người dùng rà soát")
         if extraction is None:
             extraction = Extraction(
                 document_id=document_id,

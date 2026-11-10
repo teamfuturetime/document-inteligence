@@ -45,6 +45,27 @@ describe('DocumentDetailPage review',()=>{
  it('hiển thị chỉ đọc sau xác nhận và cho phép mở lại rõ ràng',async()=>{
   mocks.get.mockResolvedValue({...document,status:'confirmed'});mocks.extraction.mockResolvedValue({...extraction,status:'confirmed',confirmed_at:'2026-01-02'});view();expect(await screen.findByText(/Kết quả đã được xác nhận/)).toBeInTheDocument();expect(screen.queryByRole('button',{name:/Chỉnh sửa dữ liệu/})).not.toBeInTheDocument();fireEvent.click(screen.getByRole('button',{name:/Mở lại rà soát/}));await waitFor(()=>expect(mocks.reopen).toHaveBeenCalledWith('doc-1'))
  })
+
+ it('hiển thị trường hóa đơn do máy tìm được và chỉ lưu phần sửa khi bấm nút',async()=>{
+  const machine={...extraction,document_type:'hoa_don',ai_document_type:'hoa_don',confidence:0.72,data:{invoice_number:'HD-001',total_amount:'1.100.000'}}
+  mocks.extraction.mockResolvedValue(machine)
+  view()
+  expect(await screen.findByText('Số hóa đơn')).toBeInTheDocument()
+  expect(screen.getByText('HD-001')).toBeInTheDocument()
+  expect(screen.getByText('Tổng tiền thanh toán')).toBeInTheDocument()
+  expect(screen.getByText(/Các trường do máy trích xuất/)).toBeInTheDocument()
+  expect(mocks.save).not.toHaveBeenCalled()
+  fireEvent.click(screen.getByRole('button',{name:/Chỉnh sửa dữ liệu/}))
+  fireEvent.change(screen.getByLabelText('Giá trị trường 2'),{target:{value:'1.200.000'}})
+  expect(mocks.save).not.toHaveBeenCalled()
+  const reviewed={...machine,status:'reviewed',reviewed_document_type:'hoa_don',data:{invoice_number:'HD-001',total_amount:'1.200.000'}}
+  mocks.get.mockResolvedValue({...document,status:'reviewed'})
+  mocks.extraction.mockResolvedValue(reviewed);mocks.save.mockResolvedValue(reviewed)
+  fireEvent.click(screen.getByRole('button',{name:/Lưu thay đổi/}))
+  await waitFor(()=>expect(mocks.save).toHaveBeenCalledWith('doc-1',reviewed.data,'hoa_don'))
+  expect(await screen.findByText(/Dữ liệu đã được lưu rà soát/)).toBeInTheDocument()
+  expect(mocks.saveOcr).not.toHaveBeenCalled()
+ })
 })
 
 function deferred<T>(){

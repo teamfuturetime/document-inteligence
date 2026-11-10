@@ -29,7 +29,7 @@
   },
   {
     "file": "bieu-mau-hanh-chinh.png",
-    "expected_document_type": "unknown",
+    "expected_document_type": "application_form",
     "category": "administrative_form",
     "synthetic": true,
     "ground_truth": "CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nBIỂU MẪU HÀNH CHÍNH TỔNG HỢP\nMã hồ sơ: DEMO-0001\nNội dung chỉ dùng để kiểm thử OCR tiếng Việt.",
@@ -66,7 +66,7 @@
   },
   {
     "file": "hoa-don-bang-tong-hop.png",
-    "expected_document_type": "unknown",
+    "expected_document_type": "hoa_don",
     "category": "invoice_table",
     "synthetic": true,
     "ground_truth": "HÓA ĐƠN DỊCH VỤ\nMST: 0101234567\nHạng mục Số lượng Đơn giá Thành tiền\nDịch vụ A 2 500.000 1.000.000\nTỔNG CỘNG: 1.000.000 đồng",
@@ -83,7 +83,8 @@
       "table"
     ],
     "expected_fields": {
-      "tax_code": "0101234567"
+      "tax_code": "0101234567",
+      "total_amount": "1.000.000"
     }
   },
   {

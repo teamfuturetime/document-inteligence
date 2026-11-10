@@ -317,3 +317,150 @@ def test_reads_never_persist_ocr_and_only_explicit_patch_changes_correction(revi
     assert after[2] == before[2] + 1
     assert after[4] == "reviewed"
     assert response.json()["status"] != "confirmed"
+
+
+@pytest.mark.parametrize("case_index", [0, 1, 2])
+@pytest.mark.parametrize("format", ["png", "pdf", "tiff"])
+def test_classified_fields_flow_through_review_without_overwriting_humans(review_client, image_bytes, monkeypatch, case_index, format):
+    import json
+    from pathlib import Path
+    import fitz
+    import httpx
+    from ai_service.main import app as ai_app
+    from ai_service.ocr.engine import OCRResult, VietnameseOCREngine
+
+    case = json.loads((Path(__file__).parents[1] / "fixtures/extraction/cases.json").read_text(encoding="utf-8"))[case_index]
+    lines = case["text"].splitlines()
+    pages = [case["text"]] if format == "png" else ["\n".join(lines[:len(lines)//2]), "\n".join(lines[len(lines)//2:])]
+
+    def recognize(self, candidates, *, page_number, **kwargs):
+        return OCRResult(text=pages[page_number - 1], engine="test", pages=[{"page_number": page_number, "width": 80, "height": 60, "blocks": []}])
+
+    monkeypatch.setattr(VietnameseOCREngine, "recognize_candidates", recognize)
+    ai_calls = []
+
+    class LocalAIClient:
+        def __init__(self, **kwargs): pass
+        async def __aenter__(self): return self
+        async def __aexit__(self, *args): pass
+        async def post(self, url, files):
+            ai_calls.append(url)
+            return TestClient(ai_app).post("/process", files=files)
+
+    monkeypatch.setattr(httpx, "AsyncClient", LocalAIClient)
+    if format == "pdf":
+        with fitz.open() as pdf:
+            pdf.new_page(width=80, height=60)
+            pdf.new_page(width=80, height=60)
+            content = pdf.tobytes()
+        mime = "application/pdf"
+    else:
+        content = image_bytes(format, pages=len(pages))
+        mime = "image/png" if format == "png" else "image/tiff"
+    client, _, csrf = review_client
+    upload = client.post("/api/v1/documents", files={"file": ("sample." + format, content, mime)})
+    assert upload.status_code == 201
+    base = "/api/v1/documents/" + upload.json()["id"]
+    processed = client.post(base + "/process")
+    assert processed.status_code == 200, processed.text
+    extraction = processed.json()
+    assert extraction["data"] == case["fields"]
+    assert extraction["document_type"] == extraction["ai_document_type"] == case["type"]
+    assert extraction["reviewed_document_type"] is None
+    assert extraction["status"] == "pending_review"
+    assert 0 < extraction["confidence"] < 1
+    raw = client.get(base).json()["ocr_text_raw"]
+    assert len(client.get(base).json()["ocr_pages"]) == len(pages)
+
+    human = dict(extraction["data"])
+    human.pop(next(reversed(human)))
+    human[next(iter(human))] = "Đã được người dùng đối chiếu"
+    human["Ghi chú thủ công"] = "Giữ nguyên khi sửa OCR"
+    reviewed = client.patch(base + "/extraction", json={"document_type": "other", "data": human})
+    assert reviewed.status_code == 200
+    assert reviewed.json()["ai_document_type"] == case["type"]
+    assert reviewed.json()["reviewed_document_type"] == "other"
+    assert client.patch(base + "/ocr-correction", json={"text": "Văn bản được lưu thủ công", "expected_revision": 0}).status_code == 200
+    assert client.get(base + "/extraction").json()["data"] == human
+    assert client.post(base + "/process").status_code == 409
+    assert len(ai_calls) == 1
+    assert client.get(base).json()["ocr_text_raw"] == raw
+    assert client.get(base + "/extraction").json()["data"] == human
+    assert client.post(base + "/confirm").status_code == 200
+    assert client.post(base + "/process").status_code == 409
+    exported = client.get(base + "/export").json()
+    assert exported["fields"] == human
+    assert exported["ocr_text_raw"] == raw
+    assert exported["ocr_text"] == "Văn bản được lưu thủ công"
+    assert exported["ai_document_type"] == case["type"]
+    assert exported["reviewed_document_type"] == "other"
+    assert client.post(base + "/reopen").status_code == 200
+    assert client.post(base + "/process").status_code == 409
+    assert client.get(base + "/extraction").json()["data"] == human
+    client.headers.pop("X-CSRF-Token")
+    assert client.patch(base + "/extraction", json={"data": {}}).status_code == 403
+    client.headers["X-CSRF-Token"] = csrf
+    client.cookies.clear()
+    assert client.get(base + "/extraction").status_code == 401
+    auth = client.post("/api/v1/auth/register", json={"email": "foreign-fields@example.test", "username": "foreign_fields", "password": "Foreign-fields-password-123"})
+    client.headers["X-CSRF-Token"] = auth.json()["csrf_token"]
+    assert client.get(base + "/extraction").status_code == 404
+    assert client.patch(base + "/extraction", json={"data": {}}).status_code == 404
+    assert client.post(base + "/process").status_code == 404
+    assert client.get(base + "/export").status_code == 404
+
+
+@pytest.mark.parametrize("guard", ["reviewed_extraction", "confirmed_extraction", "reviewed_type", "ocr_correction"])
+def test_reprocessing_protects_human_edits_even_with_legacy_document_status(review_client, guard):
+    from app.repositories.documents import DocumentRepository
+
+    client, factory, _ = review_client
+    document_id = make_processed(client, factory)
+    with factory() as db:
+        ext = DocumentRepository(db).save_extraction(document_id, "hoa_don", {"total_amount": "123.000"}, 0.6)
+        ext.status = "reviewed" if guard == "reviewed_extraction" else "confirmed" if guard == "confirmed_extraction" else "pending_review"
+        if guard == "reviewed_type":
+            ext.reviewed_document_type = "other"
+        if guard == "ocr_correction":
+            db.get(Document, document_id).ocr_text_corrected = "Saved human OCR"
+        db.commit()
+    base = f"/api/v1/documents/{document_id}"
+    assert client.post(base + "/process").status_code == 409
+    assert client.get(base).json()["status"] == "processed"
+    assert client.get(base + "/extraction").json()["data"] == {"total_amount": "123.000"}
+
+
+def test_review_committed_during_ai_request_preserves_fields_raw_and_status(review_client, monkeypatch):
+    import httpx
+    from app.repositories.documents import DocumentRepository
+
+    client, factory, _ = review_client
+    document_id = make_processed(client, factory)
+    with factory() as db:
+        DocumentRepository(db).save_extraction(document_id, "hoa_don", {"total_amount": "100"}, 0.6)
+        db.commit()
+
+    class DelayedAIClient:
+        def __init__(self, **kwargs): pass
+        async def __aenter__(self): return self
+        async def __aexit__(self, *args): pass
+        async def post(self, url, files):
+            # Simulate a review transaction that was already underway when
+            # processing began and finishes before the AI reply arrives.
+            with factory() as db:
+                repo = DocumentRepository(db)
+                repo.review_extraction(document_id, {"total_amount": "HUMAN REVIEW"}, "other")
+                repo.update_status(document_id, "reviewed")
+                db.commit()
+            return httpx.Response(200, request=httpx.Request("POST", url), json={
+                "ocr": {"text": "AI REPROCESS SHOULD NOT REPLACE RAW", "pages": []},
+                "classification": {"document_type": "hoa_don", "confidence": 70},
+                "extraction": {"data": {"total_amount": "999"}},
+            })
+
+    monkeypatch.setattr(httpx, "AsyncClient", DelayedAIClient)
+    base = f"/api/v1/documents/{document_id}"
+    assert client.post(base + "/process").status_code == 409
+    assert client.get(base).json()["status"] == "reviewed"
+    assert client.get(base).json()["ocr_text_raw"] == "HO VA TEN: NGUYEN VAN A\nMST: 0101234567"
+    assert client.get(base + "/extraction").json()["data"] == {"total_amount": "HUMAN REVIEW"}
