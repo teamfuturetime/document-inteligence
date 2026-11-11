@@ -26,8 +26,8 @@ local trên executable harness được đề cho phép, không phải productio
 | 200 tasks, p95 <=5s và kết luận trung thực | 4 HTTP runs giữ cả lỗi; ASGI 200/200, 1,200 valid requests, p95 1.136s | Đã đo; chỉ ASGI đạt, chưa nghiệm thu HTTP/production |
 | Traceability AC/Risk->case->file->commit->result | Báo cáo mục 7 | Có |
 | AI Usage Log, >=2 điểm AI chưa đáng tin | Phụ lục A; shared key và response echo target | Có, gồm phản hồi người dùng thật |
-| Reflection 250-350 từ | Mục 8, kiểm tra word count bằng script xuất/QA | Có; bản AI hỗ trợ để SV rà soát |
-| PDF đúng tên, <=8 trang chính | `BT3_23001945_VT-044.pdf`, 8 trang chính + phụ lục | Xuất và kiểm tra visual khi hoàn thiện |
+| Reflection 250-350 từ | Mục 8, 324 từ theo whitespace word count | Có; bản AI hỗ trợ để SV rà soát |
+| PDF đúng tên, <=8 trang chính | `BT3_23001945_VT-044.pdf`, 8 trang chính + 2 trang phụ lục | Đã xuất, render và kiểm tra visual đủ 10 trang |
 | Trang đầu đủ thông tin và cam kết | Báo cáo trang 1 | Có văn bản cam kết; SV tự xác nhận trước nộp |
 | README chạy test | `README.md` | Có |
 | Link GitHub branch/PR | Chưa push theo lựa chọn rõ ràng của người dùng | **Còn thiếu theo đề, không tự công bố** |
