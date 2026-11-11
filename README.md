@@ -1,3 +1,18 @@
+# AI-02 Solo — bản triển khai cá nhân
+
+Trên nhánh `personal/canhtung-solo`, ứng dụng mới nằm trong **[`solo/`](solo/README.md)**:
+Python/FastAPI + React, hỗ trợ hóa đơn và đơn đề nghị sinh viên synthetic,
+OCR thật, review/validation/export JSON và evaluation theo từng trường.
+Đã chuẩn bị hai adapter VLM local/API; cấu hình và kiểm thử model thật để sau
+theo lựa chọn của chủ dự án. Không thay lịch sử hoặc implementation tích hợp cũ.
+
+**Bắt đầu tại [hướng dẫn chạy bản cá nhân](solo/README.md)** — dùng cổng 8100/5174.
+Xem [thiết kế](solo/docs/design.md), [đọc code](solo/docs/learning.md),
+[VLM](solo/docs/vlm.md), [evaluation](solo/docs/evaluation.md).
+
+<details>
+<summary>Tài liệu ứng dụng tích hợp cũ ở thư mục gốc (cổng 8000/5173)</summary>
+
 # Vietnamese Document Intelligence — AI-02
 
 Ứng dụng local cho hóa đơn tiếng Việt: upload → OCR thật → trích xuất năm
@@ -81,3 +96,5 @@ nhiều cột hoặc nhãn/giá trị khác dòng; không tự sửa dấu sai t
 Xem [kiến trúc](docs/architecture.md), [contract](docs/contracts.md),
 [roadmap](docs/roadmap.md), [backlog](docs/issues.md),
 [quy trình Git](docs/contributing.md). Main chung không được thay đổi tự động.
+
+</details>
