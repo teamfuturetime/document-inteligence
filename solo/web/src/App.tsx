@@ -1,22 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { call, post } from './api'
 import type { Catalog, Extraction, Health, Kind, Mode, OCRProvider, Validation, Values } from './api'
+import Icon from './components/Icon'
+import DocumentPreview, { isPDF } from './components/DocumentPreview'
+import ReviewFields from './components/ReviewFields'
 
 const MODES: Record<Mode, string> = { rules: 'OCR + luật', vlm: 'OCR + VLM', hybrid: 'Kết hợp OCR, luật và VLM' }
 const OCR_PROVIDERS: Record<OCRProvider, string> = { tesseract: 'Tesseract local', ocrspace: 'OCR.space (API)' }
-const SOURCES: Record<string, string> = { rules: 'Luật theo nhãn', vlm: 'Mô hình thị giác–ngôn ngữ', agreement: 'Hai nguồn đồng ý', conflict: 'Cần quyết định', missing: 'Chưa xác định' }
 
-function Preview({ file }: { file: File }) {
-  const [url, setUrl] = useState('')
-  useEffect(() => {
-    const next = URL.createObjectURL(file)
-    setUrl(next)
-    return () => URL.revokeObjectURL(next)
-  }, [file])
-  if (!url) return null
-  return file.type === 'application/pdf' || /\.pdf$/i.test(file.name)
-    ? <object data={url} type="application/pdf" aria-label="Bản xem trước PDF"><a href={url} download={file.name}>Tải PDF để đối chiếu</a></object>
-    : <img src={url} alt={`Bản xem trước ${file.name}`} />
+function fileSize(bytes: number) {
+  return bytes < 1024 * 1024 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / (1024 * 1024)).toFixed(1)} MiB`
 }
 
 export default function App() {
@@ -29,9 +22,13 @@ export default function App() {
   const [result, setResult] = useState<Extraction | null>(null)
   const [values, setValues] = useState<Values>({})
   const [validation, setValidation] = useState<Validation | null>(null)
+  const [zoom, setZoom] = useState(1)
+  const [dragging, setDragging] = useState(false)
+  const [showGuide, setShowGuide] = useState(false)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState('')
   const controller = useRef<AbortController | null>(null)
+  const fileInput = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
     const initial = new AbortController()
@@ -111,51 +108,96 @@ export default function App() {
   const resultOcr = (result?.provenance.ocr as { provider?: OCRProvider } | undefined)?.provider
   const filled = result ? Object.values(result.fields).filter(field => field.value !== null).length : 0
 
-  return <>
-    <header className="topbar"><a className="brand" href="/" aria-label="AI-02 Solo trang chủ"><span className="brandmark">S</span><span>AI-02 <strong>Solo</strong></span></a><span className="local-tag">Bản cá nhân · Dữ liệu tổng hợp</span></header>
-    <main>
-      <section className="intro"><p className="eyebrow">DOCUMENT INTELLIGENCE / TIẾNG VIỆT</p><h1>Từ tài liệu đến dữ liệu<br /><span>đã được bạn xác nhận.</span></h1><p>Tải mẫu hóa đơn hoặc đơn từ, đối chiếu kết quả nhận diện và hoàn thiện từng trường trước khi xuất JSON.</p></section>
-      <ol className="steps" aria-label="Quy trình"><li className="active"><b>01</b> Chọn tài liệu</li><li className={result ? 'active' : ''}><b>02</b> Rà soát & sửa</li><li className={validation?.valid ? 'active' : ''}><b>03</b> Xác nhận & xuất</li></ol>
-      {error ? <div className="notice error" role="alert">{error}</div> : null}
-      {health && !selectedOcr?.ready ? <div className="notice">Nguồn OCR chưa sẵn sàng. {selectedOcr?.reason ?? 'Kiểm tra cấu hình backend.'}</div> : null}
-      <div className="workspace">
-        <section className="panel document-panel" aria-labelledby="document-title">
-          <div className="panel-heading"><div><p className="eyebrow">TÀI LIỆU GỐC</p><h2 id="document-title">Chọn mẫu để bắt đầu</h2></div><span className="pill">01 trang</span></div>
-          <div className="selectors"><label>Loại tài liệu<select value={kind} onChange={event => { invalidate(true); setKind(event.target.value as Kind) }}><option value="invoice">Hóa đơn bán hàng</option><option value="application">Đơn đề nghị sinh viên</option></select></label><label>Nguồn OCR<select disabled={!health} value={ocrProvider} onChange={event => { invalidate(true); setOcrProvider(event.target.value as OCRProvider) }}>{Object.entries(OCR_PROVIDERS).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label><label>Phương pháp<select value={mode} onChange={event => { invalidate(true); setMode(event.target.value as Mode) }}>{Object.entries(MODES).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label></div>
-          {ocrProvider === 'ocrspace' ? <p className="notice">Tài liệu sẽ được gửi đến OCR.space. Chỉ dùng dữ liệu tổng hợp; ảnh sau tiền xử lý tối đa 1 MB. Dịch vụ không trả confidence theo từ.</p> : null}
-          {needsVlm ? <p className="notice">VLM chưa cấu hình. Thiết lập adapter local hoặc API theo README để dùng phương pháp này.</p> : null}
-          <label className="file-picker"><span className="upload-icon" aria-hidden="true">↑</span><strong>{file ? file.name : 'Chọn một tài liệu mẫu'}</strong><span>PNG, JPEG hoặc PDF · Tối đa 10 MiB</span><input aria-label="Tải tài liệu mẫu" type="file" accept=".png,.jpg,.jpeg,.pdf" onChange={event => {
-            invalidate(true)
-            const next = event.target.files?.[0] ?? null
-            if (next && next.size > 10 * 1024 * 1024) { setFile(null); setError('File vượt 10 MiB. Chọn file nhỏ hơn.'); return }
-            setFile(next)
-          }} /></label>
-          <button className="primary full" disabled={!file || !schema || Boolean(busy) || needsVlm || !selectedOcr?.ready} onClick={extract}>Trích xuất dữ liệu <span aria-hidden="true">↗</span></button>
-          <div className="preview">{file ? <Preview key={`${file.name}-${file.lastModified}`} file={file} /> : <div className="empty-preview"><div className="paper-icon" aria-hidden="true">▤</div><p>Bản xem trước tài liệu</p><small>Chỉ dùng dữ liệu mẫu hoặc dữ liệu tổng hợp.</small></div>}</div>
-        </section>
-        <section className="panel review-panel" aria-labelledby="review-title">
-          <div className="panel-heading"><div><p className="eyebrow">DỮ LIỆU CÓ CẤU TRÚC</p><h2 id="review-title">Rà soát kết quả</h2></div><span className="pill">{result ? `${filled}/${schema?.fields.length} trường` : 'Chờ tài liệu'}</span></div>
-          {busy ? <p className="notice" role="status">{busy}</p> : null}
-          {!result ? <div className="empty-review"><span className="review-symbol" aria-hidden="true">✓</span><h3>Mỗi trường, một lần kiểm tra.</h3><p>Kết quả AI sẽ xuất hiện tại đây. Bạn luôn có thể đối chiếu bằng chứng và sửa lại trước khi xuất dữ liệu.</p></div> : <>
-            <p className="result-summary">{schema?.title} · {resultOcr ? OCR_PROVIDERS[resultOcr] : 'OCR'} · {MODES[result.mode]}<br /><small>{resultOcr === 'ocrspace' ? 'OCR.space không cung cấp confidence; hãy kiểm tra bằng chứng và ảnh.' : 'Confidence là tín hiệu OCR, chưa được hiệu chuẩn thành xác suất đúng.'}</small></p>
-            {result.warnings.map((warning, index) => <p className="notice" key={index}>{warning}</p>)}
-            <div className="fields">{schema?.fields.map(definition => {
-              const extracted = result.fields[definition.key]
-              const changed = String(values[definition.key] ?? '') !== String(extracted.value ?? '')
-              return <div className="field" key={definition.key}><div className="field-heading"><label htmlFor={definition.key}>{definition.label}</label><span className={extracted.confidence === null || extracted.confidence < .75 ? 'confidence low' : 'confidence'}>{extracted.confidence === null ? 'Chưa có confidence' : `OCR gốc ${Math.round(extracted.confidence * 100)}%`}</span></div>
-                <input id={definition.key} type={definition.type} value={values[definition.key] ?? ''} aria-invalid={Boolean(validation?.errors[definition.key])} aria-describedby={`${definition.key}-help`} onChange={event => { invalidate(); setValues(previous => ({ ...previous, [definition.key]: event.target.value })) }} />
-                <div id={`${definition.key}-help`} className="field-help">{changed ? <span className="edited">Bạn đã chỉnh sửa · confidence chỉ thuộc kết quả AI gốc</span> : <span>{SOURCES[extracted.source]}</span>}{validation?.errors[definition.key] ? <p className="field-error">{validation.errors[definition.key]}</p> : null}</div>
-                {extracted.warnings.map((warning, index) => <p className="field-warning" key={index}>{warning}</p>)}
-                <details><summary>Bằng chứng OCR ({extracted.evidence.length})</summary>{extracted.evidence.length ? extracted.evidence.map((item, index) => <blockquote key={index}>{item}</blockquote>) : <p>Chưa có bằng chứng OCR cho trường này. Đối chiếu ảnh gốc.</p>}</details>
-              </div>
-            })}</div>
-            <div className="review-actions"><button disabled={Boolean(busy)} onClick={validate}>Kiểm tra dữ liệu</button><button className="primary" disabled={!validation?.valid || Boolean(busy)} onClick={download}>Xuất JSON đã xác nhận ↓</button></div>
-            {validation ? <p role="status" className={validation.valid ? 'valid-message' : 'field-error'}>{validation.valid ? 'Dữ liệu hợp lệ. Hãy xác nhận đã đối chiếu tài liệu trước khi tải JSON.' : 'Cần sửa các trường được đánh dấu rồi kiểm tra lại.'}</p> : <p className="footnote">Xuất JSON được mở sau khi tất cả trường hợp lệ.</p>}
-            <details className="technical"><summary>Nội dung OCR & phiên bản xử lý</summary><pre>{result.ocr_text}</pre><pre>{JSON.stringify(result.provenance, null, 2)}</pre></details>
-          </>}
-        </section>
+  function chooseFiles(files: File[]) {
+    invalidate(true)
+    setZoom(1)
+    setDragging(false)
+    if (files.length > 1) { setFile(null); setError('Mỗi lần chỉ chọn một tài liệu.'); return }
+    const next = files[0] ?? null
+    if (next && next.size > 10 * 1024 * 1024) { setFile(null); setError('File vượt 10 MiB. Chọn file nhỏ hơn.'); return }
+    if (next && !/\.(png|jpe?g|pdf)$/i.test(next.name) && !['image/png', 'image/jpeg', 'application/pdf'].includes(next.type)) {
+      setFile(null); setError('Chọn tài liệu PNG, JPEG hoặc PDF.'); return
+    }
+    setFile(next)
+  }
+
+  async function loadSample() {
+    invalidate(true)
+    setFile(null)
+    setZoom(1)
+    const current = begin('Đang tải hóa đơn mẫu…')
+    try {
+      const response = await fetch(`${import.meta.env.BASE_URL}samples/invoice-001.png`, { signal: current.signal })
+      if (!response.ok) throw new Error('Không tải được hóa đơn mẫu. Bạn có thể chọn file khác.')
+      const blob = await response.blob()
+      if (!current.signal.aborted) {
+        setKind('invoice')
+        setFile(new File([blob], 'invoice-001.png', { type: 'image/png' }))
+      }
+    } catch (problem) { failed(problem, current) } finally { done(current) }
+  }
+
+  const currentStep = validation?.valid ? 3 : result ? 2 : 1
+  const changedCount = result ? Object.entries(values).filter(([key, value]) => String(value ?? '') !== String(result.fields[key]?.value ?? '')).length : 0
+  const statusLabel = !health ? 'Đang kết nối backend' : selectedOcr?.ready
+    ? ocrProvider === 'ocrspace' ? 'API đã cấu hình' : 'OCR sẵn sàng' : 'Cần cấu hình OCR'
+
+  return <div className="app-shell">
+    <a className="skip-link" href="#workspace">Bỏ qua điều hướng</a>
+    <aside className="sidebar" aria-label="Điều hướng chính">
+      <a className="brand" href="#workspace" aria-label="AI-02 Solo trang chủ"><span className="brandmark"><Icon name="stack" /></span><span>AI-02 <span className="brand-solo">Solo</span></span></a>
+      <div className="workspace-label"><span className="workspace-avatar">S</span><div><strong>Không gian cá nhân</strong><span>Document Intelligence</span></div><span className="workspace-key">01</span></div>
+      <div className="nav-group-label">Không gian làm việc</div>
+      <nav className="side-nav"><a href="#workspace" aria-label="Trích xuất tài liệu" className="nav-item active" aria-current="page"><Icon name="scan" /><span>Trích xuất tài liệu</span><Icon name="chevron" /></a>
+        <button aria-label="Hướng dẫn nhanh" className={`nav-item ${showGuide ? 'selected' : ''}`} aria-expanded={showGuide} aria-controls="quick-guide" onClick={() => setShowGuide(previous => !previous)}><Icon name="help" /><span>Hướng dẫn nhanh</span></button>
+      </nav>
+      <div className="sidebar-facts"><div className="nav-group-label">Trong phiên này</div><div className="session-file"><Icon name="document" /><div><strong>{file ? '1 tài liệu đang mở' : 'Chưa có tài liệu'}</strong><span>{file ? `${isPDF(file) ? 'PDF' : 'Hình ảnh'} · ${fileSize(file.size)}` : 'Chọn file để bắt đầu'}</span></div></div></div>
+      <div className="sidebar-bottom"><div className="scope-icon"><Icon name="shield" /></div><strong>Dữ liệu tổng hợp</strong><p>Thử nghiệm bằng hóa đơn và đơn từ mẫu của dự án.</p><span className="edition">AI-02 · Bản cá nhân</span></div>
+    </aside>
+    <main id="workspace" className="app-main" tabIndex={-1}>
+      <header className="topbar"><div className="breadcrumb">Không gian làm việc <Icon name="chevron" /><span>Trích xuất</span></div><span className="environment"><span />Bản thử nghiệm</span></header>
+      <div className="page-content">
+        <div className="page-intro" data-enter><div><h1>Rà soát tài liệu tiếng Việt</h1><p>Trích xuất hóa đơn và đơn từ, đối chiếu từng trường rồi xuất JSON đã xác nhận.</p></div><div className={`connection ${health && selectedOcr?.ready ? 'ready' : ''}`}><span className="status-dot" /><span>{statusLabel}</span></div></div>
+        {showGuide ? <section className="guide-panel" id="quick-guide" aria-labelledby="guide-title"><div><Icon name="help" /><h2 id="guide-title">Các bước xử lý</h2></div><ol><li>Chọn hóa đơn hoặc đơn đề nghị và nguồn OCR phù hợp.</li><li>Tải một tài liệu tổng hợp, rồi bấm Trích xuất dữ liệu.</li><li>Đối chiếu với bản gốc, sửa và kiểm tra dữ liệu trước khi xuất JSON.</li></ol><p>OCR.space dùng API bên ngoài. VLM cần được cấu hình riêng ở backend.</p></section> : null}
+        <section className="configuration" aria-label="Cấu hình trích xuất"><div className="selectors">
+          <label>Loại tài liệu<select value={kind} onChange={event => { invalidate(true); setKind(event.target.value as Kind) }}><option value="invoice">Hóa đơn bán hàng</option><option value="application">Đơn đề nghị sinh viên</option></select></label>
+          <label>Nguồn OCR<select disabled={!health} value={ocrProvider} onChange={event => { invalidate(true); setOcrProvider(event.target.value as OCRProvider) }}>{Object.entries(OCR_PROVIDERS).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
+          <label>Phương pháp<select value={mode} onChange={event => { invalidate(true); setMode(event.target.value as Mode) }}>{Object.entries(MODES).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
+          <button className="primary extract-button" disabled={!file || !schema || Boolean(busy) || needsVlm || !selectedOcr?.ready} onClick={extract}><Icon name="scan" />Trích xuất dữ liệu<Icon name="arrow" /></button>
+        </div></section>
+        {error ? <div className="notice error" role="alert"><Icon name="close" /><span>{error}</span></div> : null}
+        {health && !selectedOcr?.ready ? <div className="notice"><Icon name="settings" /><span>Nguồn OCR chưa sẵn sàng. {selectedOcr?.reason ?? 'Kiểm tra cấu hình backend.'}</span></div> : null}
+        {ocrProvider === 'ocrspace' ? <p className="notice"><Icon name="cloud" /><span>Tài liệu sẽ được gửi đến OCR.space. Chỉ dùng dữ liệu tổng hợp; ảnh sau tiền xử lý tối đa 1 MB. Dịch vụ không trả confidence theo từ.</span></p> : null}
+        {needsVlm ? <p className="notice"><Icon name="settings" /><span>VLM chưa cấu hình. Thiết lập adapter local hoặc API theo README để dùng phương pháp này.</span></p> : null}
+        <ol className="steps" aria-label="Quy trình">{['Chọn tài liệu', 'Rà soát kết quả', 'Xác nhận & xuất'].map((label, index) => <li key={label} data-state={index + 1 < currentStep || (index === 2 && validation?.valid) ? 'complete' : index + 1 === currentStep ? 'current' : 'waiting'} aria-current={index + 1 === currentStep ? 'step' : undefined}><span className="step-number">{index + 1 < currentStep || (index === 2 && validation?.valid) ? <Icon name="check" /> : `0${index + 1}`}</span><span>{label}</span>{index < 2 ? <span className="step-line" /> : null}</li>)}</ol>
+        <div className="workbench">
+          <section className="panel document-panel" aria-labelledby="document-title">
+            <div className="panel-heading"><div><Icon name="document" /><h2 id="document-title">Tài liệu gốc</h2></div><span className="pill">Tối đa 1 trang</span></div>
+            <div className="document-toolbar"><span className="document-name">{file ? <><span className={`file-type ${isPDF(file) ? 'pdf' : ''}`}>{isPDF(file) ? 'PDF' : 'IMG'}</span><span>{file.name}</span></> : <span>Chưa chọn tài liệu</span>}</span>{file ? <button className="icon-button" aria-label="Xóa tài liệu" title="Xóa tài liệu" onClick={() => chooseFiles([])}><Icon name="close" /></button> : <span className="file-formats">PNG / JPEG / PDF</span>}</div>
+            <div className={`preview ${dragging ? 'is-dragging' : ''} ${file && isPDF(file) ? 'preview-pdf' : ''}`}
+              onDragOver={event => { event.preventDefault(); setDragging(true) }} onDragLeave={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setDragging(false) }}
+              onDrop={event => { event.preventDefault(); chooseFiles(Array.from(event.dataTransfer.files)) }}>
+              {file ? <DocumentPreview file={file} zoom={zoom} /> : <div className="empty-preview"><div className="document-drawing" aria-hidden="true"><span className="drawing-back" /><span className="drawing-paper"><Icon name="document" /><i /><i /><i /><span>AI-02</span></span><span className="drawing-badge"><Icon name="upload" /></span></div><h3>Thêm tài liệu đầu tiên</h3><p>Chọn một file hoặc kéo thả vào đây.</p><span className="upload-limit">PNG, JPEG hoặc PDF · Tối đa 10 MiB</span></div>}
+              <div className={`file-actions ${file ? 'has-file' : ''}`}><button className="file-picker" onClick={() => fileInput.current?.click()}><Icon name={file ? 'document' : 'upload'} /><span>{file ? 'Đổi tài liệu' : 'Chọn tài liệu'}</span></button><input ref={fileInput} hidden tabIndex={-1} aria-label="Tải tài liệu mẫu" type="file" accept=".png,.jpg,.jpeg,.pdf" onChange={event => { chooseFiles(Array.from(event.target.files ?? [])); event.target.value = '' }} />{!file ? <button className="sample-button" disabled={Boolean(busy)} onClick={loadSample}>Dùng hóa đơn mẫu<Icon name="arrow" /></button> : null}</div>
+            </div>
+            <div className="document-footer"><span><span className="status-dot" />{file ? `${fileSize(file.size)} · ${isPDF(file) ? 'Tài liệu PDF' : 'Bản xem trước ảnh'}` : 'Chỉ dùng dữ liệu mẫu hoặc tổng hợp'}</span>{file && !isPDF(file) ? <div className="zoom-controls"><button className="icon-button" aria-label="Thu nhỏ" disabled={zoom <= .75} onClick={() => setZoom(previous => Math.max(.75, previous - .25))}><Icon name="minus" /></button><output aria-label="Mức phóng to">{Math.round(zoom * 100)}%</output><button className="icon-button" aria-label="Phóng to" disabled={zoom >= 1.75} onClick={() => setZoom(previous => Math.min(1.75, previous + .25))}><Icon name="plus" /></button><button className="icon-button" aria-label="Vừa khung" onClick={() => setZoom(1)}><Icon name="fit" /></button></div> : null}</div>
+          </section>
+          <section className="panel review-panel" aria-labelledby="review-title">
+            <div className="panel-heading"><div><Icon name="scan" /><h2 id="review-title">Kết quả trích xuất</h2></div><span className={`pill ${result ? 'mint' : ''}`}>{result ? `${filled}/${schema?.fields.length} trường` : 'Chờ xử lý'}</span></div>
+            {busy ? <p className="busy-message" role="status"><span className="spinner" />{busy}</p> : null}
+            {!result ? <div className="empty-review"><div className="review-empty-heading"><span className="empty-scan"><Icon name="scan" /></span><h3>Đối chiếu trước khi xuất</h3><p>Các trường được đọc từ tài liệu sẽ xuất hiện ở đây để bạn kiểm tra và chỉnh sửa.</p></div><div className="empty-fields" aria-hidden="true">{(schema?.fields ?? []).map((definition, index) => <div className="empty-field" key={definition.key}><span>{definition.label}</span><i style={{ width: `${[68, 45, 80, 55, 30][index % 5]}%` }} /></div>)}</div><div className="review-note"><Icon name="shield" /><span>JSON chỉ được xuất sau khi dữ liệu đã được kiểm tra hợp lệ.</span></div></div> : <>
+              <div className="result-summary"><span>{schema?.title}</span><span className="result-source"><Icon name={resultOcr === 'ocrspace' ? 'cloud' : 'server'} />{resultOcr ? OCR_PROVIDERS[resultOcr] : 'OCR'} · {MODES[result.mode]}</span><p>{resultOcr === 'ocrspace' ? 'OCR.space không cung cấp confidence; hãy kiểm tra bằng chứng và ảnh.' : 'Confidence là tín hiệu OCR gốc, chưa được hiệu chuẩn thành xác suất đúng.'}</p></div>
+              {result.warnings.map((warning, index) => <p className="notice result-warning" key={index}>{warning}</p>)}
+              {schema ? <ReviewFields schema={schema} result={result} values={values} errors={validation?.errors} onChange={(key, value) => { invalidate(); setValues(previous => ({ ...previous, [key]: value })) }} /> : null}
+              <div className="review-completion"><span>{changedCount ? `${changedCount} trường đã chỉnh sửa` : 'Đối chiếu từng trường với bản gốc'}</span>{validation?.valid ? <span className="validated"><Icon name="check" />Đã kiểm tra</span> : <span>Chưa xác nhận</span>}</div>
+              <div className="review-actions"><button disabled={Boolean(busy)} onClick={validate}><Icon name="check" />Kiểm tra dữ liệu</button><button className="primary" disabled={!validation?.valid || Boolean(busy)} onClick={download}><Icon name="download" />Xuất JSON đã xác nhận</button></div>
+              {validation ? <p role="status" className={validation.valid ? 'valid-message' : 'validation-message'}>{validation.valid ? 'Dữ liệu hợp lệ. Hãy xác nhận đã đối chiếu tài liệu trước khi tải JSON.' : 'Cần sửa các trường được đánh dấu rồi kiểm tra lại.'}</p> : <p className="footnote">Kiểm tra dữ liệu để mở quyền xuất JSON.</p>}
+              <details className="technical"><summary><Icon name="code" />Nội dung OCR & phiên bản xử lý<Icon name="chevron" /></summary><pre>{result.ocr_text}</pre><pre>{JSON.stringify(result.provenance, null, 2)}</pre></details>
+            </>}
+          </section>
+        </div>
+        <footer className="app-footer"><span>AI-02 Solo <span className="footer-divider">/</span> Document Intelligence</span><span><Icon name="shield" />Dữ liệu mẫu & tổng hợp</span></footer>
       </div>
-      <footer>AI-02 Solo <span>OCR → Trích xuất → Rà soát → JSON</span></footer>
     </main>
-  </>
+  </div>
 }

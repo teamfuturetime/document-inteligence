@@ -103,7 +103,7 @@ test('configured cloud selection sends provider only and displays unavailable co
     if (path === '/api/extract') {
       expect((options?.body as FormData).get('ocr_provider')).toBe('ocrspace')
       expect((options?.body as FormData).has('apikey')).toBe(false)
-      return response({ ...extraction, fields: Object.fromEntries(Object.entries(extraction.fields).map(([key, field]) => [key, { ...field, confidence: null }])), provenance: { ocr: { provider: 'ocrspace' } } })
+      return response({ ...extraction, fields: Object.fromEntries(Object.entries(extraction.fields).map(([key, field]) => [key, { ...field, confidence: null, warnings: key === 'seller_name' ? ['Cần đối chiếu dấu tiếng Việt với bản gốc.'] : [] }])), provenance: { ocr: { provider: 'ocrspace' } } })
     }
     return standard(path, options)
   })
@@ -115,6 +115,7 @@ test('configured cloud selection sends provider only and displays unavailable co
   await screen.findByLabelText('Số hóa đơn')
   expect(screen.getAllByText('Chưa có confidence')).toHaveLength(5)
   expect(screen.getByText(/OCR.space không cung cấp confidence/)).toBeInTheDocument()
+  expect(screen.getByText('Cần đối chiếu dấu tiếng Việt với bản gốc.')).toBeVisible()
 })
 
 test('OCR selection waits for backend settings so a late health response cannot overwrite a choice', async () => {
@@ -130,4 +131,34 @@ test('OCR selection waits for backend settings so a late health response cannot 
   expect(screen.getByLabelText('Nguồn OCR')).toHaveValue('ocrspace')
   fireEvent.change(screen.getByLabelText('Nguồn OCR'), { target: { value: 'tesseract' } })
   expect(screen.getByLabelText('Nguồn OCR')).toHaveValue('tesseract')
+})
+
+test('a late sample download cannot replace a file chosen by the user', async () => {
+  let release: (value: Response) => void = () => {}
+  const standard = fetcher.getMockImplementation()!
+  fetcher.mockImplementation((path, options) => path.endsWith('samples/invoice-001.png')
+    ? new Promise(resolve => { release = resolve }) : standard(path, options))
+  render(<App />)
+  fireEvent.click(screen.getByRole('button', { name: /Dùng hóa đơn mẫu/ }))
+  await chooseFile()
+  release({ ok: true, blob: async () => new Blob(['sample'], { type: 'image/png' }) } as Response)
+  await waitFor(() => expect(screen.getByText('sample.png')).toBeInTheDocument())
+  expect(screen.queryByText('invoice-001.png')).not.toBeInTheDocument()
+  expect(fetcher.mock.calls.some(call => call[0] === '/api/extract')).toBe(false)
+})
+
+test('dropping a different file clears reviewed data and multiple files are rejected', async () => {
+  render(<App />)
+  await extract()
+  fireEvent.click(screen.getByRole('button', { name: 'Kiểm tra dữ liệu' }))
+  await waitFor(() => expect(screen.getByRole('button', { name: /Xuất JSON/ })).toBeEnabled())
+  const preview = screen.getByAltText('Bản xem trước sample.png').closest('.preview')!
+  const next = new File(['new'], 'dropped.pdf', { type: 'application/pdf' })
+  fireEvent.drop(preview, { dataTransfer: { files: [next] } })
+  expect(screen.queryByLabelText('Số hóa đơn')).not.toBeInTheDocument()
+  expect(screen.queryByRole('button', { name: /Xuất JSON/ })).not.toBeInTheDocument()
+  expect(screen.getByText('dropped.pdf')).toBeInTheDocument()
+  fireEvent.drop(preview, { dataTransfer: { files: [next, next] } })
+  expect(screen.getByRole('alert')).toHaveTextContent('Mỗi lần chỉ chọn một tài liệu')
+  expect(screen.getByRole('button', { name: /Trích xuất dữ liệu/ })).toBeDisabled()
 })
