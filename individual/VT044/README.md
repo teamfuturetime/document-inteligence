@@ -1,7 +1,8 @@
 # BT3 - Nguyễn Công Trí - 23001945 - VT-044
 
 Baseline: `66074f4ecc384b6006ac8b574001a0b4aced86ef` (branch `congtri`).
-Individual branch: `bt3/23001945-vt044`. Do not merge before team review.
+Individual branch: `bt3/23001945-vt044`, LOCAL ONLY at the user's request.
+No GitHub branch or PR has been published. Do not merge before team review.
 
 This is an **executable contract harness**, permitted by the assignment's
 fallback, built on the actual `Document`, `Extraction`, `DocumentRepository`,
