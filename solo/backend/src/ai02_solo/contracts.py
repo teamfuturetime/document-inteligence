@@ -123,7 +123,14 @@ def validate_values(kind: Kind, values: dict[str, Value]) -> dict:
             normalized[key] = validated_value(kind, key, value)
         except ValueError:
             normalized[key] = None
-            errors[key] = "Cần giá trị hợp lệ: ngày đúng lịch, tiền nguyên VND, chuỗi đúng giới hạn."
+            if key.endswith("_date"):
+                errors[key] = "Ngày không hợp lệ. Dùng YYYY-MM-DD hoặc DD/MM/YYYY và ngày đúng lịch."
+            elif key == "total_amount":
+                errors[key] = "Cần số nguyên VND không âm, tối đa 9.007.199.254.740.991."
+            elif key == "currency":
+                errors[key] = "Cần bổ sung tiền tệ VND. Schema này chỉ hỗ trợ VND."
+            else:
+                errors[key] = "Cần nội dung không trống và đúng giới hạn của trường; mã sinh viên chỉ gồm chữ, số, dấu gạch ngang."
     if not errors:
         normalized = MODELS[kind].model_validate(normalized).model_dump()
     return {"valid": not errors, "values": normalized, "errors": errors}
