@@ -2,7 +2,7 @@ name: AI-02 Solo
 
 on:
   push:
-    branches: ['personal/canhtung-solo']
+    branches: ['personal/canhtung-solo', 'feat/solo-*']
     paths: ['solo/**', '.github/workflows/solo.yml']
   pull_request:
     paths: ['solo/**', '.github/workflows/solo.yml']
