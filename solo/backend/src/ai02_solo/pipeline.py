@@ -8,8 +8,8 @@ import signal
 import subprocess
 import sys
 
-from .contracts import Extraction, LABELS
-from .extract import align_vlm, fuse, lines, rule_extract, text
+from .contracts import Extraction
+from .extract import RULE_CONFIG, align_vlm, fuse, lines, rule_extract, text
 from .ocr import DocumentError, MAX_BYTES, prepare, recognize
 from .settings import Settings
 from .vlm import extract_vlm
@@ -20,8 +20,8 @@ def run_inline(data, kind, mode, settings):
     tokens, ocr_metadata = recognize(png, settings.tessdata_dir)
     ocr_text = "\n".join(text(group) for group in lines(tokens))
     baseline = rule_extract(kind, tokens)
-    provenance = {"pipeline_version": "solo-1.0", "rules_version": "solo-labels-1",
-        "rules_sha256": hashlib.sha256(json.dumps(LABELS, sort_keys=True, ensure_ascii=False).encode()).hexdigest(),
+    provenance = {"pipeline_version": "solo-1.0", "rules_version": RULE_CONFIG["version"],
+        "rules_sha256": hashlib.sha256(json.dumps(RULE_CONFIG, sort_keys=True, ensure_ascii=False).encode()).hexdigest(),
         "ocr": ocr_metadata}
     fields = baseline
     if mode != "rules":

@@ -5,6 +5,22 @@ import re
 
 from .contracts import Extracted, LABELS, Token, clean, folded, validated_value
 
+RULE_CONFIG = {"version": "solo-labels-2", "label_max_edits": 1,
+               "fuzzy_min_characters": 10, "fuzzy_requires_colon": True, "aliases": LABELS}
+
+
+def within_one_edit(left, right):
+    if len(left) > len(right):
+        left, right = right, left
+    if len(right) - len(left) > 1:
+        return False
+    if len(left) == len(right):
+        return sum(a != b for a, b in zip(left, right)) <= 1
+    index = 0
+    while index < len(left) and left[index] == right[index]:
+        index += 1
+    return left[index:] == right[index + 1:]
+
 
 def lines(tokens: list[Token]) -> list[list[Token]]:
     groups = defaultdict(list)
@@ -41,7 +57,16 @@ def match_label(group, kind):
     for alias, key in aliases:
         match = re.match(r"^" + re.escape(folded(alias)) + r"(?=$|[\s:：-])\s*[:：-]?\s*(.*)$", normalized)
         if match:
-            return key, content[match.start(1):].strip()
+            return key, content[match.start(1):].strip(), False
+    delimiter = re.search(r"[:：]", content)
+    if delimiter:
+        prefix = folded(content[:delimiter.start()])
+        # Only correct a long, delimited label, never any part of its value.
+        keys = {key for alias, key in aliases
+                if len(folded(alias)) >= RULE_CONFIG["fuzzy_min_characters"]
+                and within_one_edit(prefix, folded(alias))}
+        if len(keys) == 1:
+            return next(iter(keys)), content[delimiter.end():].strip(), True
     return None
 
 
@@ -52,7 +77,7 @@ def rule_extract(kind, tokens):
         match = match_label(group, kind)
         if not match:
             continue
-        key, raw = match
+        key, raw, approximate = match
         evidence = [text(group)]
         scores = [token.confidence for token in group]
         if not raw and index + 1 < len(groups) and not match_label(groups[index + 1], kind):
@@ -61,17 +86,18 @@ def rule_extract(kind, tokens):
             evidence.append(raw)
             scores.extend(token.confidence for token in following)
         value = valid_candidate(kind, key, raw)
-        found[key].append((value, evidence, scores))
+        found[key].append((value, evidence, scores, approximate))
         if key == "total_amount" and re.search(r"(?:VND|VNĐ|đ)\s*$", raw, re.I):
-            found["currency"].append(("VND", evidence, scores))
+            found["currency"].append(("VND", evidence, scores, approximate))
     output = {}
     for key in LABELS[kind]:
         candidates = found[key]
         unique = {candidate[0] for candidate in candidates}
-        evidence = [item for _, items, _ in candidates for item in items]
-        scores = [score for _, _, items in candidates for score in items]
+        evidence = [item for _, items, _, _ in candidates for item in items]
+        scores = [score for _, _, items, _ in candidates for score in items]
         if len(unique) == 1 and None not in unique:
-            output[key] = field(next(iter(unique)), "rules", evidence, scores)
+            warnings = ["Nhãn OCR được ghép gần đúng (tối đa một ký tự); cần đối chiếu ảnh."] if any(c[3] for c in candidates) else []
+            output[key] = field(next(iter(unique)), "rules", evidence, scores, warnings)
         else:
             output[key] = field(source="conflict" if len(unique) > 1 else "missing", evidence=evidence,
                                 warnings=["Các nhãn mâu thuẫn hoặc giá trị sai định dạng." if candidates else "Không tìm thấy trường trong OCR."])

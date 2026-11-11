@@ -1,5 +1,5 @@
-from ai02_solo.contracts import Token
-from ai02_solo.extract import align_vlm, field, fuse, rule_extract
+from ai02_solo.contracts import LABELS, Token
+from ai02_solo.extract import align_vlm, field, fuse, match_label, rule_extract
 
 
 def tokens(*content):
@@ -50,3 +50,20 @@ def test_hybrid_disagreement_and_unsupported_vlm_stay_null():
 def test_zero_and_unknown_confidence_are_preserved():
     assert field("A", "rules", ["A"], [0, .8]).confidence == 0
     assert field("A", "rules", ["A"], [None, .8]).confidence is None
+
+
+def test_linux_ocr_single_label_error_does_not_rewrite_value():
+    result = rule_extract("application", tokens("Ma sé sinh vién: SYN-0001", "Ho va tén: Nguoi Mau Alpha"))
+    assert result["student_id"].value == "SYN-0001"
+    assert result["student_id"].warnings
+    assert result["student_id"].evidence == ["Ma sé sinh vién: SYN-0001"]
+    assert result["applicant_name"].value == "Nguoi Mau Alpha"
+
+
+def test_fuzzy_label_requires_long_unique_one_edit_match_and_colon(monkeypatch):
+    for content in ["Ma sx sinh viqn: SYN-0001", "Ma sé sinh vién SYN-0001", "Ngayx: 11/11/2026"]:
+        result = rule_extract("application", tokens(content))
+        assert result["student_id"].value is None
+        assert result["submission_date"].value is None
+    monkeypatch.setitem(LABELS, "application", {"student_id": ["Ma so sinh vien"], "recipient": ["Ma se sinh vien"]})
+    assert match_label(tokens("Ma sa sinh vien: SYN-0001"), "application") is None
