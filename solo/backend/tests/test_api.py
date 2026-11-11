@@ -54,3 +54,32 @@ def test_raw_upload_limit_is_enforced_before_multipart_parsing():
                                headers={"Content-Type": "multipart/form-data; boundary=x"})
     assert response.status_code == 413
     assert response.json()["error"]["code"] == "file_size"
+
+
+def test_ocr_provider_is_selected_per_upload_without_changing_defaults(monkeypatch):
+    seen = []
+    def run(data, kind, mode, settings):
+        seen.append(settings.ocr_provider)
+        return extraction()
+    monkeypatch.setattr("ai02_solo.api.run", run)
+    with TestClient(create_app(Settings())) as client:
+        for provider in ["ocrspace", "tesseract"]:
+            response = client.post("/api/extract", data={"document_type": "invoice", "mode": "rules", "ocr_provider": provider},
+                                   files={"file": ("synthetic.png", b"image")})
+            assert response.status_code == 200
+        response = client.post("/api/extract", data={"document_type": "invoice", "mode": "rules", "ocr_provider": "unknown"},
+                               files={"file": ("synthetic.png", b"image")})
+        assert response.status_code == 422
+    assert seen == ["ocrspace", "tesseract"]
+
+
+def test_health_never_exposes_secret_or_calls_cloud(monkeypatch):
+    monkeypatch.setenv("SOLO_OCRSPACE_API_KEY", "fake-secret-ocrspace")
+    def must_not_call(*args):
+        raise AssertionError("Health must not consume cloud quota")
+    monkeypatch.setattr("ai02_solo.ocrspace.post_image", must_not_call)
+    with TestClient(create_app(Settings())) as client:
+        response = client.get("/health")
+    assert response.json()["ocr_providers"]["ocrspace"]["configured"] is True
+    assert response.json()["ocr_providers"]["ocrspace"]["configuration_only"] is True
+    assert "fake-secret-ocrspace" not in response.text

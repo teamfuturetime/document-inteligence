@@ -1,7 +1,7 @@
 {
   "name": "ai02-solo-web", "private": true, "version": "0.1.0", "type": "module",
   "engines": {"node": "^22.22.2 || ^24.15.0 || >=26.0.0"},
-  "scripts": {"dev": "vite", "build": "tsc --noEmit && vite build", "test": "vitest run", "test:e2e": "playwright test"},
+  "scripts": {"dev": "vite", "build": "tsc --noEmit && vite build", "test": "vitest run", "test:e2e": "playwright test", "test:ocrspace": "node scripts/ocrspace-smoke.mjs"},
   "dependencies": {"react": "19.3.0", "react-dom": "19.3.0"},
   "devDependencies": {
     "@types/react": "19.3.0", "@types/react-dom": "19.3.0", "@types/node": "26.6.5",

@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { call, post } from './api'
-import type { Catalog, Extraction, Health, Kind, Mode, Validation, Values } from './api'
+import type { Catalog, Extraction, Health, Kind, Mode, OCRProvider, Validation, Values } from './api'
 
 const MODES: Record<Mode, string> = { rules: 'OCR + luật', vlm: 'OCR + VLM', hybrid: 'Kết hợp OCR, luật và VLM' }
+const OCR_PROVIDERS: Record<OCRProvider, string> = { tesseract: 'Tesseract local', ocrspace: 'OCR.space (API)' }
 const SOURCES: Record<string, string> = { rules: 'Luật theo nhãn', vlm: 'Mô hình thị giác–ngôn ngữ', agreement: 'Hai nguồn đồng ý', conflict: 'Cần quyết định', missing: 'Chưa xác định' }
 
 function Preview({ file }: { file: File }) {
@@ -23,6 +24,7 @@ export default function App() {
   const [health, setHealth] = useState<Health | null>(null)
   const [kind, setKind] = useState<Kind>('invoice')
   const [mode, setMode] = useState<Mode>('rules')
+  const [ocrProvider, setOcrProvider] = useState<OCRProvider>('tesseract')
   const [file, setFile] = useState<File | null>(null)
   const [result, setResult] = useState<Extraction | null>(null)
   const [values, setValues] = useState<Values>({})
@@ -34,7 +36,7 @@ export default function App() {
   useEffect(() => {
     const initial = new AbortController()
     Promise.all([call<Catalog>('/api/schemas', { signal: initial.signal }), call<Health>('/health', { signal: initial.signal })])
-      .then(([schemas, status]) => { if (!initial.signal.aborted) { setCatalog(schemas); setHealth(status) } })
+      .then(([schemas, status]) => { if (!initial.signal.aborted) { setCatalog(schemas); setHealth(status); if (status.ocr.provider) setOcrProvider(status.ocr.provider) } })
       .catch(() => { if (!initial.signal.aborted) setError('Không kết nối được backend. Kiểm tra server ở cổng 8100 rồi tải lại trang.') })
     return () => { initial.abort(); controller.current?.abort() }
   }, [])
@@ -69,6 +71,7 @@ export default function App() {
     try {
       const body = new FormData()
       body.set('document_type', kind); body.set('mode', mode); body.set('file', file)
+      body.set('ocr_provider', ocrProvider)
       const response = await call<Extraction>('/api/extract', { method: 'POST', body, signal: current.signal })
       if (!current.signal.aborted) {
         if (response.document_type !== kind || response.schema_version !== 'solo-1.0' || !response.fields) throw new Error('Response không khớp schema tài liệu.')
@@ -104,6 +107,8 @@ export default function App() {
 
   const schema = catalog?.[kind]
   const needsVlm = mode !== 'rules' && !health?.vlm.configured
+  const selectedOcr = health?.ocr_providers?.[ocrProvider] ?? (ocrProvider === 'tesseract' ? health?.ocr : undefined)
+  const resultOcr = (result?.provenance.ocr as { provider?: OCRProvider } | undefined)?.provider
   const filled = result ? Object.values(result.fields).filter(field => field.value !== null).length : 0
 
   return <>
@@ -112,11 +117,12 @@ export default function App() {
       <section className="intro"><p className="eyebrow">DOCUMENT INTELLIGENCE / TIẾNG VIỆT</p><h1>Từ tài liệu đến dữ liệu<br /><span>đã được bạn xác nhận.</span></h1><p>Tải mẫu hóa đơn hoặc đơn từ, đối chiếu kết quả nhận diện và hoàn thiện từng trường trước khi xuất JSON.</p></section>
       <ol className="steps" aria-label="Quy trình"><li className="active"><b>01</b> Chọn tài liệu</li><li className={result ? 'active' : ''}><b>02</b> Rà soát & sửa</li><li className={validation?.valid ? 'active' : ''}><b>03</b> Xác nhận & xuất</li></ol>
       {error ? <div className="notice error" role="alert">{error}</div> : null}
-      {health && !health.ocr.ready ? <div className="notice">OCR chưa sẵn sàng. {health.ocr.reason}</div> : null}
+      {health && !selectedOcr?.ready ? <div className="notice">Nguồn OCR chưa sẵn sàng. {selectedOcr?.reason ?? 'Kiểm tra cấu hình backend.'}</div> : null}
       <div className="workspace">
         <section className="panel document-panel" aria-labelledby="document-title">
           <div className="panel-heading"><div><p className="eyebrow">TÀI LIỆU GỐC</p><h2 id="document-title">Chọn mẫu để bắt đầu</h2></div><span className="pill">01 trang</span></div>
-          <div className="selectors"><label>Loại tài liệu<select value={kind} onChange={event => { invalidate(true); setKind(event.target.value as Kind) }}><option value="invoice">Hóa đơn bán hàng</option><option value="application">Đơn đề nghị sinh viên</option></select></label><label>Phương pháp<select value={mode} onChange={event => { invalidate(true); setMode(event.target.value as Mode) }}>{Object.entries(MODES).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label></div>
+          <div className="selectors"><label>Loại tài liệu<select value={kind} onChange={event => { invalidate(true); setKind(event.target.value as Kind) }}><option value="invoice">Hóa đơn bán hàng</option><option value="application">Đơn đề nghị sinh viên</option></select></label><label>Nguồn OCR<select disabled={!health} value={ocrProvider} onChange={event => { invalidate(true); setOcrProvider(event.target.value as OCRProvider) }}>{Object.entries(OCR_PROVIDERS).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label><label>Phương pháp<select value={mode} onChange={event => { invalidate(true); setMode(event.target.value as Mode) }}>{Object.entries(MODES).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label></div>
+          {ocrProvider === 'ocrspace' ? <p className="notice">Tài liệu sẽ được gửi đến OCR.space. Chỉ dùng dữ liệu tổng hợp; ảnh sau tiền xử lý tối đa 1 MB. Dịch vụ không trả confidence theo từ.</p> : null}
           {needsVlm ? <p className="notice">VLM chưa cấu hình. Thiết lập adapter local hoặc API theo README để dùng phương pháp này.</p> : null}
           <label className="file-picker"><span className="upload-icon" aria-hidden="true">↑</span><strong>{file ? file.name : 'Chọn một tài liệu mẫu'}</strong><span>PNG, JPEG hoặc PDF · Tối đa 10 MiB</span><input aria-label="Tải tài liệu mẫu" type="file" accept=".png,.jpg,.jpeg,.pdf" onChange={event => {
             invalidate(true)
@@ -124,14 +130,14 @@ export default function App() {
             if (next && next.size > 10 * 1024 * 1024) { setFile(null); setError('File vượt 10 MiB. Chọn file nhỏ hơn.'); return }
             setFile(next)
           }} /></label>
-          <button className="primary full" disabled={!file || !schema || Boolean(busy) || needsVlm || !health?.ocr.ready} onClick={extract}>Trích xuất dữ liệu <span aria-hidden="true">↗</span></button>
+          <button className="primary full" disabled={!file || !schema || Boolean(busy) || needsVlm || !selectedOcr?.ready} onClick={extract}>Trích xuất dữ liệu <span aria-hidden="true">↗</span></button>
           <div className="preview">{file ? <Preview key={`${file.name}-${file.lastModified}`} file={file} /> : <div className="empty-preview"><div className="paper-icon" aria-hidden="true">▤</div><p>Bản xem trước tài liệu</p><small>Chỉ dùng dữ liệu mẫu hoặc dữ liệu tổng hợp.</small></div>}</div>
         </section>
         <section className="panel review-panel" aria-labelledby="review-title">
           <div className="panel-heading"><div><p className="eyebrow">DỮ LIỆU CÓ CẤU TRÚC</p><h2 id="review-title">Rà soát kết quả</h2></div><span className="pill">{result ? `${filled}/${schema?.fields.length} trường` : 'Chờ tài liệu'}</span></div>
           {busy ? <p className="notice" role="status">{busy}</p> : null}
           {!result ? <div className="empty-review"><span className="review-symbol" aria-hidden="true">✓</span><h3>Mỗi trường, một lần kiểm tra.</h3><p>Kết quả AI sẽ xuất hiện tại đây. Bạn luôn có thể đối chiếu bằng chứng và sửa lại trước khi xuất dữ liệu.</p></div> : <>
-            <p className="result-summary">{schema?.title} · {MODES[result.mode]}<br /><small>Confidence là tín hiệu OCR, chưa được hiệu chuẩn thành xác suất đúng.</small></p>
+            <p className="result-summary">{schema?.title} · {resultOcr ? OCR_PROVIDERS[resultOcr] : 'OCR'} · {MODES[result.mode]}<br /><small>{resultOcr === 'ocrspace' ? 'OCR.space không cung cấp confidence; hãy kiểm tra bằng chứng và ảnh.' : 'Confidence là tín hiệu OCR, chưa được hiệu chuẩn thành xác suất đúng.'}</small></p>
             {result.warnings.map((warning, index) => <p className="notice" key={index}>{warning}</p>)}
             <div className="fields">{schema?.fields.map(definition => {
               const extracted = result.fields[definition.key]

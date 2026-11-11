@@ -2,6 +2,7 @@
 
 import argparse
 from collections import defaultdict
+from dataclasses import replace
 import hashlib
 from importlib.metadata import version
 import json
@@ -121,7 +122,7 @@ def evaluate(directory, split, mode, settings):
     if provenance:
         provenance.get("vlm", {}).pop("request_sha256", None)
     return {"report_version": "solo-eval-1", "dataset_version": manifest["version"], "manifest_sha256": manifest_sha,
-        "split": split, "mode": mode, "documents": len(records), "macro_exact_match": sum(m["exact_match"] for m in fields.values()) / len(fields),
+        "split": split, "mode": mode, "ocr_provider": settings.ocr_provider, "documents": len(records), "macro_exact_match": sum(m["exact_match"] for m in fields.values()) / len(fields),
         "fields": fields, "micro": metric([pair for pairs in all_pairs.values() for pair in pairs]),
         "slices": {key: metric(pairs) for key, pairs in sorted(slices.items())}, "execution_errors": errors,
         "mismatches": mismatches, "records": records, "taxonomy": TAXONOMY,
@@ -136,17 +137,21 @@ def main():
     parser.add_argument("--dataset", type=Path, default=ROOT / "data/golden-v1")
     parser.add_argument("--split", choices=["dev", "test", "all"], default="test")
     parser.add_argument("--mode", choices=["rules", "vlm", "hybrid"], default="rules")
+    parser.add_argument("--ocr-provider", choices=["tesseract", "ocrspace"], default=None)
     parser.add_argument("--output", type=Path, default=ROOT / "evaluation/reports/test-rules.json")
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--min-exact", type=float, default=.85)
     args = parser.parse_args()
     try:
-        report = evaluate(args.dataset, args.split, args.mode, Settings.from_env())
+        settings = Settings.from_env()
+        if args.ocr_provider:
+            settings = replace(settings, ocr_provider=args.ocr_provider)
+        report = evaluate(args.dataset, args.split, args.mode, settings)
     except (ValueError, OSError, KeyError) as exc:
         parser.exit(2, f"Evaluation failed: {exc}\n")
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, ensure_ascii=False, sort_keys=True, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps({key: report[key] for key in ["mode", "split", "documents", "macro_exact_match", "execution_errors"]}))
+    print(json.dumps({key: report[key] for key in ["mode", "ocr_provider", "split", "documents", "macro_exact_match", "execution_errors"]}))
     if args.check and (report["execution_errors"] or report["macro_exact_match"] < args.min_exact):
         raise SystemExit(2)
 

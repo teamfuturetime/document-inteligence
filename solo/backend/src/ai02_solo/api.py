@@ -1,8 +1,10 @@
 """Local HTTP boundary; AI packages never import FastAPI."""
 
 import asyncio
+from dataclasses import replace
 import json
 import time
+from typing import Literal
 
 from fastapi import FastAPI, File, Form, UploadFile
 from fastapi.exceptions import RequestValidationError
@@ -10,7 +12,8 @@ from fastapi.responses import JSONResponse, Response
 from starlette.concurrency import run_in_threadpool
 
 from .contracts import ExportRequest, Kind, LABELS, MODELS, Mode, Review, TITLES, reviewed_export, validate_values
-from .ocr import DocumentError, MAX_BYTES, readiness
+from .ocr import DocumentError, MAX_BYTES
+from .ocr_backends import available
 from .pipeline import run
 from .settings import Settings
 
@@ -70,8 +73,9 @@ def create_app(settings=None):
 
     @app.get("/health")
     async def health():
-        ocr = await run_in_threadpool(readiness, settings.tessdata_dir)
-        return {"app": "AI-02 Solo", "ocr": ocr, "vlm": {"provider": settings.vlm_provider,
+        providers = await run_in_threadpool(available, settings)
+        return {"app": "AI-02 Solo", "ocr": {**providers[settings.ocr_provider], "provider": settings.ocr_provider},
+            "ocr_providers": providers, "vlm": {"provider": settings.vlm_provider,
             "model": settings.vlm_model or None, "configured": bool(settings.vlm_model), "inference_verified": False}}
 
     @app.get("/api/schemas")
@@ -82,7 +86,8 @@ def create_app(settings=None):
             for kind, fields in LABELS.items()}
 
     @app.post("/api/extract")
-    async def extract(document_type: Kind = Form(), mode: Mode = Form(), file: UploadFile = File()):
+    async def extract(document_type: Kind = Form(), mode: Mode = Form(), file: UploadFile = File(),
+                      ocr_provider: Literal["tesseract", "ocrspace"] | None = Form(None)):
         try:
             data = await file.read(MAX_BYTES + 1)
         finally:
@@ -90,7 +95,8 @@ def create_app(settings=None):
         if capacity.locked():
             raise DocumentError("busy", "Đang xử lý tài liệu khác. Vui lòng thử lại.", 429)
         async with capacity:
-            result = await run_in_threadpool(run, data, document_type, mode, settings)
+            selected = replace(settings, ocr_provider=ocr_provider or settings.ocr_provider)
+            result = await run_in_threadpool(run, data, document_type, mode, selected)
         return result.model_dump(mode="json")
 
     @app.post("/api/validate")

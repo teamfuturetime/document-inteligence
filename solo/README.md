@@ -11,8 +11,11 @@ So sánh OCR + luật, VLM và hybrid; báo cáo trạng thái thật của từ
 
 ## Chạy ứng dụng mới
 
-Yêu cầu macOS/Linux, Python ≥3.11, uv, Node theo `web/package.json`, Tesseract 5
-trên PATH. Chạy từ thư mục `solo/`, không dùng lệnh backend của ứng dụng cũ:
+Đã có lựa chọn **Nguồn OCR → OCR.space (API)**. API key chỉ ở backend,
+không commit vào Git. Xem [cấu hình, giới hạn và kết quả thử thật](docs/ocrspace.md).
+
+Yêu cầu macOS/Linux, Python ≥3.11, uv, Node theo `web/package.json`; Tesseract 5
+trên PATH nếu chọn OCR local. Chạy từ thư mục `solo/`:
 
 ```bash
 cd solo
@@ -64,6 +67,10 @@ Code rules v2 đã pass [CI trên Linux](https://github.com/teamfuturetime/docum
 43 Python tests, 4 UI tests và 7 browser E2E. Test exact match đạt 0,9111 trên
 macOS/Tesseract 5.5.2 và 0,9333 trên Linux/Tesseract 5.3.4; đây là số liệu trên
 dataset synthetic nhỏ, chưa có đánh giá model VLM.
+
+Checkpoint OCR.space mới: 63 Python tests, 7 UI tests/typecheck/build, 7 browser
+E2E Tesseract và một live cloud UI/export đã đạt local; thử thật trên ba định
+dạng synthetic. Các baseline trên là Tesseract, không phải điểm OCR.space.
 
 Xem [thiết kế](docs/design.md), [cấu hình VLM local/API](docs/vlm.md),
 [phương pháp đánh giá](docs/evaluation.md), [bằng chứng kiểm thử và baseline](docs/verification.md),

@@ -1,5 +1,13 @@
 # Bằng chứng local — 2026-11-11
 
+## Bổ sung OCR.space
+
+Pipeline `solo-1.1` có hai nguồn OCR; xem [hướng dẫn và bằng chứng live](ocrspace.md).
+Đã thử key thật trên PNG/JPEG/PDF synthetic và UI cloud → review → tải JSON,
+giữ confidence null và key ở backend. 63 Python tests, 7 UI tests/build và 7 E2E
+Tesseract đạt local. Không xem smoke ba mẫu là benchmark cloud; baseline rules
+v1/v2 dưới đây vẫn thuộc Tesseract và giữ nguyên dữ liệu/report lịch sử.
+
 ## Trạng thái mới nhất — rules v2
 
 Commit code `e203bf7c28e0cbb43cdaf4d6d7a445c2f3027ae1` đã
