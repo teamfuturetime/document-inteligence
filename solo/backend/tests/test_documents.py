@@ -41,5 +41,5 @@ def test_real_ocr_for_both_schemas_and_all_formats(identifier):
     assert result.mode == "rules"
     assert result.ocr_text
     key = "invoice_number" if item["kind"] == "invoice" else "student_id"
-    assert result.fields[key].value is not None
+    assert result.fields[key].value is not None, f"Synthetic {identifier} OCR:\n{result.ocr_text}"
     assert result.provenance["ocr"]["engine"].startswith("tesseract 5.")
