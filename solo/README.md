@@ -1,6 +1,6 @@
 # AI-02 Solo — bản triển khai cá nhân
 
-Ứng dụng độc lập do Cảnh Tùng quản lý, phát triển với trợ giúp AI. Nhánh
+Ứng dụng độc lập do chủ dự án quản lý, phát triển với trợ giúp AI. Nhánh
 `personal/canhtung-solo` giữ lịch sử repository; mã mới nằm hoàn toàn trong
 `solo/`, không import backend, pipeline hoặc giao diện của bản tích hợp cũ.
 Đây là phiên bản ứng dụng cá nhân, không phải mô hình nền tự huấn luyện.
@@ -62,4 +62,5 @@ trỏ tới executable. Test native được skip rõ ràng khi không đặt `S
 CI riêng là `.github/workflows/solo.yml`; kết quả trên GitHub phải xem theo SHA.
 
 Xem [thiết kế](docs/design.md), [cấu hình VLM local/API](docs/vlm.md),
-[phương pháp đánh giá](docs/evaluation.md), [đọc và tự phát triển code](docs/learning.md).
+[phương pháp đánh giá](docs/evaluation.md), [bằng chứng kiểm thử và baseline](docs/verification.md),
+[đọc và tự phát triển code](docs/learning.md).
