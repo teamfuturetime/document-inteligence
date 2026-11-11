@@ -4,6 +4,7 @@ import type { Catalog, Extraction, Health, Kind, Mode, OCRProvider, Validation, 
 import Icon from './components/Icon'
 import DocumentPreview, { isPDF } from './components/DocumentPreview'
 import ReviewFields from './components/ReviewFields'
+import ThemeToggle from './components/ThemeToggle'
 
 const MODES: Record<Mode, string> = { rules: 'OCR + luật', vlm: 'OCR + VLM', hybrid: 'Kết hợp OCR, luật và VLM' }
 const OCR_PROVIDERS: Record<OCRProvider, string> = { tesseract: 'Tesseract local', ocrspace: 'OCR.space (API)' }
@@ -155,7 +156,7 @@ export default function App() {
       <div className="sidebar-bottom"><div className="scope-icon"><Icon name="shield" /></div><strong>Dữ liệu tổng hợp</strong><p>Thử nghiệm bằng hóa đơn và đơn từ mẫu của dự án.</p><span className="edition">AI-02 · Bản cá nhân</span></div>
     </aside>
     <main id="workspace" className="app-main" tabIndex={-1}>
-      <header className="topbar"><div className="breadcrumb">Không gian làm việc <Icon name="chevron" /><span>Trích xuất</span></div><span className="environment"><span />Bản thử nghiệm</span></header>
+      <header className="topbar"><div className="breadcrumb">Không gian làm việc <Icon name="chevron" /><span>Trích xuất</span></div><div className="topbar-actions"><span className="environment"><span />Bản thử nghiệm</span><ThemeToggle /></div></header>
       <div className="page-content">
         <div className="page-intro" data-enter><div><h1>Rà soát tài liệu tiếng Việt</h1><p>Trích xuất hóa đơn và đơn từ, đối chiếu từng trường rồi xuất JSON đã xác nhận.</p></div><div className={`connection ${health && selectedOcr?.ready ? 'ready' : ''}`}><span className="status-dot" /><span>{statusLabel}</span></div></div>
         {showGuide ? <section className="guide-panel" id="quick-guide" aria-labelledby="guide-title"><div><Icon name="help" /><h2 id="guide-title">Các bước xử lý</h2></div><ol><li>Chọn hóa đơn hoặc đơn đề nghị và nguồn OCR phù hợp.</li><li>Tải một tài liệu tổng hợp, rồi bấm Trích xuất dữ liệu.</li><li>Đối chiếu với bản gốc, sửa và kiểm tra dữ liệu trước khi xuất JSON.</li></ol><p>OCR.space dùng API bên ngoài. VLM cần được cấu hình riêng ở backend.</p></section> : null}

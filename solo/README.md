@@ -48,6 +48,12 @@ luôn thuộc kết quả OCR gốc, không thay đổi theo nội dung bạn s�
 Font IBM Plex được phục vụ từ `web/public/fonts/`, kèm giấy phép OFL và nguồn
 tải; giao diện không cần gọi Google Fonts khi sử dụng.
 
+Nút mặt trời/mặt trăng ở góc trên bên phải chuyển **Sáng/Tối**, có cả trên
+điện thoại. Khi chưa chọn, giao diện theo chế độ hệ thống; sau khi chọn, trình
+duyệt nhớ lựa chọn cho các lần mở sau và đồng bộ giữa các tab. Nếu trình duyệt
+chặn lưu trữ, nút vẫn hoạt động trong phiên hiện tại. Đổi chế độ giữ nguyên tài
+liệu đang mở, các trường đã sửa và trạng thái kiểm tra dữ liệu.
+
 Lệnh models tải đúng hai file vie/eng đã pin từ kho chính thức và kiểm tra
 SHA-256 vào `.models/tessdata` (ignored). Extraction không tự tải model.
 
