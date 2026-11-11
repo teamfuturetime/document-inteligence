@@ -96,9 +96,11 @@ def align_vlm(kind, values, tokens):
                         break
                 if supporting:
                     break
+        warnings = (["Giá trị VLM chưa được OCR chứng thực; cần đối chiếu ảnh."] if value is not None and not supporting
+                    else (["VLM trả giá trị sai định dạng; cần rà soát."] if raw is not None and value is None else []))
         output[key] = field(value, "vlm" if value is not None else "missing",
             [text(supporting)] if supporting else [], [token.confidence for token in supporting],
-            ["Giá trị VLM chưa được OCR chứng thực; cần đối chiếu ảnh."] if value is not None and not supporting else [])
+            warnings)
     return output
 
 
