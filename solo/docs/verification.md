@@ -1,5 +1,17 @@
 # Bằng chứng local — 2026-11-11
 
+## Chế độ sáng và tối
+
+- 12 UI tests đạt, gồm ba ca theme mới: theo hệ thống trước khi chọn và giữ
+  lựa chọn sau đó; giá trị lưu không hợp lệ/đồng bộ tab/xóa lựa chọn; lưu trữ
+  bị chặn vẫn chuyển chế độ được. TypeScript và production build đạt.
+- Hai browser E2E riêng cho theme đạt bằng Chrome local: theme đã lưu được áp
+  dụng trước khi React khởi động và giữ sau tải lại; chuyển sáng/tối sau OCR
+  thật vẫn giữ trường đã sửa và nút export đã được validation mở.
+- Đã xem ảnh review ở hai chế độ trên desktop/mobile. Ca theme kiểm tra màu
+  nền CSS thực tế và không tràn ngang tại 1440, 390 và 320 px. Đây là các ca
+  theme bổ sung; tám ca E2E giao diện cũ được ghi nhận ở checkpoint bên dưới.
+
 ## Giao diện bàn làm việc
 
 - 9 UI tests và TypeScript/production build đạt. Các ca mới kiểm tra response
