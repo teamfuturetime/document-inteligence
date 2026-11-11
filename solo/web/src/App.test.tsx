@@ -9,7 +9,7 @@ const catalog = { invoice: { title: 'Hóa đơn', fields: fields.map((key, index
 const extraction = { schema_version: 'solo-1.0', document_type: 'invoice', mode: 'rules', fields: Object.fromEntries(fields.map((key, index) => [key, { value: values[index], confidence: .9, source: 'rules', evidence: ['synthetic'], warnings: [] }])), warnings: [], provenance: {}, ocr_text: 'synthetic' }
 const valid = { valid: true, values: Object.fromEntries(fields.map((key, index) => [key, values[index]])), errors: {} }
 const response = (payload: unknown) => ({ ok: true, json: async () => payload }) as Response
-let fetcher: ReturnType<typeof vi.fn<(path: string) => Promise<Response>>>
+let fetcher: ReturnType<typeof vi.fn<(path: string, options?: RequestInit) => Promise<Response>>>
 
 beforeEach(() => {
   URL.createObjectURL = vi.fn(() => 'blob:synthetic')
@@ -80,4 +80,54 @@ test('unconfigured VLM and oversized files do not silently use rules', async () 
   Object.defineProperty(large, 'size', { value: 11 * 1024 * 1024 })
   fireEvent.change(screen.getByLabelText('Tải tài liệu mẫu'), { target: { files: [large] } })
   expect(screen.getByRole('alert')).toHaveTextContent('File vượt 10 MiB')
+})
+
+test('switching OCR provider clears extraction and prior validation', async () => {
+  render(<App />)
+  await extract()
+  fireEvent.click(screen.getByRole('button', { name: 'Kiểm tra dữ liệu' }))
+  await waitFor(() => expect(screen.getByRole('button', { name: /Xuất JSON/ })).toBeEnabled())
+  fireEvent.change(screen.getByLabelText('Nguồn OCR'), { target: { value: 'ocrspace' } })
+  expect(screen.queryByLabelText('Số hóa đơn')).not.toBeInTheDocument()
+  expect(screen.queryByRole('button', { name: /Xuất JSON/ })).not.toBeInTheDocument()
+  expect(screen.getByRole('button', { name: /Trích xuất dữ liệu/ })).toBeDisabled()
+  expect(screen.getByText(/Tài liệu sẽ được gửi đến OCR.space/)).toBeInTheDocument()
+})
+
+test('configured cloud selection sends provider only and displays unavailable confidence', async () => {
+  const standard = fetcher.getMockImplementation()!
+  fetcher.mockImplementation(async (path, options) => {
+    if (path === '/health') return response({ ocr: { ready: false },
+      ocr_providers: { tesseract: { ready: false }, ocrspace: { ready: true, configured: true } },
+      vlm: { configured: false } })
+    if (path === '/api/extract') {
+      expect((options?.body as FormData).get('ocr_provider')).toBe('ocrspace')
+      expect((options?.body as FormData).has('apikey')).toBe(false)
+      return response({ ...extraction, fields: Object.fromEntries(Object.entries(extraction.fields).map(([key, field]) => [key, { ...field, confidence: null }])), provenance: { ocr: { provider: 'ocrspace' } } })
+    }
+    return standard(path, options)
+  })
+  render(<App />)
+  await screen.findByText(/Nguồn OCR chưa sẵn sàng/)
+  fireEvent.change(screen.getByLabelText('Nguồn OCR'), { target: { value: 'ocrspace' } })
+  await chooseFile()
+  fireEvent.click(screen.getByRole('button', { name: /Trích xuất dữ liệu/ }))
+  await screen.findByLabelText('Số hóa đơn')
+  expect(screen.getAllByText('Chưa có confidence')).toHaveLength(5)
+  expect(screen.getByText(/OCR.space không cung cấp confidence/)).toBeInTheDocument()
+})
+
+test('OCR selection waits for backend settings so a late health response cannot overwrite a choice', async () => {
+  let release: (value: Response) => void = () => {}
+  const standard = fetcher.getMockImplementation()!
+  fetcher.mockImplementation((path, options) => path === '/health'
+    ? new Promise(resolve => { release = resolve }) : standard(path, options))
+  render(<App />)
+  expect(screen.getByLabelText('Nguồn OCR')).toBeDisabled()
+  release(response({ ocr: { ready: true, provider: 'ocrspace' },
+    ocr_providers: { tesseract: { ready: true }, ocrspace: { ready: true } }, vlm: { configured: false } }))
+  await waitFor(() => expect(screen.getByLabelText('Nguồn OCR')).toBeEnabled())
+  expect(screen.getByLabelText('Nguồn OCR')).toHaveValue('ocrspace')
+  fireEvent.change(screen.getByLabelText('Nguồn OCR'), { target: { value: 'tesseract' } })
+  expect(screen.getByLabelText('Nguồn OCR')).toHaveValue('tesseract')
 })
