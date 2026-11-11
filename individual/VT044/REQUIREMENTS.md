@@ -16,7 +16,7 @@ local trên executable harness được đề cho phép, không phải productio
 | State transition, data rationale | A->D, D->A, self-loops, denied/rollback transitions; fixed clock/data owners | Có |
 | >=2 negative, >=1 failure path gắn R1 | Foreign reads/writes, spoofing, missing identity, flush-then-commit failure | Có |
 | Vertical slice chạy được hoặc harness | `harness.py`: real models/repository/storage + owner/tombstone sidecar | Có; giới hạn integration nêu rõ |
-| Git branch/baseline riêng | Local `bt3/23001945-vt044`; baseline hash ở trang đầu | Có local |
+| Git branch/baseline riêng | `bt3/23001945-vt044`; baseline hash ở trang đầu | Đã push nhánh riêng |
 | Test RED đúng lý do trước patch | C_RED `911698f5b0a8e9942fb33f1bee7d480dae96b0c9`, `red.log`: 21 failed/7 passed | Có; setup errors tách riêng |
 | AI patch nhỏ, review diff | C_IMPL `72c9bcaf1713c230669c6d0aec7759ec90a48c55`; `evidence/review.md` | Agent review có; SV vẫn cần hiểu từng dòng |
 | GREEN/commit/file/lệnh tái lập | `green-completion.log`: 34 passed; regression 133 passed; README | Có |
@@ -30,7 +30,7 @@ local trên executable harness được đề cho phép, không phải productio
 | PDF đúng tên, <=8 trang chính | `BT3_23001945_VT-044.pdf`, 8 trang chính + 2 trang phụ lục | Đã xuất, render và kiểm tra visual đủ 10 trang |
 | Trang đầu đủ thông tin và cam kết | Báo cáo trang 1 | Có văn bản cam kết; SV tự xác nhận trước nộp |
 | README chạy test | `README.md` | Có |
-| Link GitHub branch/PR | Chưa push theo lựa chọn rõ ràng của người dùng | **Còn thiếu theo đề, không tự công bố** |
+| Link GitHub branch/PR | [bt3/23001945-vt044](https://github.com/teamfuturetime/document-inteligence/tree/bt3/23001945-vt044) | **Đã push theo yêu cầu rõ ràng của người dùng; có README** |
 | Không merge trước nhóm review | Nhánh/worktree riêng; không merge | Đã giữ |
 | Nộp Google Classroom, không email | Hướng dẫn bàn giao local | **Người dùng tự nộp; chưa khai nhận đã nộp** |
 

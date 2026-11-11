@@ -1,8 +1,8 @@
 # BT3 - Nguyễn Công Trí - 23001945 - VT-044
 
 Baseline: `66074f4ecc384b6006ac8b574001a0b4aced86ef` (branch `congtri`).
-Individual branch: `bt3/23001945-vt044`, LOCAL ONLY at the user's request.
-No GitHub branch or PR has been published. Do not merge before team review.
+Individual branch: [bt3/23001945-vt044](https://github.com/teamfuturetime/document-inteligence/tree/bt3/23001945-vt044).
+Published at the user's explicit request. Do not merge before team review.
 
 This is an **executable contract harness**, permitted by the assignment's
 fallback, built on the actual `Document`, `Extraction`, `DocumentRepository`,
@@ -76,9 +76,11 @@ load. Artificial `.png` fixture bytes exercise storage isolation, not image
 validation or OCR. Student/team review is still required; no human sign-off
 is claimed by these files.
 
-`REQUIREMENTS.md` maps every assignment item to local evidence and identifies
-the outstanding GitHub link, student final review/commitment and Classroom
-submission. No remote branch/PR or external submission has been created.
+`REQUIREMENTS.md` maps every assignment item to evidence. The GitHub branch
+above contains the tests, patch and logs; no PR or merge is required to use the
+branch link for submission. Student final review/commitment and Classroom
+submission remain the student's responsibility. No Classroom submission has
+been made by the agent.
 
 ## Report export (optional)
 
