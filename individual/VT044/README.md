@@ -60,3 +60,16 @@ retention/processing races across the full system, PostgreSQL and sustained
 load. Artificial `.png` fixture bytes exercise storage isolation, not image
 validation or OCR. Student/team review is still required; no human sign-off
 is claimed by these files.
+
+## Report export (optional)
+
+`BT3_23001945.md` contains eight main sections/pages plus two appendix pages.
+To export it, install the optional `reportlab` package, then run:
+
+```bash
+python individual/VT044/build_report.py individual/VT044/BT3_23001945.md BT3_23001945_VT-044.pdf
+```
+
+The exporter uses macOS Arial TrueType fonts for Vietnamese. `VT044_FONT_DIR`
+can point to another directory containing the same Arial font filenames.
+The application/test dependencies do not require ReportLab.
