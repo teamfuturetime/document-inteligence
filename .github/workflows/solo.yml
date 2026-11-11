@@ -1,0 +1,60 @@
+name: AI-02 Solo
+
+on:
+  push:
+    branches: ['personal/canhtung-solo']
+    paths: ['solo/**', '.github/workflows/solo.yml']
+  pull_request:
+    paths: ['solo/**', '.github/workflows/solo.yml']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: solo-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Independent app and real OCR
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: solo
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+        with:
+          version: '0.11.25'
+          python-version: '3.13.14'
+      - name: Install native OCR and independent Python environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y tesseract-ocr=5.3.4-1build5
+          uv sync --locked
+          uv run --locked python -m ai02_solo.ocr
+      - name: Unit, HTTP, dataset and real OCR tests
+        env:
+          SOLO_RUN_OCR: '1'
+        run: uv run --locked python -m pytest -q
+      - name: Golden test regression
+        run: uv run --locked python -m ai02_solo.evaluate --split test --mode rules --check
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '26.5.0'
+          cache: npm
+          cache-dependency-path: solo/web/package-lock.json
+      - name: UI tests and production build
+        working-directory: solo/web
+        run: |
+          npm ci
+          npm test
+          npm run build
+      - name: Browser OCR, review and JSON download
+        working-directory: solo/web
+        run: |
+          npx playwright install --with-deps chromium
+          npm run test:e2e
