@@ -10,17 +10,18 @@ import sys
 
 from .contracts import Extraction
 from .extract import RULE_CONFIG, align_vlm, fuse, lines, rule_extract, text
-from .ocr import DocumentError, MAX_BYTES, prepare, recognize
+from .ocr import DocumentError, MAX_BYTES, prepare
+from .ocr_backends import recognize
 from .settings import Settings
 from .vlm import extract_vlm
 
 
 def run_inline(data, kind, mode, settings):
     png = prepare(data)
-    tokens, ocr_metadata = recognize(png, settings.tessdata_dir)
+    tokens, ocr_metadata = recognize(png, settings)
     ocr_text = "\n".join(text(group) for group in lines(tokens))
     baseline = rule_extract(kind, tokens)
-    provenance = {"pipeline_version": "solo-1.0", "rules_version": RULE_CONFIG["version"],
+    provenance = {"pipeline_version": "solo-1.1", "rules_version": RULE_CONFIG["version"],
         "rules_sha256": hashlib.sha256(json.dumps(RULE_CONFIG, sort_keys=True, ensure_ascii=False).encode()).hexdigest(),
         "ocr": ocr_metadata}
     fields = baseline
@@ -29,9 +30,12 @@ def run_inline(data, kind, mode, settings):
         vision = align_vlm(kind, values, tokens)
         fields = fuse(baseline, vision) if mode == "hybrid" else vision
         provenance["vlm"] = vlm_metadata
+    warnings = [] if tokens else ["OCR không nhận diện được chữ. Kiểm tra độ rõ và chiều tài liệu."]
+    if settings.ocr_provider == "ocrspace":
+        warnings.append("OCR.space xử lý tài liệu qua dịch vụ bên ngoài và không cung cấp confidence theo từ; điểm trường để trống.")
     return Extraction(document_type=kind, document_sha256=hashlib.sha256(data).hexdigest(), mode=mode,
         fields=fields, ocr_text=ocr_text, provenance=provenance,
-        warnings=[] if tokens else ["OCR không nhận diện được chữ. Kiểm tra độ rõ và chiều tài liệu."])
+        warnings=warnings)
 
 
 def run(data: bytes, kind, mode, settings: Settings):
