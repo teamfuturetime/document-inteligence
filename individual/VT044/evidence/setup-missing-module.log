@@ -1,0 +1,374 @@
+EEEEEEEEEEEEEEEEEEEEEEEEEEEE                                             [100%]
+==================================== ERRORS ====================================
+____ ERROR at setup of test_T01_T02_T03_state_cycle_preserves_related_data _____
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T01_T02_T03_state_cycle_p0')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+____________ ERROR at setup of test_T04_idempotent_commands[delete] ____________
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T04_idempotent_commands_d0')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+___________ ERROR at setup of test_T04_idempotent_commands[restore] ____________
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T04_idempotent_commands_r0')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+_ ERROR at setup of test_T05_T06_cross_user_access_has_no_payload_or_side_effect[GET--False] _
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T05_T06_cross_user_access0')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+_ ERROR at setup of test_T05_T06_cross_user_access_has_no_payload_or_side_effect[GET--True] _
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T05_T06_cross_user_access1')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+_ ERROR at setup of test_T05_T06_cross_user_access_has_no_payload_or_side_effect[GET-/content-False] _
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T05_T06_cross_user_access2')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+_ ERROR at setup of test_T05_T06_cross_user_access_has_no_payload_or_side_effect[GET-/content-True] _
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T05_T06_cross_user_access3')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+_ ERROR at setup of test_T05_T06_cross_user_access_has_no_payload_or_side_effect[GET-/extraction-False] _
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T05_T06_cross_user_access4')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+_ ERROR at setup of test_T05_T06_cross_user_access_has_no_payload_or_side_effect[GET-/extraction-True] _
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T05_T06_cross_user_access5')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+_ ERROR at setup of test_T05_T06_cross_user_access_has_no_payload_or_side_effect[DELETE--False] _
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T05_T06_cross_user_access6')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+_ ERROR at setup of test_T05_T06_cross_user_access_has_no_payload_or_side_effect[DELETE--True] _
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T05_T06_cross_user_access7')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+_ ERROR at setup of test_T05_T06_cross_user_access_has_no_payload_or_side_effect[POST-/restore-False] _
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T05_T06_cross_user_access8')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+_ ERROR at setup of test_T05_T06_cross_user_access_has_no_payload_or_side_effect[POST-/restore-True] _
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T05_T06_cross_user_access9')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+_________ ERROR at setup of test_T07_missing_or_invalid_identity[None] _________
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T07_missing_or_invalid_id0')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+_______ ERROR at setup of test_T07_missing_or_invalid_identity[invalid] ________
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T07_missing_or_invalid_id1')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+_______________ ERROR at setup of test_T08_list_is_owner_scoped ________________
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T08_list_is_owner_scoped0')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+__________ ERROR at setup of test_T09_expiry_boundary_and_restore[-1] __________
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T09_expiry_boundary_and_r0')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+__________ ERROR at setup of test_T09_expiry_boundary_and_restore[0] ___________
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T09_expiry_boundary_and_r1')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+__________ ERROR at setup of test_T09_expiry_boundary_and_restore[1] ___________
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T09_expiry_boundary_and_r2')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+_______ ERROR at setup of test_T10_processing_blocks_transition[delete] ________
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T10_processing_blocks_tra0')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+_______ ERROR at setup of test_T10_processing_blocks_transition[restore] _______
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T10_processing_blocks_tra1')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+__ ERROR at setup of test_T11_commit_failure_rolls_back_without_leak[delete] ___
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T11_commit_failure_rolls_0')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+__ ERROR at setup of test_T11_commit_failure_rolls_back_without_leak[restore] __
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T11_commit_failure_rolls_1')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+_ ERROR at setup of test_T12_unknown_id_is_indistinguishable_from_foreign_id[GET-] _
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T12_unknown_id_is_indisti0')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+_ ERROR at setup of test_T12_unknown_id_is_indistinguishable_from_foreign_id[DELETE-] _
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T12_unknown_id_is_indisti1')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+_ ERROR at setup of test_T12_unknown_id_is_indistinguishable_from_foreign_id[POST-/restore] _
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T12_unknown_id_is_indisti2')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+_____ ERROR at setup of test_T13_payload_user_id_cannot_impersonate_owner ______
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T13_payload_user_id_canno0')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+_____ ERROR at setup of test_T14_service_enforces_owner_even_without_http ______
+
+tmp_path = PosixPath('/private/var/folders/2p/p4mj443j4j56m0lgzq98w6qc0000gp/T/pytest-of-nguyencongtri/pytest-5/test_T14_service_enforces_owne0')
+
+    @pytest.fixture
+    def env(tmp_path):
+        # Import at fixture time so the RED stage fails at the missing slice,
+        # rather than silently exercising a replacement fake implementation.
+>       from individual.VT044.harness import Lifecycle, LifecycleService, create_app
+E       ModuleNotFoundError: No module named 'individual.VT044.harness'
+
+individual/VT044/test_lifecycle.py:24: ModuleNotFoundError
+=============================== warnings summary ===============================
+../document-inteligence/.venv312/lib/python3.12/site-packages/starlette/testclient.py:40
+  /Users/nguyencongtri/Documents/SE/document-inteligence/.venv312/lib/python3.12/site-packages/starlette/testclient.py:40: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = typing.Callable[[], typing.ContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+ERROR individual/VT044/test_lifecycle.py::test_T01_T02_T03_state_cycle_preserves_related_data
+ERROR individual/VT044/test_lifecycle.py::test_T04_idempotent_commands[delete]
+ERROR individual/VT044/test_lifecycle.py::test_T04_idempotent_commands[restore]
+ERROR individual/VT044/test_lifecycle.py::test_T05_T06_cross_user_access_has_no_payload_or_side_effect[GET--False]
+ERROR individual/VT044/test_lifecycle.py::test_T05_T06_cross_user_access_has_no_payload_or_side_effect[GET--True]
+ERROR individual/VT044/test_lifecycle.py::test_T05_T06_cross_user_access_has_no_payload_or_side_effect[GET-/content-False]
+ERROR individual/VT044/test_lifecycle.py::test_T05_T06_cross_user_access_has_no_payload_or_side_effect[GET-/content-True]
+ERROR individual/VT044/test_lifecycle.py::test_T05_T06_cross_user_access_has_no_payload_or_side_effect[GET-/extraction-False]
+ERROR individual/VT044/test_lifecycle.py::test_T05_T06_cross_user_access_has_no_payload_or_side_effect[GET-/extraction-True]
+ERROR individual/VT044/test_lifecycle.py::test_T05_T06_cross_user_access_has_no_payload_or_side_effect[DELETE--False]
+ERROR individual/VT044/test_lifecycle.py::test_T05_T06_cross_user_access_has_no_payload_or_side_effect[DELETE--True]
+ERROR individual/VT044/test_lifecycle.py::test_T05_T06_cross_user_access_has_no_payload_or_side_effect[POST-/restore-False]
+ERROR individual/VT044/test_lifecycle.py::test_T05_T06_cross_user_access_has_no_payload_or_side_effect[POST-/restore-True]
+ERROR individual/VT044/test_lifecycle.py::test_T07_missing_or_invalid_identity[None]
+ERROR individual/VT044/test_lifecycle.py::test_T07_missing_or_invalid_identity[invalid]
+ERROR individual/VT044/test_lifecycle.py::test_T08_list_is_owner_scoped - Mod...
+ERROR individual/VT044/test_lifecycle.py::test_T09_expiry_boundary_and_restore[-1]
+ERROR individual/VT044/test_lifecycle.py::test_T09_expiry_boundary_and_restore[0]
+ERROR individual/VT044/test_lifecycle.py::test_T09_expiry_boundary_and_restore[1]
+ERROR individual/VT044/test_lifecycle.py::test_T10_processing_blocks_transition[delete]
+ERROR individual/VT044/test_lifecycle.py::test_T10_processing_blocks_transition[restore]
+ERROR individual/VT044/test_lifecycle.py::test_T11_commit_failure_rolls_back_without_leak[delete]
+ERROR individual/VT044/test_lifecycle.py::test_T11_commit_failure_rolls_back_without_leak[restore]
+ERROR individual/VT044/test_lifecycle.py::test_T12_unknown_id_is_indistinguishable_from_foreign_id[GET-]
+ERROR individual/VT044/test_lifecycle.py::test_T12_unknown_id_is_indistinguishable_from_foreign_id[DELETE-]
+ERROR individual/VT044/test_lifecycle.py::test_T12_unknown_id_is_indistinguishable_from_foreign_id[POST-/restore]
+ERROR individual/VT044/test_lifecycle.py::test_T13_payload_user_id_cannot_impersonate_owner
+ERROR individual/VT044/test_lifecycle.py::test_T14_service_enforces_owner_even_without_http
+1 warning, 28 errors in 0.52s

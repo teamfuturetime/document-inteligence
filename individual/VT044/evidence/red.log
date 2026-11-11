@@ -1,0 +1,442 @@
+FFF.F.F.FFFFF...FFFFFFF.FFFF                                             [100%]
+=================================== FAILURES ===================================
+_____________ test_T01_T02_T03_state_cycle_preserves_related_data ______________
+
+env = (<individual.VT044.harness.LifecycleService object at 0x114167f50>, <starlette.testclient.TestClient object at 0x114223e00>, {'alice': '874f74db-a835-4b39-84a6-9a5fd7630be1', 'bob': 'ad6d13de-e5c0-419d-88cd-4a9c73589f8d'})
+
+    def test_T01_T02_T03_state_cycle_preserves_related_data(env):
+        service, client, ids = env
+        path = f"/documents/{ids['alice']}"
+        before = snapshot(service, ids["alice"])
+        assert client.get(path, headers=headers()).status_code == 200
+>       assert client.delete(path, headers=headers()).json() == {"id": ids["alice"], "deleted": True}
+E       AssertionError: assert {'detail': 'X...c triển khai'} == {'deleted': T...9a5fd7630be1'}
+E         
+E         Left contains 1 more item:
+E         {'detail': 'Xóa mềm/khôi phục chưa được triển khai'}
+E         Right contains 2 more items:
+E         {'deleted': True, 'id': '874f74db-a835-4b39-84a6-9a5fd7630be1'}
+E         Use -v to get more diff
+
+individual/VT044/test_lifecycle.py:69: AssertionError
+_____________________ test_T04_idempotent_commands[delete] _____________________
+
+env = (<individual.VT044.harness.LifecycleService object at 0x11428bb60>, <starlette.testclient.TestClient object at 0x1142ae900>, {'alice': '1bc9775f-7913-4594-9542-0a3d4aef3b4c', 'bob': '224e4b5b-e04d-4479-bfe3-7725f251a98d'})
+action = 'delete'
+
+    @pytest.mark.parametrize("action", ["delete", "restore"])
+    def test_T04_idempotent_commands(env, action):
+        service, client, ids = env
+        path = f"/documents/{ids['alice']}"
+        call = (lambda: client.delete(path, headers=headers())) if action == "delete" else (
+            lambda: client.post(path + "/restore", headers=headers()))
+        before = snapshot(service, ids["alice"])
+>       assert call().status_code == 200
+E       assert 501 == 200
+E        +  where 501 = <Response [501 Not Implemented]>.status_code
+E        +    where <Response [501 Not Implemented]> = <function test_T04_idempotent_commands.<locals>.<lambda> at 0x11427f880>()
+
+individual/VT044/test_lifecycle.py:89: AssertionError
+____________________ test_T04_idempotent_commands[restore] _____________________
+
+env = (<individual.VT044.harness.LifecycleService object at 0x1140588f0>, <starlette.testclient.TestClient object at 0x114368fe0>, {'alice': '68fe1d77-434d-4d98-b34c-4a8689bc04b4', 'bob': '2461d435-4851-4c37-8535-03de850d2db5'})
+action = 'restore'
+
+    @pytest.mark.parametrize("action", ["delete", "restore"])
+    def test_T04_idempotent_commands(env, action):
+        service, client, ids = env
+        path = f"/documents/{ids['alice']}"
+        call = (lambda: client.delete(path, headers=headers())) if action == "delete" else (
+            lambda: client.post(path + "/restore", headers=headers()))
+        before = snapshot(service, ids["alice"])
+>       assert call().status_code == 200
+E       assert 501 == 200
+E        +  where 501 = <Response [501 Not Implemented]>.status_code
+E        +    where <Response [501 Not Implemented]> = <function test_T04_idempotent_commands.<locals>.<lambda> at 0x1142d34c0>()
+
+individual/VT044/test_lifecycle.py:89: AssertionError
+___ test_T05_T06_cross_user_access_has_no_payload_or_side_effect[GET--True] ____
+
+env = (<individual.VT044.harness.LifecycleService object at 0x114386fc0>, <starlette.testclient.TestClient object at 0x114383e30>, {'alice': 'a940dd43-8397-446b-86ac-e01912fb6a6b', 'bob': 'e5f43d15-ac1b-450c-af84-6f72fd4f776f'})
+deleted = True, method = 'GET', suffix = ''
+
+    @pytest.mark.parametrize("deleted", [False, True])
+    @pytest.mark.parametrize("method,suffix", [
+        ("GET", ""), ("GET", "/content"), ("GET", "/extraction"),
+        ("DELETE", ""), ("POST", "/restore"),
+    ])
+    def test_T05_T06_cross_user_access_has_no_payload_or_side_effect(env, deleted, method, suffix):
+        service, client, ids = env
+        path = f"/documents/{ids['bob']}"
+        if deleted:
+>           assert client.delete(path, headers=headers("bob")).status_code == 200
+E           AssertionError: assert 501 == 200
+E            +  where 501 = <Response [501 Not Implemented]>.status_code
+E            +    where <Response [501 Not Implemented]> = delete('/documents/e5f43d15-ac1b-450c-af84-6f72fd4f776f', headers={'X-API-Key': 'demo-bob'})
+E            +      where delete = <starlette.testclient.TestClient object at 0x114383e30>.delete
+E            +      and   {'X-API-Key': 'demo-bob'} = headers('bob')
+
+individual/VT044/test_lifecycle.py:103: AssertionError
+_ test_T05_T06_cross_user_access_has_no_payload_or_side_effect[GET-/content-True] _
+
+env = (<individual.VT044.harness.LifecycleService object at 0x114387b00>, <starlette.testclient.TestClient object at 0x1142acc20>, {'alice': '1eef97a2-3784-48a5-a220-6631506e6162', 'bob': '48250192-dd2a-4eb0-9669-62c2993be648'})
+deleted = True, method = 'GET', suffix = '/content'
+
+    @pytest.mark.parametrize("deleted", [False, True])
+    @pytest.mark.parametrize("method,suffix", [
+        ("GET", ""), ("GET", "/content"), ("GET", "/extraction"),
+        ("DELETE", ""), ("POST", "/restore"),
+    ])
+    def test_T05_T06_cross_user_access_has_no_payload_or_side_effect(env, deleted, method, suffix):
+        service, client, ids = env
+        path = f"/documents/{ids['bob']}"
+        if deleted:
+>           assert client.delete(path, headers=headers("bob")).status_code == 200
+E           AssertionError: assert 501 == 200
+E            +  where 501 = <Response [501 Not Implemented]>.status_code
+E            +    where <Response [501 Not Implemented]> = delete('/documents/48250192-dd2a-4eb0-9669-62c2993be648', headers={'X-API-Key': 'demo-bob'})
+E            +      where delete = <starlette.testclient.TestClient object at 0x1142acc20>.delete
+E            +      and   {'X-API-Key': 'demo-bob'} = headers('bob')
+
+individual/VT044/test_lifecycle.py:103: AssertionError
+_ test_T05_T06_cross_user_access_has_no_payload_or_side_effect[GET-/extraction-True] _
+
+env = (<individual.VT044.harness.LifecycleService object at 0x114369cd0>, <starlette.testclient.TestClient object at 0x1145051f0>, {'alice': '3903fa84-ddd4-467c-a85a-f9c4eb0a2195', 'bob': 'b42a4f28-b26a-4e71-be1b-deef9cc7edd5'})
+deleted = True, method = 'GET', suffix = '/extraction'
+
+    @pytest.mark.parametrize("deleted", [False, True])
+    @pytest.mark.parametrize("method,suffix", [
+        ("GET", ""), ("GET", "/content"), ("GET", "/extraction"),
+        ("DELETE", ""), ("POST", "/restore"),
+    ])
+    def test_T05_T06_cross_user_access_has_no_payload_or_side_effect(env, deleted, method, suffix):
+        service, client, ids = env
+        path = f"/documents/{ids['bob']}"
+        if deleted:
+>           assert client.delete(path, headers=headers("bob")).status_code == 200
+E           AssertionError: assert 501 == 200
+E            +  where 501 = <Response [501 Not Implemented]>.status_code
+E            +    where <Response [501 Not Implemented]> = delete('/documents/b42a4f28-b26a-4e71-be1b-deef9cc7edd5', headers={'X-API-Key': 'demo-bob'})
+E            +      where delete = <starlette.testclient.TestClient object at 0x1145051f0>.delete
+E            +      and   {'X-API-Key': 'demo-bob'} = headers('bob')
+
+individual/VT044/test_lifecycle.py:103: AssertionError
+_ test_T05_T06_cross_user_access_has_no_payload_or_side_effect[DELETE--False] __
+
+env = (<individual.VT044.harness.LifecycleService object at 0x11452d340>, <starlette.testclient.TestClient object at 0x1143f5e50>, {'alice': 'dd551fb1-e9d8-430b-9443-b4d78053fb8b', 'bob': 'a6a1f04f-7060-4d26-ae50-d003924d1245'})
+deleted = False, method = 'DELETE', suffix = ''
+
+    @pytest.mark.parametrize("deleted", [False, True])
+    @pytest.mark.parametrize("method,suffix", [
+        ("GET", ""), ("GET", "/content"), ("GET", "/extraction"),
+        ("DELETE", ""), ("POST", "/restore"),
+    ])
+    def test_T05_T06_cross_user_access_has_no_payload_or_side_effect(env, deleted, method, suffix):
+        service, client, ids = env
+        path = f"/documents/{ids['bob']}"
+        if deleted:
+            assert client.delete(path, headers=headers("bob")).status_code == 200
+        before = snapshot(service, ids["bob"])
+        response = client.request(method, path + suffix, headers=headers())
+>       assert response.status_code == 404
+E       assert 501 == 404
+E        +  where 501 = <Response [501 Not Implemented]>.status_code
+
+individual/VT044/test_lifecycle.py:106: AssertionError
+__ test_T05_T06_cross_user_access_has_no_payload_or_side_effect[DELETE--True] __
+
+env = (<individual.VT044.harness.LifecycleService object at 0x1142acce0>, <starlette.testclient.TestClient object at 0x1143489b0>, {'alice': 'f30f19de-71a2-41e5-a240-e86848b1898f', 'bob': '489fa8d6-0adf-47ab-98cf-6c69a14c29a5'})
+deleted = True, method = 'DELETE', suffix = ''
+
+    @pytest.mark.parametrize("deleted", [False, True])
+    @pytest.mark.parametrize("method,suffix", [
+        ("GET", ""), ("GET", "/content"), ("GET", "/extraction"),
+        ("DELETE", ""), ("POST", "/restore"),
+    ])
+    def test_T05_T06_cross_user_access_has_no_payload_or_side_effect(env, deleted, method, suffix):
+        service, client, ids = env
+        path = f"/documents/{ids['bob']}"
+        if deleted:
+>           assert client.delete(path, headers=headers("bob")).status_code == 200
+E           AssertionError: assert 501 == 200
+E            +  where 501 = <Response [501 Not Implemented]>.status_code
+E            +    where <Response [501 Not Implemented]> = delete('/documents/489fa8d6-0adf-47ab-98cf-6c69a14c29a5', headers={'X-API-Key': 'demo-bob'})
+E            +      where delete = <starlette.testclient.TestClient object at 0x1143489b0>.delete
+E            +      and   {'X-API-Key': 'demo-bob'} = headers('bob')
+
+individual/VT044/test_lifecycle.py:103: AssertionError
+_ test_T05_T06_cross_user_access_has_no_payload_or_side_effect[POST-/restore-False] _
+
+env = (<individual.VT044.harness.LifecycleService object at 0x11428bc50>, <starlette.testclient.TestClient object at 0x11455aff0>, {'alice': 'e96af311-dd1d-4dca-9293-6b08bda64eba', 'bob': '9243e8c6-b4db-4ddc-91f8-daa091dcf5ca'})
+deleted = False, method = 'POST', suffix = '/restore'
+
+    @pytest.mark.parametrize("deleted", [False, True])
+    @pytest.mark.parametrize("method,suffix", [
+        ("GET", ""), ("GET", "/content"), ("GET", "/extraction"),
+        ("DELETE", ""), ("POST", "/restore"),
+    ])
+    def test_T05_T06_cross_user_access_has_no_payload_or_side_effect(env, deleted, method, suffix):
+        service, client, ids = env
+        path = f"/documents/{ids['bob']}"
+        if deleted:
+            assert client.delete(path, headers=headers("bob")).status_code == 200
+        before = snapshot(service, ids["bob"])
+        response = client.request(method, path + suffix, headers=headers())
+>       assert response.status_code == 404
+E       assert 501 == 404
+E        +  where 501 = <Response [501 Not Implemented]>.status_code
+
+individual/VT044/test_lifecycle.py:106: AssertionError
+_ test_T05_T06_cross_user_access_has_no_payload_or_side_effect[POST-/restore-True] _
+
+env = (<individual.VT044.harness.LifecycleService object at 0x11458fd10>, <starlette.testclient.TestClient object at 0x11455b8c0>, {'alice': 'e9c5437c-ee0d-4d82-8784-b6d47f0e34b7', 'bob': '81e3bb55-affb-47ed-97b3-33a3010a40f6'})
+deleted = True, method = 'POST', suffix = '/restore'
+
+    @pytest.mark.parametrize("deleted", [False, True])
+    @pytest.mark.parametrize("method,suffix", [
+        ("GET", ""), ("GET", "/content"), ("GET", "/extraction"),
+        ("DELETE", ""), ("POST", "/restore"),
+    ])
+    def test_T05_T06_cross_user_access_has_no_payload_or_side_effect(env, deleted, method, suffix):
+        service, client, ids = env
+        path = f"/documents/{ids['bob']}"
+        if deleted:
+>           assert client.delete(path, headers=headers("bob")).status_code == 200
+E           AssertionError: assert 501 == 200
+E            +  where 501 = <Response [501 Not Implemented]>.status_code
+E            +    where <Response [501 Not Implemented]> = delete('/documents/81e3bb55-affb-47ed-97b3-33a3010a40f6', headers={'X-API-Key': 'demo-bob'})
+E            +      where delete = <starlette.testclient.TestClient object at 0x11455b8c0>.delete
+E            +      and   {'X-API-Key': 'demo-bob'} = headers('bob')
+
+individual/VT044/test_lifecycle.py:103: AssertionError
+___________________ test_T09_expiry_boundary_and_restore[-1] ___________________
+
+env = (<individual.VT044.harness.LifecycleService object at 0x114387b90>, <starlette.testclient.TestClient object at 0x1142aed80>, {'alice': 'bcfbc321-b980-4fa7-8e7c-52bd99342c24', 'bob': '0a955c65-42ea-445c-bf05-e4a8b8efbac8'})
+delta = -1
+
+    @pytest.mark.parametrize("delta", [-1, 0, 1])
+    def test_T09_expiry_boundary_and_restore(env, delta):
+        service, client, ids = env
+        path = f"/documents/{ids['alice']}"
+>       assert client.delete(path, headers=headers()).status_code == 200
+E       AssertionError: assert 501 == 200
+E        +  where 501 = <Response [501 Not Implemented]>.status_code
+E        +    where <Response [501 Not Implemented]> = delete('/documents/bcfbc321-b980-4fa7-8e7c-52bd99342c24', headers={'X-API-Key': 'demo-alice'})
+E        +      where delete = <starlette.testclient.TestClient object at 0x1142aed80>.delete
+E        +      and   {'X-API-Key': 'demo-alice'} = headers()
+
+individual/VT044/test_lifecycle.py:131: AssertionError
+___________________ test_T09_expiry_boundary_and_restore[0] ____________________
+
+env = (<individual.VT044.harness.LifecycleService object at 0x1143f7290>, <starlette.testclient.TestClient object at 0x1142afb90>, {'alice': 'e99941b3-195f-4da8-8f11-e1bf4ad412a7', 'bob': '7084e79e-cea0-4bbc-9168-3d80ed0d3df0'})
+delta = 0
+
+    @pytest.mark.parametrize("delta", [-1, 0, 1])
+    def test_T09_expiry_boundary_and_restore(env, delta):
+        service, client, ids = env
+        path = f"/documents/{ids['alice']}"
+>       assert client.delete(path, headers=headers()).status_code == 200
+E       AssertionError: assert 501 == 200
+E        +  where 501 = <Response [501 Not Implemented]>.status_code
+E        +    where <Response [501 Not Implemented]> = delete('/documents/e99941b3-195f-4da8-8f11-e1bf4ad412a7', headers={'X-API-Key': 'demo-alice'})
+E        +      where delete = <starlette.testclient.TestClient object at 0x1142afb90>.delete
+E        +      and   {'X-API-Key': 'demo-alice'} = headers()
+
+individual/VT044/test_lifecycle.py:131: AssertionError
+___________________ test_T09_expiry_boundary_and_restore[1] ____________________
+
+env = (<individual.VT044.harness.LifecycleService object at 0x11434b3e0>, <starlette.testclient.TestClient object at 0x1145590a0>, {'alice': 'f18b3bda-3faf-469b-976e-ea33510b3c9c', 'bob': 'ade2c19a-e706-4b44-8a7e-ac0b3e42c3aa'})
+delta = 1
+
+    @pytest.mark.parametrize("delta", [-1, 0, 1])
+    def test_T09_expiry_boundary_and_restore(env, delta):
+        service, client, ids = env
+        path = f"/documents/{ids['alice']}"
+>       assert client.delete(path, headers=headers()).status_code == 200
+E       AssertionError: assert 501 == 200
+E        +  where 501 = <Response [501 Not Implemented]>.status_code
+E        +    where <Response [501 Not Implemented]> = delete('/documents/f18b3bda-3faf-469b-976e-ea33510b3c9c', headers={'X-API-Key': 'demo-alice'})
+E        +      where delete = <starlette.testclient.TestClient object at 0x1145590a0>.delete
+E        +      and   {'X-API-Key': 'demo-alice'} = headers()
+
+individual/VT044/test_lifecycle.py:131: AssertionError
+________________ test_T10_processing_blocks_transition[delete] _________________
+
+env = (<individual.VT044.harness.LifecycleService object at 0x11455bcb0>, <starlette.testclient.TestClient object at 0x1142897c0>, {'alice': '9605eb6d-303c-4e8f-98be-bf89a6aff2e4', 'bob': '28f8bf76-93fb-4e92-943f-99ad5d005b44'})
+action = 'delete'
+
+    @pytest.mark.parametrize("action", ["delete", "restore"])
+    def test_T10_processing_blocks_transition(env, action):
+        service, client, ids = env
+        path = f"/documents/{ids['alice']}"
+        if action == "restore":
+            assert client.delete(path, headers=headers()).status_code == 200
+        with Session(service.engine) as db:
+            db.get(Document, ids["alice"]).status = "processing"
+            db.commit()
+        before = snapshot(service, ids["alice"])
+        response = client.delete(path, headers=headers()) if action == "delete" else client.post(path + "/restore", headers=headers())
+>       assert response.status_code == 409
+E       assert 501 == 409
+E        +  where 501 = <Response [501 Not Implemented]>.status_code
+
+individual/VT044/test_lifecycle.py:153: AssertionError
+________________ test_T10_processing_blocks_transition[restore] ________________
+
+env = (<individual.VT044.harness.LifecycleService object at 0x11458ce90>, <starlette.testclient.TestClient object at 0x11452d5e0>, {'alice': 'be00a087-3711-4c27-ae64-cc4b94b5b242', 'bob': '178f3c1d-55b4-480f-91eb-cd0088a35ddd'})
+action = 'restore'
+
+    @pytest.mark.parametrize("action", ["delete", "restore"])
+    def test_T10_processing_blocks_transition(env, action):
+        service, client, ids = env
+        path = f"/documents/{ids['alice']}"
+        if action == "restore":
+>           assert client.delete(path, headers=headers()).status_code == 200
+E           AssertionError: assert 501 == 200
+E            +  where 501 = <Response [501 Not Implemented]>.status_code
+E            +    where <Response [501 Not Implemented]> = delete('/documents/be00a087-3711-4c27-ae64-cc4b94b5b242', headers={'X-API-Key': 'demo-alice'})
+E            +      where delete = <starlette.testclient.TestClient object at 0x11452d5e0>.delete
+E            +      and   {'X-API-Key': 'demo-alice'} = headers()
+
+individual/VT044/test_lifecycle.py:147: AssertionError
+___________ test_T11_commit_failure_rolls_back_without_leak[delete] ____________
+
+env = (<individual.VT044.harness.LifecycleService object at 0x1143bd460>, <starlette.testclient.TestClient object at 0x114288140>, {'alice': '061d373b-a90b-4a5e-a7c9-f9bd49090f96', 'bob': '8a73457b-599c-45c2-9cb3-99a748b3018c'})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x114382f90>
+action = 'delete'
+
+    @pytest.mark.parametrize("action", ["delete", "restore"])
+    def test_T11_commit_failure_rolls_back_without_leak(env, monkeypatch, action):
+        service, client, ids = env
+        from individual.VT044.harness import Lifecycle
+        path = f"/documents/{ids['alice']}"
+        initial_deleted = action == "restore"
+        if initial_deleted:
+            assert client.delete(path, headers=headers()).status_code == 200
+        before = snapshot(service, ids["alice"])
+    
+        def fail_commit(self):
+            self.flush()  # Mutation has reached SQL; rollback must undo it.
+            raise SQLAlchemyError("private-owner-bob/database-password")
+    
+        with monkeypatch.context() as patch:
+            patch.setattr(Session, "commit", fail_commit)
+            response = client.delete(path, headers=headers()) if action == "delete" else client.post(path + "/restore", headers=headers())
+>       assert response.status_code == 503
+E       assert 501 == 503
+E        +  where 501 = <Response [501 Not Implemented]>.status_code
+
+individual/VT044/test_lifecycle.py:174: AssertionError
+___________ test_T11_commit_failure_rolls_back_without_leak[restore] ___________
+
+env = (<individual.VT044.harness.LifecycleService object at 0x1143f77a0>, <starlette.testclient.TestClient object at 0x1142afc80>, {'alice': 'c3e20788-df47-46f8-9122-65d8a104ee22', 'bob': '3834c2fd-083b-441b-bfa8-aa283a0e9c8b'})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1145de330>
+action = 'restore'
+
+    @pytest.mark.parametrize("action", ["delete", "restore"])
+    def test_T11_commit_failure_rolls_back_without_leak(env, monkeypatch, action):
+        service, client, ids = env
+        from individual.VT044.harness import Lifecycle
+        path = f"/documents/{ids['alice']}"
+        initial_deleted = action == "restore"
+        if initial_deleted:
+>           assert client.delete(path, headers=headers()).status_code == 200
+E           AssertionError: assert 501 == 200
+E            +  where 501 = <Response [501 Not Implemented]>.status_code
+E            +    where <Response [501 Not Implemented]> = delete('/documents/c3e20788-df47-46f8-9122-65d8a104ee22', headers={'X-API-Key': 'demo-alice'})
+E            +      where delete = <starlette.testclient.TestClient object at 0x1142afc80>.delete
+E            +      and   {'X-API-Key': 'demo-alice'} = headers()
+
+individual/VT044/test_lifecycle.py:164: AssertionError
+______ test_T12_unknown_id_is_indistinguishable_from_foreign_id[DELETE-] _______
+
+env = (<individual.VT044.harness.LifecycleService object at 0x1145de720>, <starlette.testclient.TestClient object at 0x1146060f0>, {'alice': '1d601e63-a9c0-4e63-9997-cab5e46d633b', 'bob': 'c56971fc-89f8-4702-8f17-103bf5e1cd50'})
+method = 'DELETE', suffix = ''
+
+    @pytest.mark.parametrize("method,suffix", [("GET", ""), ("DELETE", ""), ("POST", "/restore")])
+    def test_T12_unknown_id_is_indistinguishable_from_foreign_id(env, method, suffix):
+        _, client, ids = env
+        unknown = client.request(method, "/documents/missing" + suffix, headers=headers())
+        foreign = client.request(method, f"/documents/{ids['bob']}" + suffix, headers=headers())
+>       assert (unknown.status_code, unknown.json()) == (foreign.status_code, foreign.json()) == (
+            404, {"detail": "Không tìm thấy tài liệu"})
+E       AssertionError: assert (501, {'detai... triển khai'}) == (404, {'detai...ấy tài liệu'})
+E         
+E         At index 0 diff: 501 != 404
+E         Use -v to get more diff
+
+individual/VT044/test_lifecycle.py:186: AssertionError
+___ test_T12_unknown_id_is_indistinguishable_from_foreign_id[POST-/restore] ____
+
+env = (<individual.VT044.harness.LifecycleService object at 0x114604500>, <starlette.testclient.TestClient object at 0x114571a90>, {'alice': 'ec928f61-42cf-4214-932b-a7d2889e7515', 'bob': '4a3c6fb0-56c9-416b-aa86-9ceccb84fb9f'})
+method = 'POST', suffix = '/restore'
+
+    @pytest.mark.parametrize("method,suffix", [("GET", ""), ("DELETE", ""), ("POST", "/restore")])
+    def test_T12_unknown_id_is_indistinguishable_from_foreign_id(env, method, suffix):
+        _, client, ids = env
+        unknown = client.request(method, "/documents/missing" + suffix, headers=headers())
+        foreign = client.request(method, f"/documents/{ids['bob']}" + suffix, headers=headers())
+>       assert (unknown.status_code, unknown.json()) == (foreign.status_code, foreign.json()) == (
+            404, {"detail": "Không tìm thấy tài liệu"})
+E       AssertionError: assert (501, {'detai... triển khai'}) == (404, {'detai...ấy tài liệu'})
+E         
+E         At index 0 diff: 501 != 404
+E         Use -v to get more diff
+
+individual/VT044/test_lifecycle.py:186: AssertionError
+______________ test_T13_payload_user_id_cannot_impersonate_owner _______________
+
+env = (<individual.VT044.harness.LifecycleService object at 0x1146043e0>, <starlette.testclient.TestClient object at 0x11458cbf0>, {'alice': '1142d05c-2ab3-4341-886c-896216d386e4', 'bob': 'd301aaa7-9cd9-4d47-b5b4-fd1edd6d580b'})
+
+    def test_T13_payload_user_id_cannot_impersonate_owner(env):
+        _, client, ids = env
+        response = client.delete(f"/documents/{ids['bob']}?owner_id=bob", headers={**headers(), "X-User-ID": "bob"})
+>       assert response.status_code == 404
+E       assert 501 == 404
+E        +  where 501 = <Response [501 Not Implemented]>.status_code
+
+individual/VT044/test_lifecycle.py:193: AssertionError
+______________ test_T14_service_enforces_owner_even_without_http _______________
+
+env = (<individual.VT044.harness.LifecycleService object at 0x1145de030>, <starlette.testclient.TestClient object at 0x11466a4b0>, {'alice': '05fad51f-d645-4a09-86b1-39a2717cdf82', 'bob': '7b71b339-1023-49e2-a671-29bcad0101c1'})
+
+    def test_T14_service_enforces_owner_even_without_http(env):
+        service, _, ids = env
+        from fastapi import HTTPException
+        with pytest.raises(HTTPException) as error:
+            service.transition("alice", ids["bob"], True)
+>       assert error.value.status_code == 404
+E       AssertionError: assert 501 == 404
+E        +  where 501 = HTTPException(status_code=501, detail='Xóa mềm/khôi phục chưa được triển khai').status_code
+E        +    where HTTPException(status_code=501, detail='Xóa mềm/khôi phục chưa được triển khai') = <ExceptionInfo HTTPException(status_code=501, detail='Xóa mềm/khôi phục chưa được triển khai') tblen=2>.value
+
+individual/VT044/test_lifecycle.py:201: AssertionError
+=============================== warnings summary ===============================
+../document-inteligence/.venv312/lib/python3.12/site-packages/starlette/testclient.py:40
+  /Users/nguyencongtri/Documents/SE/document-inteligence/.venv312/lib/python3.12/site-packages/starlette/testclient.py:40: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = typing.Callable[[], typing.ContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED individual/VT044/test_lifecycle.py::test_T01_T02_T03_state_cycle_preserves_related_data
+FAILED individual/VT044/test_lifecycle.py::test_T04_idempotent_commands[delete]
+FAILED individual/VT044/test_lifecycle.py::test_T04_idempotent_commands[restore]
+FAILED individual/VT044/test_lifecycle.py::test_T05_T06_cross_user_access_has_no_payload_or_side_effect[GET--True]
+FAILED individual/VT044/test_lifecycle.py::test_T05_T06_cross_user_access_has_no_payload_or_side_effect[GET-/content-True]
+FAILED individual/VT044/test_lifecycle.py::test_T05_T06_cross_user_access_has_no_payload_or_side_effect[GET-/extraction-True]
+FAILED individual/VT044/test_lifecycle.py::test_T05_T06_cross_user_access_has_no_payload_or_side_effect[DELETE--False]
+FAILED individual/VT044/test_lifecycle.py::test_T05_T06_cross_user_access_has_no_payload_or_side_effect[DELETE--True]
+FAILED individual/VT044/test_lifecycle.py::test_T05_T06_cross_user_access_has_no_payload_or_side_effect[POST-/restore-False]
+FAILED individual/VT044/test_lifecycle.py::test_T05_T06_cross_user_access_has_no_payload_or_side_effect[POST-/restore-True]
+FAILED individual/VT044/test_lifecycle.py::test_T09_expiry_boundary_and_restore[-1]
+FAILED individual/VT044/test_lifecycle.py::test_T09_expiry_boundary_and_restore[0]
+FAILED individual/VT044/test_lifecycle.py::test_T09_expiry_boundary_and_restore[1]
+FAILED individual/VT044/test_lifecycle.py::test_T10_processing_blocks_transition[delete]
+FAILED individual/VT044/test_lifecycle.py::test_T10_processing_blocks_transition[restore]
+FAILED individual/VT044/test_lifecycle.py::test_T11_commit_failure_rolls_back_without_leak[delete]
+FAILED individual/VT044/test_lifecycle.py::test_T11_commit_failure_rolls_back_without_leak[restore]
+FAILED individual/VT044/test_lifecycle.py::test_T12_unknown_id_is_indistinguishable_from_foreign_id[DELETE-]
+FAILED individual/VT044/test_lifecycle.py::test_T12_unknown_id_is_indistinguishable_from_foreign_id[POST-/restore]
+FAILED individual/VT044/test_lifecycle.py::test_T13_payload_user_id_cannot_impersonate_owner
+FAILED individual/VT044/test_lifecycle.py::test_T14_service_enforces_owner_even_without_http
+21 failed, 7 passed, 1 warning in 0.86s
