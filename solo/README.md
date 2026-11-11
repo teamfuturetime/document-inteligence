@@ -37,6 +37,17 @@ upload `solo/data/golden-v1/invoice-001.png` hoặc `application-001.png`.
 Đối chiếu/sửa, **Kiểm tra dữ liệu**, rồi **Xuất JSON đã xác nhận**. Mẫu `*-003`
 thiếu trường cần người review bổ sung. Bản này dùng cổng riêng 8100/5174.
 
+Giao diện có bàn làm việc gồm tài liệu gốc và các trường rà soát cạnh nhau trên
+desktop, xếp dọc trên điện thoại. Có thể kéo thả một file hoặc bấm **Dùng hóa
+đơn mẫu** để mở nhanh mẫu synthetic có sẵn; thao tác này chỉ tải ảnh trong ứng
+dụng, chưa gửi đến OCR. Chọn nguồn rồi bấm **Trích xuất dữ liệu** để xử lý.
+Ảnh có nút thu/phóng và vừa khung; PDF dùng trình xem của trình duyệt.
+Đổi/xóa tài liệu hoặc đổi cấu hình sẽ hủy kết quả và validation cũ. Confidence
+luôn thuộc kết quả OCR gốc, không thay đổi theo nội dung bạn sửa.
+
+Font IBM Plex được phục vụ từ `web/public/fonts/`, kèm giấy phép OFL và nguồn
+tải; giao diện không cần gọi Google Fonts khi sử dụng.
+
 Lệnh models tải đúng hai file vie/eng đã pin từ kho chính thức và kiểm tra
 SHA-256 vào `.models/tessdata` (ignored). Extraction không tự tải model.
 
