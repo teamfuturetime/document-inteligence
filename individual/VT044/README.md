@@ -1,7 +1,7 @@
 # BT3 - Nguyễn Công Trí - 23001945 - VT-044
 
 Baseline: `66074f4ecc384b6006ac8b574001a0b4aced86ef` (branch `congtri`).
-Individual branch: [bt3/23001945-vt044](https://github.com/teamfuturetime/document-inteligence/tree/bt3/23001945-vt044).
+Individual branch: https://github.com/teamfuturetime/document-inteligence/tree/bt3/23001945-vt044
 Published at the user's explicit request. Do not merge before team review.
 
 This is an **executable contract harness**, permitted by the assignment's
@@ -73,14 +73,23 @@ Known gaps: production authentication/authorization, backfilling owners,
 migrations, routing all original endpoints through the contract, browser UI,
 retention/processing races across the full system, PostgreSQL and sustained
 load. Artificial `.png` fixture bytes exercise storage isolation, not image
-validation or OCR. Student/team review is still required; no human sign-off
-is claimed by these files.
+validation or OCR. The student has confirmed personal review and commitment;
+the actual response is recorded in `evidence/student-review.md`. Team review
+is still required before merging and has not been claimed.
 
 `REQUIREMENTS.md` maps every assignment item to evidence. The GitHub branch
 above contains the tests, patch and logs; no PR or merge is required to use the
-branch link for submission. Student final review/commitment and Classroom
-submission remain the student's responsibility. No Classroom submission has
-been made by the agent.
+branch link for submission. The student has now confirmed personal review and
+the responsibility statement. No Classroom submission has been made by the agent.
+
+## Fresh GitHub clone verification
+
+`REMOTE_AUDIT.md` records a fresh clone from GitHub, verification of all four
+baseline/RED/patch/completion commits, and re-execution of RED, GREEN, mutation,
+coverage, order and load checks. Raw logs are in `evidence/remote-audit/`.
+Anonymous GitHub API access returned 404; a successful clone in this session
+does not prove a grader has repository read access. Ensure that access before
+submission. `REVIEW_GUIDE.md` separates real project modules from demo fixtures.
 
 ## Report export (optional)
 

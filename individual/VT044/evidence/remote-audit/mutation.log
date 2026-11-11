@@ -1,0 +1,52 @@
+temporary branch: mutation/vt044-invert-rule
+temporary mutant commit: 9e8a79eac91bc4a0ff7d7fe59a775a5c22c7c56d
+commit 9e8a79eac91bc4a0ff7d7fe59a775a5c22c7c56d
+Author: VT044 experiment <vt044@example.invalid>
+
+    MUTANT invert boolean transition business rule
+
+diff --git a/individual/VT044/harness.py b/individual/VT044/harness.py
+index 85d8a6e..461fed2 100644
+--- a/individual/VT044/harness.py
++++ b/individual/VT044/harness.py
+@@ -59,7 +59,7 @@ class LifecycleService:
+                 doc, state = self._owned(db, actor, document_id, active_only=False)
+                 if doc.status == "processing":
+                     raise HTTPException(409, "Tài liệu đang được xử lý")
+-                if state.deleted != target:
++                if state.deleted == target:
+                     state.deleted = target
+                 db.commit()
+                 return {"id": document_id, "deleted": target}
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____________ test_T01_T02_T03_state_cycle_preserves_related_data ______________
+
+env = (<individual.VT044.harness.LifecycleService object at 0x107ef28a0>, <starlette.testclient.TestClient object at 0x108030680>, {'alice': '38b58b74-63f8-48bb-98ed-ad770d0a73c7', 'bob': '0c2492a1-684e-4bb8-8563-21de4b397d47'})
+
+    def test_T01_T02_T03_state_cycle_preserves_related_data(env):
+        service, client, ids = env
+        path = f"/documents/{ids['alice']}"
+        before = snapshot(service, ids["alice"])
+        assert client.get(path, headers=headers()).status_code == 200
+        assert client.delete(path, headers=headers()).json() == {"id": ids["alice"], "deleted": True}
+>       assert client.get(path, headers=headers()).status_code == 404
+E       AssertionError: assert 200 == 404
+E        +  where 200 = <Response [200 OK]>.status_code
+E        +    where <Response [200 OK]> = get('/documents/38b58b74-63f8-48bb-98ed-ad770d0a73c7', headers={'X-API-Key': 'demo-alice'})
+E        +      where get = <starlette.testclient.TestClient object at 0x108030680>.get
+E        +      and   {'X-API-Key': 'demo-alice'} = headers()
+
+individual/VT044/test_lifecycle.py:70: AssertionError
+=============================== warnings summary ===============================
+../../../../../../../Users/nguyencongtri/Documents/SE/document-inteligence/.venv312/lib/python3.12/site-packages/starlette/testclient.py:40
+  /Users/nguyencongtri/Documents/SE/document-inteligence/.venv312/lib/python3.12/site-packages/starlette/testclient.py:40: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = typing.Callable[[], typing.ContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED individual/VT044/test_lifecycle.py::test_T01_T02_T03_state_cycle_preserves_related_data
+ 
+mutant_killed=True; pytest_exit=1
+submission_source_unchanged= True
+submission_source_sha256= a2f2e9556ccbe4f1024692657858a617e4f61c761902a9d9ba4bda14d9e4227b

@@ -1,0 +1,77 @@
+{
+  "source": "fresh git clone from official GitHub remote, not the existing worktree or offline bundle",
+  "branch": "bt3/23001945-vt044",
+  "audited_head": "dca06143f32434be5ab1c500975ff79dd6faf0a7",
+  "commits_present_and_ancestors": {
+    "baseline": "66074f4ecc384b6006ac8b574001a0b4aced86ef",
+    "red": "911698f5b0a8e9942fb33f1bee7d480dae96b0c9",
+    "implementation": "72c9bcaf1713c230669c6d0aec7759ec90a48c55",
+    "completion": "286f659b68dc97bab14956aa33d53d7aa9b6092c"
+  },
+  "required_files": {
+    "individual/VT044/README.md": {
+      "bytes": 5670,
+      "sha256": "4512f8953130c70fb286651931f0ce9d128a6fed0b271629c3070914e5be40cb"
+    },
+    "individual/VT044/PLAN.md": {
+      "bytes": 3549,
+      "sha256": "bd481f9bb1d5408ee1ca96fa8ebdc57b425976e101cf0bb207fa7099fdcdd0a2"
+    },
+    "individual/VT044/PLAN_COMPLETION.md": {
+      "bytes": 3418,
+      "sha256": "09cb4d9be7e22d3aa4cda1fc230add2bf17100f0044ed04f89aec9a2d5810c10"
+    },
+    "individual/VT044/harness.py": {
+      "bytes": 5611,
+      "sha256": "a2f2e9556ccbe4f1024692657858a617e4f61c761902a9d9ba4bda14d9e4227b"
+    },
+    "individual/VT044/test_lifecycle.py": {
+      "bytes": 11834,
+      "sha256": "49420aab93ca6d5aaef382b1344dfbc7029c5514218d45128f743d4933ebbefe"
+    },
+    "individual/VT044/mutate.py": {
+      "bytes": 2529,
+      "sha256": "816188dd69ad86270dff0c064595d00505f04ea7ebc717a2527b79aa617fb18f"
+    },
+    "individual/VT044/check_order.py": {
+      "bytes": 935,
+      "sha256": "203c1666a7639244be99ac4832c4c063f730b96fff1be74842552987ef8618bd"
+    },
+    "individual/VT044/load.py": {
+      "bytes": 14376,
+      "sha256": "74320789ea7cdb7bdaff48a0ba1f2d3e1c1308f6c1bb06ed441e5a281de652c3"
+    },
+    "individual/VT044/BT3_23001945.md": {
+      "bytes": 35057,
+      "sha256": "29b525e61befd23e9aaa6ed4849992d45da9f6eabc50bb37a72f049e93792f1e"
+    },
+    "individual/VT044/evidence/red.log": {
+      "bytes": 27755,
+      "sha256": "60d23d4c5a6a092df098a8a202ddccbbfdc254c73f4334dd7f98c37fc4ff0a4d"
+    },
+    "individual/VT044/evidence/green-completion.log": {
+      "bytes": 1190,
+      "sha256": "b46b5bfe24dd1021d937a94b18737320f32690720c603f8aadc82c04a0123096"
+    },
+    "individual/VT044/evidence/mutation-completion.log": {
+      "bytes": 3226,
+      "sha256": "b893884abc50e03fc3dcae258fce30dd6a57f7958956353b05748464221a2745"
+    },
+    "individual/VT044/evidence/coverage-completion.json": {
+      "bytes": 14081,
+      "sha256": "b920e6421c5f89f6d8d452bd00b0ea98b8718cfec4523ab16a0c2ac2ca033f9c"
+    },
+    "individual/VT044/evidence/load-asgi.json": {
+      "bytes": 244436,
+      "sha256": "59c568b45d440f0d59c79472ce0708cf1d7be41a29b1231c4b4f4052e7df3232"
+    },
+    "individual/VT044/evidence/student-review.md": {
+      "bytes": 881,
+      "sha256": "6ede46081453fa9d81ab9d19af25dea6d61e15d94690ac946d84f782203cdd13"
+    }
+  },
+  "anonymous_api_http_status": 404,
+  "github_connector_result": "404",
+  "git_clone_success": true,
+  "limitations": "Same local host/interpreter; not independent human review or proof of grader access. No repository permissions changed."
+}

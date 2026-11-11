@@ -18,7 +18,7 @@ local trên executable harness được đề cho phép, không phải productio
 | Vertical slice chạy được hoặc harness | `harness.py`: real models/repository/storage + owner/tombstone sidecar | Có; giới hạn integration nêu rõ |
 | Git branch/baseline riêng | `bt3/23001945-vt044`; baseline hash ở trang đầu | Đã push nhánh riêng |
 | Test RED đúng lý do trước patch | C_RED `911698f5b0a8e9942fb33f1bee7d480dae96b0c9`, `red.log`: 21 failed/7 passed | Có; setup errors tách riêng |
-| AI patch nhỏ, review diff | C_IMPL `72c9bcaf1713c230669c6d0aec7759ec90a48c55`; `evidence/review.md` | Agent review có; SV vẫn cần hiểu từng dòng |
+| AI patch nhỏ, review diff | C_IMPL `72c9bcaf1713c230669c6d0aec7759ec90a48c55`; `evidence/review.md`; `evidence/student-review.md` | Agent review có; SV đã xác nhận tự rà soát/hiểu code, test, reflection |
 | GREEN/commit/file/lệnh tái lập | `green-completion.log`: 34 passed; regression 133 passed; README | Có |
 | Mutation đảo boolean, nhánh/commit tạm | `mutate.py`, `mutation-completion.log`; != -> == | Bị T01-T03 phát hiện; bản sạch không đổi |
 | Line/branch + risk coverage | 93/93 lines, 18/18 branches; traceability AC1-AC5 | Có; không suy luận toàn hệ thống từ 100% |
@@ -26,11 +26,12 @@ local trên executable harness được đề cho phép, không phải productio
 | 200 tasks, p95 <=5s và kết luận trung thực | 4 HTTP runs giữ cả lỗi; ASGI 200/200, 1,200 valid requests, p95 1.136s | Đã đo; chỉ ASGI đạt, chưa nghiệm thu HTTP/production |
 | Traceability AC/Risk->case->file->commit->result | Báo cáo mục 7 | Có |
 | AI Usage Log, >=2 điểm AI chưa đáng tin | Phụ lục A; shared key và response echo target | Có, gồm phản hồi người dùng thật |
-| Reflection 250-350 từ | Mục 8, 324 từ theo whitespace word count | Có; bản AI hỗ trợ để SV rà soát |
+| Reflection 250-350 từ | Mục 8, 324 từ theo whitespace word count | AI hỗ trợ soạn; SV đã xác nhận rà soát |
 | PDF đúng tên, <=8 trang chính | `BT3_23001945_VT-044.pdf`, 8 trang chính + 2 trang phụ lục | Đã xuất, render và kiểm tra visual đủ 10 trang |
-| Trang đầu đủ thông tin và cam kết | Báo cáo trang 1 | Có văn bản cam kết; SV tự xác nhận trước nộp |
+| Trang đầu đủ thông tin và cam kết | Báo cáo trang 1; phản hồi thực tế của SV trong `evidence/student-review.md` | Đã có cam kết chính thức và xác nhận của SV |
 | README chạy test | `README.md` | Có |
 | Link GitHub branch/PR | [bt3/23001945-vt044](https://github.com/teamfuturetime/document-inteligence/tree/bt3/23001945-vt044) | **Đã push theo yêu cầu rõ ràng của người dùng; có README** |
+| Xác minh GitHub thực tế | `REMOTE_AUDIT.md`, inventory và raw logs từ clone mới | Nhánh/file/commit có thật; ẩn danh 404, chưa xác nhận quyền của người chấm |
 | Không merge trước nhóm review | Nhánh/worktree riêng; không merge | Đã giữ |
 | Nộp Google Classroom, không email | Hướng dẫn bàn giao local | **Người dùng tự nộp; chưa khai nhận đã nộp** |
 
