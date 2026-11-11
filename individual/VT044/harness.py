@@ -43,8 +43,29 @@ class LifecycleService:
         return doc, state
 
     def transition(self, actor, document_id, target):
-        # RED scaffold: the delete/restore contract is not implemented yet.
-        raise HTTPException(501, "Xóa mềm/khôi phục chưa được triển khai")
+        with Session(self.engine) as db:
+            try:
+                # A no-op UPDATE locks the ownership row before reading state.
+                # SQLite serializes writers; PostgreSQL locks this row.
+                locked = db.execute(update(Lifecycle).where(
+                    Lifecycle.document_id == document_id,
+                    Lifecycle.owner_id == actor,
+                ).values(deleted=Lifecycle.deleted))
+                if locked.rowcount != 1:
+                    raise missing()
+                # Coordinate with processing's UPDATE on the real document row.
+                db.execute(update(Document).where(Document.id == document_id)
+                           .values(status=Document.status))
+                doc, state = self._owned(db, actor, document_id, active_only=False)
+                if doc.status == "processing":
+                    raise HTTPException(409, "Tài liệu đang được xử lý")
+                if state.deleted != target:
+                    state.deleted = target
+                db.commit()
+                return {"id": document_id, "deleted": target}
+            except SQLAlchemyError as error:
+                db.rollback()
+                raise HTTPException(503, "Cơ sở dữ liệu không khả dụng") from error
 
     def read(self, actor, document_id):
         with Session(self.engine) as db:

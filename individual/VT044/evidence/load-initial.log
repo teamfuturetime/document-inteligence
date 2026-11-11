@@ -1,0 +1,176 @@
+{
+  "concurrent_tasks": 200,
+  "completed_tasks": 200,
+  "requests": 978,
+  "expected_requests": 1200,
+  "error_count": 37,
+  "errors": [
+    {
+      "task": 35,
+      "exception": "ReadError"
+    },
+    {
+      "task": 36,
+      "exception": "ReadError"
+    },
+    {
+      "task": 37,
+      "exception": "ReadError"
+    },
+    {
+      "task": 38,
+      "exception": "ReadError"
+    },
+    {
+      "task": 39,
+      "exception": "ReadError"
+    },
+    {
+      "task": 40,
+      "exception": "ReadError"
+    },
+    {
+      "task": 41,
+      "exception": "ReadError"
+    },
+    {
+      "task": 42,
+      "exception": "ReadError"
+    },
+    {
+      "task": 43,
+      "exception": "ReadError"
+    },
+    {
+      "task": 67,
+      "exception": "AttributeError"
+    },
+    {
+      "task": 68,
+      "exception": "AttributeError"
+    },
+    {
+      "task": 69,
+      "exception": "AttributeError"
+    },
+    {
+      "task": 70,
+      "exception": "AttributeError"
+    },
+    {
+      "task": 71,
+      "exception": "AttributeError"
+    },
+    {
+      "task": 44,
+      "exception": "ReadError"
+    },
+    {
+      "task": 45,
+      "exception": "ReadError"
+    },
+    {
+      "task": 46,
+      "exception": "ReadError"
+    },
+    {
+      "task": 47,
+      "exception": "ReadError"
+    },
+    {
+      "task": 48,
+      "exception": "ReadError"
+    },
+    {
+      "task": 49,
+      "exception": "ReadError"
+    },
+    {
+      "task": 50,
+      "exception": "ReadError"
+    },
+    {
+      "task": 51,
+      "exception": "ReadError"
+    },
+    {
+      "task": 52,
+      "exception": "ReadError"
+    },
+    {
+      "task": 53,
+      "exception": "ReadError"
+    },
+    {
+      "task": 54,
+      "exception": "ReadError"
+    },
+    {
+      "task": 55,
+      "exception": "ReadError"
+    },
+    {
+      "task": 56,
+      "exception": "ReadError"
+    },
+    {
+      "task": 57,
+      "exception": "ReadError"
+    },
+    {
+      "task": 58,
+      "exception": "ReadError"
+    },
+    {
+      "task": 59,
+      "exception": "ReadError"
+    },
+    {
+      "task": 60,
+      "exception": "ReadError"
+    },
+    {
+      "task": 61,
+      "exception": "ReadError"
+    },
+    {
+      "task": 62,
+      "exception": "ReadError"
+    },
+    {
+      "task": 63,
+      "exception": "ReadError"
+    },
+    {
+      "task": 64,
+      "exception": "ReadError"
+    },
+    {
+      "task": 65,
+      "exception": "ReadError"
+    },
+    {
+      "task": 66,
+      "exception": "ReadError"
+    }
+  ],
+  "task_p50_seconds": 6.452880875003757,
+  "task_p95_seconds": 6.904039999993984,
+  "task_max_seconds": 6.937463958020089,
+  "request_p95_seconds": 4.877725541999098,
+  "elapsed_seconds": 6.958930249995319,
+  "percentile_method": "nearest rank ceil(0.95*n)",
+  "all_restored": true,
+  "extraction_count": 200,
+  "confirmed_documents": 200,
+  "all_files_preserved": true,
+  "target_seconds": 5.0,
+  "task_p95_meets_target": false,
+  "environment": {
+    "python": "3.12.3",
+    "os": "Darwin",
+    "machine": "arm64",
+    "cpu": "arm"
+  },
+  "scope": "one local uvicorn server; sync worker pool; file SQLite; 200 synthetic owners/documents; no OCR, gateway or browser"
+}
