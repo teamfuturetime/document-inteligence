@@ -199,3 +199,69 @@ def test_T14_service_enforces_owner_even_without_http(env):
     with pytest.raises(HTTPException) as error:
         service.transition("alice", ids["bob"], True)
     assert error.value.status_code == 404
+
+
+def test_T15_same_document_contention_preserves_owner_and_data(env):
+    from concurrent.futures import ThreadPoolExecutor
+    from threading import Barrier
+    from fastapi import HTTPException
+    from individual.VT044.harness import Lifecycle
+
+    service, _, ids = env
+    before = snapshot(service, ids["alice"])
+    # Each operation creates an independent database session. Four legitimate
+    # and four hostile requests contend for the same document in each phase.
+    for target in (True, False):
+        gate = Barrier(8, timeout=10)
+
+        def attempt(index):
+            gate.wait()
+            actor = "alice" if index < 4 else "bob"
+            try:
+                return service.transition(actor, ids["alice"], target)
+            except HTTPException as error:
+                return error.status_code
+
+        with ThreadPoolExecutor(max_workers=8) as workers:
+            results = list(workers.map(attempt, range(8)))
+        assert results[:4] == [{"id": ids["alice"], "deleted": target}] * 4
+        assert results[4:] == [404] * 4
+        with Session(service.engine) as db:
+            state = db.get(Lifecycle, ids["alice"])
+            assert state.owner_id == "alice"
+            assert state.deleted is target
+        assert snapshot(service, ids["alice"]) == before
+
+
+def test_T16_missing_extraction_returns_neutral_error(env):
+    from sqlalchemy import delete
+
+    service, client, ids = env
+    with Session(service.engine) as db:
+        db.execute(delete(Extraction).where(Extraction.document_id == ids["alice"]))
+        db.commit()
+    response = client.get(f"/documents/{ids['alice']}/extraction", headers=headers())
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Không tìm thấy tài liệu"}
+
+
+def test_T17_missing_file_returns_neutral_error(env):
+    service, client, ids = env
+    with Session(service.engine) as db:
+        doc = db.get(Document, ids["alice"])
+        service.storage.resolve(doc.stored_name).unlink()
+    response = client.get(f"/documents/{ids['alice']}/content", headers=headers())
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Không tìm thấy tài liệu"}
+
+
+@pytest.mark.parametrize("suffix", ["", "/content", "/extraction"])
+def test_T18_expired_active_document_is_hidden_on_all_reads(env, suffix):
+    service, client, ids = env
+    with Session(service.engine) as db:
+        db.get(Document, ids["alice"]).expires_at = NOW
+        db.commit()
+    response = client.get(f"/documents/{ids['alice']}" + suffix, headers=headers())
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Không tìm thấy tài liệu"}
+    assert ids["alice"] not in client.get("/documents", headers=headers()).json()["ids"]

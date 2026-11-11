@@ -10,7 +10,7 @@ collected = subprocess.run([
     sys.executable, "-m", "pytest", "-o", "addopts=", "--collect-only", "-q", "individual/VT044/test_lifecycle.py",
 ], cwd=root, text=True, capture_output=True, check=True)
 nodes = [line.strip() for line in collected.stdout.splitlines() if line.startswith("individual/VT044/test_lifecycle.py::")]
-assert len(nodes) == 28, collected.stdout
+assert len(nodes) >= 28, collected.stdout
 for seed in (44, 1945, 23001945):
     order = nodes.copy()
     random.Random(seed).shuffle(order)

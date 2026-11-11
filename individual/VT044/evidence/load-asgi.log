@@ -1,0 +1,33 @@
+{
+  "transport": "ASGI in-process; no socket or network",
+  "concurrent_tasks": 200,
+  "completed_tasks": 200,
+  "successful_tasks": 200,
+  "failed_tasks": 0,
+  "requests": 1200,
+  "expected_requests": 1200,
+  "error_count": 0,
+  "task_p50_seconds": 1.0508707499830052,
+  "task_p95_seconds": 1.136142707982799,
+  "task_max_seconds": 1.768013749999227,
+  "request_p95_seconds": 0.28006083398940973,
+  "elapsed_seconds": 1.7680898329999764,
+  "percentile_method": "nearest rank ceil(0.95*n); task clock starts at common barrier release",
+  "all_restored": true,
+  "extraction_count": 200,
+  "confirmed_documents": 200,
+  "all_extractions_preserved": true,
+  "all_files_preserved": true,
+  "target_seconds": 5.0,
+  "task_p95_meets_target": true,
+  "correctness_pass": true,
+  "acceptance_pass": true,
+  "environment": {
+    "python": "3.12.3",
+    "os": "Darwin",
+    "machine": "arm64",
+    "cpu": "arm"
+  },
+  "scope": "in-process ASGI; no HTTP socket; sync worker pool; file SQLite; 200 synthetic owners/documents; no OCR, gateway or browser",
+  "error_sample": []
+}

@@ -24,3 +24,25 @@ HTTP load was run twice: the second run adds tracebacks after the first run
 reported errors. It shows client httpx/httpcore/anyio ReadError and AttributeError
 in socket metadata (`NoneType.getpeername`). These traces do not establish the
 root cause or server capacity. Neither incomplete run is a passing SLA result.
+
+## Completion review
+
+The lifecycle implementation is unchanged. Six new test instances cover
+same-document owner/foreign contention, missing extraction/file and expired
+active reads. All 34 contracts and 133 total tests pass. Coverage is now 93/93
+lines and 18/18 branches of this small harness, not the full application.
+
+The two preplanned stdlib HTTP runs still exhibit initial connection resets:
+199/200 and 195/200 tasks succeed. They fail overall despite p95 below 5s.
+This contradicts any explanation blaming ONLY the async HTTP library; the
+network-boundary root cause remains unproven. No retries or concurrency
+reduction were used. The ASGI-only mode runs all 200 tasks and validates all
+1,200 responses and final extraction/file state, with zero errors and p95
+1.136s. It omits sockets and must not be described as production/network SLA.
+
+The new load command returns success only if response correctness, complete
+request counts, all final state checks and p95 <=5s are satisfied. Its raw JSON
+retains per-request outcomes. The original load results remain unchanged.
+
+The student actually rejected the shared-key assumption during this completion
+review (`student-review.md`); do not backdate it or infer full code sign-off.
