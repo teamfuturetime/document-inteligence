@@ -1,5 +1,22 @@
 # Bằng chứng local — 2026-11-11
 
+## Giao diện bàn làm việc
+
+- 9 UI tests và TypeScript/production build đạt. Các ca mới kiểm tra response
+  tải mẫu trễ không thay file người dùng vừa chọn, kéo thả file mới hủy kết quả
+  đã xác nhận, từ chối nhiều file và cảnh báo trường vẫn hiện khi evidence đóng.
+- 8 browser E2E đạt với Chrome local: sáu flow OCR thật cho hai schema ×
+  PNG/JPEG/PDF, một flow mobile chọn file bằng bàn phím/hướng dẫn/lỗi ảnh hỏng,
+  một flow mẫu có sẵn/zoom/xóa. File JSON tải xuống được đọc lại để so sánh
+  final values, original extraction và edited_fields.
+- Flow mẫu có sẵn không tự gọi extraction. Mẫu công khai trong frontend là
+  bản sao byte-identical của `data/golden-v1/invoice-001.png`.
+- Review thật không tràn ngang tại 1440, 820, 768, 390 và 320 px. Font được
+  phục vụ nội bộ, có giấy phép OFL và manifest nguồn/hash trong `web/public/fonts/`.
+- Không thay backend, dữ liệu golden hoặc baseline. Kiểm thử cloud dùng mock
+  để xác nhận selection/confidence/key boundary; không coi đây là lượt chạy
+  OCR.space hoặc model VLM thật mới.
+
 ## Bổ sung OCR.space
 
 Pipeline `solo-1.1` có hai nguồn OCR; xem [hướng dẫn và bằng chứng live](ocrspace.md).
