@@ -60,6 +60,10 @@ E2E khởi tạo backend ở 18100 và Vite ở 15174, không dùng server đang
 Có thể dùng Chrome đã cài thay vì tải Chromium bằng biến `SOLO_BROWSER_PATH`
 trỏ tới executable. Test native được skip rõ ràng khi không đặt `SOLO_RUN_OCR=1`.
 CI riêng là `.github/workflows/solo.yml`; kết quả trên GitHub phải xem theo SHA.
+Code rules v2 đã pass [CI trên Linux](https://github.com/teamfuturetime/document-inteligence/actions/runs/42951239678):
+43 Python tests, 4 UI tests và 7 browser E2E. Test exact match đạt 0,9111 trên
+macOS/Tesseract 5.5.2 và 0,9333 trên Linux/Tesseract 5.3.4; đây là số liệu trên
+dataset synthetic nhỏ, chưa có đánh giá model VLM.
 
 Xem [thiết kế](docs/design.md), [cấu hình VLM local/API](docs/vlm.md),
 [phương pháp đánh giá](docs/evaluation.md), [bằng chứng kiểm thử và baseline](docs/verification.md),

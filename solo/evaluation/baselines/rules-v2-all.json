@@ -1,0 +1,1206 @@
+{
+  "dataset_version": "solo-golden-1.0",
+  "documents": 36,
+  "execution_errors": [],
+  "fields": {
+    "application.applicant_name": {
+      "count": 18,
+      "exact_match": 0.5555555555555556,
+      "f1": 0.5555555555555556,
+      "fn": 8,
+      "fp": 8,
+      "null_pairs": 0,
+      "precision": 0.5555555555555556,
+      "recall": 0.5555555555555556,
+      "support": 18,
+      "tp": 10
+    },
+    "application.recipient": {
+      "count": 18,
+      "exact_match": 0.5,
+      "f1": 0.5,
+      "fn": 9,
+      "fp": 9,
+      "null_pairs": 0,
+      "precision": 0.5,
+      "recall": 0.5,
+      "support": 18,
+      "tp": 9
+    },
+    "application.request": {
+      "count": 18,
+      "exact_match": 1.0,
+      "f1": 1.0,
+      "fn": 0,
+      "fp": 0,
+      "null_pairs": 6,
+      "precision": 1.0,
+      "recall": 1.0,
+      "support": 12,
+      "tp": 12
+    },
+    "application.student_id": {
+      "count": 18,
+      "exact_match": 1.0,
+      "f1": 1.0,
+      "fn": 0,
+      "fp": 0,
+      "null_pairs": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "support": 18,
+      "tp": 18
+    },
+    "application.submission_date": {
+      "count": 18,
+      "exact_match": 1.0,
+      "f1": 1.0,
+      "fn": 0,
+      "fp": 0,
+      "null_pairs": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "support": 18,
+      "tp": 18
+    },
+    "invoice.currency": {
+      "count": 18,
+      "exact_match": 1.0,
+      "f1": 1.0,
+      "fn": 0,
+      "fp": 0,
+      "null_pairs": 6,
+      "precision": 1.0,
+      "recall": 1.0,
+      "support": 12,
+      "tp": 12
+    },
+    "invoice.invoice_date": {
+      "count": 18,
+      "exact_match": 1.0,
+      "f1": 1.0,
+      "fn": 0,
+      "fp": 0,
+      "null_pairs": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "support": 18,
+      "tp": 18
+    },
+    "invoice.invoice_number": {
+      "count": 18,
+      "exact_match": 1.0,
+      "f1": 1.0,
+      "fn": 0,
+      "fp": 0,
+      "null_pairs": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "support": 18,
+      "tp": 18
+    },
+    "invoice.seller_name": {
+      "count": 18,
+      "exact_match": 1.0,
+      "f1": 1.0,
+      "fn": 0,
+      "fp": 0,
+      "null_pairs": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "support": 18,
+      "tp": 18
+    },
+    "invoice.total_amount": {
+      "count": 18,
+      "exact_match": 1.0,
+      "f1": 1.0,
+      "fn": 0,
+      "fp": 0,
+      "null_pairs": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "support": 18,
+      "tp": 18
+    }
+  },
+  "macro_exact_match": 0.9055555555555556,
+  "manifest_sha256": "463cd0f125dcb058cf4e0b9b58811d876a5f9b6f33c22521a3020c0b8c0052dd",
+  "micro": {
+    "count": 180,
+    "exact_match": 0.9055555555555556,
+    "f1": 0.8988095238095238,
+    "fn": 17,
+    "fp": 17,
+    "null_pairs": 12,
+    "precision": 0.8988095238095238,
+    "recall": 0.8988095238095238,
+    "support": 168,
+    "tp": 151
+  },
+  "mismatches": [
+    {
+      "cause": "unverified",
+      "expected": "Người Mẫu Alpha",
+      "field": "applicant_name",
+      "id": "application-001",
+      "predicted": "Nguoi Mau Alpha",
+      "symptom": "diacritic_or_case_difference"
+    },
+    {
+      "cause": "unverified",
+      "expected": "Người Mẫu Beta",
+      "field": "applicant_name",
+      "id": "application-004",
+      "predicted": "Người Mau Beta",
+      "symptom": "diacritic_or_case_difference"
+    },
+    {
+      "cause": "unverified",
+      "expected": "Phòng Đào tạo Mẫu",
+      "field": "recipient",
+      "id": "application-004",
+      "predicted": "Phong Dao tao Mau",
+      "symptom": "diacritic_or_case_difference"
+    },
+    {
+      "cause": "unverified",
+      "expected": "Người Mẫu Beta",
+      "field": "applicant_name",
+      "id": "application-005",
+      "predicted": "Người Mau Beta",
+      "symptom": "diacritic_or_case_difference"
+    },
+    {
+      "cause": "unverified",
+      "expected": "Phòng Đào tạo Mẫu",
+      "field": "recipient",
+      "id": "application-005",
+      "predicted": "Phong Dao tao Mau",
+      "symptom": "diacritic_or_case_difference"
+    },
+    {
+      "cause": "unverified",
+      "expected": "Người Mẫu Beta",
+      "field": "applicant_name",
+      "id": "application-006",
+      "predicted": "Người Mau Beta",
+      "symptom": "diacritic_or_case_difference"
+    },
+    {
+      "cause": "unverified",
+      "expected": "Phòng Đào tạo Mẫu",
+      "field": "recipient",
+      "id": "application-007",
+      "predicted": "Phòng Đào tạo Mau",
+      "symptom": "diacritic_or_case_difference"
+    },
+    {
+      "cause": "unverified",
+      "expected": "Phòng Đào tạo Mẫu",
+      "field": "recipient",
+      "id": "application-008",
+      "predicted": "Phong Dao tao Mau",
+      "symptom": "diacritic_or_case_difference"
+    },
+    {
+      "cause": "unverified",
+      "expected": "Phòng Đào tạo Mẫu",
+      "field": "recipient",
+      "id": "application-009",
+      "predicted": "Phong Dao tao Mau",
+      "symptom": "diacritic_or_case_difference"
+    },
+    {
+      "cause": "unverified",
+      "expected": "Người Mẫu Alpha",
+      "field": "applicant_name",
+      "id": "application-010",
+      "predicted": "Nguoi Mau Alpha",
+      "symptom": "diacritic_or_case_difference"
+    },
+    {
+      "cause": "unverified",
+      "expected": "Người Mẫu Beta",
+      "field": "applicant_name",
+      "id": "application-013",
+      "predicted": "Người Mau Beta",
+      "symptom": "diacritic_or_case_difference"
+    },
+    {
+      "cause": "unverified",
+      "expected": "Người Mẫu Beta",
+      "field": "applicant_name",
+      "id": "application-014",
+      "predicted": "Người Mau Beta",
+      "symptom": "diacritic_or_case_difference"
+    },
+    {
+      "cause": "unverified",
+      "expected": "Phòng Đào tạo Mẫu",
+      "field": "recipient",
+      "id": "application-014",
+      "predicted": "Phong Dao tao Mau",
+      "symptom": "diacritic_or_case_difference"
+    },
+    {
+      "cause": "unverified",
+      "expected": "Người Mẫu Beta",
+      "field": "applicant_name",
+      "id": "application-015",
+      "predicted": "Người Mau Beta",
+      "symptom": "diacritic_or_case_difference"
+    },
+    {
+      "cause": "unverified",
+      "expected": "Phòng Đào tạo Mẫu",
+      "field": "recipient",
+      "id": "application-016",
+      "predicted": "Phòng Đào tạo Mau",
+      "symptom": "diacritic_or_case_difference"
+    },
+    {
+      "cause": "unverified",
+      "expected": "Phòng Đào tạo Mẫu",
+      "field": "recipient",
+      "id": "application-017",
+      "predicted": "Phong Dao tao Mau",
+      "symptom": "diacritic_or_case_difference"
+    },
+    {
+      "cause": "unverified",
+      "expected": "Phòng Đào tạo Mẫu",
+      "field": "recipient",
+      "id": "application-018",
+      "predicted": "Phong Dao tao Mau",
+      "symptom": "diacritic_or_case_difference"
+    }
+  ],
+  "mode": "rules",
+  "provenance": {
+    "deadline_seconds": 120,
+    "dependencies": {
+      "fastapi": "0.143.0",
+      "pillow": "12.3.0",
+      "pydantic": "2.13.4",
+      "pymupdf": "1.28.2"
+    },
+    "git_dirty": false,
+    "git_sha": "e203bf7c28e0cbb43cdaf4d6d7a445c2f3027ae1",
+    "lock_sha256": "0bb79174603e0604ba944e0339e18222db7763fd4cbf77a9ba853f85ebc1a21c",
+    "pipeline": {
+      "ocr": {
+        "engine": "tesseract 5.5.2",
+        "language": "vie+eng",
+        "model_commit": "87416418657359cb625c412a48b6e1d6d41c29bd",
+        "model_sha256": {
+          "eng": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2",
+          "vie": "79df64caf7bcfb2a27df5042ecb6121e196eada34da774956995747636d5bfa1"
+        },
+        "oem": 1,
+        "preprocessing": "gray-exif-pdf150-v1",
+        "psm": 6,
+        "ready": true
+      },
+      "pipeline_version": "solo-1.0",
+      "rules_sha256": "4013e454fd3f7b2de3a76b4a574e8f0eeff9a649c84dc9dce8505429965553b2",
+      "rules_version": "solo-labels-2"
+    },
+    "platform": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+    "python": "3.13.14",
+    "source_sha256": "a51044b140e94a0e5f5cbbf150e1424cbfb8eddc0b2c3dda29cea7390e26efe7"
+  },
+  "records": [
+    {
+      "condition": "clean",
+      "expected": {
+        "currency": "VND",
+        "invoice_date": "2026-11-01",
+        "invoice_number": "SOLO-0001",
+        "seller_name": "Cửa hàng Mẫu Sen",
+        "total_amount": 456000
+      },
+      "id": "invoice-001",
+      "kind": "invoice",
+      "layout": "colon",
+      "predicted": {
+        "currency": "VND",
+        "invoice_date": "2026-11-01",
+        "invoice_number": "SOLO-0001",
+        "seller_name": "Cửa hàng Mẫu Sen",
+        "total_amount": 456000
+      },
+      "split": "dev"
+    },
+    {
+      "condition": "blur",
+      "expected": {
+        "currency": "VND",
+        "invoice_date": "2026-11-02",
+        "invoice_number": "SOLO-0002",
+        "seller_name": "Cửa hàng Mẫu Sen",
+        "total_amount": 906000
+      },
+      "id": "invoice-002",
+      "kind": "invoice",
+      "layout": "colon",
+      "predicted": {
+        "currency": "VND",
+        "invoice_date": "2026-11-02",
+        "invoice_number": "SOLO-0002",
+        "seller_name": "Cửa hàng Mẫu Sen",
+        "total_amount": 906000
+      },
+      "split": "dev"
+    },
+    {
+      "condition": "missing",
+      "expected": {
+        "currency": null,
+        "invoice_date": "2026-11-03",
+        "invoice_number": "SOLO-0003",
+        "seller_name": "Cửa hàng Mẫu Sen",
+        "total_amount": 992000
+      },
+      "id": "invoice-003",
+      "kind": "invoice",
+      "layout": "colon",
+      "predicted": {
+        "currency": null,
+        "invoice_date": "2026-11-03",
+        "invoice_number": "SOLO-0003",
+        "seller_name": "Cửa hàng Mẫu Sen",
+        "total_amount": 992000
+      },
+      "split": "dev"
+    },
+    {
+      "condition": "clean",
+      "expected": {
+        "currency": "VND",
+        "invoice_date": "2026-11-04",
+        "invoice_number": "SOLO-0004",
+        "seller_name": "Cửa hàng Mẫu Mây",
+        "total_amount": 275000
+      },
+      "id": "invoice-004",
+      "kind": "invoice",
+      "layout": "no-colon",
+      "predicted": {
+        "currency": "VND",
+        "invoice_date": "2026-11-04",
+        "invoice_number": "SOLO-0004",
+        "seller_name": "Cửa hàng Mẫu Mây",
+        "total_amount": 275000
+      },
+      "split": "dev"
+    },
+    {
+      "condition": "blur",
+      "expected": {
+        "currency": "VND",
+        "invoice_date": "2026-11-05",
+        "invoice_number": "SOLO-0005",
+        "seller_name": "Cửa hàng Mẫu Mây",
+        "total_amount": 354000
+      },
+      "id": "invoice-005",
+      "kind": "invoice",
+      "layout": "no-colon",
+      "predicted": {
+        "currency": "VND",
+        "invoice_date": "2026-11-05",
+        "invoice_number": "SOLO-0005",
+        "seller_name": "Cửa hàng Mẫu Mây",
+        "total_amount": 354000
+      },
+      "split": "dev"
+    },
+    {
+      "condition": "missing",
+      "expected": {
+        "currency": null,
+        "invoice_date": "2026-11-06",
+        "invoice_number": "SOLO-0006",
+        "seller_name": "Cửa hàng Mẫu Mây",
+        "total_amount": 161000
+      },
+      "id": "invoice-006",
+      "kind": "invoice",
+      "layout": "no-colon",
+      "predicted": {
+        "currency": null,
+        "invoice_date": "2026-11-06",
+        "invoice_number": "SOLO-0006",
+        "seller_name": "Cửa hàng Mẫu Mây",
+        "total_amount": 161000
+      },
+      "split": "dev"
+    },
+    {
+      "condition": "clean",
+      "expected": {
+        "currency": "VND",
+        "invoice_date": "2026-11-07",
+        "invoice_number": "SOLO-0007",
+        "seller_name": "Cửa hàng Mẫu Lá",
+        "total_amount": 470000
+      },
+      "id": "invoice-007",
+      "kind": "invoice",
+      "layout": "stacked",
+      "predicted": {
+        "currency": "VND",
+        "invoice_date": "2026-11-07",
+        "invoice_number": "SOLO-0007",
+        "seller_name": "Cửa hàng Mẫu Lá",
+        "total_amount": 470000
+      },
+      "split": "dev"
+    },
+    {
+      "condition": "blur",
+      "expected": {
+        "currency": "VND",
+        "invoice_date": "2026-11-08",
+        "invoice_number": "SOLO-0008",
+        "seller_name": "Cửa hàng Mẫu Lá",
+        "total_amount": 322000
+      },
+      "id": "invoice-008",
+      "kind": "invoice",
+      "layout": "stacked",
+      "predicted": {
+        "currency": "VND",
+        "invoice_date": "2026-11-08",
+        "invoice_number": "SOLO-0008",
+        "seller_name": "Cửa hàng Mẫu Lá",
+        "total_amount": 322000
+      },
+      "split": "dev"
+    },
+    {
+      "condition": "missing",
+      "expected": {
+        "currency": null,
+        "invoice_date": "2026-11-09",
+        "invoice_number": "SOLO-0009",
+        "seller_name": "Cửa hàng Mẫu Lá",
+        "total_amount": 821000
+      },
+      "id": "invoice-009",
+      "kind": "invoice",
+      "layout": "stacked",
+      "predicted": {
+        "currency": null,
+        "invoice_date": "2026-11-09",
+        "invoice_number": "SOLO-0009",
+        "seller_name": "Cửa hàng Mẫu Lá",
+        "total_amount": 821000
+      },
+      "split": "dev"
+    },
+    {
+      "condition": "clean",
+      "expected": {
+        "currency": "VND",
+        "invoice_date": "2026-11-10",
+        "invoice_number": "SOLO-0010",
+        "seller_name": "Cửa hàng Mẫu Sen",
+        "total_amount": 667000
+      },
+      "id": "invoice-010",
+      "kind": "invoice",
+      "layout": "colon",
+      "predicted": {
+        "currency": "VND",
+        "invoice_date": "2026-11-10",
+        "invoice_number": "SOLO-0010",
+        "seller_name": "Cửa hàng Mẫu Sen",
+        "total_amount": 667000
+      },
+      "split": "test"
+    },
+    {
+      "condition": "blur",
+      "expected": {
+        "currency": "VND",
+        "invoice_date": "2026-11-11",
+        "invoice_number": "SOLO-0011",
+        "seller_name": "Cửa hàng Mẫu Sen",
+        "total_amount": 903000
+      },
+      "id": "invoice-011",
+      "kind": "invoice",
+      "layout": "colon",
+      "predicted": {
+        "currency": "VND",
+        "invoice_date": "2026-11-11",
+        "invoice_number": "SOLO-0011",
+        "seller_name": "Cửa hàng Mẫu Sen",
+        "total_amount": 903000
+      },
+      "split": "test"
+    },
+    {
+      "condition": "missing",
+      "expected": {
+        "currency": null,
+        "invoice_date": "2026-11-12",
+        "invoice_number": "SOLO-0012",
+        "seller_name": "Cửa hàng Mẫu Sen",
+        "total_amount": 597000
+      },
+      "id": "invoice-012",
+      "kind": "invoice",
+      "layout": "colon",
+      "predicted": {
+        "currency": null,
+        "invoice_date": "2026-11-12",
+        "invoice_number": "SOLO-0012",
+        "seller_name": "Cửa hàng Mẫu Sen",
+        "total_amount": 597000
+      },
+      "split": "test"
+    },
+    {
+      "condition": "clean",
+      "expected": {
+        "currency": "VND",
+        "invoice_date": "2026-11-13",
+        "invoice_number": "SOLO-0013",
+        "seller_name": "Cửa hàng Mẫu Mây",
+        "total_amount": 114000
+      },
+      "id": "invoice-013",
+      "kind": "invoice",
+      "layout": "no-colon",
+      "predicted": {
+        "currency": "VND",
+        "invoice_date": "2026-11-13",
+        "invoice_number": "SOLO-0013",
+        "seller_name": "Cửa hàng Mẫu Mây",
+        "total_amount": 114000
+      },
+      "split": "test"
+    },
+    {
+      "condition": "blur",
+      "expected": {
+        "currency": "VND",
+        "invoice_date": "2026-11-14",
+        "invoice_number": "SOLO-0014",
+        "seller_name": "Cửa hàng Mẫu Mây",
+        "total_amount": 186000
+      },
+      "id": "invoice-014",
+      "kind": "invoice",
+      "layout": "no-colon",
+      "predicted": {
+        "currency": "VND",
+        "invoice_date": "2026-11-14",
+        "invoice_number": "SOLO-0014",
+        "seller_name": "Cửa hàng Mẫu Mây",
+        "total_amount": 186000
+      },
+      "split": "test"
+    },
+    {
+      "condition": "missing",
+      "expected": {
+        "currency": null,
+        "invoice_date": "2026-11-15",
+        "invoice_number": "SOLO-0015",
+        "seller_name": "Cửa hàng Mẫu Mây",
+        "total_amount": 772000
+      },
+      "id": "invoice-015",
+      "kind": "invoice",
+      "layout": "no-colon",
+      "predicted": {
+        "currency": null,
+        "invoice_date": "2026-11-15",
+        "invoice_number": "SOLO-0015",
+        "seller_name": "Cửa hàng Mẫu Mây",
+        "total_amount": 772000
+      },
+      "split": "test"
+    },
+    {
+      "condition": "clean",
+      "expected": {
+        "currency": "VND",
+        "invoice_date": "2026-11-16",
+        "invoice_number": "SOLO-0016",
+        "seller_name": "Cửa hàng Mẫu Lá",
+        "total_amount": 76000
+      },
+      "id": "invoice-016",
+      "kind": "invoice",
+      "layout": "stacked",
+      "predicted": {
+        "currency": "VND",
+        "invoice_date": "2026-11-16",
+        "invoice_number": "SOLO-0016",
+        "seller_name": "Cửa hàng Mẫu Lá",
+        "total_amount": 76000
+      },
+      "split": "test"
+    },
+    {
+      "condition": "blur",
+      "expected": {
+        "currency": "VND",
+        "invoice_date": "2026-11-17",
+        "invoice_number": "SOLO-0017",
+        "seller_name": "Cửa hàng Mẫu Lá",
+        "total_amount": 44000
+      },
+      "id": "invoice-017",
+      "kind": "invoice",
+      "layout": "stacked",
+      "predicted": {
+        "currency": "VND",
+        "invoice_date": "2026-11-17",
+        "invoice_number": "SOLO-0017",
+        "seller_name": "Cửa hàng Mẫu Lá",
+        "total_amount": 44000
+      },
+      "split": "test"
+    },
+    {
+      "condition": "missing",
+      "expected": {
+        "currency": null,
+        "invoice_date": "2026-11-18",
+        "invoice_number": "SOLO-0018",
+        "seller_name": "Cửa hàng Mẫu Lá",
+        "total_amount": 486000
+      },
+      "id": "invoice-018",
+      "kind": "invoice",
+      "layout": "stacked",
+      "predicted": {
+        "currency": null,
+        "invoice_date": "2026-11-18",
+        "invoice_number": "SOLO-0018",
+        "seller_name": "Cửa hàng Mẫu Lá",
+        "total_amount": 486000
+      },
+      "split": "test"
+    },
+    {
+      "condition": "clean",
+      "expected": {
+        "applicant_name": "Người Mẫu Alpha",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0001",
+        "submission_date": "2026-11-01"
+      },
+      "id": "application-001",
+      "kind": "application",
+      "layout": "colon",
+      "predicted": {
+        "applicant_name": "Nguoi Mau Alpha",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0001",
+        "submission_date": "2026-11-01"
+      },
+      "split": "dev"
+    },
+    {
+      "condition": "blur",
+      "expected": {
+        "applicant_name": "Người Mẫu Alpha",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0002",
+        "submission_date": "2026-11-02"
+      },
+      "id": "application-002",
+      "kind": "application",
+      "layout": "colon",
+      "predicted": {
+        "applicant_name": "Người Mẫu Alpha",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0002",
+        "submission_date": "2026-11-02"
+      },
+      "split": "dev"
+    },
+    {
+      "condition": "missing",
+      "expected": {
+        "applicant_name": "Người Mẫu Alpha",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": null,
+        "student_id": "SYN-0003",
+        "submission_date": "2026-11-03"
+      },
+      "id": "application-003",
+      "kind": "application",
+      "layout": "colon",
+      "predicted": {
+        "applicant_name": "Người Mẫu Alpha",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": null,
+        "student_id": "SYN-0003",
+        "submission_date": "2026-11-03"
+      },
+      "split": "dev"
+    },
+    {
+      "condition": "clean",
+      "expected": {
+        "applicant_name": "Người Mẫu Beta",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0004",
+        "submission_date": "2026-11-04"
+      },
+      "id": "application-004",
+      "kind": "application",
+      "layout": "no-colon",
+      "predicted": {
+        "applicant_name": "Người Mau Beta",
+        "recipient": "Phong Dao tao Mau",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0004",
+        "submission_date": "2026-11-04"
+      },
+      "split": "dev"
+    },
+    {
+      "condition": "blur",
+      "expected": {
+        "applicant_name": "Người Mẫu Beta",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0005",
+        "submission_date": "2026-11-05"
+      },
+      "id": "application-005",
+      "kind": "application",
+      "layout": "no-colon",
+      "predicted": {
+        "applicant_name": "Người Mau Beta",
+        "recipient": "Phong Dao tao Mau",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0005",
+        "submission_date": "2026-11-05"
+      },
+      "split": "dev"
+    },
+    {
+      "condition": "missing",
+      "expected": {
+        "applicant_name": "Người Mẫu Beta",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": null,
+        "student_id": "SYN-0006",
+        "submission_date": "2026-11-06"
+      },
+      "id": "application-006",
+      "kind": "application",
+      "layout": "no-colon",
+      "predicted": {
+        "applicant_name": "Người Mau Beta",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": null,
+        "student_id": "SYN-0006",
+        "submission_date": "2026-11-06"
+      },
+      "split": "dev"
+    },
+    {
+      "condition": "clean",
+      "expected": {
+        "applicant_name": "Người Mẫu Gamma",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0007",
+        "submission_date": "2026-11-07"
+      },
+      "id": "application-007",
+      "kind": "application",
+      "layout": "stacked",
+      "predicted": {
+        "applicant_name": "Người Mẫu Gamma",
+        "recipient": "Phòng Đào tạo Mau",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0007",
+        "submission_date": "2026-11-07"
+      },
+      "split": "dev"
+    },
+    {
+      "condition": "blur",
+      "expected": {
+        "applicant_name": "Người Mẫu Gamma",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0008",
+        "submission_date": "2026-11-08"
+      },
+      "id": "application-008",
+      "kind": "application",
+      "layout": "stacked",
+      "predicted": {
+        "applicant_name": "Người Mẫu Gamma",
+        "recipient": "Phong Dao tao Mau",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0008",
+        "submission_date": "2026-11-08"
+      },
+      "split": "dev"
+    },
+    {
+      "condition": "missing",
+      "expected": {
+        "applicant_name": "Người Mẫu Gamma",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": null,
+        "student_id": "SYN-0009",
+        "submission_date": "2026-11-09"
+      },
+      "id": "application-009",
+      "kind": "application",
+      "layout": "stacked",
+      "predicted": {
+        "applicant_name": "Người Mẫu Gamma",
+        "recipient": "Phong Dao tao Mau",
+        "request": null,
+        "student_id": "SYN-0009",
+        "submission_date": "2026-11-09"
+      },
+      "split": "dev"
+    },
+    {
+      "condition": "clean",
+      "expected": {
+        "applicant_name": "Người Mẫu Alpha",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0010",
+        "submission_date": "2026-11-10"
+      },
+      "id": "application-010",
+      "kind": "application",
+      "layout": "colon",
+      "predicted": {
+        "applicant_name": "Nguoi Mau Alpha",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0010",
+        "submission_date": "2026-11-10"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "blur",
+      "expected": {
+        "applicant_name": "Người Mẫu Alpha",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0011",
+        "submission_date": "2026-11-11"
+      },
+      "id": "application-011",
+      "kind": "application",
+      "layout": "colon",
+      "predicted": {
+        "applicant_name": "Người Mẫu Alpha",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0011",
+        "submission_date": "2026-11-11"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "missing",
+      "expected": {
+        "applicant_name": "Người Mẫu Alpha",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": null,
+        "student_id": "SYN-0012",
+        "submission_date": "2026-11-12"
+      },
+      "id": "application-012",
+      "kind": "application",
+      "layout": "colon",
+      "predicted": {
+        "applicant_name": "Người Mẫu Alpha",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": null,
+        "student_id": "SYN-0012",
+        "submission_date": "2026-11-12"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "clean",
+      "expected": {
+        "applicant_name": "Người Mẫu Beta",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0013",
+        "submission_date": "2026-11-13"
+      },
+      "id": "application-013",
+      "kind": "application",
+      "layout": "no-colon",
+      "predicted": {
+        "applicant_name": "Người Mau Beta",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0013",
+        "submission_date": "2026-11-13"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "blur",
+      "expected": {
+        "applicant_name": "Người Mẫu Beta",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0014",
+        "submission_date": "2026-11-14"
+      },
+      "id": "application-014",
+      "kind": "application",
+      "layout": "no-colon",
+      "predicted": {
+        "applicant_name": "Người Mau Beta",
+        "recipient": "Phong Dao tao Mau",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0014",
+        "submission_date": "2026-11-14"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "missing",
+      "expected": {
+        "applicant_name": "Người Mẫu Beta",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": null,
+        "student_id": "SYN-0015",
+        "submission_date": "2026-11-15"
+      },
+      "id": "application-015",
+      "kind": "application",
+      "layout": "no-colon",
+      "predicted": {
+        "applicant_name": "Người Mau Beta",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": null,
+        "student_id": "SYN-0015",
+        "submission_date": "2026-11-15"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "clean",
+      "expected": {
+        "applicant_name": "Người Mẫu Gamma",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0016",
+        "submission_date": "2026-11-16"
+      },
+      "id": "application-016",
+      "kind": "application",
+      "layout": "stacked",
+      "predicted": {
+        "applicant_name": "Người Mẫu Gamma",
+        "recipient": "Phòng Đào tạo Mau",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0016",
+        "submission_date": "2026-11-16"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "blur",
+      "expected": {
+        "applicant_name": "Người Mẫu Gamma",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0017",
+        "submission_date": "2026-11-17"
+      },
+      "id": "application-017",
+      "kind": "application",
+      "layout": "stacked",
+      "predicted": {
+        "applicant_name": "Người Mẫu Gamma",
+        "recipient": "Phong Dao tao Mau",
+        "request": "Xin cấp giấy xác nhận học tập",
+        "student_id": "SYN-0017",
+        "submission_date": "2026-11-17"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "missing",
+      "expected": {
+        "applicant_name": "Người Mẫu Gamma",
+        "recipient": "Phòng Đào tạo Mẫu",
+        "request": null,
+        "student_id": "SYN-0018",
+        "submission_date": "2026-11-18"
+      },
+      "id": "application-018",
+      "kind": "application",
+      "layout": "stacked",
+      "predicted": {
+        "applicant_name": "Người Mẫu Gamma",
+        "recipient": "Phong Dao tao Mau",
+        "request": null,
+        "student_id": "SYN-0018",
+        "submission_date": "2026-11-18"
+      },
+      "split": "test"
+    }
+  ],
+  "report_version": "solo-eval-1",
+  "slices": {
+    "condition:blur": {
+      "count": 60,
+      "exact_match": 0.9,
+      "f1": 0.9,
+      "fn": 6,
+      "fp": 6,
+      "null_pairs": 0,
+      "precision": 0.9,
+      "recall": 0.9,
+      "support": 60,
+      "tp": 54
+    },
+    "condition:clean": {
+      "count": 60,
+      "exact_match": 0.8833333333333333,
+      "f1": 0.8833333333333333,
+      "fn": 7,
+      "fp": 7,
+      "null_pairs": 0,
+      "precision": 0.8833333333333333,
+      "recall": 0.8833333333333333,
+      "support": 60,
+      "tp": 53
+    },
+    "condition:missing": {
+      "count": 60,
+      "exact_match": 0.9333333333333333,
+      "f1": 0.9166666666666666,
+      "fn": 4,
+      "fp": 4,
+      "null_pairs": 12,
+      "precision": 0.9166666666666666,
+      "recall": 0.9166666666666666,
+      "support": 48,
+      "tp": 44
+    },
+    "kind:application": {
+      "count": 90,
+      "exact_match": 0.8111111111111111,
+      "f1": 0.7976190476190477,
+      "fn": 17,
+      "fp": 17,
+      "null_pairs": 6,
+      "precision": 0.7976190476190477,
+      "recall": 0.7976190476190477,
+      "support": 84,
+      "tp": 67
+    },
+    "kind:invoice": {
+      "count": 90,
+      "exact_match": 1.0,
+      "f1": 1.0,
+      "fn": 0,
+      "fp": 0,
+      "null_pairs": 6,
+      "precision": 1.0,
+      "recall": 1.0,
+      "support": 84,
+      "tp": 84
+    },
+    "layout:colon": {
+      "count": 60,
+      "exact_match": 0.9666666666666667,
+      "f1": 0.9642857142857143,
+      "fn": 2,
+      "fp": 2,
+      "null_pairs": 4,
+      "precision": 0.9642857142857143,
+      "recall": 0.9642857142857143,
+      "support": 56,
+      "tp": 54
+    },
+    "layout:no-colon": {
+      "count": 60,
+      "exact_match": 0.85,
+      "f1": 0.8392857142857143,
+      "fn": 9,
+      "fp": 9,
+      "null_pairs": 4,
+      "precision": 0.8392857142857143,
+      "recall": 0.8392857142857143,
+      "support": 56,
+      "tp": 47
+    },
+    "layout:stacked": {
+      "count": 60,
+      "exact_match": 0.9,
+      "f1": 0.8928571428571429,
+      "fn": 6,
+      "fp": 6,
+      "null_pairs": 4,
+      "precision": 0.8928571428571429,
+      "recall": 0.8928571428571429,
+      "support": 56,
+      "tp": 50
+    },
+    "split:dev": {
+      "count": 90,
+      "exact_match": 0.9,
+      "f1": 0.8928571428571429,
+      "fn": 9,
+      "fp": 9,
+      "null_pairs": 6,
+      "precision": 0.8928571428571429,
+      "recall": 0.8928571428571429,
+      "support": 84,
+      "tp": 75
+    },
+    "split:test": {
+      "count": 90,
+      "exact_match": 0.9111111111111111,
+      "f1": 0.9047619047619048,
+      "fn": 8,
+      "fp": 8,
+      "null_pairs": 6,
+      "precision": 0.9047619047619048,
+      "recall": 0.9047619047619048,
+      "support": 84,
+      "tp": 76
+    }
+  },
+  "split": "all",
+  "taxonomy": [
+    "input_quality",
+    "preprocessing",
+    "ocr_text",
+    "field_mapping",
+    "normalization",
+    "validation",
+    "unsupported_layout",
+    "model_generation",
+    "unverified"
+  ]
+}

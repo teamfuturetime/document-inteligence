@@ -31,6 +31,12 @@ VLM có seed/temperature cố định nhưng chưa đảm bảo deterministic tr
 
 ## Phân loại lỗi
 
+Rule `solo-labels-2` bổ sung ghép gần đúng cho nhãn dài ≥10 ký tự có dấu hai
+chấm, tối đa một edit và duy nhất một trường. Không tự sửa giá trị OCR. Thay
+đổi được xác định từ lỗi dev `application-001` trên Linux; rules/config hash và
+source hash mới được lưu riêng, không ghi đè baseline v1. Xem
+[verification](verification.md) để phân biệt số liệu theo OS/engine.
+
 `symptom` là quan sát tự động: `missing_prediction`, `unexpected_prediction`,
 `wrong_value`, `diacritic_or_case_difference`; execution error được báo riêng.
 `cause` ban đầu `unverified` để không gán mọi lỗi cho OCR khi chưa đối chiếu.

@@ -1,9 +1,34 @@
 # Bằng chứng local — 2026-11-11
 
+## Trạng thái mới nhất — rules v2
+
+Commit code `e203bf7c28e0cbb43cdaf4d6d7a445c2f3027ae1` đã
+[pass GitHub CI](https://github.com/teamfuturetime/document-inteligence/actions/runs/42951239678):
+43 Python tests (có real OCR), 4 UI tests, typecheck/build và 7 browser E2E.
+Golden test trên Ubuntu/Tesseract 5.3.4 đạt **0,9333**, 18 tài liệu, không
+execution errors. Trên macOS/Tesseract 5.5.2, cùng code/model/data đạt **0,9111**
+trên test. Không coi điểm khác runtime là một kết quả giống nhau.
+
+Sửa lỗi dựa trên **dev** `application-001`: OCR Linux đọc `Mã số sinh viên`
+thành `Ma sé sinh vién`; mapping exact bỏ sót ID. Rule v2 chỉ ghép nhãn dài
+ít nhất 10 ký tự, có dấu hai chấm, sai tối đa một ký tự và duy nhất một field.
+Giữ nguyên giá trị, evidence và cảnh báo; nhãn ngắn/không dấu hai chấm/khớp
+mơ hồ không được sửa. Không thay dataset, ground truth hoặc ngưỡng regression.
+
+Baseline macOS v2 mới: [test](../evaluation/baselines/rules-v2-test.json),
+[all](../evaluation/baselines/rules-v2-all.json). Metrics macOS không đổi so
+với bảng v1 bên dưới; hai lượt all v2 tiếp tục byte-identical. Source SHA-256:
+`a51044b140e94a0e5f5cbbf150e1424cbfb8eddc0b2c3dda29cea7390e26efe7`.
+Report all v2 SHA-256:
+`43f3cf190d7fee7cbd25c49581eb3cb9098c6c997b9319f85c6b4d807447999e`.
+Các checkpoint baseline v1 bên dưới được giữ nguyên để thấy lịch sử đo.
+
+## Checkpoint lịch sử — rules v1
+
 Bản ứng dụng cá nhân mới đã triển khai và kiểm thử ở commit code sạch
 `65a0816546103aaf0b07ae72b1bc5382b6487745`. Bản tích hợp và main chung giữ nguyên.
-Các commit sau checkpoint này lưu baseline/tài liệu; hash source trong report
-cho phép xác định đúng code AI được đo, không dựa riêng vào tên nhánh.
+Hash source trong từng report xác định đúng code AI được đo, không dựa riêng
+vào tên nhánh; code đã tiếp tục được cập nhật thành rules v2 ở trên.
 
 ## Chức năng và kiểm tra
 
@@ -22,9 +47,9 @@ cho phép xác định đúng code AI được đo, không dựa riêng vào tê
   --offline tạo node_modules mới; UI tests/typecheck/build đạt. Không cần các
   package implementation cũ để chạy ứng dụng mới; native models được provision
   riêng trong `.models/` của bản mới.
-- Workflow `AI-02 Solo` đã cấu hình real OCR/evaluation/UI/E2E và kiểm tra YAML/
-  pin action SHA. Kết quả GitHub cần xem đúng SHA của lần push; local pass không
-  đồng nghĩa Linux/CI đã pass. Job CI dùng Tesseract 5.3.4, khác host local 5.5.2.
+- Workflow `AI-02 Solo` có real OCR/evaluation/UI/E2E, YAML và action pin SHA.
+  Checkpoint v1 có lỗi Linux đã được sửa ở rules v2 nêu trên; giữ lịch sử lỗi
+  thay vì thay đổi assertion/ground truth để làm CI xanh.
 
 ## Baseline OCR + luật
 
