@@ -42,6 +42,39 @@ def command(runtime, *arguments):
     )
 
 
+def test_legacy_adoption_requires_target_and_preserves_source_backup(tmp_path, monkeypatch):
+    monkeypatch.syspath_prepend(str(ROOT / "scripts"))
+    import manage_auth
+
+    runtime = tmp_path / "runtime"
+    prepare_legacy(runtime)
+    manage_auth.migrate_runtime(runtime, tmp_path / "before-migration")
+    manage_auth.manage_user(runtime, "create-user", "alpha", "synthetic-password-123")
+    manage_auth.adopt_local(runtime, "alpha", tmp_path / "before-adoption")
+    identities = IdentityRepository(DocumentRepository(runtime / "documents.sqlite3"))
+    with identities.repository.transaction() as connection:
+        assert (
+            connection.execute("SELECT owner_id FROM documents").fetchone()[0]
+            == identities.user("alpha")["user_id"]
+        )
+    with sqlite3.connect(tmp_path / "before-adoption/documents.sqlite3") as connection:
+        assert connection.execute("SELECT owner_id FROM documents").fetchone() == ("local",)
+    assert (runtime / "documents" / ("a" * 32 + ".source")).read_bytes() == b"synthetic"
+
+
+def test_legacy_adoption_rejects_missing_target_before_creating_backup(tmp_path, monkeypatch):
+    monkeypatch.syspath_prepend(str(ROOT / "scripts"))
+    import manage_auth
+    import pytest
+
+    runtime = tmp_path / "runtime"
+    prepare_legacy(runtime)
+    manage_auth.migrate_runtime(runtime, tmp_path / "before-migration")
+    with pytest.raises(ValueError):
+        manage_auth.adopt_local(runtime, "missing", tmp_path / "backup")
+    assert not (tmp_path / "backup").exists()
+
+
 def test_offline_account_commands_do_not_expose_hashes_or_tokens(tmp_path, monkeypatch):
     monkeypatch.syspath_prepend(str(ROOT / "scripts"))
     import manage_auth

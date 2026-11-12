@@ -73,12 +73,33 @@ def migrate_runtime(runtime: Path, destination: Path):
         upgrade_connection(connection)
 
 
+def adopt_local(runtime: Path, username: str, destination: Path):
+    if destination.resolve().is_relative_to(runtime.resolve()):
+        raise ValueError("Backup must be outside runtime")
+    with offline_runtime(runtime):
+        repository = DocumentRepository(runtime / "documents.sqlite3")
+        repository.initialize()
+        user = IdentityRepository(repository).user(username)
+        if user is None or user["user_id"] == "local" or not user["is_active"]:
+            raise ValueError("An active target identity is required")
+        backup(runtime, destination)
+        with repository.transaction(write=True) as connection:
+            connection.execute(
+                "UPDATE documents SET owner_id=? WHERE owner_id='local'",
+                (user["user_id"],),
+            )
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--runtime", type=Path, required=True)
     commands = parser.add_subparsers(dest="command", required=True)
     migrate = commands.add_parser("migrate")
     migrate.add_argument("--backup", type=Path, required=True)
+    adopt = commands.add_parser("adopt-local")
+    adopt.add_argument("--owner", required=True)
+    adopt.add_argument("--backup", type=Path, required=True)
+    adopt.add_argument("--confirm", action="store_true", required=True)
     commands.add_parser("list-users")
     for action in ("create-user", "disable-user", "reset-password"):
         command = commands.add_parser(action)
@@ -87,6 +108,9 @@ def main():
     if args.command == "migrate":
         migrate_runtime(args.runtime, args.backup)
         print("Migration verified; previous runtime preserved in backup.")
+    elif args.command == "adopt-local":
+        adopt_local(args.runtime, args.owner, args.backup)
+        print("Local documents assigned after backup; source files unchanged.")
     else:
         password = None
         if args.command in {"create-user", "reset-password"}:
@@ -104,4 +128,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except (ValueError, RuntimeError, sqlite3.Error):
+        raise SystemExit(
+            "Administration failed; check runtime state, input and backup destination. No secrets are reported."
+        ) from None
