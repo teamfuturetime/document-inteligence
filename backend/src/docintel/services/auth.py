@@ -61,7 +61,14 @@ class AuthService:
         raw, csrf = new_token(), new_token()
         created = self.clock()
         expires = created + self.settings.session_ttl_seconds
-        self.identities.create_session(token_digest(raw), row["user_id"], csrf, created, expires)
+        try:
+            self.identities.create_session(
+                token_digest(raw), row["user_id"], csrf, created, expires
+            )
+        except ValueError as exc:
+            raise ProductError(
+                401, "INVALID_CREDENTIALS", "Thông tin đăng nhập không hợp lệ."
+            ) from exc
         principal = self.session(raw)
         if principal is None:
             raise ProductError(401, "INVALID_CREDENTIALS", "Thông tin đăng nhập không hợp lệ.")

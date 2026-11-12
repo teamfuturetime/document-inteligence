@@ -41,7 +41,7 @@ class IdentityRepository:
             connection.execute(
                 "DELETE FROM sessions WHERE user_id=? AND token_hash NOT IN ("
                 "SELECT token_hash FROM sessions WHERE user_id=? "
-                "ORDER BY created_at DESC,token_hash DESC LIMIT 5)",
+                "ORDER BY created_at DESC,rowid DESC LIMIT 5)",
                 (user_id, user_id),
             )
 

@@ -21,6 +21,39 @@ def credentials(username="alpha", password="synthetic-password-123"):
     return Credentials(username=username, password=password)
 
 
+def test_absolute_expiry_and_disabled_user_are_checked_on_every_request(auth):
+    auth.clock = lambda: 100.0
+    raw, principal = auth.login(credentials())
+    auth.clock = lambda: principal.expires_at
+    assert auth.session(raw) is None
+    auth.clock = lambda: 101.0
+    with auth.identities.repository.transaction(write=True) as connection:
+        connection.execute("UPDATE users SET is_active=0 WHERE user_id=?", (principal.user.id,))
+    assert auth.session(raw) is None
+
+
+def test_session_cap_keeps_latest_session_when_timestamps_tie(auth):
+    auth.clock = lambda: 100.0
+    issued = [auth.login(credentials())[0] for _ in range(6)]
+    assert auth.session(issued[0]) is None
+    assert auth.session(issued[-1]) is not None
+    with auth.identities.repository.transaction() as connection:
+        assert connection.execute("SELECT count(*) FROM sessions").fetchone()[0] == 5
+
+
+def test_user_disabled_during_login_cannot_create_a_session(auth, monkeypatch):
+    original = auth.identities.create_session
+
+    def race(*args):
+        auth.identities.disable(args[1])
+        return original(*args)
+
+    monkeypatch.setattr(auth.identities, "create_session", race)
+    with pytest.raises(ProductError) as denied:
+        auth.login(credentials())
+    assert denied.value.status == 401
+
+
 def test_login_issues_real_session_with_only_digest_persisted(auth):
     raw, principal = auth.login(credentials())
     assert principal.user.username == "alpha"
