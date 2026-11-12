@@ -50,7 +50,9 @@ class AuthService:
             row["expires_at"],
         )
 
-    def login(self, credentials: Credentials) -> tuple[str, Principal]:
+    def login(
+        self, credentials: Credentials, previous_token: str | None = None
+    ) -> tuple[str, Principal]:
         if self.settings.auth_mode != "session":
             raise ProductError(404, "AUTH_DISABLED", "Chế độ tài khoản chưa được bật.")
         if not self.identities.allow_login(
@@ -72,7 +74,12 @@ class AuthService:
         expires = created + self.settings.session_ttl_seconds
         try:
             self.identities.create_session(
-                token_digest(raw), row["user_id"], csrf, created, expires
+                token_digest(raw),
+                row["user_id"],
+                csrf,
+                created,
+                expires,
+                previous_hash=token_digest(previous_token or ""),
             )
         except ValueError as exc:
             raise ProductError(
@@ -82,3 +89,8 @@ class AuthService:
         if principal is None:
             raise ProductError(401, "INVALID_CREDENTIALS", "Thông tin đăng nhập không hợp lệ.")
         return raw, principal
+
+    def logout(self, raw_token: str | None):
+        digest = token_digest(raw_token or "")
+        if digest:
+            self.identities.revoke(digest)

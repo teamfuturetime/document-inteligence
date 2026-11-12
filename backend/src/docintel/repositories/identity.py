@@ -43,7 +43,13 @@ class IdentityRepository:
             ).fetchone()
 
     def create_session(
-        self, token_hash: str, user_id: str, csrf_token: str, created: float, expires: float
+        self,
+        token_hash: str,
+        user_id: str,
+        csrf_token: str,
+        created: float,
+        expires: float,
+        previous_hash: str | None = None,
     ):
         with self.repository.transaction(write=True) as connection:
             cursor = connection.execute(
@@ -53,6 +59,8 @@ class IdentityRepository:
             )
             if cursor.rowcount != 1:
                 raise ValueError("Inactive or missing identity")
+            if previous_hash and previous_hash != token_hash:
+                connection.execute("DELETE FROM sessions WHERE token_hash=?", (previous_hash,))
             connection.execute("DELETE FROM sessions WHERE expires_at<=?", (created,))
             connection.execute(
                 "DELETE FROM sessions WHERE user_id=? AND token_hash NOT IN ("

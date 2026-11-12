@@ -21,6 +21,28 @@ def credentials(username="alpha", password="synthetic-password-123"):
     return Credentials(username=username, password=password)
 
 
+def test_login_rotates_previous_session_and_logout_revokes_server_state(auth):
+    old, first = auth.login(credentials())
+    fresh, second = auth.login(credentials(), previous_token=old)
+    assert fresh != old and second.csrf_token != first.csrf_token
+    assert auth.session(old) is None and auth.session(fresh) is not None
+    auth.logout(fresh)
+    assert auth.session(fresh) is None
+
+
+def test_password_reset_revokes_every_existing_session(auth):
+    one, principal = auth.login(credentials())
+    two, _ = auth.login(credentials())
+    auth.identities.reset_password(principal.user.id, hash_password("new-synthetic-password-456"))
+    assert auth.session(one) is None and auth.session(two) is None
+    with pytest.raises(ProductError):
+        auth.login(credentials())
+    assert (
+        auth.login(credentials(password="new-synthetic-password-456"))[1].user.id
+        == principal.user.id
+    )
+
+
 def test_login_budget_is_global_bounded_and_resets_after_window(auth):
     auth.clock = lambda: 100.0
     auth.settings.max_login_attempts = 2
@@ -61,9 +83,9 @@ def test_session_cap_keeps_latest_session_when_timestamps_tie(auth):
 def test_user_disabled_during_login_cannot_create_a_session(auth, monkeypatch):
     original = auth.identities.create_session
 
-    def race(*args):
+    def race(*args, **kwargs):
         auth.identities.disable(args[1])
-        return original(*args)
+        return original(*args, **kwargs)
 
     monkeypatch.setattr(auth.identities, "create_session", race)
     with pytest.raises(ProductError) as denied:
