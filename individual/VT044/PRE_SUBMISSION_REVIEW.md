@@ -6,7 +6,7 @@
 |---|---|---|
 | GitHub/URL chưa được xác minh | Clone mới từ remote; kiểm tra SHA, ancestry và 15 file; hiển thị nguyên URL branch và README ở trang đầu | `REMOTE_AUDIT.md`, `evidence/remote-audit/inventory.json`. Nhánh tồn tại; chưa chứng minh quyền đọc của người chấm vì truy cập ẩn danh trả 404. |
 | Cam kết còn ở dạng nháp | Hỏi sinh viên về việc tự đọc/hiểu harness, test, reflection và nhận cam kết; nhận phản hồi thực tế rồi mới đổi trang đầu | Sinh viên: “Đã rà soát, hiểu và xác nhận cam kết”; `evidence/student-review.md`. |
-| Harness chưa tích hợp production | Giữ nguyên phạm vi được đề cho phép; làm rõ phần dùng code thật, phần mới và fixture demo | `REVIEW_GUIDE.md`, mục 1/4/6 trong báo cáo. Không tuyên bố production feature đã hoàn tất. |
+| Harness chưa tích hợp production | Giữ nguyên phạm vi được đề cho phép; làm rõ phần dùng code thật, phần mới và fixture demo | `REVIEW_GUIDE.md`, mục 1/3.6/4.5 trong báo cáo đã sắp theo đề. Không tuyên bố production feature đã hoàn tất. |
 | Chỉ có lời mô tả evidence | Chạy RED đúng commit và GREEN/mutation/coverage/order/load từ clone GitHub mới; giữ raw logs riêng | RED 21 fail/7 pass; GREEN 133 pass; mutant killed; harness 93/93 lines, 18/18 branches. |
 
 ## Checklist bàn giao
@@ -25,3 +25,10 @@
 
 Bản DOCX được nhắc trong nhận xét không có trong workspace. Các thay đổi áp
 dụng cho bản Markdown/PDF thực tế; không khẳng định đã sửa/kiểm tra DOCX đó.
+
+## Cập nhật thứ tự theo yêu cầu ngày 12/11/2026
+
+Báo cáo gộp về đúng 5 nhóm của đề thay vì 8 nhóm riêng, có 23 tiểu mục đi theo
+từng gạch đầu dòng. Pagination vẫn 8 trang chính + Phụ lục A/B; không thay thứ
+tự thực nghiệm lịch sử. Mục 4.5 bổ sung cold/preconnected cùng setup exclusions;
+5.1 truy vết tới C_LOAD, Phụ lục A ghi thêm đợt chẩn đoán tương ứng.

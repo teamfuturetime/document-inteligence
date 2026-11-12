@@ -13,6 +13,10 @@ security. See `PLAN.md` for the two evidence-based assumption rejections.
 
 ## Reproduce
 
+Follow `RUN_ORDER.md` to review and reproduce requirements **1 -> 2 -> 3 -> 4 -> 5**
+in the teacher's order. The report uses the same five numbered groups, spread
+across eight main pages, followed by the permitted appendices.
+
 From the repository root, with Python 3.12:
 
 ```bash
@@ -115,7 +119,8 @@ submission. `REVIEW_GUIDE.md` separates real project modules from demo fixtures.
 
 ## Report export (optional)
 
-`BT3_23001945.md` contains eight main sections/pages plus two appendix pages.
+`BT3_23001945.md` contains five requirement groups across eight main pages,
+plus the AI Usage Log and execution-log appendices.
 To export it, install the optional `reportlab` package, then run:
 
 ```bash

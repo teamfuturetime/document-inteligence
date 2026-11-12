@@ -3,16 +3,20 @@
 Tất cả đường dẫn bên dưới tính từ `individual/VT044/`. Đây là kiểm chứng
 local trên executable harness được đề cho phép, không phải production release.
 
+**Thứ tự trình bày và chạy lại:** báo cáo có đúng 5 nhóm 1 -> 2 -> 3 -> 4 -> 5,
+23 tiểu mục theo từng gạch đầu dòng của đề. Hướng dẫn tuần tự: `RUN_ORDER.md`.
+Nội dung chính trải trên 8 trang; Phụ lục A/B chứa AI Usage Log và trích log.
+
 | Yêu cầu | Bài làm/evidence | Trạng thái |
 |---|---|---|
 | Đúng SV, team, AI-02, repository, VT-044 | Trang đầu báo cáo; baseline `66074f4ecc384b6006ac8b574001a0b4aced86ef` | Đã đối chiếu attachment mới |
-| 1 problem statement, 3-5 AC, >=2 NFC | Báo cáo mục 1: 1 problem, 5 AC, 4 NFC | Có |
+| 1 problem statement, 3-5 AC, >=2 NFC | Báo cáo mục 1.1: 1 problem, 5 AC, 4 NFC | Có |
 | Invariant/contract quan trọng | Owner isolation; chỉ đổi tombstone, bảo toàn dữ liệu/tệp | Có |
 | Plan/prompt/assumptions trước code, file dự kiến | `PLAN.md` trong C_RED; `PLAN_COMPLETION.md` trước phần bổ sung | Có, giữ đúng thứ tự thực tế |
 | Review/bác bỏ >=2 điểm bằng source thật | Thiếu owner/shared key; retention xóa tệp và cascade child | Có evidence source tại baseline |
 | Chính SV bác bỏ >=1 assumption | `evidence/student-review.md`: “Bác bỏ: key chung không phân biệt chủ sở hữu tài liệu” | Có phản hồi thực tế trong cuộc hội thoại |
-| Strategy unit/integration/API/E2E và phần không cần | Mục 3; unit storage/security và E2E backend có sẵn được chạy trong regression | Có; không gọi harness là browser E2E |
-| >=10 case đủ 6 cột | 18 case logic T01-T18, 34 instances; mục 3 | Có |
+| Strategy unit/integration/API/E2E và phần không cần | Mục 2.1; unit storage/security và E2E backend có sẵn được chạy trong regression | Có; không gọi harness là browser E2E |
+| >=10 case đủ 6 cột | 18 case logic T01-T18, 34 instances; mục 2.2 | Có |
 | State transition, data rationale | A->D, D->A, self-loops, denied/rollback transitions; fixed clock/data owners | Có |
 | >=2 negative, >=1 failure path gắn R1 | Foreign reads/writes, spoofing, missing identity, flush-then-commit failure | Có |
 | Vertical slice chạy được hoặc harness | `harness.py`: real models/repository/storage + owner/tombstone sidecar | Có; giới hạn integration nêu rõ |
@@ -23,10 +27,10 @@ local trên executable harness được đề cho phép, không phải productio
 | Mutation đảo boolean, nhánh/commit tạm | `mutate.py`, `mutation-completion.log`; != -> == | Bị T01-T03 phát hiện; bản sạch không đổi |
 | Line/branch + risk coverage | 93/93 lines, 18/18 branches; traceability AC1-AC5 | Có; không suy luận toàn hệ thống từ 100% |
 | >=2 flaky risks | Fixed clock/boundaries; 3 shuffled orders x34; same-ID contention; network review | Có, giới hạn nêu rõ |
-| 200 tasks, p95 <=5s và kết luận trung thực | 4 HTTP runs giữ cả lỗi; ASGI 200/200, 1,200 valid requests, p95 1.136s | Đã đo; chỉ ASGI đạt, chưa nghiệm thu HTTP/production |
-| Traceability AC/Risk->case->file->commit->result | Báo cáo mục 7 | Có |
+| 200 tasks, p95 <=5s và kết luận trung thực | Mục 4.5: ASGI đạt; 3 lượt HTTP preconnected 200/200, p95 1.128-1.337s, setup 200 GET ghi riêng; cold giữ lỗi | Đạt trong profile tương ứng; cold/production chưa nghiệm thu |
+| Traceability AC/Risk->case->file->commit->result | Báo cáo mục 5.1; gồm C_LOAD `1595e59` | Có |
 | AI Usage Log, >=2 điểm AI chưa đáng tin | Phụ lục A; shared key và response echo target | Có, gồm phản hồi người dùng thật |
-| Reflection 250-350 từ | Mục 8, 324 từ theo whitespace word count | AI hỗ trợ soạn; SV đã xác nhận rà soát |
+| Reflection 250-350 từ | Mục 5.4, 324 từ theo whitespace word count | AI hỗ trợ soạn; SV đã xác nhận rà soát |
 | PDF đúng tên, <=8 trang chính | `BT3_23001945_VT-044.pdf`, 8 trang chính + 2 trang phụ lục | Đã xuất, render và kiểm tra visual đủ 10 trang |
 | Trang đầu đủ thông tin và cam kết | Báo cáo trang 1; phản hồi thực tế của SV trong `evidence/student-review.md` | Đã có cam kết chính thức và xác nhận của SV |
 | README chạy test | `README.md` | Có |

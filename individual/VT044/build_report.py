@@ -1,4 +1,4 @@
-"""Export the assignment Markdown, preserving its eight main page sections.
+"""Export five assignment requirements across eight main pages plus appendices.
 
 Optional dependency: reportlab. Usage: python build_report.py source.md out.pdf
 Font paths default to macOS Arial; override VT044_FONT_DIR for another system.
@@ -33,6 +33,9 @@ CELL = ParagraphStyle("cell", parent=BODY, fontSize=7.2, leading=9.3, spaceAfter
 HEAD = ParagraphStyle("head", parent=BODY, fontName="Body-Bold", fontSize=13,
                       leading=17, spaceAfter=11, textColor=colors.HexColor("#183650"))
 TITLE = ParagraphStyle("title", parent=HEAD, fontSize=17, leading=22)
+SUBHEAD = ParagraphStyle("subhead", parent=BODY, fontName="Body-Bold", fontSize=10,
+                         leading=13, spaceBefore=5, spaceAfter=5,
+                         textColor=colors.HexColor("#183650"))
 CODE = ParagraphStyle("code", parent=BODY, fontSize=7.4, leading=10,
                       leftIndent=7, backColor=colors.HexColor("#f3f6f8"), spaceAfter=7)
 
@@ -111,6 +114,10 @@ def blocks(section, width):
             continue
         if line.startswith("## "):
             result.append(Paragraph(inline(line[3:]), HEAD))
+            index += 1
+            continue
+        if line.startswith("### "):
+            result.append(Paragraph(inline(line[4:]), SUBHEAD))
             index += 1
             continue
         paragraph = []
