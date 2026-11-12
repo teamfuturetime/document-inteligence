@@ -1,5 +1,7 @@
 # Onboarding
 
+Trước khi nhận task, đọc [hướng dẫn nhận việc qua GitHub](github-collaboration.md): dùng tài khoản cá nhân, xác nhận trên issue, tạo nhánh theo task và review chéo. Phân công hiện hành nằm trên Issues; bảng vai trò cũ chỉ là đề xuất lịch sử.
+
 1. Bắt đầu duy nhất tại [README gốc](../../README.md): kiểm nhánh/nền, runtime pins, setup, models và hai server. Main GitHub hiện đang chờ PR nền; không chạy nhầm implementation của bài tập.
 2. Chạy `python scripts/dev.py check`, `ocr`, `e2e` theo điều kiện trong README. Không gọi fixture replay là OCR thật.
 3. Đọc [contracts](../../contracts/README.md), [kiến trúc](../product/architecture.md) và [CONTRIBUTING](../../CONTRIBUTING.md).
