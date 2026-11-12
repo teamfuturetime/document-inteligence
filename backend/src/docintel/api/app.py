@@ -78,6 +78,7 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = True) -
     async def product_error(request: Request, exc: ProductError):
         return JSONResponse(
             status_code=exc.status,
+            headers=exc.headers,
             content={
                 "error": {
                     "code": exc.code,
