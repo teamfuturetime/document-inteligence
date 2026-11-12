@@ -48,43 +48,6 @@ class Sender:
                 self.cancelled.set()
 
 
-def test_caller_cancellation_propagates_without_detached_delivery():
-    async def run():
-        entered, cancelled = asyncio.Event(), asyncio.Event()
-
-        class Blocked:
-            async def send(self, notice):
-                entered.set()
-                try:
-                    await asyncio.sleep(3600)
-                finally:
-                    cancelled.set()
-
-        notice = DocumentConfirmed("a" * 32, "b" * 32, 1)
-        task = asyncio.create_task(notify_safely(Blocked(), notice, 1.0))
-        await asyncio.wait_for(entered.wait(), 1)
-        task.cancel()
-        with pytest.raises(asyncio.CancelledError):
-            await task
-        assert cancelled.is_set()
-
-    asyncio.run(run())
-
-
-@pytest.mark.parametrize(
-    "options",
-    [
-        {"notification_mode": "email"},
-        {"notification_timeout_seconds": 0},
-        {"notification_timeout_seconds": 1.1},
-        {"notification_timeout_seconds": float("inf")},
-    ],
-)
-def test_invalid_delivery_configuration_is_rejected(options):
-    with pytest.raises(ValidationError):
-        Settings(_env_file=None, **options)
-
-
 @pytest.mark.parametrize("mode", ["success", "error", "timeout"])
 def test_delivery_runs_after_commit_and_preserves_exact_response(product, caplog, mode):
     api, settings = product
@@ -211,6 +174,29 @@ def test_disabled_mode_does_not_attempt_delivery(product):
     assert sender.events == []
 
 
+def test_caller_cancellation_propagates_without_detached_delivery():
+    async def run():
+        entered, cancelled = asyncio.Event(), asyncio.Event()
+
+        class Blocked:
+            async def send(self, notice):
+                entered.set()
+                try:
+                    await asyncio.sleep(3600)
+                finally:
+                    cancelled.set()
+
+        notice = DocumentConfirmed("a" * 32, "b" * 32, 1)
+        task = asyncio.create_task(notify_safely(Blocked(), notice, 1.0))
+        await asyncio.wait_for(entered.wait(), 1)
+        task.cancel()
+        with pytest.raises(asyncio.CancelledError):
+            await task
+        assert cancelled.is_set()
+
+    asyncio.run(run())
+
+
 def test_cancellation_after_commit_keeps_persisted_confirmation(product):
     api, _ = product
     document = processed(api)
@@ -255,3 +241,31 @@ def test_retry_after_restart_does_not_redeliver(product):
         restarted.app.state.confirmation_notifier = sender
         assert restarted.post(path, json=revision_request(document)).status_code == 200
         assert sender.events == []
+
+
+def test_default_logging_sink_omits_payload(product, caplog):
+    api, _ = product
+    document = processed(api)
+    with caplog.at_level(logging.INFO, logger="docintel.services.notifications"):
+        response = api.post(
+            f"/api/v1/documents/{document['document_id']}/confirm", json=revision_request(document)
+        )
+    assert response.status_code == 200
+    messages = [
+        r.getMessage() for r in caplog.records if r.name == "docintel.services.notifications"
+    ]
+    assert messages == ["business_event=document.confirmed"]
+
+
+@pytest.mark.parametrize(
+    "options",
+    [
+        {"notification_mode": "email"},
+        {"notification_timeout_seconds": 0},
+        {"notification_timeout_seconds": 1.1},
+        {"notification_timeout_seconds": float("inf")},
+    ],
+)
+def test_invalid_delivery_configuration_is_rejected(options):
+    with pytest.raises(ValidationError):
+        Settings(_env_file=None, **options)
