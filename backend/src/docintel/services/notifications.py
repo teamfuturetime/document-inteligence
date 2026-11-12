@@ -28,3 +28,14 @@ class LoggingConfirmationNotifier:
 
     async def send(self, notice: DocumentConfirmed) -> None:
         logger.info("business_event=%s", notice.name)
+
+
+async def notify_safely(
+    sender: ConfirmationNotifier, notice: DocumentConfirmed, timeout_seconds: float
+) -> None:
+    try:
+        # Cooperative only: adapters must not block or suppress cancellation.
+        await sender.send(notice)
+    except Exception:
+        # Caller CancelledError propagates. Never log payload or exception details.
+        logger.warning("notification_delivery_failed event=%s", notice.name)
