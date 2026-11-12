@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 from uuid import uuid4
 
+from anyio import CapacityLimiter
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
@@ -23,6 +24,7 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = True) -
     @asynccontextmanager
     async def lifespan(application: FastAPI):
         application.state.documents = DocumentService(config)
+        application.state.upload_limiter = CapacityLimiter(config.max_concurrent_uploads)
         worker = None
         if start_worker and config.provider_mode == "tesseract":
             worker = LocalInferenceWorker(application.state.documents)

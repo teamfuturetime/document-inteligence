@@ -1,12 +1,13 @@
 import re
 from typing import Annotated, Literal
 
+from anyio import WouldBlock
 from fastapi import APIRouter, Header, Query, Request
 from fastapi.responses import FileResponse, JSONResponse
 from starlette.concurrency import run_in_threadpool
 
 from docintel.api.models import ErrorEnvelope
-from docintel.api.uploads import receive_upload
+from docintel.api.uploads import receive_upload, upload_error
 from docintel.domain.documents import (
     DEFINITIONS,
     DocumentDetail,
@@ -60,12 +61,23 @@ async def upload_document(
     filename: Annotated[str, Query(min_length=1, max_length=200)] = "document.png",
     idempotency_key: Annotated[str | None, Header(pattern=r"^[A-Za-z0-9_-]{1,96}$")] = None,
 ):
-    data = await receive_upload(request, service(request).settings)
-    filename = re.split(r"[/\\]", filename)[-1]
-    filename = "".join(c for c in filename if c.isprintable()) or "document"
-    return await run_in_threadpool(
-        service(request).upload, data, document_type, data_origin, filename, idempotency_key
-    )
+    limiter = request.app.state.upload_limiter
+    borrower = object()
+    try:
+        limiter.acquire_on_behalf_of_nowait(borrower)
+    except WouldBlock as exc:
+        raise upload_error(
+            request, 429, "UPLOAD_BUSY", "Đang nhận đủ số tài liệu. Vui lòng thử lại sau."
+        ) from exc
+    try:
+        data = await receive_upload(request, service(request).settings)
+        filename = re.split(r"[/\\]", filename)[-1]
+        filename = "".join(c for c in filename if c.isprintable()) or "document"
+        return await run_in_threadpool(
+            service(request).upload, data, document_type, data_origin, filename, idempotency_key
+        )
+    finally:
+        limiter.release_on_behalf_of(borrower)
 
 
 @router.get("/documents/{document_id}", response_model=DocumentDetail)
