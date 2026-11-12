@@ -21,3 +21,10 @@ class DocumentConfirmed:
 
 class ConfirmationNotifier(Protocol):
     async def send(self, notice: DocumentConfirmed) -> None: ...
+
+
+class LoggingConfirmationNotifier:
+    """Recipient is the local operator; enable INFO and a handler to observe events."""
+
+    async def send(self, notice: DocumentConfirmed) -> None:
+        logger.info("business_event=%s", notice.name)
