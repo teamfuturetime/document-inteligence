@@ -1,3 +1,5 @@
+> LỊCH SỬ FOUNDATION/KẾ HOẠCH: đọc cùng [ADR nền hiện hành](../decisions/0008-primary-invoice-platform.md) và README root. Không dùng quy ước nhánh/cách chạy hoặc trạng thái thiếu tính năng trong snapshot này làm hiện trạng consolidation.
+
 # Kiến trúc
 
 **Snapshot foundation lịch sử.** Kiến trúc triển khai thêm ngày 24/10/2026 ở [product architecture](../product/architecture.md): backend services/storage/SQLite/worker và package pipeline, OCR thật và persisted review/export. Phần nền/đích dưới đây giữ để truy vết, không là feature status mới nhất.

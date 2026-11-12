@@ -1,9 +1,20 @@
-# Đóng góp
+# Đóng góp vào nền OCR hóa đơn
 
-Đọc [onboarding](docs/team/onboarding.md) và [quy trình](docs/team/workflow.md). Chọn hạng mục [backlog](docs/planning/backlog.md), tạo issue có vấn đề/phạm vi, requirement IDs, acceptance criteria, kiểm tra và dependencies. Mã BL là mã local, không phải số issue GitHub.
+[README gốc](README.md) là điểm chạy duy nhất. Nền được chọn tại [ADR0008](docs/decisions/0008-primary-invoice-platform.md); phạm vi local một người dùng. Đọc [contracts](contracts/README.md) trước khi đổi API và [inventory](docs/branch-inventory.md) trước khi port.
 
-`main` giữ nền có thể chạy. Dùng nhánh ngắn `feat/...`, `fix/...`, `docs/...`, `test/...`, `chore/...`; coding agent mặc định `codex/...` theo công cụ. Không force-push nhánh chung. Commit nhỏ, mô tả hành vi thật; không dựng lịch sử đóng góp. Nhánh đang bàn giao là `nhatquang`, không tự đổi remote/nhánh của nhóm.
+## GitHub Flow
 
-**Definition of Ready:** biết vấn đề, scope, input/output, tiêu chí chấp nhận, dependencies và nguồn requirement. **Definition of Done:** hành vi đúng, checks phù hợp đạt, docs/contracts/version/evidence cập nhật, không có secret/dữ liệu trái phép và đã review theo quy trình nhóm. Không đo hoàn thành bằng số file, dòng code hoặc coverage tùy ý.
+1. Chọn một issue/task có problem, phạm vi, acceptance, dependencies, dữ liệu synthetic và cách kiểm tra (Definition of Ready).
+2. Sau khi nền đã vào main: `git switch main`, `git pull --ff-only origin main`, rồi `git switch -c feat/<task>` (hoặc fix/docs/test/chore). Trong thời gian chờ PR nền, branch từ chore/repository-consolidation và ghi dependency/base rõ trong PR; không coi main cũ là runnable.
+3. Hoàn tất từng thay đổi nhỏ có thể kiểm tra, commit Conventional Commits. Agent dùng cùng quy ước, không yêu cầu phát triển trên nhánh cá nhân dài hạn. Trước mỗi commit xem status/diff, stage đường dẫn cụ thể, xem staged diff và `git diff --cached --check`; không include file của người khác/output/runtime/secret.
+4. Chạy `python scripts/dev.py check`; thay OCR/workflow còn cần `ocr`/`e2e`, thay dataset/config giữ hashes/version/evidence. Đẩy nhánh hoặc tạo PR chỉ khi được ủy quyền. PR đích main, dùng template, ghi lệnh/kết quả/phần chưa chạy. Không coi test với doubles là OCR/provider thật.
+5. `Product checks` phải đạt: Backend checks, Frontend checks, Evaluation regression, OCR integration, Browser E2E. Không path filters có thể làm required check mất ở docs-only PR; không continue-on-error. Workflow mới chưa có remote evidence đến khi duyệt push.
+6. Ít nhất một reviewer khác duyệt nghiệp vụ, contract/null/revision/evidence và diff. Giải quyết hội thoại, cập nhật nhánh bằng merge từ main nếu cần rồi chạy checks lại. Không tự merge; reviewer/team quyết định. Merge nền bằng merge commit để bảo toàn original commits/authorship; không rewrite lịch sử.
 
-PR dùng [template](.github/PULL_REQUEST_TEMPLATE.md); nêu thay đổi, lệnh và kết quả thật, contract/data/config ảnh hưởng, rủi ro và giới hạn evidence. Đề xuất ít nhất một thành viên khác review khi có reviewer; đây chưa phải setting GitHub đã bật. CI xanh không thay thế kiểm tra nghiệp vụ hay đánh giá chất lượng AI. Chạy checks trong README trước khi gửi PR.
+Không amend/rebase/reset/force-push hoặc xóa nhánh khi chưa được yêu cầu. Nhánh cá nhân và submission refs giữ làm tham chiếu; chỉ dọn khi có bằng chứng giá trị được bảo toàn và tác giả đồng ý. Không tự gán CODEOWNERS từ kế hoạch phân công cũ.
+
+## Definition of Done
+
+Hành vi đúng acceptance, kiểm tra phù hợp thực sự pass, hướng dẫn chạy tái lập được, generated contracts/types/examples đồng bộ nếu đổi domain, prediction/review tách biệt, dữ liệu/model/config có version/hashes, không secret/PII/runtime artifacts, diff hiểu được và review hoàn tất trước merge. Không dùng commit count, coverage đơn độc hoặc synthetic score để tuyên bố chất lượng sản phẩm.
+
+Issue/milestone/labels dự kiến ở [approval package](docs/governance/github-setup.md); ID CONS-* hiện chỉ local, không phải issue GitHub đã tạo. [Backlog foundation cũ](docs/planning/backlog.md) là lịch sử. License/security contact/owner volunteers chưa được xác nhận; không tạo LICENSE hoặc CODEOWNERS giả.

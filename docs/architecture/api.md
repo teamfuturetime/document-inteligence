@@ -1,3 +1,5 @@
+> LỊCH SỬ FOUNDATION/KẾ HOẠCH: đọc cùng [ADR nền hiện hành](../decisions/0008-primary-invoice-platform.md) và README root. Không dùng quy ước nhánh/cách chạy hoặc trạng thái thiếu tính năng trong snapshot này làm hiện trạng consolidation.
+
 # API
 
 ## Đã chạy trong foundation

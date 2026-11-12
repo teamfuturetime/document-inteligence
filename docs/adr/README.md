@@ -1,3 +1,5 @@
+> Nền hiện hành và phạm vi đã chốt: [ADR0008](../decisions/0008-primary-invoice-platform.md). Bảng dưới giữ decision log lịch sử, không là lý do duy trì nhiều ứng dụng hoặc nhánh cá nhân dài hạn.
+
 # ADR và decision log
 
 ADR ghi context, options, decision, consequences, status và revisit conditions. Trạng thái các quyết định dưới đây: **đã áp dụng cho scaffold; PROVISIONAL cho sản phẩm cuối**, không tuyên bố nhóm đã duyệt. [Template](template.md).

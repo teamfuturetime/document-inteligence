@@ -1,3 +1,5 @@
+> Phạm vi consolidation 12/11/2026: OCR hóa đơn local một người dùng; auth/mở rộng giai đoạn sau. Đơn đề nghị có sẵn được giữ. [ADR0008](../decisions/0008-primary-invoice-platform.md) là quyết định nền hiện hành; phần FOUNDATION lịch sử dưới đây không phủ nhận product code đã có.
+
 # Phạm vi và nguồn yêu cầu
 
 **Cập nhật 24/10/2026:** người dùng yêu cầu triển khai cả sản phẩm trên nhatquang. Phần foundation-only bên dưới là phạm vi lịch sử của lượt khởi tạo. Phạm vi mới ở [ADR 0007](../adr/0007-product-on-nhatquang.md), [kiến trúc](../product/architecture.md) và README; không phải xác nhận nhóm đã chọn nền chung hoặc thay rubric.

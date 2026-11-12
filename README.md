@@ -1,106 +1,95 @@
-# AI-02 · Document Intelligence cho biểu mẫu tiếng Việt
+# AI-02 — OCR hóa đơn tiếng Việt
 
-Sản phẩm local **0.2.0 trên nhatquang**: tải ảnh → OCR thật → trích xuất có evidence → sửa/lưu nháp → xác nhận → xuất JSON từ backend. Hỗ trợ hóa đơn header/tổng tiền (5 trường) và đơn đề nghị đánh máy (7 trường). Chỉ dùng synthetic/sample hợp lệ.
+Một ứng dụng local: tải ảnh hóa đơn → OCR Tesseract tiếng Việt → trích xuất có vùng nguồn → sửa/lưu nháp → kiểm tra và xác nhận → tải JSON từ bản đã lưu trên server.
 
-| Phần | Implementation |
-| --- | --- |
-| OCR | Tesseract 5 vie+eng, models pin SHA256, native process có timeout; không fallback mock |
-| Extraction/confidence | Nhãn/multiline/candidates, raw/normalized/evidence riêng, abstain; confidence heuristic chưa calibrated |
-| Upload/storage | PNG/JPG một trang, kiểm format thật/bytes/pixels, preview chuẩn EXIF |
-| Persistence/worker | SQLite migrations, queue bounded, immutable runs, restart recovery và process lock |
-| Review | Draft cho missing/invalid, giữ xóa-null, kiểm revision trong transaction, stale trả 409 |
-| Confirm/export | JSON từ latest persisted confirmed revision; không tin approved/final JSON client |
-| Frontend | Đối chiếu ảnh/evidence, form edit, dirty-state guard, conflict compare, pagination/history |
-| Evidence | 150 synthetic parent documents, splits/hashes, field metrics, errors, model/config/source versions |
-| Fixture cũ | Catalogue riêng, chỉ khi bật explicit; không phải model benchmark |
+**Nền sản phẩm chính:** React trong `frontend/`, FastAPI `docintel` trong `backend/`, native pipeline trong `pipeline/`, SQLite cho lịch sử/revisions. Nhánh tổ chức lại `chore/repository-consolidation` kế thừa `nhatquang@a03ea30`. `main` là đích ổn định sau PR/review, hiện trên GitHub vẫn chỉ có README khởi tạo. Chưa merge hoặc thay default branch. [Quyết định nền](docs/decisions/0008-primary-invoice-platform.md) · [khảo sát 16 nhánh](docs/branch-inventory.md).
 
-Kết quả thực và pending checks: [báo cáo triển khai](docs/reports/product-verification-2026-10-24.md). Không suy chất lượng tài liệu thật hoặc khả năng public deployment từ tests/synthetic scores.
+## Bắt đầu từ checkout sạch
 
-## Cài và chạy native
+Cần Git, Python 3.14.5 (uv có thể cài theo `backend/.python-version`), uv 0.12.22, Node 24.16.x + npm 11.13.x, và Tesseract 5 trên PATH. Không cần PostgreSQL, API key hay GPU. Lần cài dependencies/models cần mạng; inference không tải model.
 
-Runtime pins: Python 3.14.5, uv 0.12.22, Node 24.16.x, npm 11.13.x. Cần Tesseract 5 từ nguồn chính thức; không cần GPU hoặc API key.
+Các lệnh dưới dùng `python`; trên macOS/Linux nếu không có alias này, dùng `python3`. uv chọn Python backend theo pin, không cần sửa Python toàn máy.
 
-```powershell
-uv sync --project backend --locked
-npm --prefix frontend ci
-uv run --project backend --locked python scripts/fetch_ocr_models.py
+Trong giai đoạn chờ tích hợp main:
+
+```sh
+git clone https://github.com/teamfuturetime/document-inteligence.git
+cd document-inteligence
+git switch chore/repository-consolidation
+python scripts/dev.py setup
+python scripts/dev.py models
 ```
 
-Model helper tải khoảng 4.7 MB vie+eng đã pin vào runtime ngoài Git, không tải trong inference. Settings tìm Tesseract trên PATH hoặc vị trí Windows chuẩn; có thể override DOCINTEL_TESSERACT_EXECUTABLE bằng đường dẫn cài thật.
+Lệnh `git switch` trên chỉ dùng sau khi người có quyền duyệt push nhánh consolidation; nếu nhánh chưa có trên remote, dùng worktree consolidation local đã bàn giao, không nhầm với main chỉ README. Sau khi PR nền được merge, clone mặc định vào main và tạo nhánh mới từ main theo CONTRIBUTING.
 
-Nếu chưa có `.env`, sao chép `.env.example`. Nếu đã có, giữ các cấu hình riêng và chỉ đổi provider thành tesseract; không ghi đè secrets. Hoặc dùng biến trong terminal backend:
+`setup` cài đúng lockfiles và chỉ tạo `.env` khi chưa có; không ghi đè cấu hình cũ. File mẫu chọn `DOCINTEL_PROVIDER_MODE=tesseract`. Nếu giữ `.env` cũ, kiểm tra provider và runtime path. Nếu Tesseract không ở PATH, đặt `DOCINTEL_TESSERACT_EXECUTABLE` bằng đường dẫn cài thật. `models` tải vie+eng (~4,7MB), kiểm SHA256 và lưu dưới `runtime/` đã ignore.
 
-```powershell
-$env:DOCINTEL_PROVIDER_MODE='tesseract'
-uv run --project backend --locked uvicorn docintel.api.app:app --host 127.0.0.1 --port 8000
+Chạy hai terminal từ repository root:
+
+```sh
+python scripts/dev.py backend
 ```
 
-Terminal frontend:
-
-```powershell
-npm --prefix frontend run dev
+```sh
+python scripts/dev.py frontend
 ```
 
-Mở [ứng dụng](http://localhost:5173), chọn **Xử lý tài liệu**; [API docs](http://127.0.0.1:8000/docs). Dùng ảnh `data/product/images/hoa_don_007.png` để demo. Chạy một worker process cho mỗi runtime DB. Health chỉ xác nhận tiến trình; xem capabilities.ocr_ready trước upload.
+Mở **http://127.0.0.1:5173**, chọn **Xử lý tài liệu**. API docs: http://127.0.0.1:8000/docs. Health `/api/v1/health` chỉ báo tiến trình; kiểm `/api/v1/capabilities` có `ocr_ready=true`. Một backend/worker cho mỗi runtime DB; không thêm `--workers` để vượt lock.
 
-Mặc định: 5 MiB, 16M pixels, một trang, deadline 30 giây, tối đa 5 queued/running runs. Chưa hỗ trợ PDF, chữ viết tay, line items, nhiều trang hoặc tài khoản. Fixture catalogue cần provider fixture, không tự bật khi OCR lỗi.
+## Luồng hóa đơn có thể thử ngay
 
-## Cấu trúc
-
-```text
-frontend/src/features/documents/     Upload/list/review/source/history/export UI
-backend/src/docintel/
-  api/                              HTTP routes, errors/request ID
-  domain/                           Nguồn chuẩn contracts và validation
-  services/                         Use cases, revisions/export, persisted worker
-  repositories/                     SQLite transactions, migrations, worker lock
-  storage/                          Source/preview bất biến, cleanup khi upload lỗi
-  adapters/                         Pipeline → public domain; fixture adapter riêng
-  evaluation/                       Metrics offline, không thuộc inference
-pipeline/src/document_pipeline/     Image worker → OCR → extraction → confidence
-contracts/                          Generated JSON Schema/OpenAPI/examples
-configs/                            Config có version và mục đích rõ
-data/                               Synthetic images/labels/manifests
-scripts/                            Verify, evaluate, fetch models, backup/restore
-docs/                               Requirements/ADR/architecture/runbook/reports
-runtime/                            DB/uploads/models/cache/local reports; ignored
+```mermaid
+flowchart LR
+    A[Upload PNG/JPEG] --> B[SQLite job queue]
+    B --> C[Bounded preprocessing + Tesseract vie/eng]
+    C --> D[Extraction + immutable prediction/evidence]
+    D --> E[Review fields + save revision]
+    E --> F[Backend validation + confirm]
+    F --> G[Export latest persisted confirmed JSON]
 ```
 
-[Kiến trúc](docs/product/architecture.md), [runbook và demo](docs/product/runbook.md), [handoff tích hợp nhóm](docs/product/integration-handoff.md), [nguồn kế thừa](docs/ml/source-lineage.md). Public contracts sinh từ backend domain; không sửa generated files hoặc tạo schema frontend độc lập.
+1. Chọn hóa đơn, nguồn synthetic, ảnh `data/product/images/hoa_don_007.png`; xác nhận chính sách dữ liệu rồi upload.
+2. Đợi OCR, đối chiếu vùng nguồn và sửa các trường. Thử xóa seller, lưu nháp, tải lại: giá trị null phải còn; chưa được xác nhận.
+3. Điền lại theo ảnh, lưu, **Xác nhận bản lưu**, **Xuất JSON đã xác nhận**. Server kiểm run/revision; không lấy JSON tùy ý từ client.
+4. Mở hai tab và lưu cùng revision để thấy 409; chạy OCR lại vẫn giữ lịch sử cũ. [Demo/backup/troubleshooting](docs/product/runbook.md).
 
-## Kiểm tra
+## Kiểm tra trước PR
 
-```powershell
-uv run --project backend --locked ruff check backend scripts pipeline
-uv run --project backend --locked ruff format --check backend scripts pipeline
-uv run --project backend --locked pytest backend/tests pipeline/tests -q
-uv run --project backend --locked python scripts/generate_contracts.py --check
-uv run --project backend --locked python scripts/check_data.py
-uv run --project backend --locked python scripts/evaluate_fixtures.py
-uv run --project backend --locked python scripts/check_repository.py
-uv run --project backend --locked python scripts/verify_product.py
-npm --prefix frontend run contracts:check
-npm --prefix frontend run typecheck
-npm --prefix frontend run lint
-npm --prefix frontend run format:check
-npm --prefix frontend test
-npm --prefix frontend run build
+```sh
+python scripts/dev.py check
+python scripts/dev.py ocr
+npm --prefix frontend exec -- playwright install chromium
+python scripts/dev.py e2e
 ```
 
-Unit/component tests có doubles rõ ràng. verify_product thực sự chạy OCR và HTTP workflow, thiếu môi trường thì fail. Fixture evaluator chỉ kiểm công thức. Đánh giá model dùng prediction trước review:
+- `check`: offline backend/API/SQLite, contracts/data integrity, frontend static/component/build, frozen evaluator regression; không cần Tesseract/API key.
+- `ocr`: chạy OCR thật + HTTP workflow, null/invalid input, conflict, export, history và restart. Thiếu engine/model thì fail, không skip/fallback.
+- `e2e`: Chromium thật, backend native/SQLite tạm và Vite riêng; không tái dùng server/runtime đang mở. Cần models và browser đã cài.
 
-```powershell
-uv run --project backend --locked python scripts/evaluate_model.py --split development --output runtime/evaluation/dev-new-run
+Benchmark mới, output phải là thư mục chưa tồn tại:
+
+```sh
+uv run --project backend --locked python scripts/evaluate_model.py --split test --output runtime/evaluation/my-test-run
 ```
 
-Output phải là thư mục mới; không ghi đè report cũ. Chọn policy trên development/validation, giữ test độc lập. [Dataset card](data/product/README.md), [protocol](docs/ml/evaluation-protocol.md) và [confidence](docs/ml/confidence-policy.md) nêu support/exclusions và giới hạn.
+Mỗi số liệu phải đi cùng dataset/engine/model/config/source SHA. `evaluation/runs/2026-10-24-test-frozen` là bằng chứng Windows Tesseract5.4 của nền này; không lấy baseline core Tùng/solo làm metric ở đây. Frozen evaluator replay không phải inference mới. [Kiểm chứng consolidation](docs/consolidation-verification.md) ghi các lượt thực sự chạy.
 
-Đổi schema/API: chạy generate_contracts.py rồi `npm --prefix frontend run contracts:generate`; cập nhật versions/examples/tests/docs. Đổi data/model/rules/config phải cập nhật hashes và evidence, không sửa gold theo prediction.
+## Phạm vi và giới hạn
 
-## Vận hành và Git
+Hóa đơn header/tổng tiền: invoice_number, invoice_date, seller_name, total_amount integer VND, currency. PNG/JPEG một trang; mặc định 5MiB/16M pixels, deadline pipeline30s, tối đa5 pending/running jobs và một worker. Chưa PDF/multi-page/handwriting/line-items. Evidence/confidence là heuristic chưa calibrated; người dùng vẫn phải đối chiếu ảnh.
 
-`docker compose up --build` dựng backend/OCR cùng frontend, bind loopback, named volume giữ DB/uploads sau `docker compose down`. Không dùng `down -v` nếu cần dữ liệu. Docker và remote Actions phải kiểm riêng, không suy từ YAML. [Runbook](docs/product/runbook.md) có backup/restore kiểm hash và không ghi đè thư mục cũ.
+Local một người dùng, không auth/tenant isolation. Chỉ synthetic/sample có quyền, không hồ sơ thật. Đơn đề nghị 7 trường đang có tiếp tục hoạt động trong cùng app. CCCD, đơn sinh viên, autosave, PDF và VLM/OCR.space của các nhánh khác được [giữ tham chiếu và lên kế hoạch port](docs/consolidation-plan.md); không tuyên bố đã tích hợp chúng. [Bài tập VT-042..046](homework/README.md) giữ tại nguồn lịch sử.
 
-Local/single-user, chưa có auth/multi-tenant; không expose công khai hoặc dùng hồ sơ thật. `.env`, DB/uploads/models/cache ở ngoài Git. Đọc [AGENTS](AGENTS.md), [scope](docs/requirements/scope.md), [contracts](contracts/README.md) và ADR trước khi sửa.
+## Cấu trúc và nguồn chuẩn
 
-Lượt 24/10 triển khai cả sản phẩm trên nhatquang theo yêu cầu mới; chưa push/merge main hoặc đổi phần việc nhánh khác. [Foundation verification](docs/reports/foundation-verification.md) là snapshot lịch sử; [ADR 0007](docs/adr/0007-product-on-nhatquang.md) ghi phạm vi mới. [Kế hoạch 10 tuần](docs/planning/team-delivery-plan-2026-10-20.md) giữ cho nhóm tham chiếu. Người dùng tự review/commit/push.
+| Đường dẫn | Vai trò |
+|---|---|
+| `frontend/` | React/TS/Vite, upload/source/review/history và API types được sinh |
+| `backend/src/docintel/` | API, domain nguồn chuẩn, use cases, SQLite migrations, storage/worker |
+| `pipeline/src/document_pipeline/` | Preprocess/OCR/extraction; không đọc gold hoặc import web/DB |
+| `contracts/` | JSON Schema/OpenAPI/examples sinh từ domain, không sửa tay |
+| `data/` + `evaluation/` | Synthetic fixtures/product dataset và evaluator/native evidence tách riêng |
+| `scripts/` | `dev.py` là entry point dev/check; generators/native/evaluation/backup helpers |
+| `runtime/` | DB/uploads/models/cache/reports local, ignored, không commit |
+
+[CONTRIBUTING](CONTRIBUTING.md): main → nhánh ngắn → PR → checks → review. [Tài liệu hiện hành](docs/README.md), [audit](docs/repository-audit.md), [migration](docs/consolidation-plan.md), [bản đồ mã](docs/codebase/STRUCTURE.md). Docker local trong runbook là đường tùy chọn; chưa được coi đã chạy nếu chỉ kiểm YAML.

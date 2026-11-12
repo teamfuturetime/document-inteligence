@@ -1,22 +1,19 @@
-# Tài liệu AI-02
+# Tài liệu hiện hành
 
-Sản phẩm nhatquang 0.2.0 ngày 24/10: [kiến trúc thực](product/architecture.md), [runbook/demo/backup](product/runbook.md), [handoff](product/integration-handoff.md), [nguồn kế thừa](ml/source-lineage.md), [báo cáo kiểm chứng](reports/product-verification-2026-10-24.md). Tài liệu foundation là snapshot lịch sử.
+Bắt đầu tại [README root](../README.md). Chỉ có một nền sản phẩm docintel/SQLite/pipeline, đang trên nhánh consolidation chờ PR; foundation reports và các nhánh cá nhân là lịch sử có nguồn gốc.
 
-Kế hoạch mới cho nhóm 5 người: [phân công và lịch 20/10 đến 28/12/2026](planning/team-delivery-plan-2026-10-20.md), kèm [khảo sát các nhánh thực tế](reports/branch-audit-2026-10-20.md). Kế hoạch mô tả bước phát triển PRODUCT_MVP tiếp theo; không đổi trạng thái implementation của foundation bằng việc có tài liệu mới.
+| Cần làm gì | Nguồn chuẩn |
+|---|---|
+| Cài, cấu hình, chạy, check | [README root](../README.md), scripts/dev.py |
+| Phát triển/PR/review | [CONTRIBUTING](../CONTRIBUTING.md), [GitHub approval package](governance/github-setup.md) |
+| Kiến trúc sản phẩm | [product/architecture](product/architecture.md), [contracts](../contracts/README.md) |
+| OCR/evidence/metrics | [source lineage](ml/source-lineage.md), [protocol](ml/evaluation-protocol.md), [dataset](../data/product/README.md) |
+| Demo/backup | [runbook](product/runbook.md) |
+| Quyết định nền và port | [ADR0008](decisions/0008-primary-invoice-platform.md), [audit](repository-audit.md), [inventory](branch-inventory.md), [migration](consolidation-plan.md) |
+| Kết quả thực tế | [consolidation verification](consolidation-verification.md) |
+| Bản đồ code | [STACK](codebase/STACK.md), [STRUCTURE](codebase/STRUCTURE.md), [ARCHITECTURE](codebase/ARCHITECTURE.md), [CONVENTIONS](codebase/CONVENTIONS.md), [INTEGRATIONS](codebase/INTEGRATIONS.md), [TESTING](codebase/TESTING.md), [CONCERNS](codebase/CONCERNS.md) |
+| Bài tập cá nhân | [Chỉ mục bảo toàn](../homework/README.md) |
 
-Điểm vào: [README](../README.md), [onboarding](team/onboarding.md), [báo cáo bàn giao](reports/foundation-verification.md).
+## Lịch sử, không dùng như hướng dẫn chạy chính
 
-| Chủ đề | Tài liệu |
-| --- | --- |
-| Yêu cầu | [Scope](requirements/scope.md), [SRS](requirements/srs.md), [use cases](requirements/use-cases.md), [traceability](requirements/traceability.md) |
-| Kiến trúc | [Overview](architecture/overview.md), [data contracts](architecture/data-contracts.md), [API](architecture/api.md) |
-| Quyết định | [ADR index và decision log](adr/README.md) |
-| Dữ liệu | [Dataset card](data/dataset-card.md), [annotation](data/annotation-guide.md), [split](data/split-policy.md) |
-| AI/evidence | [Extraction](ml/extraction-strategy.md), [confidence](ml/confidence-policy.md), [evaluation](ml/evaluation-protocol.md), [taxonomy](ml/error-taxonomy.md), [versioning](ml/versioning.md) |
-| Tests | [Test plan](testing/test-plan.md) |
-| Nhóm | [Workflow](team/workflow.md), [roles](team/roles.md), [onboarding](team/onboarding.md) |
-| Kế hoạch | [Backlog](planning/backlog.md), [milestones](planning/milestones.md), [risks](planning/risks.md) |
-| Vận hành | [Local development](operations/local-development.md), [troubleshooting](operations/troubleshooting.md) |
-| Quản trị | [GitHub setup](governance/github-setup.md), [licensing](governance/licensing.md) |
-
-Giữ cấu trúc đích của yêu cầu, không gộp các tài liệu bắt buộc. Nội dung chi tiết có một nguồn chính; tài liệu khác dùng liên kết để tránh hai bản khác nhau.
+`reports/`, `planning/team-delivery-plan-2026-10-20.*`, ADR0001..0007 và các tài liệu FOUNDATION/contract_fixture giữ context tại thời điểm tạo. [Product verification 24/10](reports/product-verification-2026-10-24.md) là evidence cũ có model/runtime riêng; [foundation verification](reports/foundation-verification.md) không còn mô tả toàn bộ sản phẩm. Requirements/traceability giữ IDs; scope/product-traceability được đọc cùng ADR0008, không suy những BL cũ chưa có tính năng từ văn bản lịch sử.

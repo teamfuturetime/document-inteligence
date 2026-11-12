@@ -1,3 +1,5 @@
+> LỊCH SỬ FOUNDATION/KẾ HOẠCH: đọc cùng [ADR nền hiện hành](../decisions/0008-primary-invoice-platform.md) và README root. Không dùng quy ước nhánh/cách chạy hoặc trạng thái thiếu tính năng trong snapshot này làm hiện trạng consolidation.
+
 # Backlog local
 
 Các ID BL là local, chưa là GitHub issue. Bản backlog foundation được cụ thể hóa thành [45 task cho năm thành viên](team-delivery-plan-2026-10-20.md) ngày 20/10/2026; các task giữ liên kết BL/requirements, owner/reviewer và lịch 9-10 tuần. Owners đề xuất theo [roles](../team/roles.md). Không coi lịch đề xuất là deadline giảng viên hoặc đặt quality threshold chưa có baseline.

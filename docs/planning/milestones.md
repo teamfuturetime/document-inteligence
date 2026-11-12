@@ -1,3 +1,5 @@
+> LỊCH SỬ FOUNDATION/KẾ HOẠCH: đọc cùng [ADR nền hiện hành](../decisions/0008-primary-invoice-platform.md) và README root. Không dùng quy ước nhánh/cách chạy hoặc trạng thái thiếu tính năng trong snapshot này làm hiện trạng consolidation.
+
 # Milestones
 
 Lịch thực hiện đề xuất theo yêu cầu mới ngày 20/10/2026: [kế hoạch 10 tuần](team-delivery-plan-2026-10-20.md), MVP trước 30/11, bàn giao chính 21/12, dự phòng đến 28/12. Các mốc dưới là chuỗi trách nhiệm gốc; ngày giảng viên và lịch nhận việc cần nhóm xác nhận, không thay đổi trạng thái implementation chỉ bằng việc có kế hoạch.

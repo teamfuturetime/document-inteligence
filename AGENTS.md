@@ -11,3 +11,10 @@
 - Contracts/data: `uv run --project backend --locked python scripts/generate_contracts.py --check`, `uv run --project backend --locked python scripts/check_data.py`, `uv run --project backend --locked python scripts/evaluate_fixtures.py`, `uv run --project backend --locked python scripts/check_repository.py`.
 - Frontend: `npm --prefix frontend run contracts:check`, `typecheck`, `lint`, `format:check`, `npm --prefix frontend test`, `npm --prefix frontend run build`; các tên ngắn trước đó là npm scripts.
 - Báo rõ lệnh đã chạy, kết quả và pending checks. Không tự triển khai cloud, mua dịch vụ, gửi thông báo hoặc đổi quyền repository ngoài phạm vi được giao.
+
+## Consolidation và Git
+
+- README root/scripts/dev.py là nguồn lệnh chạy; ADR0008 là nền hiện hành. Một frontend/backend/pipeline, không tạo app cạnh tranh trong archive.
+- GitHub Flow: main ổn định → feat/fix/docs/test/chore ngắn hạn → PR/checks/review. Nhánh cá nhân/bài tập là ref lịch sử; không xóa hoặc đổi link nộp.
+- Commit phần nhỏ hoàn chỉnh theo Conventional Commits, review status/diff, stage paths cụ thể, kiểm staged diff/check. Không commit output cá nhân, runtime/models/DB/secrets.
+- Không push, merge, force-push, rebase/amend/reset, đổi default branch/quyền hoặc xóa nhánh khi chưa có ủy quyền. Gói thao tác GitHub phải có nội dung cụ thể để người dùng duyệt trước.

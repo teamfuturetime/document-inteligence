@@ -2,30 +2,7 @@
 
 ## Native
 
-Prerequisites: Python 3.14.5, uv 0.12.22, Node 24.16.x/npm 11.13.x theo pins hiện tại; Tesseract 5 từ nhà cung cấp chính thức. Không cần API key hoặc GPU. Không tự cài phần mềm hệ thống khi người dùng chỉ clone repo.
-
-```powershell
-uv sync --project backend --locked
-npm --prefix frontend ci
-uv run --project backend --locked python scripts/fetch_ocr_models.py
-```
-
-Helper tải khoảng 4.7 MB vie+eng đã pin, kiểm checksum, đặt trong runtime/models/tessdata_fast. Không dùng model khác chỉ vì có cùng tên. Nếu Tesseract không trên PATH, Settings có thể nhận vị trí Windows chuẩn hoặc override DOCINTEL_TESSERACT_EXECUTABLE. Không có executable/model đúng thì readiness false và upload báo unavailable.
-
-Nếu chưa có `.env`, sao chép `.env.example`. Nếu đã có `.env`, cập nhật riêng `DOCINTEL_PROVIDER_MODE=tesseract`, giữ các giá trị riêng khác. Không commit `.env`. Có thể đặt biến trong terminal backend thay vì sửa file:
-
-```powershell
-$env:DOCINTEL_PROVIDER_MODE='tesseract'
-uv run --project backend --locked uvicorn docintel.api.app:app --host 127.0.0.1 --port 8000
-```
-
-Terminal frontend:
-
-```powershell
-npm --prefix frontend run dev
-```
-
-Mở http://localhost:5173 rồi chọn **Xử lý tài liệu**. Backend API docs: http://127.0.0.1:8000/docs. Chạy một worker process; không mở nhiều app vào cùng runtime DB. `API_PROXY_TARGET` có thể đổi target của Vite khi thử cổng riêng; CORS origins của backend cần khớp origin thực.
+[README gốc](../../README.md) là nguồn duy nhất cho runtime pins, setup, cấu hình, dev servers và checks. Dùng `python scripts/dev.py setup`, `models`, rồi `backend`/`frontend` ở hai terminal. Không copy chuỗi lệnh cũ từ báo cáo foundation. Backend đọc `.env` mẫu tesseract; inference không tải model hoặc fallback fixture. Chi tiết dưới đây tập trung demo/backup/triage, không định nghĩa một cách cài khác.
 
 ## Demo có thể lặp lại
 
