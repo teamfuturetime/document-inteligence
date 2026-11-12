@@ -33,7 +33,15 @@ def test_caller_cancellation_propagates_without_detached_delivery():
     asyncio.run(run())
 
 
-@pytest.mark.parametrize("options", [{"notification_mode": "email"}])
+@pytest.mark.parametrize(
+    "options",
+    [
+        {"notification_mode": "email"},
+        {"notification_timeout_seconds": 0},
+        {"notification_timeout_seconds": 1.1},
+        {"notification_timeout_seconds": float("inf")},
+    ],
+)
 def test_invalid_delivery_configuration_is_rejected(options):
     with pytest.raises(ValidationError):
         Settings(_env_file=None, **options)
