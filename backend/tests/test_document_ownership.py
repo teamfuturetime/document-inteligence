@@ -21,6 +21,20 @@ def upload_as(service, key="same-key"):
     return service.upload(image_bytes(), "hoa_don", "synthetic", "synthetic.png", key)
 
 
+def test_system_worker_handles_both_owners_without_user_service_bypass(tenants):
+    root, alpha, beta = tenants
+    a, b = upload_as(alpha), upload_as(beta)
+    with pytest.raises(RuntimeError, match="internal worker"):
+        alpha.process_next()
+    with pytest.raises(RuntimeError, match="internal worker"):
+        beta.recover_interrupted()
+    assert root.process_next() and root.process_next()
+    assert not root.process_next()
+    assert alpha.detail(a.document_id).run.status == "succeeded"
+    assert beta.detail(b.document_id).run.status == "succeeded"
+    assert alpha.list_documents(20, 0).total == beta.list_documents(20, 0).total == 1
+
+
 def test_insights_counts_only_current_owners_documents_and_runs(tenants):
     root, alpha, beta = tenants
     a = upload_as(alpha)

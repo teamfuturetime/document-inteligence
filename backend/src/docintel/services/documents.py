@@ -516,6 +516,8 @@ class DocumentService:
         )
 
     def recover_interrupted(self):
+        if self.owner_id != "local":
+            raise RuntimeError("Only the internal worker service can recover shared jobs")
         with self.repository.transaction(write=True) as connection:
             interrupted = connection.execute("SELECT * FROM runs WHERE status='running'").fetchall()
             for row in interrupted:
@@ -527,6 +529,8 @@ class DocumentService:
                 event(connection, row["document_id"], row["run_id"], None, "interrupted", {})
 
     def process_next(self) -> bool:
+        if self.owner_id != "local":
+            raise RuntimeError("Only the internal worker service can process shared jobs")
         with self.repository.transaction(write=True) as connection:
             row = connection.execute(
                 "SELECT r.*,d.document_type,d.input_sha256 FROM runs r "
