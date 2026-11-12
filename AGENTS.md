@@ -46,7 +46,7 @@ Khi được quyền chọn cách merge, đề xuất merge commit để giữ c
 
 ### Trước khi code hoặc sửa tài liệu
 
-1. Kiểm tra `git status`, nhánh/base, trạng thái PR nền, issue và PR đang có; tìm trùng trước khi tạo. Repo đích là `teamfuturetime/document-inteligence`. Không dùng main chưa có nền để phát triển; theo CONTRIBUTING trong giai đoạn chờ PR nền.
+1. Kiểm tra `git status`, nhánh/base, issue và PR đang có; tìm trùng trước khi tạo. Repo đích là `teamfuturetime/document-inteligence`. Nền đã ở main qua PR #3; tạo task mới từ main đã cập nhật theo CONTRIBUTING, giữ thay đổi local trước khi chuyển nhánh. PR phụ thuộc phải ghi base/dependency rõ, không dùng nhánh cá nhân/consolidation cũ làm mặc định.
 2. Mỗi kết quả có thể nghiệm thu độc lập cần một issue: vấn đề, phạm vi có/ngoài, acceptance, cách kiểm tra, dependencies, area/priority/milestone phù hợp. Việc lớn dùng issue cha và checklist/link issue con; chỉ tách khi có đầu ra riêng, không tách bắt buộc thành code/test/docs.
 3. Mỗi issue có một người chịu trách nhiệm chính đã nhận việc và reviewer khác người đó. Chỉ dùng tài khoản đã xác minh, không suy GitHub handle từ tên thành viên. Đề xuất phân công trên issue và chờ người đó xác nhận; assignee không thay cho bằng chứng đã đồng ý. Agent không nhận việc hoặc approve thay thành viên khác.
 4. Người nhận việc xác nhận bằng comment của chính tài khoản mình: hiểu đầu ra, kế hoạch, dependency, reviewer dự kiến. Agent hỗ trợ soạn nội dung cho người đang điều khiển, không giả danh người khác. Khi phân công đã rõ và được ủy quyền, cập nhật assignee thật và link issue cha/con.
