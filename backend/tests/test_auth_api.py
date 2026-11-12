@@ -165,6 +165,27 @@ def test_two_user_resource_authorization_matrix(session_api, operation):
     assert api.get("/api/v1/insights").json()["documents"] == 0
 
 
+def test_idempotency_replay_is_scoped_to_authenticated_owner_even_when_queue_full(session_api):
+    api, settings = session_api
+    settings.max_pending_runs = 2
+    alpha = login(api)
+    first = upload(api, alpha["csrf_token"]).json()
+    beta = login(api, "beta")
+    second = upload(api, beta["csrf_token"]).json()
+    assert first["document_id"] != second["document_id"]
+    alpha = login(api)
+    repeated = upload(api, alpha["csrf_token"])
+    assert repeated.status_code == 202
+    assert repeated.json()["document_id"] == first["document_id"]
+    conflict = api.post(
+        "/api/v1/documents?document_type=hoa_don&data_origin=synthetic",
+        content=b"different",
+        headers={"X-CSRF-Token": alpha["csrf_token"], "Idempotency-Key": "same"},
+    )
+    assert conflict.status_code == 409
+    assert api.get("/api/v1/documents").json()["total"] == 1
+
+
 def test_real_login_owner_isolation_and_logout(session_api):
     api, _ = session_api
     assert api.get("/api/v1/documents").status_code == 401
