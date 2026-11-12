@@ -2,6 +2,7 @@ import pytest
 from test_product import image_bytes
 from test_product import product as product
 
+from docintel.domain.documents import ReviewRequest, RevisionRequest
 from docintel.repositories.identity import IdentityRepository
 from docintel.services.documents import ProductError
 
@@ -18,6 +19,23 @@ def tenants(product):
 
 def upload_as(service, key="same-key"):
     return service.upload(image_bytes(), "hoa_don", "synthetic", "synthetic.png", key)
+
+
+@pytest.mark.parametrize("operation", ["save_review", "confirm", "export"])
+def test_revision_writes_and_exports_require_owner_inside_transaction(tenants, operation):
+    root, alpha, beta = tenants
+    a = upload_as(alpha)
+    assert root.process_next()
+    values = {"run_id": a.run.run_id, "expected_revision": 1}
+    request = (
+        ReviewRequest(**values, fields={})
+        if operation == "save_review"
+        else RevisionRequest(**values)
+    )
+    with pytest.raises(ProductError) as denied:
+        getattr(beta, operation)(a.document_id, request)
+    assert denied.value.status == 404
+    assert alpha.detail(a.document_id).review.review_status == "draft"
 
 
 def test_list_detail_and_pagination_never_cross_owner_boundary(tenants):

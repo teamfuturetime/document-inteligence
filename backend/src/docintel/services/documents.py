@@ -337,7 +337,8 @@ class DocumentService:
     def checked_revision(self, connection, document_id: str, request: RevisionRequest):
         document = require(
             connection.execute(
-                "SELECT * FROM documents WHERE document_id=?", (document_id,)
+                "SELECT * FROM documents WHERE document_id=? AND owner_id=?",
+                (document_id, self.owner_id),
             ).fetchone()
         )
         if document["latest_run_id"] != request.run_id:
