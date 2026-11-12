@@ -105,6 +105,7 @@ def assert_empty(app):
         ),
         ([], [body(b"x" * 1025)], 413, "FILE_TOO_LARGE"),
         ([], [body(b"x" * 700, True), body(b"x" * 325)], 413, "FILE_TOO_LARGE"),
+        ([(b"content-length", b"1")], [body(png())], 400, "UPLOAD_LENGTH_MISMATCH"),
     ],
 )
 def test_rejects_before_persistence(tmp_path, monkeypatch, headers, messages, status, code):
