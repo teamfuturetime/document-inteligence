@@ -21,6 +21,8 @@ from docintel.services.worker import LocalInferenceWorker
 
 def create_app(settings: Settings | None = None, *, start_worker: bool = True) -> FastAPI:
     config = settings or Settings()
+    if config.auth_mode == "session":
+        raise RuntimeError("Session mode requires the complete identity and ownership API gates")
 
     @asynccontextmanager
     async def lifespan(application: FastAPI):

@@ -1,8 +1,9 @@
 import shutil
 from pathlib import Path
 from typing import Literal
+from urllib.parse import urlsplit
 
-from pydantic import Field
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -33,3 +34,37 @@ class Settings(BaseSettings):
     )
     tessdata_dir: Path = ROOT / "runtime/models/tessdata_fast"
     max_pending_runs: int = Field(default=5, ge=1, le=20)
+    auth_mode: Literal["local", "session"] = "local"
+    session_cookie_secure: bool = True
+    session_ttl_seconds: int = Field(default=28_800, ge=60, le=86_400)
+    max_login_attempts: int = Field(default=20, ge=1, le=100)
+    login_window_seconds: int = Field(default=60, ge=10, le=3600)
+
+    @model_validator(mode="after")
+    def validate_session_origins(self):
+        if self.auth_mode == "session":
+            if not self.cors_origins or len(self.cors_origins) > 10:
+                raise ValueError("Session mode requires a bounded exact origin allowlist")
+            for origin in self.cors_origins:
+                parsed = urlsplit(origin)
+                if (
+                    parsed.scheme not in {"http", "https"}
+                    or not parsed.hostname
+                    or parsed.username
+                    or parsed.password
+                    or parsed.path
+                    or parsed.query
+                    or parsed.fragment
+                    or "*" in origin
+                ):
+                    raise ValueError("Session origins must be exact HTTP(S) origins")
+                _ = parsed.port
+                if not self.session_cookie_secure and parsed.hostname not in {
+                    "localhost",
+                    "127.0.0.1",
+                    "::1",
+                }:
+                    raise ValueError(
+                        "Insecure session cookies are limited to explicit loopback profiles"
+                    )
+        return self
