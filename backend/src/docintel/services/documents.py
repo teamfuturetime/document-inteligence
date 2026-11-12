@@ -144,7 +144,7 @@ class DocumentService:
     def list_documents(
         self, limit: int, offset: int, document_type: str | None = None, status: str | None = None
     ) -> DocumentList:
-        conditions, params = [], []
+        conditions, params = ["d.owner_id=?"], [self.owner_id]
         if document_type:
             conditions.append("d.document_type=?")
             params.append(document_type)
@@ -168,7 +168,8 @@ class DocumentService:
         with self.repository.transaction() as connection:
             document = require(
                 connection.execute(
-                    SUMMARY_SELECT + " WHERE d.document_id=?", (document_id,)
+                    SUMMARY_SELECT + " WHERE d.document_id=? AND d.owner_id=?",
+                    (document_id, self.owner_id),
                 ).fetchone()
             )
             selected = run_id or document["latest_run_id"]

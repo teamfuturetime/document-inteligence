@@ -3,6 +3,7 @@ from test_product import image_bytes
 from test_product import product as product
 
 from docintel.repositories.identity import IdentityRepository
+from docintel.services.documents import ProductError
 
 
 @pytest.fixture
@@ -17,6 +18,19 @@ def tenants(product):
 
 def upload_as(service, key="same-key"):
     return service.upload(image_bytes(), "hoa_don", "synthetic", "synthetic.png", key)
+
+
+def test_list_detail_and_pagination_never_cross_owner_boundary(tenants):
+    root, alpha, beta = tenants
+    a, b = upload_as(alpha), upload_as(beta)
+    assert [item.document_id for item in alpha.list_documents(20, 0).items] == [a.document_id]
+    assert alpha.list_documents(20, 1).items == []
+    assert beta.list_documents(20, 0, "hoa_don", "queued").total == 1
+    assert root.list_documents(20, 0).total == 0
+    with pytest.raises(ProductError) as denied:
+        beta.detail(a.document_id)
+    assert denied.value.status == 404
+    assert beta.detail(b.document_id).document_id == b.document_id
 
 
 def test_idempotency_keys_are_isolated_per_owner_and_binding_is_not_shared(tenants):
