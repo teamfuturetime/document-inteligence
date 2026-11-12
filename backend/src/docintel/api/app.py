@@ -15,6 +15,7 @@ from docintel.api.documents import router as document_router
 from docintel.api.models import Capabilities, ErrorEnvelope, FixtureCatalog, Health, SchemaInfo
 from docintel.config import ROOT, Settings
 from docintel.domain.models import FIELD_IDS, SCHEMA_VERSION, FixtureView
+from docintel.repositories.locking import RuntimeLock
 from docintel.services.auth import AuthService
 from docintel.services.documents import DocumentService, ProductError
 from docintel.services.fixtures import FixtureService
@@ -26,20 +27,27 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = True) -
 
     @asynccontextmanager
     async def lifespan(application: FastAPI):
-        application.state.documents = DocumentService(config)
-        application.state.auth = AuthService(config, application.state.documents.repository)
-        application.state.upload_limiter = CapacityLimiter(config.max_concurrent_uploads)
-        application.state.upload_tasks = set()
+        app_lock = RuntimeLock(config.runtime_dir / "app.lock") if start_worker else None
         worker = None
-        if start_worker and config.provider_mode == "tesseract":
-            worker = LocalInferenceWorker(application.state.documents)
-            worker.start()
-        yield
-        # A complete upload may still be committing after its client went away.
-        if application.state.upload_tasks:
-            await asyncio.gather(*application.state.upload_tasks, return_exceptions=True)
-        if worker:
-            worker.close()
+        if app_lock:
+            app_lock.acquire()
+        try:
+            application.state.documents = DocumentService(config)
+            application.state.auth = AuthService(config, application.state.documents.repository)
+            application.state.upload_limiter = CapacityLimiter(config.max_concurrent_uploads)
+            application.state.upload_tasks = set()
+            if start_worker and config.provider_mode == "tesseract":
+                candidate = LocalInferenceWorker(application.state.documents)
+                candidate.start()
+                worker = candidate
+            yield
+        finally:
+            if getattr(application.state, "upload_tasks", None):
+                await asyncio.gather(*application.state.upload_tasks, return_exceptions=True)
+            if worker:
+                worker.close()
+            if app_lock:
+                app_lock.release()
 
     application = FastAPI(
         title="AI-02 Document Intelligence",

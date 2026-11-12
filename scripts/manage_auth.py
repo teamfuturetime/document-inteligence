@@ -1,13 +1,63 @@
 """Offline account/migration administration. Never accept passwords via argv or print secrets."""
 
 import argparse
+import getpass
+import json
 import sqlite3
-from contextlib import closing
+from contextlib import closing, contextmanager
 from pathlib import Path
 
 from backup_runtime import backup
+from docintel.domain.auth import Credentials
+from docintel.repositories.identity import IdentityRepository
 from docintel.repositories.locking import RuntimeLock
 from docintel.repositories.schema import upgrade_connection, version
+from docintel.repositories.sqlite import DocumentRepository
+from docintel.security import hash_password
+
+
+@contextmanager
+def offline_runtime(runtime: Path):
+    locks = [RuntimeLock(runtime / "app.lock"), RuntimeLock(runtime / "worker.lock")]
+    try:
+        for lock in locks:
+            lock.acquire()
+        yield
+    finally:
+        for lock in reversed(locks):
+            lock.release()
+
+
+def manage_user(
+    runtime: Path, action: str, username: str | None = None, password: str | None = None
+):
+    with offline_runtime(runtime):
+        repository = DocumentRepository(runtime / "documents.sqlite3")
+        repository.initialize()
+        identities = IdentityRepository(repository)
+        if action == "list-users":
+            with repository.transaction() as connection:
+                return [
+                    dict(row)
+                    for row in connection.execute(
+                        "SELECT user_id,username,is_active FROM users WHERE user_id!='local' ORDER BY username"
+                    )
+                ]
+        if action in {"create-user", "reset-password"}:
+            credentials = Credentials(username=username, password=password)
+            encoded = hash_password(credentials.password.get_secret_value())
+            if action == "create-user":
+                identities.create_user(credentials.username, encoded)
+                return
+        row = identities.user(username or "")
+        if row is None or row["user_id"] == "local":
+            raise ValueError("Account not found")
+        if action == "disable-user":
+            identities.disable(row["user_id"])
+        elif action == "reset-password":
+            identities.reset_password(row["user_id"], encoded)
+        else:
+            raise ValueError("Unsupported administration command")
 
 
 def migrate_runtime(runtime: Path, destination: Path):
@@ -16,16 +66,11 @@ def migrate_runtime(runtime: Path, destination: Path):
     database = runtime / "documents.sqlite3"
     if not database.is_file():
         raise ValueError("Existing runtime required")
-    lock = RuntimeLock(runtime / "worker.lock")
-    lock.acquire()
-    try:
-        with closing(sqlite3.connect(database)) as connection:
-            if version(connection) != 1:
-                raise RuntimeError("Expected schema 1; no migration performed")
-            backup(runtime, destination)
-            upgrade_connection(connection)
-    finally:
-        lock.release()
+    with offline_runtime(runtime), closing(sqlite3.connect(database)) as connection:
+        if version(connection) != 1:
+            raise RuntimeError("Expected schema 1; no migration performed")
+        backup(runtime, destination)
+        upgrade_connection(connection)
 
 
 def main():
@@ -34,9 +79,28 @@ def main():
     commands = parser.add_subparsers(dest="command", required=True)
     migrate = commands.add_parser("migrate")
     migrate.add_argument("--backup", type=Path, required=True)
+    commands.add_parser("list-users")
+    for action in ("create-user", "disable-user", "reset-password"):
+        command = commands.add_parser(action)
+        command.add_argument("username")
     args = parser.parse_args()
-    migrate_runtime(args.runtime, args.backup)
-    print("Migration verified; previous runtime preserved in backup.")
+    if args.command == "migrate":
+        migrate_runtime(args.runtime, args.backup)
+        print("Migration verified; previous runtime preserved in backup.")
+    else:
+        password = None
+        if args.command in {"create-user", "reset-password"}:
+            password = getpass.getpass("Password (12–128 characters): ")
+            if password != getpass.getpass("Repeat password: "):
+                raise SystemExit("Passwords do not match; nothing changed.")
+        result = manage_user(
+            args.runtime, args.command, getattr(args, "username", None), password
+        )
+        print(
+            json.dumps(result)
+            if result is not None
+            else "Identity administration completed."
+        )
 
 
 if __name__ == "__main__":
