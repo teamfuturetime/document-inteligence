@@ -109,6 +109,13 @@ def probe(port):
         start,
         (413, "FILE_TOO_LARGE"),
     )
+    start = time.monotonic()
+    connection = open_upload(port, chunked=True)
+    # Legal HTTP framing, but a decoded body one byte beyond the application cap.
+    chunk = b"x" * (MAXIMUM + 1)
+    connection.sendall(f"{len(chunk):x}\r\n".encode() + chunk + b"\r\n0\r\n\r\n")
+    check("chunked_oversize", connection, start, (413, "FILE_TOO_LARGE"))
+
     samples["final"] = get_metrics(port)
     assert all(
         s["documents"] == s["source_preview_files"] == 0 for s in samples.values()
