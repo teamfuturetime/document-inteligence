@@ -116,6 +116,30 @@ def probe(port):
     connection.sendall(f"{len(chunk):x}\r\n".encode() + chunk + b"\r\n0\r\n\r\n")
     check("chunked_oversize", connection, start, (413, "FILE_TOO_LARGE"))
 
+    start = time.monotonic()
+    first = open_upload(port, length=100)
+    first.sendall(b"x")
+    second = open_upload(port, length=100)
+    second.sendall(b"x")
+    deadline = time.monotonic() + 0.3
+    while (active := get_metrics(port))["active_uploads"] != SLOTS:
+        assert time.monotonic() < deadline, active
+        time.sleep(0.005)
+    samples["two_slow_uploads"] = active
+    rejection_start = time.monotonic()
+    check(
+        "admission_full_no_body",
+        open_upload(port, length=100),
+        rejection_start,
+        (429, "UPLOAD_BUSY"),
+    )
+    # Supply additional chunks below the deadline; the total deadline must still fire.
+    time.sleep(0.15)
+    first.sendall(b"x")
+    second.sendall(b"x")
+    check("slow_body_total_deadline_1", first, start, (408, "UPLOAD_TIMEOUT"))
+    check("slow_body_total_deadline_2", second, start, (408, "UPLOAD_TIMEOUT"))
+
     samples["final"] = get_metrics(port)
     assert all(
         s["documents"] == s["source_preview_files"] == 0 for s in samples.values()
