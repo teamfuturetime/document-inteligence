@@ -191,3 +191,16 @@ def test_rollback_does_not_publish_confirmation(product, monkeypatch):
         )
     assert sender.events == []
     assert service.detail(document["document_id"]).review.review_status == "draft"
+
+
+def test_disabled_mode_does_not_attempt_delivery(product):
+    api, settings = product
+    settings.notification_mode = "disabled"
+    sender = Sender(api.app.state.documents)
+    api.app.state.confirmation_notifier = sender
+    document = processed(api)
+    response = api.post(
+        f"/api/v1/documents/{document['document_id']}/confirm", json=revision_request(document)
+    )
+    assert response.status_code == 200
+    assert sender.events == []
