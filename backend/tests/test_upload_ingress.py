@@ -1,0 +1,107 @@
+"""Exercise ASGI body events, including cases normal HTTP clients cannot encode."""
+
+import asyncio
+import io
+import json
+
+import pytest
+from PIL import Image
+
+from docintel.api.app import create_app
+from docintel.config import Settings
+from docintel.services.documents import DocumentService
+
+
+def png():
+    output = io.BytesIO()
+    Image.new("RGB", (10, 10), "white").save(output, format="PNG")
+    return output.getvalue()
+
+
+def app_for(tmp_path, monkeypatch, **options):
+    monkeypatch.setattr(DocumentService, "ensure_ready", lambda self: {})
+    return create_app(
+        Settings(_env_file=None, runtime_dir=tmp_path, max_upload_bytes=1024, **options),
+        start_worker=False,
+    )
+
+
+async def post(app, messages, headers=(), *, entered=None, pause=0):
+    sent, index = [], 0
+    finished = asyncio.Event()
+
+    async def receive():
+        nonlocal index
+        if index < len(messages):
+            if entered:
+                entered.set()
+            if pause:
+                await asyncio.sleep(pause)
+            message = messages[index]
+            index += 1
+            return message
+        await finished.wait()
+        return {"type": "http.disconnect"}
+
+    async def send(message):
+        sent.append(message)
+        if message["type"] == "http.response.body" and not message.get("more_body", False):
+            finished.set()
+
+    scope = {
+        "type": "http",
+        "asgi": {"version": "3.0", "spec_version": "2.4"},
+        "http_version": "1.1",
+        "method": "POST",
+        "scheme": "http",
+        "path": "/api/v1/documents",
+        "raw_path": b"/api/v1/documents",
+        "query_string": b"document_type=hoa_don&data_origin=synthetic",
+        "root_path": "",
+        "headers": [(b"host", b"localhost"), *headers],
+        "client": ("127.0.0.1", 12345),
+        "server": ("127.0.0.1", 8000),
+    }
+    await app(scope, receive, send)
+    start = next(message for message in sent if message["type"] == "http.response.start")
+    body = b"".join(
+        message.get("body", b"") for message in sent if message["type"] == "http.response.body"
+    )
+    return start["status"], json.loads(body), dict(start["headers"]), index
+
+
+def body(data, more=False):
+    return {"type": "http.request", "body": data, "more_body": more}
+
+
+def assert_empty(app):
+    service = app.state.documents
+    with service.repository.transaction() as connection:
+        for table in ("documents", "runs", "events"):
+            assert connection.execute(f"SELECT count(*) FROM {table}").fetchone()[0] == 0
+    assert list(service.storage.root.iterdir()) == []
+
+
+@pytest.mark.parametrize(
+    ("headers", "messages", "status", "code"),
+    [([(b"content-length", b"1025")], [], 413, "FILE_TOO_LARGE")],
+)
+def test_rejects_before_persistence(tmp_path, monkeypatch, headers, messages, status, code):
+    app = app_for(tmp_path, monkeypatch)
+
+    async def run():
+        async with app.router.lifespan_context(app):
+            result, payload, response_headers, consumed = await asyncio.wait_for(
+                post(app, messages, headers), 2
+            )
+            assert result == status
+            assert payload["error"]["code"] == code
+            assert payload["error"]["request_id"] == response_headers[b"x-request-id"].decode()
+            assert response_headers[b"connection"] == b"close"
+            if not messages:
+                assert consumed == 0
+            assert_empty(app)
+            # Rejection must free the slot for the next complete upload.
+            assert (await post(app, [body(png())]))[0] == 202
+
+    asyncio.run(run())

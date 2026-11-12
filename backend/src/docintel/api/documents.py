@@ -5,6 +5,8 @@ from fastapi import APIRouter, Header, Query, Request
 from fastapi.responses import FileResponse, JSONResponse
 from starlette.concurrency import run_in_threadpool
 
+from docintel.api.models import ErrorEnvelope
+from docintel.api.uploads import receive_upload
 from docintel.domain.documents import (
     DEFINITIONS,
     DocumentDetail,
@@ -18,7 +20,7 @@ from docintel.domain.documents import (
     ReviewRequest,
     RevisionRequest,
 )
-from docintel.services.documents import DocumentService, ProductError
+from docintel.services.documents import DocumentService
 
 router = APIRouter(prefix="/api/v1", tags=["product"])
 
@@ -45,7 +47,12 @@ def documents(
     return service(request).list_documents(limit, offset, document_type, status)
 
 
-@router.post("/documents", response_model=DocumentDetail, status_code=202)
+@router.post(
+    "/documents",
+    response_model=DocumentDetail,
+    status_code=202,
+    responses={400: {"model": ErrorEnvelope}, 408: {"model": ErrorEnvelope}},
+)
 async def upload_document(
     request: Request,
     document_type: DocumentType,
@@ -53,16 +60,11 @@ async def upload_document(
     filename: Annotated[str, Query(min_length=1, max_length=200)] = "document.png",
     idempotency_key: Annotated[str | None, Header(pattern=r"^[A-Za-z0-9_-]{1,96}$")] = None,
 ):
-    maximum = service(request).settings.max_upload_bytes
-    data = bytearray()
-    async for chunk in request.stream():
-        if len(data) + len(chunk) > maximum:
-            raise ProductError(413, "FILE_TOO_LARGE", "Tài liệu vượt giới hạn kích thước.")
-        data.extend(chunk)
+    data = await receive_upload(request, service(request).settings)
     filename = re.split(r"[/\\]", filename)[-1]
-    filename = "".join(character for character in filename if character.isprintable()) or "document"
+    filename = "".join(c for c in filename if c.isprintable()) or "document"
     return await run_in_threadpool(
-        service(request).upload, bytes(data), document_type, data_origin, filename, idempotency_key
+        service(request).upload, data, document_type, data_origin, filename, idempotency_key
     )
 
 
