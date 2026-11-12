@@ -27,6 +27,8 @@ jobs:
           python-version: "3.14.5"
       - run: uv sync --project backend --locked
       - run: python3 scripts/dev.py backend-check
+      - name: Verify bounded upload ingress over loopback HTTP
+        run: uv run --project backend --locked python scripts/check_upload_ingress.py --output runtime/verification/upload-ingress-ci.json
   frontend-checks:
     name: Frontend checks
     runs-on: ubuntu-24.04
