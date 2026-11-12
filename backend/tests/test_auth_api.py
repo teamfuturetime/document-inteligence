@@ -124,6 +124,47 @@ def upload(api, csrf):
     )
 
 
+def processed_document(api, csrf):
+    created = upload(api, csrf)
+    assert created.status_code == 202, created.text
+    document = created.json()
+    assert api.app.state.documents.process_next()
+    return api.get("/api/v1/documents/" + document["document_id"]).json()
+
+
+@pytest.mark.parametrize(
+    "operation", ["detail", "source", "history", "review", "confirm", "export", "reprocess"]
+)
+def test_two_user_resource_authorization_matrix(session_api, operation):
+    api, _ = session_api
+    alpha = login(api)
+    document = processed_document(api, alpha["csrf_token"])
+    base = "/api/v1/documents/" + document["document_id"]
+    beta = login(api, "beta")
+    headers = {"X-CSRF-Token": beta["csrf_token"]}
+    revision = {"run_id": document["run"]["run_id"], "expected_revision": 1}
+    if operation == "detail":
+        response = api.get(base)
+    elif operation == "source":
+        response = api.get(base + "/image")
+    elif operation == "history":
+        response = api.get(base + "/history")
+    elif operation == "review":
+        response = api.put(base + "/review", json={**revision, "fields": {}}, headers=headers)
+    elif operation == "confirm":
+        response = api.post(base + "/confirm", json=revision, headers=headers)
+    elif operation == "export":
+        response = api.get(base + "/export", params={"run_id": revision["run_id"], "revision": 1})
+    else:
+        response = api.post(
+            base + "/runs", json={"expected_run_id": revision["run_id"]}, headers=headers
+        )
+    assert response.status_code == 404, response.text
+    assert response.json()["error"]["code"] == "DOCUMENT_NOT_FOUND"
+    assert api.get("/api/v1/documents").json()["total"] == 0
+    assert api.get("/api/v1/insights").json()["documents"] == 0
+
+
 def test_real_login_owner_isolation_and_logout(session_api):
     api, _ = session_api
     assert api.get("/api/v1/documents").status_code == 401
