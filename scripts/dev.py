@@ -57,6 +57,8 @@ def main():
                 "127.0.0.1",
                 "--port",
                 "8000",
+                "--limit-concurrency",
+                "16",
             ]
         ],
         "frontend": [NPM + ["run", "dev"]],

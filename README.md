@@ -76,7 +76,7 @@ Mỗi số liệu phải đi cùng dataset/engine/model/config/source SHA. `eval
 
 ## Phạm vi và giới hạn
 
-Hóa đơn header/tổng tiền: invoice_number, invoice_date, seller_name, total_amount integer VND, currency. PNG/JPEG một trang; mặc định 5MiB/16M pixels, deadline pipeline30s, tối đa5 pending/running jobs và một worker. Chưa PDF/multi-page/handwriting/line-items. Evidence/confidence là heuristic chưa calibrated; người dùng vẫn phải đối chiếu ảnh.
+Hóa đơn header/tổng tiền: invoice_number, invoice_date, seller_name, total_amount integer VND, currency. PNG/JPEG một trang; mặc định 5MiB/16M pixels, deadline pipeline30s, tối đa5 pending/running jobs và một worker. Nhận body có tổng deadline 30 giây, tối đa hai upload đang nhận/tiền xử lý/lưu; đường chạy chuẩn giới hạn Uvicorn 16 connection/task. [Receive/admission, lỗi và giới hạn ingress](docs/operations/upload-ingress.md). Chưa PDF/multi-page/handwriting/line-items. Evidence/confidence là heuristic chưa calibrated; người dùng vẫn phải đối chiếu ảnh.
 
 Local một người dùng, không auth/tenant isolation. Chỉ synthetic/sample có quyền, không hồ sơ thật. Đơn đề nghị 7 trường đang có tiếp tục hoạt động trong cùng app. CCCD, đơn sinh viên, autosave, PDF và VLM/OCR.space của các nhánh khác được [giữ tham chiếu và lên kế hoạch port](docs/consolidation-plan.md); không tuyên bố đã tích hợp chúng. [Bài tập VT-042..046](homework/README.md) giữ tại nguồn lịch sử.
 
