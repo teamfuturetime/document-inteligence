@@ -25,6 +25,7 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = True) -
     async def lifespan(application: FastAPI):
         application.state.documents = DocumentService(config)
         application.state.upload_limiter = CapacityLimiter(config.max_concurrent_uploads)
+        application.state.upload_tasks = set()
         worker = None
         if start_worker and config.provider_mode == "tesseract":
             worker = LocalInferenceWorker(application.state.documents)

@@ -3,6 +3,7 @@
 import asyncio
 import io
 import json
+import threading
 
 import pytest
 from PIL import Image
@@ -126,5 +127,38 @@ def test_admission_has_no_wait_queue_and_cancel_releases_slot(tmp_path, monkeypa
                 await slow
             assert_empty(app)
             assert (await post(app, [body(png())]))[0] == 202
+
+    asyncio.run(run())
+
+
+def test_cancellation_during_persistence_keeps_slot_until_worker_finishes(tmp_path, monkeypatch):
+    app = app_for(tmp_path, monkeypatch, max_concurrent_uploads=1)
+    started, finish = threading.Event(), threading.Event()
+
+    async def run():
+        async with app.router.lifespan_context(app):
+            service = app.state.documents
+            original = service.upload
+
+            def blocked(*args):
+                started.set()
+                assert finish.wait(5)
+                return original(*args)
+
+            monkeypatch.setattr(service, "upload", blocked)
+            request = asyncio.create_task(post(app, [body(png())]))
+            try:
+                assert await asyncio.to_thread(started.wait, 2)
+                request.cancel()
+                with pytest.raises(asyncio.CancelledError):
+                    await request
+                assert app.state.upload_limiter.borrowed_tokens == 1
+                assert (await post(app, []))[0] == 429
+            finally:
+                finish.set()
+                await asyncio.gather(*app.state.upload_tasks)
+            assert app.state.upload_limiter.borrowed_tokens == 0
+            # A fully received body may commit despite a lost response. Its key allows retry.
+            assert service.list_documents(20, 0).total == 1
 
     asyncio.run(run())

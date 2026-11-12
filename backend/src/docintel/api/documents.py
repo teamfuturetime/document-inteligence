@@ -1,3 +1,4 @@
+import asyncio
 import re
 from typing import Annotated, Literal
 
@@ -69,15 +70,31 @@ async def upload_document(
         raise upload_error(
             request, 429, "UPLOAD_BUSY", "Đang nhận đủ số tài liệu. Vui lòng thử lại sau."
         ) from exc
+    task = None
     try:
         data = await receive_upload(request, service(request).settings)
         filename = re.split(r"[/\\]", filename)[-1]
         filename = "".join(c for c in filename if c.isprintable()) or "document"
-        return await run_in_threadpool(
-            service(request).upload, data, document_type, data_origin, filename, idempotency_key
+        # Keep the slot through preprocessing/persistence; no waiting upload queue.
+        task = asyncio.create_task(
+            run_in_threadpool(
+                service(request).upload, data, document_type, data_origin, filename, idempotency_key
+            )
         )
+        tasks = request.app.state.upload_tasks
+        tasks.add(task)
+
+        def complete(done):
+            tasks.discard(done)
+            limiter.release_on_behalf_of(borrower)
+            if not done.cancelled():
+                done.exception()  # Retrieve failures even if the HTTP task has been cancelled.
+
+        task.add_done_callback(complete)
+        return await asyncio.shield(task)
     finally:
-        limiter.release_on_behalf_of(borrower)
+        if task is None:
+            limiter.release_on_behalf_of(borrower)
 
 
 @router.get("/documents/{document_id}", response_model=DocumentDetail)
