@@ -99,3 +99,30 @@ def test_empty_repository_bootstraps_owner_schema_and_reopens_safely(tmp_path):
             connection.execute("SELECT user_id,is_active FROM users").fetchone()["user_id"]
             == "local"
         )
+
+
+def test_populated_legacy_startup_refuses_to_upgrade_without_backup(tmp_path):
+    database = tmp_path / "legacy.sqlite3"
+    legacy_database(database).close()
+    before = database.read_bytes()
+    with pytest.raises(RuntimeError, match="offline backup"):
+        DocumentRepository(database).initialize()
+    assert database.read_bytes() == before
+
+
+def test_unknown_future_schema_is_rejected_before_writes(tmp_path):
+    database = tmp_path / "legacy.sqlite3"
+    with legacy_database(database) as connection:
+        connection.execute("INSERT INTO schema_migrations VALUES(99,'future')")
+    before = database.read_bytes()
+    with pytest.raises(RuntimeError, match="newer"):
+        DocumentRepository(database).initialize()
+    assert database.read_bytes() == before
+
+
+def test_unversioned_populated_database_is_not_reclassified_as_empty(tmp_path):
+    database = tmp_path / "legacy.sqlite3"
+    with legacy_database(database) as connection:
+        connection.execute("DELETE FROM schema_migrations")
+    with pytest.raises(RuntimeError, match="offline backup"):
+        DocumentRepository(database).initialize()

@@ -29,6 +29,14 @@ class DocumentRepository:
             current = version(connection)
             if current > SCHEMA_VERSION:
                 raise RuntimeError("Database schema is newer than this application")
+            existing = connection.execute(
+                "SELECT 1 FROM sqlite_master WHERE name='documents'"
+            ).fetchone()
+            if current < SCHEMA_VERSION and existing:
+                if connection.execute("SELECT count(*) FROM documents").fetchone()[0]:
+                    raise RuntimeError(
+                        "Populated legacy database requires offline backup and migration"
+                    )
             connection.execute("PRAGMA journal_mode=WAL")
             if current == 0:
                 existing = connection.execute(
