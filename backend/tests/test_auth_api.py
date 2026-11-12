@@ -41,6 +41,35 @@ def login(api, username="alpha"):
     return response.json()
 
 
+def test_credentialed_cors_accepts_only_exact_configured_origin_and_headers(session_api):
+    api, _ = session_api
+    headers = {
+        "Origin": ORIGIN,
+        "Access-Control-Request-Method": "POST",
+        "Access-Control-Request-Headers": "x-csrf-token,x-requested-with,content-type",
+    }
+    response = api.options("/api/v1/auth/login", headers=headers)
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == ORIGIN
+    assert response.headers["access-control-allow-credentials"] == "true"
+    headers["Origin"] = "https://attacker.invalid"
+    rejected = api.options("/api/v1/auth/login", headers=headers)
+    assert rejected.status_code == 400
+    assert "access-control-allow-origin" not in rejected.headers
+
+
+def test_valid_session_and_csrf_do_not_bypass_foreign_origin_policy(session_api):
+    api, _ = session_api
+    state = login(api)
+    response = api.post(
+        "/api/v1/documents?document_type=hoa_don&data_origin=synthetic",
+        content=image_bytes(),
+        headers={"Origin": "https://attacker.invalid", "X-CSRF-Token": state["csrf_token"]},
+    )
+    assert response.status_code == 403
+    assert api.get("/api/v1/documents").json()["total"] == 0
+
+
 def test_cookie_is_http_only_secure_scoped_and_not_readable_from_status(session_api):
     api, _ = session_api
     response = api.post(
