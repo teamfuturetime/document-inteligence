@@ -451,7 +451,8 @@ class DocumentService:
         with self.repository.transaction() as connection:
             require(
                 connection.execute(
-                    "SELECT 1 FROM documents WHERE document_id=?", (document_id,)
+                    "SELECT 1 FROM documents WHERE document_id=? AND owner_id=?",
+                    (document_id, self.owner_id),
                 ).fetchone()
             )
             runs = connection.execute(

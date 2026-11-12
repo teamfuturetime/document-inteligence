@@ -21,6 +21,17 @@ def upload_as(service, key="same-key"):
     return service.upload(image_bytes(), "hoa_don", "synthetic", "synthetic.png", key)
 
 
+@pytest.mark.parametrize("operation", ["history", "image_path"])
+def test_history_and_source_preview_do_not_leak_by_known_document_id(tenants, operation):
+    root, alpha, beta = tenants
+    a = upload_as(alpha)
+    with pytest.raises(ProductError) as denied:
+        getattr(beta, operation)(a.document_id)
+    assert denied.value.status == 404
+    assert alpha.history(a.document_id).events
+    assert alpha.image_path(a.document_id).is_file()
+
+
 def test_reprocess_checks_owner_before_provider_and_preserves_foreign_run(tenants, monkeypatch):
     root, alpha, beta = tenants
     a = upload_as(alpha)
