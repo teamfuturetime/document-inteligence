@@ -301,11 +301,13 @@ class DocumentService:
             raise ProductError(429, "QUEUE_FULL", "Hàng đợi đã đầy. Vui lòng thử lại sau.")
 
     def reprocess(self, document_id: str, expected_run_id: str) -> DocumentDetail:
+        self.detail(document_id)  # Reject foreign IDs before probing the provider.
         self.ensure_ready()
         with self.repository.transaction(write=True) as connection:
             document = require(
                 connection.execute(
-                    "SELECT * FROM documents WHERE document_id=?", (document_id,)
+                    "SELECT * FROM documents WHERE document_id=? AND owner_id=?",
+                    (document_id, self.owner_id),
                 ).fetchone()
             )
             run = require(

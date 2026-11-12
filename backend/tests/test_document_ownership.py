@@ -21,6 +21,20 @@ def upload_as(service, key="same-key"):
     return service.upload(image_bytes(), "hoa_don", "synthetic", "synthetic.png", key)
 
 
+def test_reprocess_checks_owner_before_provider_and_preserves_foreign_run(tenants, monkeypatch):
+    root, alpha, beta = tenants
+    a = upload_as(alpha)
+
+    def must_not_probe():
+        raise AssertionError("Foreign request reached provider")
+
+    monkeypatch.setattr(beta, "ensure_ready", must_not_probe)
+    with pytest.raises(ProductError) as denied:
+        beta.reprocess(a.document_id, a.run.run_id)
+    assert denied.value.status == 404
+    assert alpha.detail(a.document_id).run.run_id == a.run.run_id
+
+
 @pytest.mark.parametrize("operation", ["save_review", "confirm", "export"])
 def test_revision_writes_and_exports_require_owner_inside_transaction(tenants, operation):
     root, alpha, beta = tenants
