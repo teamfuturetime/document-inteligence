@@ -5,6 +5,7 @@ import copy
 import dataclasses
 import logging
 import threading
+from concurrent.futures import ThreadPoolExecutor
 
 import pytest
 from pydantic import ValidationError
@@ -146,3 +147,22 @@ def test_failed_business_requests_never_send(product):
     ).json()
     assert api.post(path + "/confirm", json=revision_request(saved)).status_code == 422
     assert sender.events == []
+
+
+def test_retry_and_concurrent_confirmation_only_notify_transition(product):
+    api, _ = product
+    sender = Sender(api.app.state.documents)
+    api.app.state.confirmation_notifier = sender
+    document = processed(api)
+    path = f"/api/v1/documents/{document['document_id']}/confirm"
+
+    def confirm():
+        return api.post(path, json=revision_request(document))
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        responses = list(pool.map(lambda _: confirm(), range(2)))
+    assert all(response.status_code == 200 for response in responses)
+    assert confirm().status_code == 200
+    assert len(sender.events) == 1
+    history = api.get(f"/api/v1/documents/{document['document_id']}/history").json()
+    assert sum(item["action"] == "confirmed" for item in history["events"]) == 1
