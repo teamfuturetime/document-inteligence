@@ -2,8 +2,10 @@
 
 import argparse
 import asyncio
+import hashlib
 import http.client
 import json
+import platform
 import resource
 import socket
 import subprocess
@@ -11,6 +13,7 @@ import sys
 import tempfile
 import time
 from contextlib import closing
+from datetime import UTC, datetime
 from pathlib import Path
 
 from docintel.config import ROOT, Settings
@@ -222,6 +225,38 @@ def main():
             except subprocess.TimeoutExpired:
                 process.kill()
                 process.wait()
+    sources = [
+        "backend/src/docintel/api/uploads.py",
+        "backend/src/docintel/api/documents.py",
+        "backend/src/docintel/api/app.py",
+        "backend/src/docintel/config.py",
+        "backend/src/docintel/services/documents.py",
+        "backend/uv.lock",
+        "scripts/check_upload_ingress.py",
+    ]
+    report.update(
+        {
+            "measured_at": datetime.now(UTC).isoformat(),
+            "platform": platform.platform(),
+            "python": platform.python_version(),
+            "source_commit": subprocess.check_output(
+                ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
+            ).strip(),
+            "source_sha256": {
+                name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
+                for name in sources
+            },
+            "workload": {
+                "max_upload_bytes": MAXIMUM,
+                "receive_timeout_seconds": TIMEOUT,
+                "max_concurrent_uploads": SLOTS,
+                "uvicorn_limit_concurrency": 16,
+                "provider_mode": "unconfigured",
+                "native_ocr": False,
+            },
+            "limitations": "One POSIX loopback probe, 5 MiB byte cap, shortened receive timeout, high-water RSS; not a load SLA or OCR benchmark.",
+        }
+    )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
         json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
