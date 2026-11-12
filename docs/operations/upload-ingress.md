@@ -52,3 +52,5 @@ uv run --project backend --locked python scripts/check_upload_ingress.py --outpu
 Output phải là đường dẫn mới. Script mở server subprocess trên cổng loopback ngẫu nhiên với DB tạm; provider unconfigured, không bật OCR/model. Byte cap bằng mặc định 5 MiB, hai slot, receive timeout giảm còn 0,5 giây để thử lỗi nhanh, Uvicorn limit 16. Workload: khai báo quá lớn chưa gửi body, chunked quá lớn, hai upload nhỏ giọt và request thứ ba, disconnect, sau đó một request hoàn chỉnh để kiểm slot được dùng lại. Request cuối mong đợi `503 PROVIDER_UNAVAILABLE` vì không cấu hình OCR; không gọi đây là native OCR check.
 
 Report ghi latency từng ca, RSS high-water của riêng server process, số asyncio tasks/slot, số document/file, môi trường và source hashes. Endpoint `/probe/metrics` chỉ tồn tại trong app đo của script, không thêm vào app sản phẩm. Đây là một lần đo workload giới hạn; không phải stress test, p95/SLA hoặc benchmark độ chính xác. Native OCR và browser workflow dùng các checks riêng trong README.
+
+[Báo cáo thực tế ngày 12/11/2026](../reports/upload-ingress-2026-11-12.md) ghi checks, raw HTTP/native evidence và giới hạn môi trường đã kiểm chứng.

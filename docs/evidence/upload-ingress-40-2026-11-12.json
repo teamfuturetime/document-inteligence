@@ -1,0 +1,92 @@
+{
+  "cases": [
+    {
+      "case": "declared_oversize_no_body",
+      "status": 413,
+      "code": "FILE_TOO_LARGE",
+      "elapsed_ms": 1.26
+    },
+    {
+      "case": "chunked_oversize",
+      "status": 413,
+      "code": "FILE_TOO_LARGE",
+      "elapsed_ms": 7.763
+    },
+    {
+      "case": "admission_full_no_body",
+      "status": 429,
+      "code": "UPLOAD_BUSY",
+      "elapsed_ms": 0.678
+    },
+    {
+      "case": "slow_body_total_deadline_1",
+      "status": 408,
+      "code": "UPLOAD_TIMEOUT",
+      "elapsed_ms": 504.553
+    },
+    {
+      "case": "slow_body_total_deadline_2",
+      "status": 408,
+      "code": "UPLOAD_TIMEOUT",
+      "elapsed_ms": 504.794
+    },
+    {
+      "case": "slot_reused_provider_unconfigured",
+      "status": 503,
+      "code": "PROVIDER_UNAVAILABLE",
+      "elapsed_ms": 3.543
+    }
+  ],
+  "server_samples": {
+    "idle": {
+      "rss_high_water_bytes": 60456960,
+      "asyncio_tasks": 4,
+      "active_uploads": 0,
+      "documents": 0,
+      "source_preview_files": 0
+    },
+    "two_slow_uploads": {
+      "rss_high_water_bytes": 69058560,
+      "asyncio_tasks": 10,
+      "active_uploads": 2,
+      "documents": 0,
+      "source_preview_files": 0
+    },
+    "after_disconnect": {
+      "rss_high_water_bytes": 69844992,
+      "asyncio_tasks": 4,
+      "active_uploads": 0,
+      "documents": 0,
+      "source_preview_files": 0
+    },
+    "final": {
+      "rss_high_water_bytes": 70352896,
+      "asyncio_tasks": 4,
+      "active_uploads": 0,
+      "documents": 0,
+      "source_preview_files": 0
+    }
+  },
+  "measured_at": "2026-11-12T15:55:38.764385+00:00",
+  "platform": "macOS-13.5-arm64-arm-64bit-Mach-O",
+  "python": "3.14.5",
+  "source_commit": "fd7413e28b4ead0964d3622716931e71a1d956cc",
+  "source_sha256": {
+    "backend/src/docintel/api/uploads.py": "504b7cf3f258edd23dd754e7feaa0ea5c3b9fceea2c757304a29577277deefc5",
+    "backend/src/docintel/api/documents.py": "22cb38a8e9c91f5e54be86a9077f4cd5c876c9c479e7fceffe4ca76d188d0f29",
+    "backend/src/docintel/api/app.py": "20a490c7bd7b539c425dfcec77d7d3f1b12fb7a00a9d221e742105f26296b97b",
+    "backend/src/docintel/config.py": "dd8822af63547c91534d9befcb58906c82518b23b7e44cd571f67fffd38db10d",
+    "backend/src/docintel/services/documents.py": "4126a0846048c5ecc6a968e2003a457a3597f16aecd1cd41e2cbd1855e917e39",
+    "backend/uv.lock": "94f193f9f67ea8b65887a55bf94636aa51984f0dcc0c5e59ce74d6114d1d09e7",
+    "scripts/check_upload_ingress.py": "882677a803cee1d180ca73d68ff79a36974cd8cc82a887119c414a5008809627"
+  },
+  "workload": {
+    "max_upload_bytes": 5242880,
+    "receive_timeout_seconds": 0.5,
+    "max_concurrent_uploads": 2,
+    "uvicorn_limit_concurrency": 16,
+    "provider_mode": "unconfigured",
+    "native_ocr": false
+  },
+  "limitations": "One POSIX loopback probe, 5 MiB byte cap, shortened receive timeout, high-water RSS; not a load SLA or OCR benchmark."
+}
