@@ -9,11 +9,13 @@ from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 
 import pytest
+from fastapi.testclient import TestClient
 from pydantic import ValidationError
 from starlette.requests import Request
 from test_product import processed, revision_request
 from test_product import product as product
 
+from docintel.api.app import create_app
 from docintel.api.documents import confirm
 from docintel.config import Settings
 from docintel.domain.documents import RevisionRequest
@@ -241,3 +243,15 @@ def test_cancellation_after_commit_keeps_persisted_confirmation(product):
     assert api.app.state.documents.export(
         document["document_id"], RevisionRequest(**revision_request(document))
     )
+
+
+def test_retry_after_restart_does_not_redeliver(product):
+    api, settings = product
+    document = processed(api)
+    path = f"/api/v1/documents/{document['document_id']}/confirm"
+    assert api.post(path, json=revision_request(document)).status_code == 200
+    with TestClient(create_app(settings, start_worker=False)) as restarted:
+        sender = Sender(restarted.app.state.documents)
+        restarted.app.state.confirmation_notifier = sender
+        assert restarted.post(path, json=revision_request(document)).status_code == 200
+        assert sender.events == []
