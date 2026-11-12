@@ -248,3 +248,16 @@ def test_total_receive_deadline_includes_trickled_chunks(tmp_path, monkeypatch, 
             assert (await post(app, [body(png())]))[0] == 202
 
     asyncio.run(run())
+
+
+def test_exact_byte_cap_is_accepted(tmp_path, monkeypatch):
+    app = app_for(tmp_path, monkeypatch)
+
+    async def run():
+        async with app.router.lifespan_context(app):
+            data = png()
+            padded = data + b"\0" * (1024 - len(data))
+            result = await post(app, [body(padded)], [(b"content-length", b"1024")])
+            assert result[0] == 202
+
+    asyncio.run(run())
