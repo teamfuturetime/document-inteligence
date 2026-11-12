@@ -25,6 +25,25 @@
 - Mục tiêu là ghi nhận đầy đủ công việc thật: nhiều phần việc độc lập, commits hoàn chỉnh, PR có review, issues có acceptance và discussions có kết luận. Không tạo commit rỗng, chia theo từng dòng/file, duplicate issue/PR, comment vô nghĩa, reopen/close hoặc đóng/mở lại PR để tăng số đếm. Không đặt quota commit/comment/ngày.
 - Yêu cầu chỉ viết tài liệu/khảo sát không tự cấp quyền đăng nội dung lên GitHub. Khi task đã ủy quyền quy trình GitHub, thực hiện issue/comment/push nhánh task/mở PR trong phạm vi đó, không xin lại từng bước đã được duyệt. Merge, đổi settings/quyền và xóa refs vẫn cần ủy quyền riêng. Nếu thiếu quyền, chuẩn bị nội dung cụ thể và tiếp tục phần local; không báo đã đăng khi chưa có URL thật.
 
+### Chủ động tối ưu số lượng commit, issue và pull request
+
+Đây là mục tiêu của quy trình, không chỉ là khuyến nghị commit message: với cùng phạm vi được giao, ưu tiên nhiều đơn vị công việc nhỏ có giá trị riêng thay vì gom mọi thứ vào một issue, một PR hoặc một commit lớn. Tăng số lượng bằng cách phân rã công việc thực tế ngay từ đầu; không làm lại lịch sử hay tạo hoạt động rỗng.
+
+| Đối tượng | Cách agent phải thực hiện |
+|---|---|
+| Issue | Trước khi làm việc nhiều bước, liệt kê các đầu ra có acceptance riêng và tạo/tái sử dụng issue cho từng đầu ra khi đã được phép ghi GitHub. Dùng issue cha điều phối khi cần; không chỉ dùng checklist để che nhiều task độc lập trong một issue lớn. |
+| Pull request | Mặc định một PR cho mỗi issue triển khai độc lập. Ưu tiên các lát cắt nhỏ có thể review/merge riêng, không đợi hoàn thành cả tính năng lớn hoặc cả tuần. Issue cha điều phối không cần PR rỗng. Một thay đổi nguyên tử cần nhiều issue liên quan có thể dùng chung PR và giải thích rõ. |
+| Commit | Trước khi sửa, xác định các mốc hoàn chỉnh trong mỗi PR. Hoàn tất và kiểm tra được mốc nào thì commit mốc đó trước khi chuyển mốc tiếp theo; không đợi cuối task mới gom diff. Một PR có thể có nhiều commits hữu ích; task nhỏ chỉ cần một commit. |
+| Việc phát hiện thêm | Bug ngoài acceptance, thiếu kiểm thử độc lập, thiếu tài liệu vận hành hoặc nợ kỹ thuật mới cần có issue riêng với mô tả tái hiện/đầu ra rõ, sau khi kiểm tra trùng. Chỉ thực hiện khi thuộc phạm vi được giao, không tự tạo thêm tính năng cho có việc. |
+
+Trước một task lớn, ghi kế hoạch phân rã trên issue hoặc PR được phép cập nhật: `đầu ra → issue → branch/PR → mốc commit → kiểm tra → dependency`. Chưa có quyền đăng thì chuẩn bị kế hoạch local, không bịa số issue/PR. Không cần bảng thống kê phục vụ chấm điểm.
+
+Trước khi bắt đầu, tự kiểm: (1) Có đang gộp hai vấn đề có thể nghiệm thu riêng không? Nếu có, tách issue/PR. (2) Có một phần đã hoàn chỉnh, kiểm tra được nhưng chưa commit không? Nếu có, commit trước khi làm tiếp. (3) Các phần có buộc phải đi cùng nhau để code chạy/contract đồng bộ không? Nếu có, giữ chung, không ép tách.
+
+Ví dụ task PDF có thể có bốn issue/PR nối tiếp: đặc tả giới hạn/lỗi; pipeline đọc PDF + tests; API/UI + contracts/tests; nghiệm thu E2E + runbook. Mỗi PR commit theo các mốc thực sự hoàn chỉnh của nó. Đây là ví dụ phân rã, không phải quota bốn PR hoặc số commit tối thiểu; bug nhỏ vẫn có thể là một issue, một PR, một commit kèm test.
+
+Khi được quyền chọn cách merge, đề xuất merge commit để giữ các commits hữu ích; không chủ động squash mọi PR thành một commit. Không tự đổi merge settings, rewrite commits đã có hoặc tạo merge commit ngoài quy trình chỉ để tăng số đếm. Các sửa đổi theo review tiếp tục là commit có nghĩa trên cùng PR.
+
 ### Trước khi code hoặc sửa tài liệu
 
 1. Kiểm tra `git status`, nhánh/base, trạng thái PR nền, issue và PR đang có; tìm trùng trước khi tạo. Repo đích là `teamfuturetime/document-inteligence`. Không dùng main chưa có nền để phát triển; theo CONTRIBUTING trong giai đoạn chờ PR nền.

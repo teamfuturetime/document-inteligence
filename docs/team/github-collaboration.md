@@ -88,6 +88,8 @@ Nếu bị chặn, cập nhật issue: đang thiếu gì, đã thử gì, link d
 
 ## 5. Nhánh và commits
 
+Nhóm chủ động tăng số issue/PR/commits bằng cách chia công việc thật thành các đầu ra nhỏ có thể nghiệm thu. Trước task lớn, ghi `đầu ra → issue → PR → mốc commit → kiểm tra → dependency` ngay trên issue điều phối; xem [quy tắc tối ưu cho agent](../../AGENTS.md#chủ-động-tối-ưu-số-lượng-commit-issue-và-pull-request). Mỗi đầu ra độc lập nên có issue và PR riêng; mỗi mốc hoàn chỉnh, đã kiểm tra trong PR nên được commit ngay. Không chờ gom cả tính năng lớn hoặc cả tuần, không áp số lượng tối thiểu cho task nhỏ và không tách những phần buộc phải đi cùng nhau.
+
 Sau khi main đã nhận nền chung, chạy từng lệnh:
 
 ```sh
