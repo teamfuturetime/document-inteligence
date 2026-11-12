@@ -2,7 +2,7 @@ import base64
 
 import pytest
 
-from docintel.security import hash_password, verify_password
+from docintel.security import hash_password, new_token, token_digest, verify_password
 
 
 def test_password_hash_uses_random_salt_and_pinned_work_factor():
@@ -40,3 +40,16 @@ def test_password_verification_preserves_unicode_and_rejects_wrong_secret():
 )
 def test_malformed_hash_cannot_select_algorithm_or_cost(encoded):
     assert not verify_password("synthetic-password-123", encoded)
+
+
+def test_opaque_tokens_are_independent_and_only_digests_need_persistence():
+    first, second = new_token(), new_token()
+    assert len(first) == 43 and first != second
+    assert len(token_digest(first)) == 64
+    assert token_digest(first) != token_digest(second)
+    assert token_digest(first) != first
+
+
+@pytest.mark.parametrize("token", ["", "a" * 42, "a" * 44, "a" * 42 + "!", "ü" * 43, "x" * 10000])
+def test_malformed_cookies_are_rejected_before_database_lookup(token):
+    assert token_digest(token) is None

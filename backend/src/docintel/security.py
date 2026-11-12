@@ -4,6 +4,7 @@ import base64
 import binascii
 import hashlib
 import hmac
+import re
 import secrets
 
 PASSWORD_ROUNDS = 600_000
@@ -37,3 +38,13 @@ def verify_password(password: str, encoded: str) -> bool:
         return hmac.compare_digest(actual, expected)
     except ValueError, binascii.Error:
         return False
+
+
+def new_token() -> str:
+    return secrets.token_urlsafe(32)
+
+
+def token_digest(token: str) -> str | None:
+    if not re.fullmatch(r"[A-Za-z0-9_-]{43}", token):
+        return None
+    return hashlib.sha256(token.encode("ascii")).hexdigest()
