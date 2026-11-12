@@ -57,6 +57,12 @@ class BoundedAuthRoute(APIRoute):
         original = super().get_route_handler()
 
         async def bounded(request: Request):
+            if request.method == "POST" and request.url.path.endswith("/login"):
+                if (
+                    request.headers.get("content-type", "").split(";", 1)[0].strip().lower()
+                    != "application/json"
+                ):
+                    raise ProductError(415, "AUTH_JSON_REQUIRED", "Đăng nhập yêu cầu JSON.")
             if request.method == "POST":
                 data = await bounded_auth_body(request)
 

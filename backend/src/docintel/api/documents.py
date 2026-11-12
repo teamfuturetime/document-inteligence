@@ -3,10 +3,11 @@ import re
 from typing import Annotated, Literal
 
 from anyio import WouldBlock
-from fastapi import APIRouter, Header, Query, Request
+from fastapi import APIRouter, Depends, Header, Query, Request
 from fastapi.responses import FileResponse, JSONResponse
 from starlette.concurrency import run_in_threadpool
 
+from docintel.api.identity import require_identity
 from docintel.api.models import ErrorEnvelope
 from docintel.api.uploads import receive_upload, upload_error
 from docintel.domain.documents import (
@@ -24,11 +25,12 @@ from docintel.domain.documents import (
 )
 from docintel.services.documents import DocumentService
 
-router = APIRouter(prefix="/api/v1", tags=["product"])
+router = APIRouter(prefix="/api/v1", tags=["product"], dependencies=[Depends(require_identity)])
 
 
 def service(request: Request) -> DocumentService:
-    return request.app.state.documents
+    owner = getattr(request.state, "owner_id", None) or require_identity(request)
+    return request.app.state.documents.for_owner(owner)
 
 
 @router.get("/document-schemas", response_model=list[ProductSchema])

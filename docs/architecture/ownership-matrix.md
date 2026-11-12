@@ -5,7 +5,8 @@ Theo [ADR0010](../decisions/0010-authentication-ownership.md), principal đượ
 | Resource / operation | Anonymous session mode | Chủ tài liệu | User khác | Local mode |
 | --- | --- | --- | --- | --- |
 | Health, capabilities, auth/session status | Public metadata | Public metadata | Public metadata | Public metadata |
-| Schema definitions / synthetic fixture catalog | Không có dữ liệu cá nhân; fixture vẫn explicit | Như anonymous | Như anonymous | Như cũ |
+| Foundation schema definitions / synthetic fixture catalog | Không có dữ liệu cá nhân; fixture vẫn explicit | Như anonymous | Như anonymous | Như cũ |
+| Product document-schemas metadata | 401, cùng gate product router | Read | Read | Read |
 | Upload / documents list | 401 | Tự tạo, chỉ list của mình | Tạo/list trong namespace riêng | Namespace local |
 | Document detail / selected run | 401 | Read | 404 | Chỉ owner local |
 | Source preview / image | 401 | Read sau owner check | 404 | Chỉ owner local |

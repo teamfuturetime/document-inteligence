@@ -39,6 +39,9 @@ def test_default_mode_remains_explicitly_unauthenticated_local():
     assert Settings(_env_file=None).auth_mode == "local"
 
 
-def test_incomplete_session_integration_cannot_start_unprotected_endpoints():
-    with pytest.raises(RuntimeError, match="complete identity"):
-        create_app(Settings(_env_file=None, auth_mode="session"))
+def test_session_integration_never_exposes_anonymous_product_endpoints(tmp_path):
+    from fastapi.testclient import TestClient
+
+    settings = Settings(_env_file=None, auth_mode="session", runtime_dir=tmp_path)
+    with TestClient(create_app(settings, start_worker=False)) as api:
+        assert api.get("/api/v1/documents").status_code == 401
