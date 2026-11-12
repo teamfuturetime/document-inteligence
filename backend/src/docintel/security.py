@@ -1,7 +1,9 @@
 """Pinned password format and opaque tokens; no credentials belong in logs."""
 
 import base64
+import binascii
 import hashlib
+import hmac
 import secrets
 
 PASSWORD_ROUNDS = 600_000
@@ -18,3 +20,20 @@ def hash_password(password: str) -> str:
         + "$"
         + base64.b64encode(digest).decode()
     )
+
+
+def verify_password(password: str, encoded: str) -> bool:
+    if not 12 <= len(password) <= 128 or len(encoded) > 160:
+        return False
+    try:
+        algorithm, rounds, salt_text, digest_text = encoded.split("$")
+        if algorithm != "pbkdf2_sha256" or rounds != "600000":
+            return False
+        salt = base64.b64decode(salt_text, validate=True)
+        expected = base64.b64decode(digest_text, validate=True)
+        if len(salt) != 16 or len(expected) != 32:
+            return False
+        actual = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, PASSWORD_ROUNDS)
+        return hmac.compare_digest(actual, expected)
+    except ValueError, binascii.Error:
+        return False
