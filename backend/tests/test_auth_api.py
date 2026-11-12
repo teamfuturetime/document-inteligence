@@ -186,6 +186,31 @@ def test_idempotency_replay_is_scoped_to_authenticated_owner_even_when_queue_ful
     assert api.get("/api/v1/documents").json()["total"] == 1
 
 
+def test_forged_foreign_run_cannot_be_used_with_an_owned_document(session_api):
+    api, _ = session_api
+    alpha = login(api)
+    own = processed_document(api, alpha["csrf_token"])
+    beta = login(api, "beta")
+    other = processed_document(api, beta["csrf_token"])
+    alpha = login(api)
+    base = "/api/v1/documents/" + own["document_id"]
+    foreign_run = other["run"]["run_id"]
+    assert api.get(base, params={"run_id": foreign_run}).status_code == 404
+    assert (
+        api.get(base + "/export", params={"run_id": foreign_run, "revision": 1}).status_code == 409
+    )
+    update = api.put(
+        base + "/review",
+        json={"run_id": foreign_run, "expected_revision": 1, "fields": {}},
+        headers={"X-CSRF-Token": alpha["csrf_token"]},
+    )
+    assert update.status_code == 409
+    beta = login(api, "beta")
+    persisted = api.get("/api/v1/documents/" + other["document_id"]).json()
+    assert persisted["run"]["fields"] == other["run"]["fields"]
+    assert persisted["review"] == other["review"]
+
+
 def test_real_login_owner_isolation_and_logout(session_api):
     api, _ = session_api
     assert api.get("/api/v1/documents").status_code == 401
