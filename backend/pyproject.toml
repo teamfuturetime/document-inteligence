@@ -4,6 +4,7 @@ version = "0.2.0"
 description = "Document Intelligence AI-02: real OCR, persisted review and verified export"
 requires-python = ">=3.14,<3.15"
 dependencies = [
+  "anyio==4.15.1",
   "document-pipeline==0.1.0",
   "fastapi==0.142.2",
   "pydantic==2.13.5",

@@ -65,6 +65,7 @@ name = "docintel"
 version = "0.2.0"
 source = { editable = "." }
 dependencies = [
+    { name = "anyio" },
     { name = "document-pipeline" },
     { name = "fastapi" },
     { name = "pydantic" },
@@ -84,6 +85,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "anyio", specifier = "==4.15.1" },
     { name = "document-pipeline", editable = "../pipeline" },
     { name = "fastapi", specifier = "==0.142.2" },
     { name = "pydantic", specifier = "==2.13.5" },
