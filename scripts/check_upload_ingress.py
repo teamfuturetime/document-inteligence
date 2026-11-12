@@ -102,6 +102,13 @@ def probe(port):
         finally:
             connection.close()
 
+    start = time.monotonic()
+    check(
+        "declared_oversize_no_body",
+        open_upload(port, length=MAXIMUM + 1),
+        start,
+        (413, "FILE_TOO_LARGE"),
+    )
     samples["final"] = get_metrics(port)
     assert all(
         s["documents"] == s["source_preview_files"] == 0 for s in samples.values()
