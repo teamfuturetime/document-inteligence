@@ -140,6 +140,25 @@ def probe(port):
     check("slow_body_total_deadline_1", first, start, (408, "UPLOAD_TIMEOUT"))
     check("slow_body_total_deadline_2", second, start, (408, "UPLOAD_TIMEOUT"))
 
+    connection = open_upload(port, length=100)
+    connection.sendall(b"partial")
+    connection.close()
+    deadline = time.monotonic() + 2
+    while (recovered := get_metrics(port))["active_uploads"]:
+        assert time.monotonic() < deadline, recovered
+        time.sleep(0.01)
+    samples["after_disconnect"] = recovered
+
+    # A complete request reaches the unchanged provider check after all rejections.
+    start = time.monotonic()
+    connection = open_upload(port, length=1)
+    connection.sendall(b"x")
+    check(
+        "slot_reused_provider_unconfigured",
+        connection,
+        start,
+        (503, "PROVIDER_UNAVAILABLE"),
+    )
     samples["final"] = get_metrics(port)
     assert all(
         s["documents"] == s["source_preview_files"] == 0 for s in samples.values()
