@@ -33,3 +33,5 @@ Vì DB đã commit, client hủy request trong lúc gửi không rollback confir
 `backend/tests/test_confirmation_notifications.py` kiểm response mapping chính xác, DB commit trước send, rollback/stale/invalid không gửi, concurrent/retry chỉ notify transition, timeout/exception, caller cancellation, restart, disabled mode, logging không chứa payload và cấu hình invalid.
 
 Nguồn tham chiếu: `feat/vt046-validation-notification@31a18bb`, `backend/src/document_backend/services/notifications.py`, `backend/experiments/README.md`. Nguồn là stateless `review.validated`, không có DB/recipient provider. Bản port docintel gắn receipt sau transaction, giữ toàn bộ submission refs/report/authorship gốc, không nhập production app thứ hai.
+
+[Báo cáo kiểm chứng local](../reports/confirmation-notifications-2026-11-12.md) ghi kết quả thực tế, exact source hashes, native evidence và giới hạn môi trường.
