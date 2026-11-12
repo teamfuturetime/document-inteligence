@@ -1,6 +1,7 @@
 import hashlib
 import json
 import sqlite3
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from uuid import uuid4
@@ -33,6 +34,7 @@ from docintel.domain.documents import (
 )
 from docintel.domain.models import FinalApplicationData, Provenance
 from docintel.repositories.sqlite import DocumentRepository, now
+from docintel.services.notifications import DocumentConfirmed
 from docintel.storage.local import LocalDocumentStorage
 
 
@@ -101,6 +103,12 @@ SELECT d.*,r.status,(SELECT review_status FROM revisions v WHERE v.run_id=d.late
 ORDER BY revision DESC LIMIT 1) review_status
 FROM documents d JOIN runs r ON r.run_id=d.latest_run_id
 """
+
+
+@dataclass(frozen=True)
+class ConfirmationResult:
+    detail: DocumentDetail
+    notice: DocumentConfirmed | None
 
 
 class DocumentService:
@@ -379,6 +387,11 @@ class DocumentService:
         return self.detail(document_id)
 
     def confirm(self, document_id: str, request: RevisionRequest) -> DocumentDetail:
+        # Keep the synchronous business service API; delivery belongs to the HTTP adapter.
+        return self.confirm_with_notice(document_id, request).detail
+
+    def confirm_with_notice(self, document_id: str, request: RevisionRequest) -> ConfirmationResult:
+        notice = None
         with self.repository.transaction(write=True) as connection:
             document, run, row = self.checked_revision(connection, document_id, request)
             review = revision_view(row, run, document["document_type"])
@@ -395,7 +408,9 @@ class DocumentService:
                 event(
                     connection, document_id, run.run_id, request.expected_revision, "confirmed", {}
                 )
-        return self.detail(document_id)
+                notice = DocumentConfirmed(document_id, run.run_id, request.expected_revision)
+        # Returning a receipt is only possible after the transaction context committed.
+        return ConfirmationResult(self.detail(document_id), notice)
 
     @staticmethod
     def final_data(document_type: str, values: dict):
