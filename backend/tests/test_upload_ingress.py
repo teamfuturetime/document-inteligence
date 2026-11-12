@@ -104,6 +104,7 @@ def assert_empty(app):
             "INVALID_CONTENT_LENGTH",
         ),
         ([], [body(b"x" * 1025)], 413, "FILE_TOO_LARGE"),
+        ([], [body(b"x" * 700, True), body(b"x" * 325)], 413, "FILE_TOO_LARGE"),
     ],
 )
 def test_rejects_before_persistence(tmp_path, monkeypatch, headers, messages, status, code):
