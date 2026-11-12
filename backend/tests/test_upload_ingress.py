@@ -232,3 +232,19 @@ def test_complete_upload_and_idempotent_retry_with_full_queue(tmp_path, monkeypa
             assert app.state.upload_limiter.borrowed_tokens == 0
 
     asyncio.run(run())
+
+
+@pytest.mark.parametrize("messages", [[]])
+def test_total_receive_deadline_includes_trickled_chunks(tmp_path, monkeypatch, messages):
+    app = app_for(tmp_path, monkeypatch, upload_receive_timeout_seconds=0.12)
+
+    async def run():
+        async with app.router.lifespan_context(app):
+            result = await post(app, messages, pause=0.025)
+            assert result[0] == 408
+            assert result[1]["error"]["code"] == "UPLOAD_TIMEOUT"
+            assert result[3] < 20
+            assert_empty(app)
+            assert (await post(app, [body(png())]))[0] == 202
+
+    asyncio.run(run())
