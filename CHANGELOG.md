@@ -1,5 +1,9 @@
 # Thay đổi
 
+## Upload ingress 0.2.1 — 12/11/2026
+
+Issue #8: giới hạn tổng thời gian nhận body, số upload đồng thời và Uvicorn connection/task; kiểm Content-Length và byte stream trước persistence. Thêm lỗi receive/admission an toàn, giải phóng slot khi timeout/disconnect/cancel và giữ slot nếu thread lưu vẫn chạy; bảo toàn idempotent retry/queue semantics. Sinh lại OpenAPI/frontend types, bổ sung ASGI tests và probe HTTP loopback đo latency/RSS/tasks. Xem [budget và giới hạn](docs/operations/upload-ingress.md). Đây là thay đổi trên nhánh nhiệm vụ, chưa là release/tag đã xuất bản.
+
 ## Product local 0.2.0 — 24/10/2026
 
 Theo yêu cầu mới, mở rộng nhatquang thành workflow local: package pipeline với Tesseract thật, pinned models/provenance, hai schemas; upload/storage/SQLite migrations/worker, immutable predictions, review revisions/conflicts, backend confirm/export; UI source evidence/history/dirty-state; 150 synthetic parents và model evaluator. Giữ fixture riêng và source lineage từ nền Quang/model lock Tùng. Sửa hash fixture theo Git LF bytes, không đổi gold/ảnh. Checks và giới hạn ở báo cáo product; chưa là release/tag/PR được xuất bản trên GitHub.
