@@ -1,6 +1,8 @@
 import hashlib
 import json
+import re
 import sqlite3
+from copy import copy
 from datetime import datetime
 from pathlib import Path
 from uuid import uuid4
@@ -108,6 +110,7 @@ FROM documents d JOIN runs r ON r.run_id=d.latest_run_id
 
 class DocumentService:
     def __init__(self, settings: Settings):
+        self.owner_id = "local"
         self.settings = settings
         self.repository = DocumentRepository(settings.runtime_dir / "documents.sqlite3")
         self.repository.initialize()
@@ -120,6 +123,13 @@ class DocumentService:
         self.pipeline = DocumentPipeline(
             settings.tessdata_dir, settings.tesseract_executable, self.pipeline_config
         )
+
+    def for_owner(self, owner_id: str) -> DocumentService:
+        if owner_id != "local" and not re.fullmatch(r"[0-9a-f]{32}", owner_id):
+            raise ValueError("Invalid server principal")
+        scoped = copy(self)
+        scoped.owner_id = owner_id
+        return scoped
 
     def ensure_ready(self):
         if self.settings.provider_mode != "tesseract":
@@ -194,7 +204,8 @@ class DocumentService:
         with self.repository.transaction() as connection:
             existing = (
                 connection.execute(
-                    "SELECT * FROM documents WHERE idempotency_key=?", (idempotency_key,)
+                    "SELECT * FROM documents WHERE idempotency_key=? AND owner_id=?",
+                    (idempotency_key, self.owner_id),
                 ).fetchone()
                 if idempotency_key
                 else None
@@ -228,7 +239,8 @@ class DocumentService:
                 # Serialize the retry decision with admission, before capacity rejection.
                 replay = (
                     connection.execute(
-                        "SELECT * FROM documents WHERE idempotency_key=?", (idempotency_key,)
+                        "SELECT * FROM documents WHERE idempotency_key=? AND owner_id=?",
+                        (idempotency_key, self.owner_id),
                     ).fetchone()
                     if idempotency_key
                     else None
@@ -248,8 +260,8 @@ class DocumentService:
                 connection.execute(
                     "INSERT INTO documents(document_id,document_type,filename,data_origin,"
                     "input_sha256,image_width,image_height,created_at,"
-                    "latest_run_id,idempotency_key) "
-                    "VALUES(?,?,?,?,?,?,?,?,?,?)",
+                    "latest_run_id,idempotency_key,owner_id) "
+                    "VALUES(?,?,?,?,?,?,?,?,?,?,?)",
                     (
                         document_id,
                         document_type,
@@ -261,6 +273,7 @@ class DocumentService:
                         created,
                         run_id,
                         idempotency_key,
+                        self.owner_id,
                     ),
                 )
                 connection.execute(
