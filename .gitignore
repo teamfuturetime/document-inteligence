@@ -24,3 +24,8 @@ uploads/
 artifacts/
 .DS_Store
 Thumbs.db
+
+# Browser verification and local reports
+playwright-report/
+test-results/
+output/
