@@ -478,12 +478,18 @@ class DocumentService:
     def insights(self) -> ProductInsights:
         reviewed = corrected = 0
         with self.repository.transaction() as connection:
-            count = connection.execute("SELECT count(*) FROM documents").fetchone()[0]
+            count = connection.execute(
+                "SELECT count(*) FROM documents WHERE owner_id=?", (self.owner_id,)
+            ).fetchone()[0]
             completed = connection.execute(
-                "SELECT count(*) FROM runs WHERE status='succeeded'"
+                "SELECT count(*) FROM runs r JOIN documents d USING(document_id) "
+                "WHERE r.status='succeeded' AND d.owner_id=?",
+                (self.owner_id,),
             ).fetchone()[0]
             failed = connection.execute(
-                "SELECT count(*) FROM runs WHERE status IN ('failed','unavailable')"
+                "SELECT count(*) FROM runs r JOIN documents d USING(document_id) "
+                "WHERE r.status IN ('failed','unavailable') AND d.owner_id=?",
+                (self.owner_id,),
             ).fetchone()[0]
         documents = self.list_documents(100, 0)
         # Aggregate all documents in bounded pages, not only the first screen.

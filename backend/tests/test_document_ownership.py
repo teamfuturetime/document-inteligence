@@ -21,6 +21,21 @@ def upload_as(service, key="same-key"):
     return service.upload(image_bytes(), "hoa_don", "synthetic", "synthetic.png", key)
 
 
+def test_insights_counts_only_current_owners_documents_and_runs(tenants):
+    root, alpha, beta = tenants
+    a = upload_as(alpha)
+    upload_as(beta)
+    assert root.process_next()
+    alpha.confirm(a.document_id, RevisionRequest(run_id=a.run.run_id, expected_revision=1))
+    assert alpha.insights().documents == 1
+    assert alpha.insights().completed_runs == 1
+    assert alpha.insights().confirmed_documents == 1
+    assert beta.insights().documents == 1
+    assert beta.insights().completed_runs == 0
+    assert beta.insights().confirmed_documents == 0
+    assert root.insights().documents == 0
+
+
 @pytest.mark.parametrize("operation", ["history", "image_path"])
 def test_history_and_source_preview_do_not_leak_by_known_document_id(tenants, operation):
     root, alpha, beta = tenants
