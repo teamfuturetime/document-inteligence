@@ -6,6 +6,7 @@ import dataclasses
 import logging
 import threading
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
 
 import pytest
 from pydantic import ValidationError
@@ -166,3 +167,27 @@ def test_retry_and_concurrent_confirmation_only_notify_transition(product):
     assert len(sender.events) == 1
     history = api.get(f"/api/v1/documents/{document['document_id']}/history").json()
     assert sum(item["action"] == "confirmed" for item in history["events"]) == 1
+
+
+def test_rollback_does_not_publish_confirmation(product, monkeypatch):
+    api, _ = product
+    service = api.app.state.documents
+    sender = Sender(service)
+    api.app.state.confirmation_notifier = sender
+    document = processed(api)
+    transaction = service.repository.transaction
+
+    @contextmanager
+    def fail_commit(*, write=False):
+        with transaction(write=write) as connection:
+            yield connection
+            if write:
+                raise RuntimeError("simulated commit failure")
+
+    monkeypatch.setattr(service.repository, "transaction", fail_commit)
+    with pytest.raises(RuntimeError, match="simulated commit failure"):
+        api.post(
+            f"/api/v1/documents/{document['document_id']}/confirm", json=revision_request(document)
+        )
+    assert sender.events == []
+    assert service.detail(document["document_id"]).review.review_status == "draft"
