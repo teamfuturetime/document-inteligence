@@ -234,7 +234,7 @@ def test_complete_upload_and_idempotent_retry_with_full_queue(tmp_path, monkeypa
     asyncio.run(run())
 
 
-@pytest.mark.parametrize("messages", [[]])
+@pytest.mark.parametrize("messages", [[], [body(b"x", True)] * 20])
 def test_total_receive_deadline_includes_trickled_chunks(tmp_path, monkeypatch, messages):
     app = app_for(tmp_path, monkeypatch, upload_receive_timeout_seconds=0.12)
 
