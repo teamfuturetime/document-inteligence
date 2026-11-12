@@ -186,7 +186,7 @@ def test_shutdown_waits_for_inflight_upload(tmp_path, monkeypatch):
     asyncio.run(run())
 
 
-@pytest.mark.parametrize("headers", [[]])
+@pytest.mark.parametrize("headers", [[], [(b"content-length", str(len(png())).encode())]])
 def test_complete_upload_and_idempotent_retry_with_full_queue(tmp_path, monkeypatch, headers):
     app = app_for(tmp_path, monkeypatch, max_pending_runs=1)
 
