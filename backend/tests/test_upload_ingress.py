@@ -97,6 +97,12 @@ def assert_empty(app):
             400,
             "INVALID_CONTENT_LENGTH",
         ),
+        (
+            [(b"content-length", b"10"), (b"transfer-encoding", b"chunked")],
+            [],
+            400,
+            "INVALID_CONTENT_LENGTH",
+        ),
     ],
 )
 def test_rejects_before_persistence(tmp_path, monkeypatch, headers, messages, status, code):
