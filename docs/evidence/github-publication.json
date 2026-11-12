@@ -1,0 +1,205 @@
+{
+  "observed_at": "2026-11-12T10:59:40.729740+00:00",
+  "authorized": true,
+  "branch": "chore/repository-consolidation",
+  "published_source_sha": "d597eb5127d0258969d207ec77dd1ad988c9fe6c",
+  "pr": {
+    "number": 3,
+    "url": "https://github.com/teamfuturetime/document-inteligence/pull/3",
+    "base": "main"
+  },
+  "created": [
+    {
+      "kind": "label",
+      "action": "created",
+      "id": 13052989887,
+      "name": "area:repo"
+    },
+    {
+      "kind": "label",
+      "action": "created",
+      "id": 13052990035,
+      "name": "area:ocr"
+    },
+    {
+      "kind": "label",
+      "action": "created",
+      "id": 13052990180,
+      "name": "area:review"
+    },
+    {
+      "kind": "label",
+      "action": "created",
+      "id": 13052990314,
+      "name": "area:data"
+    },
+    {
+      "kind": "label",
+      "action": "created",
+      "id": 13052990450,
+      "name": "priority:P0"
+    },
+    {
+      "kind": "label",
+      "action": "created",
+      "id": 13052990554,
+      "name": "priority:P1"
+    },
+    {
+      "kind": "label",
+      "action": "created",
+      "id": 13052990666,
+      "name": "priority:P2"
+    },
+    {
+      "kind": "label",
+      "action": "created",
+      "id": 13052990823,
+      "name": "migration"
+    },
+    {
+      "kind": "milestone",
+      "action": "created",
+      "id": 19456937,
+      "number": 1,
+      "title": "M1 - Nền OCR local dùng chung",
+      "html_url": "https://github.com/teamfuturetime/document-inteligence/milestone/1"
+    },
+    {
+      "kind": "milestone",
+      "action": "created",
+      "id": 19456938,
+      "number": 2,
+      "title": "M2 - Định dạng và review mở rộng",
+      "html_url": "https://github.com/teamfuturetime/document-inteligence/milestone/2"
+    },
+    {
+      "kind": "milestone",
+      "action": "created",
+      "id": 19456939,
+      "number": 3,
+      "title": "M3 - Quyền truy cập và tích hợp tùy chọn",
+      "html_url": "https://github.com/teamfuturetime/document-inteligence/milestone/3"
+    },
+    {
+      "kind": "issue",
+      "action": "created",
+      "id": 6348228838,
+      "number": 4,
+      "title": "Đưa nền OCR hóa đơn local đã kiểm chứng vào main",
+      "html_url": "https://github.com/teamfuturetime/document-inteligence/issues/4"
+    },
+    {
+      "kind": "issue",
+      "action": "created",
+      "id": 6348229314,
+      "number": 5,
+      "title": "Review chéo nhãn và provenance của baseline nền chính",
+      "html_url": "https://github.com/teamfuturetime/document-inteligence/issues/5"
+    },
+    {
+      "kind": "issue",
+      "action": "created",
+      "id": 6348229764,
+      "number": 6,
+      "title": "Port PDF một trang vào pipeline chính với giới hạn tài nguyên",
+      "html_url": "https://github.com/teamfuturetime/document-inteligence/issues/6"
+    },
+    {
+      "kind": "issue",
+      "action": "created",
+      "id": 6348230331,
+      "number": 7,
+      "title": "Port autosave vào field review có CAS và conflict UI",
+      "html_url": "https://github.com/teamfuturetime/document-inteligence/issues/7"
+    },
+    {
+      "kind": "issue",
+      "action": "created",
+      "id": 6348230868,
+      "number": 8,
+      "title": "Giới hạn receive/admission cho upload chậm và lớn",
+      "html_url": "https://github.com/teamfuturetime/document-inteligence/issues/8"
+    },
+    {
+      "kind": "issue",
+      "action": "created",
+      "id": 6348231329,
+      "number": 9,
+      "title": "Triage dependency audit trước mở rộng deployment",
+      "html_url": "https://github.com/teamfuturetime/document-inteligence/issues/9"
+    },
+    {
+      "kind": "issue",
+      "action": "created",
+      "id": 6348231788,
+      "number": 10,
+      "title": "Thêm notification sau persisted business event, tách lỗi gửi",
+      "html_url": "https://github.com/teamfuturetime/document-inteligence/issues/10"
+    },
+    {
+      "kind": "issue",
+      "action": "created",
+      "id": 6348232118,
+      "number": 11,
+      "title": "Thiết kế port auth/ownership khi cần nhiều người dùng",
+      "html_url": "https://github.com/teamfuturetime/document-inteligence/issues/11"
+    },
+    {
+      "kind": "issue",
+      "action": "created",
+      "id": 6348232492,
+      "number": 12,
+      "title": "Đánh giá policy và các loại tài liệu mở rộng trước khi port",
+      "html_url": "https://github.com/teamfuturetime/document-inteligence/issues/12"
+    }
+  ],
+  "ci_runs": [
+    {
+      "id": 43204361810,
+      "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/43204361810",
+      "head_sha": "d597eb5127d0258969d207ec77dd1ad988c9fe6c",
+      "conclusion": "success"
+    },
+    {
+      "id": 43204531017,
+      "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/43204531017",
+      "head_sha": "d597eb5127d0258969d207ec77dd1ad988c9fe6c",
+      "conclusion": "success"
+    }
+  ],
+  "checks": [
+    "Backend checks",
+    "Frontend checks",
+    "Evaluation regression",
+    "OCR integration",
+    "Browser E2E",
+    "Product checks"
+  ],
+  "main": {
+    "sha": "94c5101b94a43f1b0e2814d1cdfeee4139289673",
+    "protected": true,
+    "required_check": "Product checks",
+    "strict": true,
+    "approvals": 1,
+    "last_push_approval": true,
+    "enforce_admins": true,
+    "allow_force_pushes": false,
+    "allow_deletions": false,
+    "require_code_owners": false,
+    "conversation_resolution": true,
+    "linear_history_required": false
+  },
+  "untouched": [
+    "default branch main",
+    "PR #1 open",
+    "PR #2 merged into minhthao",
+    "all submission and personal branch refs",
+    "collaborator permissions"
+  ],
+  "not_authorized": [
+    "merge",
+    "delete branches",
+    "close PR #1 before review"
+  ]
+}

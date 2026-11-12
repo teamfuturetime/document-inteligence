@@ -11,13 +11,13 @@ PR #1 (nhatquang→main) là nguồn nền. PR này giữ toàn bộ original co
 - Port nguyên test_async_retry_vt042.py từ 9a76a6e, source lineage và Co-authored-by; không nhập report cá nhân/UI cũ.
 - Browser E2E native upload→OCR→null/reload/edit→CAS409→confirm→server JSON; kiểm immutable prediction.
 - CI Product checks phụ thuộc backend/frontend/evaluator/native/browser, không path filters hoặc secret cho PR. Gate có test failure/skipped/cancelled/missing.
-- Gói GitHub labels/milestones/issues/protection local; không tự thay quyền, merge, default branch hoặc xóa submission refs.
+- Gói GitHub đã được chủ dự án duyệt và áp dụng: 8 labels, 3 milestones, Issues #4–#12 và main protection sau CI xanh; [publication record](https://github.com/teamfuturetime/document-inteligence/blob/chore/repository-consolidation/docs/github-publication.md). Không merge, thay default branch/quyền thành viên hoặc xóa submission refs.
 
 ## Kiểm chứng local và giới hạn
 
 Nguồn kết quả chính xác: docs/consolidation-verification.md. `python scripts/dev.py check`, `ocr`, `e2e`; clean checkout/locked install được ghi ở đó. OCR Tesseract5.5.2/macOS + pinned vie/eng, native HTTP checks và Chromium có chạy thật. Evaluator regression là replay frozen native predictions Windows5.4, không gọi đó là inference mới.
 
-Khảo sát phát hiện minhthao có 1 storage path test fail trên macOS, không âm thầm sửa nhánh nguồn. npm audit advisories được ghi riêng trong backlog, không dùng audit fix --force. Docker và Ubuntu/Actions workflow mới chưa được gọi là pass nếu chưa quan sát run trên đúng push/PR SHA.
+Khảo sát phát hiện minhthao có 1 storage path test fail trên macOS, không âm thầm sửa nhánh nguồn. npm audit advisories được ghi riêng trong backlog, không dùng audit fix --force. Push/PR Product CI trên Ubuntu tại d597eb5 đều success, gồm cả native OCR và browser E2E. Các commit docs sau đó phải xem [checks đúng head mới nhất](https://github.com/teamfuturetime/document-inteligence/pull/3/checks). Docker vẫn chưa build/run.
 
 ## Reviewer cần kiểm tra
 
@@ -25,3 +25,7 @@ Khảo sát phát hiện minhthao có 1 storage path test fail trên macOS, khô
 - Tái lập README từ clone đúng branch, Product checks đúng head/merge SHA; không dùng check xanh từ nhánh cũ.
 - Không có thay đổi inference/domain/dataset/gold/threshold; runtime/models/DB/secrets và output cá nhân không nằm trong diff.
 - Chỉ áp protection sau khi Product checks đã xuất hiện. Một reviewer khác trước merge; không auto-merge.
+
+## Backlog đã tạo
+
+CONS-01..09 tương ứng Issues #4, #5, #6, #7, #8, #9, #10, #11, #12. CONS-01/#4 chỉ được coi hoàn tất sau review/tích hợp nền; danh sách này không tự đóng issues. Milestones và ánh xạ cụ thể trong publication record.

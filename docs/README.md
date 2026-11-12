@@ -10,7 +10,7 @@ Bắt đầu tại [README root](../README.md). Chỉ có một nền sản ph�
 | OCR/evidence/metrics | [source lineage](ml/source-lineage.md), [protocol](ml/evaluation-protocol.md), [dataset](../data/product/README.md) |
 | Demo/backup | [runbook](product/runbook.md) |
 | Quyết định nền và port | [ADR0008](decisions/0008-primary-invoice-platform.md), [audit](repository-audit.md), [inventory](branch-inventory.md), [migration](consolidation-plan.md) |
-| Kết quả thực tế | [consolidation verification](consolidation-verification.md) |
+| Kết quả thực tế | [consolidation verification](consolidation-verification.md), [GitHub publication](github-publication.md) |
 | Bản đồ code | [STACK](codebase/STACK.md), [STRUCTURE](codebase/STRUCTURE.md), [ARCHITECTURE](codebase/ARCHITECTURE.md), [CONVENTIONS](codebase/CONVENTIONS.md), [INTEGRATIONS](codebase/INTEGRATIONS.md), [TESTING](codebase/TESTING.md), [CONCERNS](codebase/CONCERNS.md) |
 | Bài tập cá nhân | [Chỉ mục bảo toàn](../homework/README.md) |
 

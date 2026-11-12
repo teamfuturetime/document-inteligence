@@ -1,8 +1,8 @@
-# Gói GitHub chờ duyệt — chưa thực thi
+# Gói GitHub đã duyệt và áp dụng
 
-Các file dưới đây là nội dung reviewable, không phải setting/issue đã tồn tại. Snapshot read-only: docs/evidence/github-snapshot.json. Remote main vẫn 94c5101, 0 Issues/milestones, PR #1 mở, #2 đã merged vào minhthao.
+Gói đã được chủ dự án duyệt và áp dụng: PR #3, 8 labels, 3 milestones, Issues #4–#12 và main protection sau CI thành công. Xem [publication record](../../docs/github-publication.md) và [snapshot kết quả](../../docs/evidence/github-publication.json). Snapshot khảo sát ban đầu docs/evidence/github-snapshot.json được giữ như lịch sử trước publish; không dùng số0 Issues/protection404 ở đó làm trạng thái hiện tại.
 
-| File | Thao tác dự kiến |
+| File | Nội dung đã duyệt |
 |---|---|
 | pull-request.md | Body PR chore/repository-consolidation→main; title: `chore(repo): consolidate the local invoice OCR product` |
 | labels.json | Tạo 8 labels nếu chưa tồn tại; không sửa/xóa labels cũ |
@@ -10,7 +10,7 @@ Các file dưới đây là nội dung reviewable, không phải setting/issue �
 | issues.json | Tạo 9 Issues CONS-01..09 sau dedup, dùng title/body/labels/milestone đã chuẩn bị |
 | main-protection.json | PUT protection main sau khi gate Product checks đã quan sát; 1 review, strict checks, cấm force-push/delete, không ép linear history |
 
-## Thứ tự sau khi có một lần duyệt cụ thể
+## Trình tự áp dụng đã được duyệt
 
 1. Kiểm lại remote refs/PR/rulesets trước ghi. Nếu main hoặc nền thay đổi so snapshot, dừng phần ảnh hưởng và cập nhật/review kế hoạch; không force.
 2. Push **chỉ** nhánh chore/repository-consolidation, không push --all, main hoặc nhánh mutant/bài tập.

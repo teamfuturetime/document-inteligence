@@ -1,10 +1,10 @@
 # GitHub setup và gói duyệt
 
-Nguồn khảo sát mới: [audit](../repository-audit.md), [snapshot API](../evidence/github-snapshot.json), [inventory](../branch-inventory.md). Đọc được quyền admin; không có thiếu quyền đọc cản trở audit. Main vẫn chỉ README, protection404/rulesets rỗng, 0 Issues; PR #1 mở nhatquang→main và #2 merged autosave→minhthao. Không thay settings trong lượt local này.
+Nguồn khảo sát mới: [audit](../repository-audit.md), [snapshot API](../evidence/github-snapshot.json), [inventory](../branch-inventory.md). Đọc được quyền admin; không có thiếu quyền đọc cản trở audit. Main vẫn chỉ README, protection404/rulesets rỗng, 0 Issues; PR #1 mở nhatquang→main và #2 merged autosave→minhthao. Đây là snapshot trước publish. Sau khi chủ dự án duyệt, [publication record](../github-publication.md) ghi PR#3, backlog và main protection đã được API xác minh.
 
-## Nội dung đã chuẩn bị để duyệt một lần
+## Nội dung đã duyệt và triển khai
 
-[Gói thao tác đầy đủ](../../.github/consolidation/README.md): một nhánh push, một PR hợp nhất vào main, 8 labels, 3 milestones và 9 Issues có body/acceptance/dependencies. [Protection payload](../../.github/consolidation/main-protection.json) không tự áp dụng. Không CODEOWNERS: chưa có người phụ trách đồng ý; .github/CODEOWNERS.example vẫn chỉ template. Không mời/sửa quyền, đổi default branch, bật auto-merge hoặc xóa refs.
+[Gói thao tác đầy đủ](../../.github/consolidation/README.md): một nhánh push, một PR hợp nhất vào main, 8 labels, 3 milestones và 9 Issues có body/acceptance/dependencies. [Protection payload](../../.github/consolidation/main-protection.json) đã áp sau khi Product checks xuất hiện và đạt; không tự áp lại. Không CODEOWNERS: chưa có người phụ trách đồng ý; .github/CODEOWNERS.example vẫn chỉ template. Không mời/sửa quyền, đổi default branch, bật auto-merge hoặc xóa refs.
 
 ## Workflow và required context thực tế
 
@@ -12,7 +12,7 @@ Nguồn khảo sát mới: [audit](../repository-audit.md), [snapshot API](../ev
 
 Gate có tests chạy **chính script workflow** với success/failure/skipped/cancelled/missing, không báo xanh khi dependency bị skip. Branch protection strict required context chỉ `Product checks`; nó đại diện cả năm jobs. Áp sau khi context được run thực tế; không yêu cầu một check chưa từng xuất hiện hoặc có thể mất vô thời hạn do filter.
 
-GitHub Actions mới/Ubuntu/Docker chưa được chứng minh từ YAML/local macOS. Sau approved push, lưu run URL, head_sha/conclusion/check names; sau apply protection GET xác minh settings. Existing green checks của a03ea30 không thay bằng evidence cho nhánh mới.
+GitHub Actions/Ubuntu đã được xác minh ở push/PR runs của d597eb5, xem publication record. Docker vẫn chưa build/run; không suy Docker đạt từ CI. Các run URL/head_sha/check names và GET protection được ghi trong snapshot kết quả; checks xanh của a03ea30 không thay evidence mới.
 
 ## Đường vào main và PR hiện có
 

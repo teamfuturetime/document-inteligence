@@ -45,7 +45,7 @@ Checkout sạch riêng tại **a1ba2c6cf311a28cc5a717f096450159a9348423**, tạo
 
 ## Còn giới hạn / chưa chạy
 
-- Workflow mới trên GitHub/Ubuntu chưa chạy vì **chưa được duyệt push**. Exact-SHA CI xanh của nhatquang baseline vẫn ghi trong snapshot, không thay evidence cho workflow mới.
+- Đợt local ban đầu chưa có remote run; sau phê duyệt, push và PR CI trên Ubuntu của d597eb5 đã đạt đủ6 checks. [Publication record](github-publication.md) ghi run URL/SHA và main protection GET verified; Docker vẫn chưa chạy.
 - Docker CLI/Engine không có, chưa build/run containers. Không suy Docker đạt từ compose.yaml.
 - npm audit trên lockfile báo **10 moderate, 0 high/critical**, tập trung ESLint/typescript-eslint/minimatch dev tooling; CONS-06 đã chuẩn bị triage. Không chạy audit fix --force hoặc hạ runtime/dependency để làm xanh.
 - Minhthao checkout đối chiếu còn1 path portability test fail; không sửa hoặc nhập storage đó. Auth/PostgreSQL thật, PDF/multi-page, VLM/API và autosave/notification port chưa nằm trong nghiệm thu nền local này.
@@ -53,4 +53,4 @@ Checkout sạch riêng tại **a1ba2c6cf311a28cc5a717f096450159a9348423**, tạo
 
 ## GitHub và bảo toàn
 
-Chỉ fetch không prune và API GET; main94c5101 vẫn unprotected, PR#1 vẫn mở, chưa có issue mới. Không push/merge/đổi default branch/quyền/xóa refs. [Gói duyệt](../.github/consolidation/README.md) có body PR, 8 labels, 3 milestones, 9 Issues và protection cần `Product checks` xuất hiện trước khi bật. Submission refs và output BT3 local nguyên trạng. Original workspace vẫn personal/canhtung-solo; nhánh consolidation nằm trong worktree riêng.
+Trước khi được duyệt chỉ fetch/API GET. Sau phê duyệt đã push nhánh, mở PR#3, tạo backlog và bảo vệ main theo publication record; main vẫn94c5101 và chưa merge. Không đổi default branch/quyền thành viên/xóa refs. [Gói duyệt](../.github/consolidation/README.md) có body PR, 8 labels, 3 milestones, 9 Issues và protection cần `Product checks` xuất hiện trước khi bật. Submission refs và output BT3 local nguyên trạng. Original workspace vẫn personal/canhtung-solo; nhánh consolidation nằm trong worktree riêng.

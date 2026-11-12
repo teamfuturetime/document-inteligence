@@ -20,7 +20,7 @@ python scripts/dev.py setup
 python scripts/dev.py models
 ```
 
-Lệnh `git switch` trên chỉ dùng sau khi người có quyền duyệt push nhánh consolidation; nếu nhánh chưa có trên remote, dùng worktree consolidation local đã bàn giao, không nhầm với main chỉ README. Sau khi PR nền được merge, clone mặc định vào main và tạo nhánh mới từ main theo CONTRIBUTING.
+Nhánh consolidation đã được push tại [PR #3](https://github.com/teamfuturetime/document-inteligence/pull/3), CI đạt và main đã có protection; PR chưa merge nên không nhầm với main chỉ README. [Trạng thái GitHub](docs/github-publication.md) có backlog và evidence thực. Sau khi PR nền được merge, clone mặc định vào main và tạo nhánh mới từ main theo CONTRIBUTING.
 
 `setup` cài đúng lockfiles và chỉ tạo `.env` khi chưa có; không ghi đè cấu hình cũ. File mẫu chọn `DOCINTEL_PROVIDER_MODE=tesseract`. Nếu giữ `.env` cũ, kiểm tra provider và runtime path. Nếu Tesseract không ở PATH, đặt `DOCINTEL_TESSERACT_EXECUTABLE` bằng đường dẫn cài thật. `models` tải vie+eng (~4,7MB), kiểm SHA256 và lưu dưới `runtime/` đã ignore.
 
