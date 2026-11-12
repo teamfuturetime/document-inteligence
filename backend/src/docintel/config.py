@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
     max_upload_bytes: int = Field(default=5_242_880, gt=0, le=20_971_520)
     upload_receive_timeout_seconds: float = Field(default=30.0, gt=0, le=120)
+    max_concurrent_uploads: int = Field(default=2, ge=1, le=8)
     max_image_pixels: int = Field(default=16_000_000, gt=0, le=40_000_000)
     max_pages: int = Field(default=1, ge=1, le=1)
     provider_timeout_seconds: int = Field(default=30, gt=0, le=120)
