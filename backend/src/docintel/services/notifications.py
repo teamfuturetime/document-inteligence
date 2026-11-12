@@ -1,5 +1,6 @@
 """Best-effort persisted confirmation delivery; see ADR0009 and VT-046@31a18bb."""
 
+import asyncio
 import logging
 from dataclasses import dataclass
 from typing import Literal, Protocol
@@ -35,7 +36,8 @@ async def notify_safely(
 ) -> None:
     try:
         # Cooperative only: adapters must not block or suppress cancellation.
-        await sender.send(notice)
+        async with asyncio.timeout(timeout_seconds):
+            await sender.send(notice)
     except Exception:
         # Caller CancelledError propagates. Never log payload or exception details.
         logger.warning("notification_delivery_failed event=%s", notice.name)
