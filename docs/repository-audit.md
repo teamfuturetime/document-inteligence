@@ -40,3 +40,7 @@ Môi trường chỉ cài test-dev+AI requirements ban đầu thiếu SQLAlchemy
 Chọn nhatquang theo [ADR](decisions/0008-primary-invoice-platform.md): phù hợp local, có domain persisted authority và native CPU không cần service/secret. Chưa tích hợp auth, PDF, autosave từ nhánh khác; không nói chúng đã mất hoặc đã port. [Migration](consolidation-plan.md), [bài tập](../homework/README.md), [lịch sử/lineage](ml/source-lineage.md).
 
 UI của nền chọn có fix polling retry và upload retry ở a03ea30; không merge ngược UI VT-042 cũ. Hai production retry files giống VT-042 là bằng chứng nội dung được giữ nhưng không giả nhận commit ancestry. Không đổi dataset/ground truth/model/config/threshold để làm checks xanh. Native/API/browser/live evaluation/clean install kết quả cuối được ghi riêng với runtime+SHA, không mang số 0.9667 của core Tùng sang nền này.
+
+## Kết luận sau clean verification
+
+Nền chọn tại a1ba2c6 đã được cài từ checkout sạch và đạt103 backend/pipeline tests,12 component tests,14 native HTTP checks và1 Chromium E2E. [Verification](consolidation-verification.md) ghi kết quả/per-schema metrics/commit chính xác. Solo chỉ đối chiếu code và exact-head remote CI trong đợt này, không chạy lại VLM/OCR.space thật và không coi adapter/mock là live provider. Main/PR#1 được API GET xác minh lần cuối vẫn94c5101/unprotected và a03ea30/open. Chưa ghi lên GitHub.

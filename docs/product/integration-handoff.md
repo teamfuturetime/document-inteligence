@@ -1,3 +1,5 @@
+> LỊCH SỬ bàn giao24/10: nền hiện hành đã chọn ở [ADR0008](../decisions/0008-primary-invoice-platform.md); xem [consolidation plan](../consolidation-plan.md) cho port và quy trình GitHub mới. Các đề xuất chọn nền Tùng dưới đây giữ làm tham chiếu, không là quyết định hiện tại.
+
 # Bàn giao thay đổi trên nhatquang
 
 Ngày 24/10 người dùng yêu cầu triển khai **cả sản phẩm trên nhatquang**. Yêu cầu này mở rộng khỏi phạm vi AI riêng trong bản phân công 20/10; không tuyên bố Tùng/Trí/Thao/Tuấn đã nhận lại vai trò hoặc main đã có nền chung.
