@@ -1,0 +1,300 @@
+{
+  "$defs": {
+    "Confidence": {
+      "additionalProperties": false,
+      "properties": {
+        "mapping_signals": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "title": "Mapping Signals",
+          "type": "object"
+        },
+        "method": {
+          "default": "unknown",
+          "enum": [
+            "unknown",
+            "simulated",
+            "heuristic",
+            "calibrated"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "ocr_score": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ocr Score"
+        },
+        "policy_version": {
+          "default": "confidence-draft-1",
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "reason_codes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Score"
+        }
+      },
+      "title": "Confidence",
+      "type": "object"
+    },
+    "ProductPrediction": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "$ref": "#/$defs/Confidence"
+        },
+        "evidence_span_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Span Ids",
+          "type": "array"
+        },
+        "field_id": {
+          "enum": [
+            "invoice_number",
+            "invoice_date",
+            "seller_name",
+            "total_amount",
+            "currency",
+            "full_name",
+            "student_id",
+            "date_of_birth",
+            "class_name",
+            "faculty",
+            "request_content",
+            "request_date"
+          ],
+          "title": "Field Id",
+          "type": "string"
+        },
+        "normalized_value": {
+          "anyOf": [
+            {
+              "maxLength": 16000,
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Normalized Value"
+        },
+        "observation": {
+          "enum": [
+            "found",
+            "not_found",
+            "unknown"
+          ],
+          "title": "Observation",
+          "type": "string"
+        },
+        "raw_value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Raw Value"
+        }
+      },
+      "required": [
+        "field_id",
+        "raw_value",
+        "normalized_value",
+        "observation",
+        "evidence_span_ids",
+        "confidence"
+      ],
+      "title": "ProductPrediction",
+      "type": "object"
+    },
+    "ProductSpan": {
+      "additionalProperties": false,
+      "properties": {
+        "box": {
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Box",
+          "type": "array"
+        },
+        "ocr_score": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Ocr Score"
+        },
+        "page_index": {
+          "const": 0,
+          "default": 0,
+          "title": "Page Index",
+          "type": "integer"
+        },
+        "span_id": {
+          "title": "Span Id",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "span_id",
+        "text",
+        "box",
+        "ocr_score"
+      ],
+      "title": "ProductSpan",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "error_code": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Error Code"
+    },
+    "fields": {
+      "items": {
+        "$ref": "#/$defs/ProductPrediction"
+      },
+      "title": "Fields",
+      "type": "array"
+    },
+    "finished_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Finished At"
+    },
+    "metadata": {
+      "additionalProperties": true,
+      "title": "Metadata",
+      "type": "object"
+    },
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "spans": {
+      "items": {
+        "$ref": "#/$defs/ProductSpan"
+      },
+      "title": "Spans",
+      "type": "array"
+    },
+    "status": {
+      "enum": [
+        "queued",
+        "running",
+        "succeeded",
+        "failed",
+        "unavailable"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "run_id",
+    "status",
+    "created_at"
+  ],
+  "title": "ProductRun",
+  "type": "object"
+}

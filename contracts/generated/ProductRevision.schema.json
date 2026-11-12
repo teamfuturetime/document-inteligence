@@ -1,0 +1,177 @@
+{
+  "$defs": {
+    "ProductIssue": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "field_path": {
+          "enum": [
+            "invoice_number",
+            "invoice_date",
+            "seller_name",
+            "total_amount",
+            "currency",
+            "full_name",
+            "student_id",
+            "date_of_birth",
+            "class_name",
+            "faculty",
+            "request_content",
+            "request_date"
+          ],
+          "title": "Field Path",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "severity": {
+          "default": "error",
+          "enum": [
+            "error",
+            "warning"
+          ],
+          "title": "Severity",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field_path",
+        "code",
+        "message"
+      ],
+      "title": "ProductIssue",
+      "type": "object"
+    },
+    "ProductReviewedField": {
+      "additionalProperties": false,
+      "properties": {
+        "is_reviewed": {
+          "title": "Is Reviewed",
+          "type": "boolean"
+        },
+        "reviewed_value": {
+          "anyOf": [
+            {
+              "maxLength": 16000,
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Reviewed Value"
+        }
+      },
+      "required": [
+        "is_reviewed",
+        "reviewed_value"
+      ],
+      "title": "ProductReviewedField",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "effective_data": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "maxLength": 16000,
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "propertyNames": {
+        "enum": [
+          "invoice_number",
+          "invoice_date",
+          "seller_name",
+          "total_amount",
+          "currency",
+          "full_name",
+          "student_id",
+          "date_of_birth",
+          "class_name",
+          "faculty",
+          "request_content",
+          "request_date"
+        ]
+      },
+      "title": "Effective Data",
+      "type": "object"
+    },
+    "fields": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ProductReviewedField"
+      },
+      "propertyNames": {
+        "enum": [
+          "invoice_number",
+          "invoice_date",
+          "seller_name",
+          "total_amount",
+          "currency",
+          "full_name",
+          "student_id",
+          "date_of_birth",
+          "class_name",
+          "faculty",
+          "request_content",
+          "request_date"
+        ]
+      },
+      "title": "Fields",
+      "type": "object"
+    },
+    "review_status": {
+      "enum": [
+        "draft",
+        "confirmed"
+      ],
+      "title": "Review Status",
+      "type": "string"
+    },
+    "revision": {
+      "minimum": 1,
+      "title": "Revision",
+      "type": "integer"
+    },
+    "saved_at": {
+      "format": "date-time",
+      "title": "Saved At",
+      "type": "string"
+    },
+    "validation_issues": {
+      "items": {
+        "$ref": "#/$defs/ProductIssue"
+      },
+      "title": "Validation Issues",
+      "type": "array"
+    }
+  },
+  "required": [
+    "revision",
+    "review_status",
+    "fields",
+    "effective_data",
+    "validation_issues",
+    "saved_at"
+  ],
+  "title": "ProductRevision",
+  "type": "object"
+}

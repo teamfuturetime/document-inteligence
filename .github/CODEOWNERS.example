@@ -1,0 +1,4 @@
+# Chưa có GitHub handles đã xác minh; file này không hoạt động như CODEOWNERS.
+# Người có quyền thêm các dòng PATH ACCOUNT với tài khoản/team thật có quyền.
+# Các nhóm path cần cân nhắc: /backend/, /frontend/, /data/, /docs/, /.github/.
+# Sau xác nhận tạo CODEOWNERS riêng và cấu hình ruleset/review riêng trên GitHub.

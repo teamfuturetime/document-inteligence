@@ -1,0 +1,33 @@
+{
+  "sample_id": "fixture_004",
+  "fields": {
+    "full_name": {
+      "status": "present",
+      "value": "Đặng Thảo Vy"
+    },
+    "student_id": {
+      "status": "present",
+      "value": "00410724"
+    },
+    "date_of_birth": {
+      "status": "present",
+      "value": "2005-03-12"
+    },
+    "class_name": {
+      "status": "present",
+      "value": "CNTT-K17"
+    },
+    "faculty": {
+      "status": "absent",
+      "value": null
+    },
+    "request_content": {
+      "status": "present",
+      "value": "Đề nghị xác nhận đang theo học"
+    },
+    "request_date": {
+      "status": "present",
+      "value": "2026-09-20"
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "$defs": {
+    "GoldField": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "present",
+            "absent",
+            "unreadable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "status",
+        "value"
+      ],
+      "title": "GoldField",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "fields": {
+      "additionalProperties": {
+        "$ref": "#/$defs/GoldField"
+      },
+      "propertyNames": {
+        "enum": [
+          "full_name",
+          "student_id",
+          "date_of_birth",
+          "class_name",
+          "faculty",
+          "request_content",
+          "request_date"
+        ]
+      },
+      "title": "Fields",
+      "type": "object"
+    },
+    "sample_id": {
+      "title": "Sample Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "sample_id",
+    "fields"
+  ],
+  "title": "GoldAnnotation",
+  "type": "object"
+}

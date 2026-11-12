@@ -1,0 +1,10 @@
+[
+  {"name":"area:repo","color":"1d76db","description":"Repository, developer workflow and CI"},
+  {"name":"area:ocr","color":"0e8a16","description":"Native OCR, preprocessing, extraction and evidence"},
+  {"name":"area:review","color":"5319e7","description":"Review, persisted revisions and export"},
+  {"name":"area:data","color":"006b75","description":"Synthetic data, evaluation and provenance"},
+  {"name":"priority:P0","color":"b60205","description":"Blocks a shared runnable product"},
+  {"name":"priority:P1","color":"d93f0b","description":"Next bounded product improvement"},
+  {"name":"priority:P2","color":"fbca04","description":"Later extension outside the current local core"},
+  {"name":"migration","color":"c2e0c6","description":"Selective port with source lineage and compatibility tests"}
+]

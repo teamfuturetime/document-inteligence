@@ -1,0 +1,25 @@
+{
+  "sample_id": "hoa_don_042",
+  "fields": {
+    "invoice_number": {
+      "status": "present",
+      "value": "0041042"
+    },
+    "invoice_date": {
+      "status": "present",
+      "value": "2026-10-16"
+    },
+    "seller_name": {
+      "status": "present",
+      "value": "Công ty Giả Lập 142"
+    },
+    "total_amount": {
+      "status": "present",
+      "value": 5375000
+    },
+    "currency": {
+      "status": "present",
+      "value": "VND"
+    }
+  }
+}

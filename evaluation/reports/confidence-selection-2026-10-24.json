@@ -1,0 +1,48 @@
+{
+  "report_type": "validation_policy_selection",
+  "source_run_id": "830b292b5b3641b1a7f7d8acf00cf83e",
+  "source_manifest_sha256": "3e5cf4c039b7c4f678ba3a5c3ac39a8b0aa7b921f9d1923b2040053f04d3ccdb",
+  "source_predictions_sha256": "d55e4d3d0a641debca8518d8552feea5f2e3574af2579ff56497d903b0b7e5e2",
+  "profiles": [
+    {
+      "threshold": 0.0,
+      "correct_present": 174,
+      "present": 176,
+      "predicted_non_null": 175,
+      "incorrect_non_null": 1,
+      "unreadable": 2,
+      "unreadable_abstained": 0
+    },
+    {
+      "threshold": 0.25,
+      "correct_present": 174,
+      "present": 176,
+      "predicted_non_null": 175,
+      "incorrect_non_null": 1,
+      "unreadable": 2,
+      "unreadable_abstained": 0
+    },
+    {
+      "threshold": 0.5,
+      "correct_present": 174,
+      "present": 176,
+      "predicted_non_null": 175,
+      "incorrect_non_null": 1,
+      "unreadable": 2,
+      "unreadable_abstained": 2
+    },
+    {
+      "threshold": 0.75,
+      "correct_present": 174,
+      "present": 176,
+      "predicted_non_null": 175,
+      "incorrect_non_null": 1,
+      "unreadable": 2,
+      "unreadable_abstained": 2
+    }
+  ],
+  "selected_threshold": 0.5,
+  "selection_rule": "Smallest grid threshold rejecting unreadable without losing correct present",
+  "limitations": "Tiny unreadable support; not calibration or general accuracy",
+  "source_artifact_directory": "evaluation/runs/2026-10-24-validation-baseline"
+}

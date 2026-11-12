@@ -1,0 +1,116 @@
+{
+  "$defs": {
+    "FixtureSample": {
+      "additionalProperties": false,
+      "properties": {
+        "annotation_path": {
+          "title": "Annotation Path",
+          "type": "string"
+        },
+        "annotation_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Annotation Sha256",
+          "type": "string"
+        },
+        "dataset_version": {
+          "title": "Dataset Version",
+          "type": "string"
+        },
+        "document_type": {
+          "const": "don_de_nghi",
+          "title": "Document Type",
+          "type": "string"
+        },
+        "input_path": {
+          "title": "Input Path",
+          "type": "string"
+        },
+        "input_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Input Sha256",
+          "type": "string"
+        },
+        "parent_document_id": {
+          "title": "Parent Document Id",
+          "type": "string"
+        },
+        "provenance": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Provenance",
+          "type": "object"
+        },
+        "quality_tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Quality Tags",
+          "type": "array"
+        },
+        "sample_id": {
+          "pattern": "^[a-z0-9_]+$",
+          "title": "Sample Id",
+          "type": "string"
+        },
+        "split": {
+          "enum": [
+            "contract_fixture",
+            "development",
+            "validation",
+            "test"
+          ],
+          "title": "Split",
+          "type": "string"
+        },
+        "template_id": {
+          "title": "Template Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sample_id",
+        "parent_document_id",
+        "template_id",
+        "document_type",
+        "input_path",
+        "input_sha256",
+        "annotation_path",
+        "annotation_sha256",
+        "split",
+        "quality_tags",
+        "provenance",
+        "dataset_version"
+      ],
+      "title": "FixtureSample",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "dataset_version": {
+      "title": "Dataset Version",
+      "type": "string"
+    },
+    "purpose": {
+      "const": "contract_fixture",
+      "title": "Purpose",
+      "type": "string"
+    },
+    "samples": {
+      "items": {
+        "$ref": "#/$defs/FixtureSample"
+      },
+      "title": "Samples",
+      "type": "array"
+    }
+  },
+  "required": [
+    "purpose",
+    "dataset_version",
+    "samples"
+  ],
+  "title": "FixtureManifest",
+  "type": "object"
+}

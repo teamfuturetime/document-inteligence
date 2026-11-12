@@ -1,0 +1,4 @@
+{
+  "version": "inference-config-1.1.0-baseline-no-score-abstention",
+  "minimum_field_ocr_score": 0.0
+}

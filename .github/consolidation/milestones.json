@@ -1,0 +1,5 @@
+[
+  {"title":"M1 - Nền OCR local dùng chung","description":"Một nền, một README, CI có gate và đưa vào main sau review; không đặt deadline thay nhóm."},
+  {"title":"M2 - Định dạng và review mở rộng","description":"PDF có giới hạn, autosave/CAS, ingress và dependency follow-up theo acceptance có kiểm thử."},
+  {"title":"M3 - Quyền truy cập và tích hợp tùy chọn","description":"Auth/ownership, config policy và notification sau khi phạm vi được giao; giữ nguồn nhánh cá nhân."}
+]

@@ -1,0 +1,154 @@
+{
+  "purpose": "contract_fixture",
+  "dataset_version": "synthetic-seed-1.0.1",
+  "samples": [
+    {
+      "sample_id": "fixture_001",
+      "parent_document_id": "parent_001",
+      "template_id": "request_form_a",
+      "document_type": "don_de_nghi",
+      "input_path": "data/fixtures/images/fixture_001.png",
+      "input_sha256": "24ba90c5dda99ac26be951a1ec8d949af552e0d1ef5d60dbe2dfc9087b60c800",
+      "annotation_path": "data/fixtures/annotations/fixture_001.json",
+      "annotation_sha256": "75944ae9622f10748ba74d8af10ecd383c40cd00bd0bdb28c21b535da2af349b",
+      "split": "contract_fixture",
+      "quality_tags": [
+        "clear",
+        "vietnamese"
+      ],
+      "provenance": {
+        "data_origin": "synthetic",
+        "creator": "scripts/generate_fixtures.py",
+        "template": "Tự thiết kế trong repository",
+        "font": "arial.ttf",
+        "font_sha256": "74d696e666f696e93db685a85c94bfbfcc0796dfcf8a2e2e2e2c908a54e82949",
+        "font_distribution": "System font; không phân phối trong repository",
+        "seed": "20261005"
+      },
+      "dataset_version": "synthetic-seed-1.0.1"
+    },
+    {
+      "sample_id": "fixture_002",
+      "parent_document_id": "parent_002",
+      "template_id": "request_form_a",
+      "document_type": "don_de_nghi",
+      "input_path": "data/fixtures/images/fixture_002.png",
+      "input_sha256": "4549e7678c16385b4741dfbdc1ff13f6e690924723c8bcafd93d3c06f80d59bb",
+      "annotation_path": "data/fixtures/annotations/fixture_002.json",
+      "annotation_sha256": "4c3494c859c19fb2b387a74c452e3b4d4af5df940e886f9a70b0a1372f91d505",
+      "split": "contract_fixture",
+      "quality_tags": [
+        "leading_zero",
+        "intentional_wrong"
+      ],
+      "provenance": {
+        "data_origin": "synthetic",
+        "creator": "scripts/generate_fixtures.py",
+        "template": "Tự thiết kế trong repository",
+        "font": "arial.ttf",
+        "font_sha256": "74d696e666f696e93db685a85c94bfbfcc0796dfcf8a2e2e2e2c908a54e82949",
+        "font_distribution": "System font; không phân phối trong repository",
+        "seed": "20261005"
+      },
+      "dataset_version": "synthetic-seed-1.0.1"
+    },
+    {
+      "sample_id": "fixture_003",
+      "parent_document_id": "parent_003",
+      "template_id": "request_form_a",
+      "document_type": "don_de_nghi",
+      "input_path": "data/fixtures/images/fixture_003.png",
+      "input_sha256": "ad505dfaeaee5f52d5353d43ea3e43c3dcb07266641aa58953e8051db3a0e72c",
+      "annotation_path": "data/fixtures/annotations/fixture_003.json",
+      "annotation_sha256": "16490bce5ea52bf71ebca01724bea556009da55d1321ea16acc3bb688dec9f67",
+      "split": "contract_fixture",
+      "quality_tags": [
+        "multiline",
+        "intentional_missing"
+      ],
+      "provenance": {
+        "data_origin": "synthetic",
+        "creator": "scripts/generate_fixtures.py",
+        "template": "Tự thiết kế trong repository",
+        "font": "arial.ttf",
+        "font_sha256": "74d696e666f696e93db685a85c94bfbfcc0796dfcf8a2e2e2e2c908a54e82949",
+        "font_distribution": "System font; không phân phối trong repository",
+        "seed": "20261005"
+      },
+      "dataset_version": "synthetic-seed-1.0.1"
+    },
+    {
+      "sample_id": "fixture_004",
+      "parent_document_id": "parent_004",
+      "template_id": "request_form_a",
+      "document_type": "don_de_nghi",
+      "input_path": "data/fixtures/images/fixture_004.png",
+      "input_sha256": "89060f8dcdc2b53686785841511033e1c0d9cabb746b867dc568399d2ff247cb",
+      "annotation_path": "data/fixtures/annotations/fixture_004.json",
+      "annotation_sha256": "afdbeef4d5a4534bb7d317f827a64319afd18d10632d499e1ae73ecaa2b4e030",
+      "split": "contract_fixture",
+      "quality_tags": [
+        "absent",
+        "intentional_extra"
+      ],
+      "provenance": {
+        "data_origin": "synthetic",
+        "creator": "scripts/generate_fixtures.py",
+        "template": "Tự thiết kế trong repository",
+        "font": "arial.ttf",
+        "font_sha256": "74d696e666f696e93db685a85c94bfbfcc0796dfcf8a2e2e2e2c908a54e82949",
+        "font_distribution": "System font; không phân phối trong repository",
+        "seed": "20261005"
+      },
+      "dataset_version": "synthetic-seed-1.0.1"
+    },
+    {
+      "sample_id": "fixture_005",
+      "parent_document_id": "parent_005",
+      "template_id": "request_form_a",
+      "document_type": "don_de_nghi",
+      "input_path": "data/fixtures/images/fixture_005.png",
+      "input_sha256": "3fabee8768aa8113a9ee7ec23811e9196c92cf0fa92cc6109ebec66ef3908f02",
+      "annotation_path": "data/fixtures/annotations/fixture_005.json",
+      "annotation_sha256": "f9eadb066a16b1167c9ef8232461a27299c548c862d527715c3d9ebc779bde34",
+      "split": "contract_fixture",
+      "quality_tags": [
+        "invalid_date_visible"
+      ],
+      "provenance": {
+        "data_origin": "synthetic",
+        "creator": "scripts/generate_fixtures.py",
+        "template": "Tự thiết kế trong repository",
+        "font": "arial.ttf",
+        "font_sha256": "74d696e666f696e93db685a85c94bfbfcc0796dfcf8a2e2e2e2c908a54e82949",
+        "font_distribution": "System font; không phân phối trong repository",
+        "seed": "20261005"
+      },
+      "dataset_version": "synthetic-seed-1.0.1"
+    },
+    {
+      "sample_id": "fixture_006",
+      "parent_document_id": "parent_006",
+      "template_id": "request_form_a",
+      "document_type": "don_de_nghi",
+      "input_path": "data/fixtures/images/fixture_006.png",
+      "input_sha256": "4f38128becb7c112a1b0ca7bf3b45c9548bf4768fe91a2ca367724b8e33c23ed",
+      "annotation_path": "data/fixtures/annotations/fixture_006.json",
+      "annotation_sha256": "e7ce3bb01d8da897b56b920d9fb0dc109e8e4e0e3f3fce6a5811e0ef185dad39",
+      "split": "contract_fixture",
+      "quality_tags": [
+        "masked_unreadable"
+      ],
+      "provenance": {
+        "data_origin": "synthetic",
+        "creator": "scripts/generate_fixtures.py",
+        "template": "Tự thiết kế trong repository",
+        "font": "arial.ttf",
+        "font_sha256": "74d696e666f696e93db685a85c94bfbfcc0796dfcf8a2e2e2e2c908a54e82949",
+        "font_distribution": "System font; không phân phối trong repository",
+        "seed": "20261005"
+      },
+      "dataset_version": "synthetic-seed-1.0.1"
+    }
+  ]
+}

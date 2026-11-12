@@ -1,0 +1,12 @@
+{
+  "config_version": "foundation-config-1.0.0",
+  "provider": "fixture",
+  "document_type": "don_de_nghi",
+  "schema_version": "1.0.0",
+  "normalization_version": "nfc-whitespace-date-1.0.0",
+  "validation_version": "application-rules-1.0.0",
+  "confidence_policy_version": "confidence-draft-1",
+  "evaluation_version": "exact-fields-1.0.0",
+  "purpose": "contract_fixture",
+  "seed": 20261005
+}

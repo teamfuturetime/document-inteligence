@@ -1,0 +1,36 @@
+name: Lỗi dữ liệu hoặc model
+description: Lỗi có sample/run/config và taxonomy; chỉ dữ liệu synthetic/sample hợp lệ.
+body:
+  - type: textarea
+    id: trace
+    attributes:
+      label: Sample ID, run ID, dataset/model/config version và requirement IDs
+    validations:
+      required: true
+  - type: textarea
+    id: values
+    attributes:
+      label: Field, expected và predicted trước review
+      description: Nêu evidence nguồn, trạng thái present/absent/unreadable, không lấy bản sửa làm prediction máy.
+    validations:
+      required: true
+  - type: textarea
+    id: taxonomy
+    attributes:
+      label: Primary cause, secondary tags, severity, status
+      description: Dùng mã trong docs/ml/error-taxonomy.md; severity độc lập category.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Cách tái hiện, nguồn/quyền dữ liệu
+      description: Không secret/PII, không data runtime chưa được phép.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria, checks và dependencies
+    validations:
+      required: true

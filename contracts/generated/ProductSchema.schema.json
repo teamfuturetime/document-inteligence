@@ -1,0 +1,83 @@
+{
+  "$defs": {
+    "FieldDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "field_id": {
+          "enum": [
+            "invoice_number",
+            "invoice_date",
+            "seller_name",
+            "total_amount",
+            "currency",
+            "full_name",
+            "student_id",
+            "date_of_birth",
+            "class_name",
+            "faculty",
+            "request_content",
+            "request_date"
+          ],
+          "title": "Field Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "value_type": {
+          "enum": [
+            "text",
+            "date",
+            "integer",
+            "currency"
+          ],
+          "title": "Value Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field_id",
+        "label",
+        "value_type"
+      ],
+      "title": "FieldDefinition",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "document_type": {
+      "enum": [
+        "hoa_don",
+        "don_de_nghi"
+      ],
+      "title": "Document Type",
+      "type": "string"
+    },
+    "fields": {
+      "items": {
+        "$ref": "#/$defs/FieldDefinition"
+      },
+      "title": "Fields",
+      "type": "array"
+    },
+    "schema_version": {
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "document_type",
+    "fields"
+  ],
+  "title": "ProductSchema",
+  "type": "object"
+}

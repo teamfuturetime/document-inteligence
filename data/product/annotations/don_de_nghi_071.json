@@ -1,0 +1,33 @@
+{
+  "sample_id": "don_de_nghi_071",
+  "fields": {
+    "full_name": {
+      "status": "present",
+      "value": "Nguyễn Minh An 171"
+    },
+    "student_id": {
+      "status": "absent",
+      "value": null
+    },
+    "date_of_birth": {
+      "status": "present",
+      "value": "2005-03-18"
+    },
+    "class_name": {
+      "status": "present",
+      "value": "CNTT-K17"
+    },
+    "faculty": {
+      "status": "present",
+      "value": "Công nghệ thông tin"
+    },
+    "request_content": {
+      "status": "present",
+      "value": "Đề nghị cấp giấy xác nhận đang theo học. Mã hồ sơ mẫu 171."
+    },
+    "request_date": {
+      "status": "present",
+      "value": "2026-10-18"
+    }
+  }
+}

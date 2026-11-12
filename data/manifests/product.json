@@ -1,0 +1,2602 @@
+{
+  "purpose": "model_benchmark",
+  "dataset_version": "product-synthetic-1.0.0",
+  "generator_version": "1.0.0",
+  "provenance": {
+    "creator": "scripts/generate_product_dataset.py",
+    "template": "Self-designed",
+    "font": "arial.ttf",
+    "font_sha256": "74d696e666f696e93db685a85c94bfbfcc0796dfcf8a2e2e2e2c908a54e82949",
+    "font_distribution": "System font is referenced, never redistributed"
+  },
+  "samples": [
+    {
+      "sample_id": "hoa_don_000",
+      "parent_document_id": "hoa_don_000",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/hoa_don_000.png",
+      "input_sha256": "fe2c356f573d6dae452f108f2ce73181242b8ccbe348c0f3d4667d2c02607b68",
+      "annotation_path": "data/product/annotations/hoa_don_000.json",
+      "annotation_sha256": "50666e8b4a31e644a67683b5710b2d00cd92c28ff8a71b51e3e9d0c172b6e8b1",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_001",
+      "parent_document_id": "hoa_don_001",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/hoa_don_001.png",
+      "input_sha256": "c011eb2ca0ab0d14625648f6b085a06b175f2f2f69347ac7406aeedcd0ba880b",
+      "annotation_path": "data/product/annotations/hoa_don_001.json",
+      "annotation_sha256": "9c27e928c342465ad32c53a672e3dc3ee53c842e678e2d534d9315c32af5a2ec",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_002",
+      "parent_document_id": "hoa_don_002",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_002.png",
+      "input_sha256": "950d9c48193a8e59946fb0878d69c85d1b149a29c1a1aba2c5e5997fdaadf7fe",
+      "annotation_path": "data/product/annotations/hoa_don_002.json",
+      "annotation_sha256": "7cb9468ec40efc00a3a459033eaaebc3680bb316622ccb9773ab343eb384df67",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese",
+        "unreadable"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_003",
+      "parent_document_id": "hoa_don_003",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_003.png",
+      "input_sha256": "bfedd67f5664a8e46b9c5e5646d9a2fe0450bc28941dd6472bbc14f83a4d31cd",
+      "annotation_path": "data/product/annotations/hoa_don_003.json",
+      "annotation_sha256": "52f8b0cd2b3eebf2b3a855c64b5d03448ccb21e5bff783bc26e1b3965174edc5",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese",
+        "absent"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_004",
+      "parent_document_id": "hoa_don_004",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_004.png",
+      "input_sha256": "d978452b160a98e2e9b1607e39c0f5db5dc0fcab9dd5d1d04169ad3017477003",
+      "annotation_path": "data/product/annotations/hoa_don_004.json",
+      "annotation_sha256": "77e78b9ae3be596997d3f265074264551643b7a8c218146703c72da56b795211",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese",
+        "invalid_calendar_source"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_005",
+      "parent_document_id": "hoa_don_005",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/hoa_don_005.png",
+      "input_sha256": "946711f668d215f5c3f03bfa8a7038f2c9bbb82d5c14cd261e5c8512896b2833",
+      "annotation_path": "data/product/annotations/hoa_don_005.json",
+      "annotation_sha256": "d4e72cfb99db03572ec97373b688e1dddb988a567361868147ba0610abfbd2c5",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese",
+        "mild_blur"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_006",
+      "parent_document_id": "hoa_don_006",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/hoa_don_006.png",
+      "input_sha256": "120dab2d6148efe47af4ee763c0b6eac32114f256c247e16a04653f53fee8dbd",
+      "annotation_path": "data/product/annotations/hoa_don_006.json",
+      "annotation_sha256": "77703d89d07c08caaf3208e1726cabaca2d50b126dcdbef7ce16145fd0d66d29",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_007",
+      "parent_document_id": "hoa_don_007",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_007.png",
+      "input_sha256": "e3aedcd764f7466491623de17437031ecc532a67e0fea2f009a30fadd7898969",
+      "annotation_path": "data/product/annotations/hoa_don_007.json",
+      "annotation_sha256": "4892b26923655a03d7b07c4986d607931ddc45fbb44e87188988580090c2066d",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_008",
+      "parent_document_id": "hoa_don_008",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_008.png",
+      "input_sha256": "c8b526b97d2b98ddefe16c0b92cd65a30fb6d824364f3fc58b7a07b180208b31",
+      "annotation_path": "data/product/annotations/hoa_don_008.json",
+      "annotation_sha256": "25b220c194fcc1618a67a99442d7413ca52347347cc053aaa064a9a6e9420926",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_009",
+      "parent_document_id": "hoa_don_009",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_009.png",
+      "input_sha256": "c8735541ae21ebeb7198da7419295554433f0dd7cbac3d20119f68b1e320f037",
+      "annotation_path": "data/product/annotations/hoa_don_009.json",
+      "annotation_sha256": "6ad2519598f06148bb980f2e5f0cec423f79eed4ff2b8556885dd7b8d79a94cc",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_010",
+      "parent_document_id": "hoa_don_010",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/hoa_don_010.png",
+      "input_sha256": "faf539e0ff3a3cf2585bf4d8a732901670fab4b6e4f42b7cd475357dd4570259",
+      "annotation_path": "data/product/annotations/hoa_don_010.json",
+      "annotation_sha256": "9bb382ac005479d7fc5f3b600d3ab79298c0676c730446f27daf6a45158a0001",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_011",
+      "parent_document_id": "hoa_don_011",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/hoa_don_011.png",
+      "input_sha256": "729f186c04745b1d13cc96e5be899b53a7e48344972a1471f66dde6472b9e6b8",
+      "annotation_path": "data/product/annotations/hoa_don_011.json",
+      "annotation_sha256": "9bd5c42faa6dc02fe7ceafa50d8e1f385d909df57c53a150c60dc9962433aa7c",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_012",
+      "parent_document_id": "hoa_don_012",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_012.png",
+      "input_sha256": "f0a49da88bc8cfa1194a5d34ea493a03afe244c1a2d0f870fd4d8ddb432582f4",
+      "annotation_path": "data/product/annotations/hoa_don_012.json",
+      "annotation_sha256": "b71566cb75273513ce158cc669cc564c9a25d7ed3028b7aec94b03d9f1c66887",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_013",
+      "parent_document_id": "hoa_don_013",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_013.png",
+      "input_sha256": "a6744cee02c0b954e5662e172d620b806139150e797516f1e28ac5fcd5dadf31",
+      "annotation_path": "data/product/annotations/hoa_don_013.json",
+      "annotation_sha256": "34b12e471f9c6b6d50bd8c011576aea14a1efdee31c31a554ed0d65c577daecd",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_014",
+      "parent_document_id": "hoa_don_014",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_014.png",
+      "input_sha256": "041e80b69745cc1a04c12ba1f9e5199bc8fdd3aa6f7a954a2a69ee4d264b8f99",
+      "annotation_path": "data/product/annotations/hoa_don_014.json",
+      "annotation_sha256": "6ab38db2bf0a82803cfd58012dfe2161e061ea9b8dad845f8783083a1c69c31b",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_015",
+      "parent_document_id": "hoa_don_015",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/hoa_don_015.png",
+      "input_sha256": "e9db503be4fba996fb23faed6277db9b1ee0d6e34d8239aa94d64d7da12827f9",
+      "annotation_path": "data/product/annotations/hoa_don_015.json",
+      "annotation_sha256": "ae9db91fb19850468817b2f091fe6048191e08e21dbaba526f8a8a8771b35129",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_016",
+      "parent_document_id": "hoa_don_016",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/hoa_don_016.png",
+      "input_sha256": "dddfc8fda0182a85311b54fcc3aeef9eab91fe3534222b53b3fc717d0f21b655",
+      "annotation_path": "data/product/annotations/hoa_don_016.json",
+      "annotation_sha256": "167448f12900c2d623fd11cef066a0fc0915c7aa6d958821047c5780cfa730ce",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_017",
+      "parent_document_id": "hoa_don_017",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_017.png",
+      "input_sha256": "118157a614eedbfd25e615743a4a306e06decbf6ba552e26223ed977e7eea8c0",
+      "annotation_path": "data/product/annotations/hoa_don_017.json",
+      "annotation_sha256": "3c72423a8bb670c6cab2b6f65cf3fa6ab679d6ee6d1fd3729993d1c744240219",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_018",
+      "parent_document_id": "hoa_don_018",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_018.png",
+      "input_sha256": "90d4693b7c78cee4db709a41f84f1121ad4c3921f3f0006c3112bc108b1701e3",
+      "annotation_path": "data/product/annotations/hoa_don_018.json",
+      "annotation_sha256": "8dc98a531c6061dc52d6651f4ae9ede56ece999caa2e516c28875d4ed0092d29",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese",
+        "mild_blur"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_019",
+      "parent_document_id": "hoa_don_019",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_019.png",
+      "input_sha256": "1b29ff1dd33a733ea8e43f20fd9b65dd5046a7001a033fee908821b1986f4e32",
+      "annotation_path": "data/product/annotations/hoa_don_019.json",
+      "annotation_sha256": "bd10d43f30d1c5059d393709239efeb91c6be3531eef3ff4621e1f95bbe545cc",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_020",
+      "parent_document_id": "hoa_don_020",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/hoa_don_020.png",
+      "input_sha256": "edf6c9e99beaeed03055b9d3d1f92e62e46285f787c03b6f9e7badfa96f4aa55",
+      "annotation_path": "data/product/annotations/hoa_don_020.json",
+      "annotation_sha256": "29cf290519480408ade8855cde3b50c4b307cf9aac24dcd8a190b1a51d7f32d6",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese",
+        "absent"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_021",
+      "parent_document_id": "hoa_don_021",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/hoa_don_021.png",
+      "input_sha256": "40ed91b5ea8537b31c738deef9d976c23cb5e278358f9d20f159595c56005f38",
+      "annotation_path": "data/product/annotations/hoa_don_021.json",
+      "annotation_sha256": "451b47191290e9961ab1df8876bcf6f1cfef928423744608e5beeb92c9a8d3af",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese",
+        "unreadable"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_022",
+      "parent_document_id": "hoa_don_022",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_022.png",
+      "input_sha256": "04c19c7f4f93fb34d10d11b58dab3cd7ca63ba974cb475b350b5d93f1de3eb56",
+      "annotation_path": "data/product/annotations/hoa_don_022.json",
+      "annotation_sha256": "8b6fdfe2d85bd140b3acde4d2a87ee86e09cd452b5184cc3e1503ea3942eaf0b",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_023",
+      "parent_document_id": "hoa_don_023",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_023.png",
+      "input_sha256": "22e30f99437849813c88d950d65869eadbebfd73850a792b3f9d7de9dd75e678",
+      "annotation_path": "data/product/annotations/hoa_don_023.json",
+      "annotation_sha256": "be1e99cb5fd3030696eb66db666d63c75583e72b1543fad05194e79b1d0c5d6e",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_024",
+      "parent_document_id": "hoa_don_024",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_024.png",
+      "input_sha256": "6ef77239f3d40e6fdd37b0ca06fa63595a1bc24e169d7038072c0e794ad36d37",
+      "annotation_path": "data/product/annotations/hoa_don_024.json",
+      "annotation_sha256": "76cd2d133b7fe2360a742e2efba313cbe8b1608bc59e36e19e401cea3ba6ef44",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_025",
+      "parent_document_id": "hoa_don_025",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/hoa_don_025.png",
+      "input_sha256": "18d949f6a5d8b328cffe191fe3a0f2b15da9b58e3d0f06b09e24a108fa3286e3",
+      "annotation_path": "data/product/annotations/hoa_don_025.json",
+      "annotation_sha256": "e74253f1e80a99dc4ba15562a95ca16b5a270949af1daed1932149f0ce463e3c",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_026",
+      "parent_document_id": "hoa_don_026",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/hoa_don_026.png",
+      "input_sha256": "3b0b8ccbca1bc7be65a4fe9bec592baad52cac0501eb1c475a8f0383692b6ee5",
+      "annotation_path": "data/product/annotations/hoa_don_026.json",
+      "annotation_sha256": "5ad3715d89f2a381162b55a2b67e360e41f0768a32337907c3cec47ac2482be6",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_027",
+      "parent_document_id": "hoa_don_027",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_027.png",
+      "input_sha256": "228f667a288b1b60aa89e22f062736ed25ff27a2fb83ae631cb48211fa3ff12e",
+      "annotation_path": "data/product/annotations/hoa_don_027.json",
+      "annotation_sha256": "9f2c9b16b322d214277b18cc1ac25d0b23eb8129a5354e034577bc433f6324b2",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese",
+        "invalid_calendar_source"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_028",
+      "parent_document_id": "hoa_don_028",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_028.png",
+      "input_sha256": "78780841bdd533866cc0f764eb84caf8b5aaf57758c5f4989e9afac5f9aed54e",
+      "annotation_path": "data/product/annotations/hoa_don_028.json",
+      "annotation_sha256": "ab6dfa524609ebfa3269d65ebab1cbe9dbfa6c7caed072a6808c4c0f8fa09be0",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_029",
+      "parent_document_id": "hoa_don_029",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_029.png",
+      "input_sha256": "c9baba34e9d9ea99991c366f0ede3cf76269612055cd7f9d57a06f7ca40787be",
+      "annotation_path": "data/product/annotations/hoa_don_029.json",
+      "annotation_sha256": "61b35caa3411a161ab4353a8d1901905c182de04540fb2d386c1084cf404ea12",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_030",
+      "parent_document_id": "hoa_don_030",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/hoa_don_030.png",
+      "input_sha256": "2b9dd932e86d895e8b6d06c3b6354dbb0750a567022c28cf7f50730b02fb951b",
+      "annotation_path": "data/product/annotations/hoa_don_030.json",
+      "annotation_sha256": "b327817a1c3a74e1c2bb0205d6d41456e0432fb990950460565240fb4c65c285",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_031",
+      "parent_document_id": "hoa_don_031",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/hoa_don_031.png",
+      "input_sha256": "a7f298ab97dc1fa5f1a295313ddd1fbca904a1acc7220f379d26b860bd2c8eaa",
+      "annotation_path": "data/product/annotations/hoa_don_031.json",
+      "annotation_sha256": "d94a2cd46c87bda8355134c399dbadcaca823b269d23d9b90ab498fdc3677fe8",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese",
+        "mild_blur"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_032",
+      "parent_document_id": "hoa_don_032",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_032.png",
+      "input_sha256": "7a3fe8b90d992a48a764d045a32fc962f9c076de91c9169693b9fab60226e515",
+      "annotation_path": "data/product/annotations/hoa_don_032.json",
+      "annotation_sha256": "a74a074832dea1b9c3838ecbdec7f8e32ddf66ede8918f2f5bae50ec6f6ddd1f",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_033",
+      "parent_document_id": "hoa_don_033",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_033.png",
+      "input_sha256": "a5f83516a7ac0dd12bd4cf418ed31601d45d8d8acd0c439c7bbd238e054d71a2",
+      "annotation_path": "data/product/annotations/hoa_don_033.json",
+      "annotation_sha256": "a070c12ffaf819a284dc5d4949dbab9a91e8686f264fc51af5b1e3db4f86c131",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_034",
+      "parent_document_id": "hoa_don_034",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_034.png",
+      "input_sha256": "253c1387e29a407cb70183bf0ffa756fe7630eae57ceff110adb41fcc9569d54",
+      "annotation_path": "data/product/annotations/hoa_don_034.json",
+      "annotation_sha256": "c49216652ce583e61602f5df7df518ddfdfe2972158b51456636093a16490918",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_035",
+      "parent_document_id": "hoa_don_035",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/hoa_don_035.png",
+      "input_sha256": "7b0bdab2f5587ba54fbafacc2dee74f5d0a01a4d5b1b5884bb7aaeb7181bb96c",
+      "annotation_path": "data/product/annotations/hoa_don_035.json",
+      "annotation_sha256": "7feaabe23411fc21a3d60a838e4896aa0c6a8ad2d36aa04ad78c04938562f50a",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_036",
+      "parent_document_id": "hoa_don_036",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/hoa_don_036.png",
+      "input_sha256": "e900335a97a4f88276828d3bd0d777662785e53ba788de32b46d153f63a215d4",
+      "annotation_path": "data/product/annotations/hoa_don_036.json",
+      "annotation_sha256": "4b7e5d5c9f4125c08cc4dce902a5a52c4ac0574115500cef8cfa2d43ce0262ca",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_037",
+      "parent_document_id": "hoa_don_037",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_037.png",
+      "input_sha256": "bd4d048e65b776b4138400943b6a0d707a15c4c05cb438c891deb0c768c83c99",
+      "annotation_path": "data/product/annotations/hoa_don_037.json",
+      "annotation_sha256": "bbb229b0a7f13d12492d2c8c15a82fa5f5cb1c1a4e3673b99f5f0a83fbf5d78d",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese",
+        "absent"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_038",
+      "parent_document_id": "hoa_don_038",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_038.png",
+      "input_sha256": "e2eb2600e86b7b20a3d6359726bfbdc96113382c77f220f557fc86b964497033",
+      "annotation_path": "data/product/annotations/hoa_don_038.json",
+      "annotation_sha256": "c227fdb61336582c4ecfdb3b2ac78bc1be687773d98384a7773d3e08034953f5",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_039",
+      "parent_document_id": "hoa_don_039",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_039.png",
+      "input_sha256": "2e73cd6e6231d93c424c6a8563a9480579134b131f484f4618b47f2be7d17b4e",
+      "annotation_path": "data/product/annotations/hoa_don_039.json",
+      "annotation_sha256": "ad89d154c1f38e28c26293f4d89b635745ffd39d3d478056169de7464dd1aec4",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_040",
+      "parent_document_id": "hoa_don_040",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/hoa_don_040.png",
+      "input_sha256": "01d285f98fb476c4d3ca84743b3852cf0731d01c726c4213ce2b784c144fe016",
+      "annotation_path": "data/product/annotations/hoa_don_040.json",
+      "annotation_sha256": "aa8e0a2a5a86c4accf9f5165ba3bd1d63761ec5e78da1d954fb570fa908f81bc",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese",
+        "unreadable"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_041",
+      "parent_document_id": "hoa_don_041",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/hoa_don_041.png",
+      "input_sha256": "b439765bf27afb42a8e5f120a2b5d7480a4d52ebcc5bb52e4970ff76d7e9c426",
+      "annotation_path": "data/product/annotations/hoa_don_041.json",
+      "annotation_sha256": "d7685e0540fabb65b3a5ccfd69e24ff610279fbce1a7fef447633de943947682",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_042",
+      "parent_document_id": "hoa_don_042",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_042.png",
+      "input_sha256": "0215f2ff004bb1cacdc3877ccc3dccb3764318255063f17fe63179298dbffcf0",
+      "annotation_path": "data/product/annotations/hoa_don_042.json",
+      "annotation_sha256": "da63a020d04227d539321754b345417be3fb83e6da0fbfc2de517270a4cb13bb",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_043",
+      "parent_document_id": "hoa_don_043",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_043.png",
+      "input_sha256": "447baae9c0eaaaa7406374fb98f321b5d2da0265fd5b15e037c6504ee3b396cf",
+      "annotation_path": "data/product/annotations/hoa_don_043.json",
+      "annotation_sha256": "287ff0111ce8e0fe9d4c22043e45b4135ca3fe8cf44c355096396bca90584966",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_044",
+      "parent_document_id": "hoa_don_044",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_044.png",
+      "input_sha256": "d41c58971e02992962f2c1e49e78be3238a432b2792d5b740d1cc540ac7bfc50",
+      "annotation_path": "data/product/annotations/hoa_don_044.json",
+      "annotation_sha256": "8fc664a96403af23bd7fa80d63a18c0786d72a1b6bb26763ce709e130f9ba21c",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese",
+        "mild_blur"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_045",
+      "parent_document_id": "hoa_don_045",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/hoa_don_045.png",
+      "input_sha256": "be744c8b6120a9c00d04caeb459928d38cbca02fe8c7ce4f46ee9797e5b61bd8",
+      "annotation_path": "data/product/annotations/hoa_don_045.json",
+      "annotation_sha256": "165e7cb77193513e30ae5b95766ce78bfad19d68b1956f9aa4909b78a8f1acad",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_046",
+      "parent_document_id": "hoa_don_046",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/hoa_don_046.png",
+      "input_sha256": "7a7f13ac526ea60bad24b7158ffa806eb5055b6e0f699767cd86743a9c366b3a",
+      "annotation_path": "data/product/annotations/hoa_don_046.json",
+      "annotation_sha256": "cd1cbd627bc8fa9cd819e666e54df963bfd37472c7493457c2cab433596c8b56",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_047",
+      "parent_document_id": "hoa_don_047",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_047.png",
+      "input_sha256": "ca997f95909a19814ef3326c276f34bbfa24d4722f6bfee1e06d8022eecbc1a7",
+      "annotation_path": "data/product/annotations/hoa_don_047.json",
+      "annotation_sha256": "7f334d2c9f5cf9e7c468b1a9d09474587b862c8c03f2be2642e804e4dd6dda0d",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_048",
+      "parent_document_id": "hoa_don_048",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_048.png",
+      "input_sha256": "c1526159bf0991213311fed8b6f26475be6888f4e573f13cdfe0c3538e05c258",
+      "annotation_path": "data/product/annotations/hoa_don_048.json",
+      "annotation_sha256": "464987aaf46f527edc3841663f22d05f2b77a12da381db93db4364652fabe992",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_049",
+      "parent_document_id": "hoa_don_049",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_049.png",
+      "input_sha256": "2dfa7ae6cd72fd60ef1aeeab6ddaeb6426405c4901f874e5a2abd4ffa7434463",
+      "annotation_path": "data/product/annotations/hoa_don_049.json",
+      "annotation_sha256": "892207a56e3fadc0412c79b328654db633056cadbf63aafc86a033713f1f89b9",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_050",
+      "parent_document_id": "hoa_don_050",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/hoa_don_050.png",
+      "input_sha256": "ec144415f1553cfe31759115f87ae32771bb7b0e6739a5e2df7db29faa5155ea",
+      "annotation_path": "data/product/annotations/hoa_don_050.json",
+      "annotation_sha256": "d50dfb9ae90e17fdcd7a02947ca1baba4095c064c447b4f3ca49528bee915b39",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese",
+        "invalid_calendar_source"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_051",
+      "parent_document_id": "hoa_don_051",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/hoa_don_051.png",
+      "input_sha256": "bde193f8c45ba98320da9cda533dd80fa20013afb2a7462b9abbbab19b82006a",
+      "annotation_path": "data/product/annotations/hoa_don_051.json",
+      "annotation_sha256": "23d5e9faef52811ce35af1624def1dc7b8757d244cb31dc15e0a51b8919ffafc",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_052",
+      "parent_document_id": "hoa_don_052",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_052.png",
+      "input_sha256": "a8034486b87261ed716f84e7525b62f3ce0cd1aef91099e9b0b181a6bce97a53",
+      "annotation_path": "data/product/annotations/hoa_don_052.json",
+      "annotation_sha256": "1f3e70373377621ef4fb4d47b3f38ee055baac213e25a24be797b10f75f96d53",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_053",
+      "parent_document_id": "hoa_don_053",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_053.png",
+      "input_sha256": "5de61348c7f4d350c060e1f044cd159b3e82c848371d103825f038631d103cfd",
+      "annotation_path": "data/product/annotations/hoa_don_053.json",
+      "annotation_sha256": "834df0ffd1f96c8afd96defe8c244f2107e6d013ebb38ba5c62151fb3e52af83",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_054",
+      "parent_document_id": "hoa_don_054",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_054.png",
+      "input_sha256": "ab1e010d39a6f190b2f7bdde82378e719db06bcf265bec58afd8f08073d3f1f2",
+      "annotation_path": "data/product/annotations/hoa_don_054.json",
+      "annotation_sha256": "413bfb976ae34d6e35f552acf4a16b4dbf5723e249e75df8e59bc4f640f12fd4",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese",
+        "absent"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_055",
+      "parent_document_id": "hoa_don_055",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/hoa_don_055.png",
+      "input_sha256": "fea187e7b3ed012f5d73b8214d20010d266142135476447b76389bedd5ea19e1",
+      "annotation_path": "data/product/annotations/hoa_don_055.json",
+      "annotation_sha256": "b2c87eeb658687b159eb3ec1182b2359983afbe21cff800205dae7226f80f2b4",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_056",
+      "parent_document_id": "hoa_don_056",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/hoa_don_056.png",
+      "input_sha256": "f7a9201ba1309bf8ef2ca05658e5c2ea782d6ab34149762b48535cf3387214ab",
+      "annotation_path": "data/product/annotations/hoa_don_056.json",
+      "annotation_sha256": "e14360e43cf1059f484c66bb91f32b1e2bfe9ce682f251d269c909d5493cec25",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_057",
+      "parent_document_id": "hoa_don_057",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_057.png",
+      "input_sha256": "d62edfec43fc17ebeee5156ffc8aeef1a28e68210fd0d46b8f7cafd0ee3040ef",
+      "annotation_path": "data/product/annotations/hoa_don_057.json",
+      "annotation_sha256": "ce5443e308678a4520be7d2f376e31c9672dac506f1cd9ecb4b8f297cf7d01df",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese",
+        "mild_blur"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_058",
+      "parent_document_id": "hoa_don_058",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_058.png",
+      "input_sha256": "684ad9838c773cf2477c0823faeb54a1dd9a2750c40ce341a1c352de9457399e",
+      "annotation_path": "data/product/annotations/hoa_don_058.json",
+      "annotation_sha256": "7059ff18424fb51b1ab3dd3a4b4366fae027b63c005113253a9f0d77e7e558bb",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_059",
+      "parent_document_id": "hoa_don_059",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_059.png",
+      "input_sha256": "5f105d4f2d276eb00e9ef35f90b7e448d970a61d1c01da3fa09ac0a74964277e",
+      "annotation_path": "data/product/annotations/hoa_don_059.json",
+      "annotation_sha256": "440eaa0c5b14348da86f7ba24b0412bde9c5d46dbe3bcb3ba5d54d5fc4f33424",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese",
+        "unreadable"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_060",
+      "parent_document_id": "hoa_don_060",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/hoa_don_060.png",
+      "input_sha256": "43f572c3077c9ccbd34218f6a15f5b583da2580408d6541bf5d9ce642c4a3c9b",
+      "annotation_path": "data/product/annotations/hoa_don_060.json",
+      "annotation_sha256": "0a69db5a42e8c807dc2d5ed05168387d432909fe9a36f834388bb3b4f6e2dd01",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_061",
+      "parent_document_id": "hoa_don_061",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/hoa_don_061.png",
+      "input_sha256": "75dc2847649091ae51c2e61a1326f34151f275dcdb6c43623ee79647eb4782f7",
+      "annotation_path": "data/product/annotations/hoa_don_061.json",
+      "annotation_sha256": "28693b419f5f5c8ade44624601a6e3a5e4febb86145f0646c874a21a11792808",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_062",
+      "parent_document_id": "hoa_don_062",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_062.png",
+      "input_sha256": "46098014527e7193019225e2b2f0f487b10c7e177c30b673a58dafc042d15e48",
+      "annotation_path": "data/product/annotations/hoa_don_062.json",
+      "annotation_sha256": "f0cbc4b523b981a6351f48eca1a1fb162b516de583db60ee12f2b1e71140dadb",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_063",
+      "parent_document_id": "hoa_don_063",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_063.png",
+      "input_sha256": "9f1c0b1c60009c93bf41b58d4b0a28084b5937d485846e4f1de5e4529e99b771",
+      "annotation_path": "data/product/annotations/hoa_don_063.json",
+      "annotation_sha256": "69fcc780216ea1cae2030b7785e5ad25bddd38e89e555ae2e10034abca223301",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_064",
+      "parent_document_id": "hoa_don_064",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_064.png",
+      "input_sha256": "6f197462c86d7762dc8792296c6b625ffc724cc88cce0346fe42916aeda46ad7",
+      "annotation_path": "data/product/annotations/hoa_don_064.json",
+      "annotation_sha256": "d061ccccb3a2750799abd4f92dc72bf4b613af1be46bb375f93c624dc0a729c4",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_065",
+      "parent_document_id": "hoa_don_065",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/hoa_don_065.png",
+      "input_sha256": "db860890543d5662896132d13ba028ec2e5decbae298c81b08750e50c2b03fd9",
+      "annotation_path": "data/product/annotations/hoa_don_065.json",
+      "annotation_sha256": "bb4cbfb86f988352bd0e48f43a2f18de65bc44c1abe6269fb218368b0c9436fa",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_066",
+      "parent_document_id": "hoa_don_066",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/hoa_don_066.png",
+      "input_sha256": "3c8a700b9975db53663efefa8f3c57445d9d5b71a7dfe768c9313f465705bf5e",
+      "annotation_path": "data/product/annotations/hoa_don_066.json",
+      "annotation_sha256": "ecac797d3c28816eb480a6b18940562d4fc8100f0c58b723e43a124461caa96c",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_067",
+      "parent_document_id": "hoa_don_067",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_067.png",
+      "input_sha256": "12c31c883e9f34f14d04d624c6e5839676686d2297765f124856447c9a43c7b1",
+      "annotation_path": "data/product/annotations/hoa_don_067.json",
+      "annotation_sha256": "b3235b9b9760b2c0d1ac1caf74c93c4eb9094a02811a8d10607293dbf316e1f0",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_068",
+      "parent_document_id": "hoa_don_068",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_068.png",
+      "input_sha256": "b7bc41b823b3886ca0ac360f15b1411d546247b080da0598fd72dd68d8429b57",
+      "annotation_path": "data/product/annotations/hoa_don_068.json",
+      "annotation_sha256": "49f80d52aa135bfefaf636cf4063b2151f5f787ab6c27901c4918019d1fc4832",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_069",
+      "parent_document_id": "hoa_don_069",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_069.png",
+      "input_sha256": "9089c1ea17c69e9c276fc7a0e8532edab4c3fc87a9ca587b8acdf8824a367201",
+      "annotation_path": "data/product/annotations/hoa_don_069.json",
+      "annotation_sha256": "0630999f093442b4b2085da499c9c38c8aaebdf10b0349e98339b62809211b60",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_070",
+      "parent_document_id": "hoa_don_070",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/hoa_don_070.png",
+      "input_sha256": "496ea4216df1b70eabd9999186f1847e41f6e390534a61fb4b7af202466bcfef",
+      "annotation_path": "data/product/annotations/hoa_don_070.json",
+      "annotation_sha256": "ba91e03598d4d1c172e41a684e71b4142e255f2a0559d1022ee05aedb297ba44",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese",
+        "mild_blur"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_071",
+      "parent_document_id": "hoa_don_071",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/hoa_don_071.png",
+      "input_sha256": "4918f6609002645cab14f611c6b9c73df49e2b143807f88d3d1006aeae82f693",
+      "annotation_path": "data/product/annotations/hoa_don_071.json",
+      "annotation_sha256": "24473c4ce167b14d815b1312b7a190e65df1cb65c2a41546747cebea863d7a28",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese",
+        "absent"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_072",
+      "parent_document_id": "hoa_don_072",
+      "template_id": "hoa_don_layout_0",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_072.png",
+      "input_sha256": "93365fd7c3e524d1ff2ce6f6ff12c5ae1c6a1c198920005c29a798c4ca044112",
+      "annotation_path": "data/product/annotations/hoa_don_072.json",
+      "annotation_sha256": "4c40f6f47f1f7b45f88762b947376d229d24d4764b90f77c2e9fc753acb0eae5",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_073",
+      "parent_document_id": "hoa_don_073",
+      "template_id": "hoa_don_layout_1",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_073.png",
+      "input_sha256": "d7124f2811f58ebcc0faeacace11d9c308a2d37e73060db583af6ac2775775ce",
+      "annotation_path": "data/product/annotations/hoa_don_073.json",
+      "annotation_sha256": "ef8dedffa22b43112c4256fead6d4659ac4f0fa905d1a632afffab1b21614a48",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese",
+        "invalid_calendar_source"
+      ]
+    },
+    {
+      "sample_id": "hoa_don_074",
+      "parent_document_id": "hoa_don_074",
+      "template_id": "hoa_don_layout_2",
+      "document_type": "hoa_don",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/hoa_don_074.png",
+      "input_sha256": "f56251562544e844398de6c764ef698e3d9db99b23fe000dd369d875299b73b3",
+      "annotation_path": "data/product/annotations/hoa_don_074.json",
+      "annotation_sha256": "9d3f5488b1ab85fe01ea8f52d66590a19829071369dab2e84190dfb81de49e6d",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_000",
+      "parent_document_id": "don_de_nghi_000",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/don_de_nghi_000.png",
+      "input_sha256": "a7e31f11dd8746ff03725c34932759bb1555dfeaa821f360b10ac6d73fb2f5ea",
+      "annotation_path": "data/product/annotations/don_de_nghi_000.json",
+      "annotation_sha256": "1e2a342aec4c28e4b0201c97e17e27ec396c0460212ec5958698539fa3d92cfc",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_001",
+      "parent_document_id": "don_de_nghi_001",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/don_de_nghi_001.png",
+      "input_sha256": "e82953f125620e7c93bb1992ac94e7241537e1479816897fcb2fd19cd90644ec",
+      "annotation_path": "data/product/annotations/don_de_nghi_001.json",
+      "annotation_sha256": "c1c785f8f2db0b0944d1aa57e956aa054fd5a15adb6d7a80a98db2eeaed66c37",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_002",
+      "parent_document_id": "don_de_nghi_002",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_002.png",
+      "input_sha256": "e0c541cb967666a41973590359dec3153e4eb7882bdff955da0538c09230f994",
+      "annotation_path": "data/product/annotations/don_de_nghi_002.json",
+      "annotation_sha256": "749c81958f41a0fd8afda30f1ae5a964e60acc20fe92829c7e293f8a6ae8a173",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese",
+        "unreadable"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_003",
+      "parent_document_id": "don_de_nghi_003",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_003.png",
+      "input_sha256": "e1ed62323e834fa87cec6e75b7531c3ec397b4ae0285b3ed4f8e9c955492229d",
+      "annotation_path": "data/product/annotations/don_de_nghi_003.json",
+      "annotation_sha256": "5e10c564c5d9083830b42290beb7de591610a76cd2f3b8b9834eaa00feb81472",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese",
+        "absent"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_004",
+      "parent_document_id": "don_de_nghi_004",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_004.png",
+      "input_sha256": "384d5b10ebd17472c28ca18e467658234c841356d633c2895c663808a313a0cd",
+      "annotation_path": "data/product/annotations/don_de_nghi_004.json",
+      "annotation_sha256": "bcf718fe946d6f4a5b3972b19acd5f5c4623c39ceb99314eac46b6ce5cf23e7e",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese",
+        "invalid_calendar_source"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_005",
+      "parent_document_id": "don_de_nghi_005",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/don_de_nghi_005.png",
+      "input_sha256": "e09f4451c8ea57796dadbbb50ebde758b16c23e5cc2f8cc2ddc894bfd1639da1",
+      "annotation_path": "data/product/annotations/don_de_nghi_005.json",
+      "annotation_sha256": "d5cac6db3e93af5053ac2012ef880edc81a84df9efc4e83615f83cc10be7e9a0",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese",
+        "mild_blur"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_006",
+      "parent_document_id": "don_de_nghi_006",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/don_de_nghi_006.png",
+      "input_sha256": "4588bcc9e69f5f2595a84506fab22b82ab420c9e5cff99f2ef2f18900425695d",
+      "annotation_path": "data/product/annotations/don_de_nghi_006.json",
+      "annotation_sha256": "5109806c6ec7deea214d1b269deced73566f100bb7afe5e7f747c0148e651238",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_007",
+      "parent_document_id": "don_de_nghi_007",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_007.png",
+      "input_sha256": "b5b91b5db1dec2b0397fe238c2824080fa9a08edb263d7c78ccc07ec16889706",
+      "annotation_path": "data/product/annotations/don_de_nghi_007.json",
+      "annotation_sha256": "940c56c5bc08af272fbe0618aaa7cada0cb9e65d6edd2d6e48f10da09970da77",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_008",
+      "parent_document_id": "don_de_nghi_008",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_008.png",
+      "input_sha256": "7f1f2e987189e60b1bf5e4efbb20af82d8671da09f9a3d5a150e6780072ffcac",
+      "annotation_path": "data/product/annotations/don_de_nghi_008.json",
+      "annotation_sha256": "714a30d8feceb3d2f2dddea2b6ab84c2d94e3f7e096d03619eb8a95ba219edee",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_009",
+      "parent_document_id": "don_de_nghi_009",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_009.png",
+      "input_sha256": "d4ee418a2070b546158a6dde27ca7013a649d3bbcbcbda110688a23db846fb9b",
+      "annotation_path": "data/product/annotations/don_de_nghi_009.json",
+      "annotation_sha256": "d4948b7569c868e60efc7b498d1f7b1bcb58002400de201e6346ccfc3db853bb",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_010",
+      "parent_document_id": "don_de_nghi_010",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/don_de_nghi_010.png",
+      "input_sha256": "ae97ba5864036fa54b76b8e6d219bc130b8bf9badfa3aa2908855599ee155942",
+      "annotation_path": "data/product/annotations/don_de_nghi_010.json",
+      "annotation_sha256": "c937d82f3b602c370af06ab79ca1c0a86b2a065f72dda95340cc5aba19c50705",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_011",
+      "parent_document_id": "don_de_nghi_011",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/don_de_nghi_011.png",
+      "input_sha256": "b97f1ca05e22ffad27e5183862f7aed00ab453ab84b8c41e8b864246cc9f7b11",
+      "annotation_path": "data/product/annotations/don_de_nghi_011.json",
+      "annotation_sha256": "153012ed85b9b75fa4493640c409d2ecd6542a85d820c2771403f8f52952316c",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_012",
+      "parent_document_id": "don_de_nghi_012",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_012.png",
+      "input_sha256": "cbf0ab16fb85054db7b73b0990df744898be087d1c70e5687c363d6591f9aceb",
+      "annotation_path": "data/product/annotations/don_de_nghi_012.json",
+      "annotation_sha256": "0f1cbac705d50a197c8273f98ac91144e1d93a07303280d66c444bb956702344",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_013",
+      "parent_document_id": "don_de_nghi_013",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_013.png",
+      "input_sha256": "03b8afb02b51b56fbd5b7e7d0b5a77cb052f6ed524432a811544cf42eb508c77",
+      "annotation_path": "data/product/annotations/don_de_nghi_013.json",
+      "annotation_sha256": "3764d71aa02dc82537b8151deaf8c9a7f9b5a1a9db56600b7fefb1dee0153023",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_014",
+      "parent_document_id": "don_de_nghi_014",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_014.png",
+      "input_sha256": "fdd62e9de5d2c87b00e04ad25400c3562fd06b2ef097541cc94f9551d04f96fc",
+      "annotation_path": "data/product/annotations/don_de_nghi_014.json",
+      "annotation_sha256": "135209f3d5948a373c46cee753345753b93ced386d75834af2429fa98ff360bf",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_015",
+      "parent_document_id": "don_de_nghi_015",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/don_de_nghi_015.png",
+      "input_sha256": "d47ee988fdf787f884368b3224d5275c47b5e89dac508ed131ccb0a9156fcb8a",
+      "annotation_path": "data/product/annotations/don_de_nghi_015.json",
+      "annotation_sha256": "ae9be5e5dec639b6e13a798861ef62ea0e56e053560775227b705fdd84d8609c",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_016",
+      "parent_document_id": "don_de_nghi_016",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/don_de_nghi_016.png",
+      "input_sha256": "5a0639b4d1ab3a2bba0c92aa4f669c606ef6098af4b44fb817cb3fb2b80c9f24",
+      "annotation_path": "data/product/annotations/don_de_nghi_016.json",
+      "annotation_sha256": "5c967280f324233f737d972861c91e02a1d285a46c07f03e33cb2ff92783b501",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_017",
+      "parent_document_id": "don_de_nghi_017",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_017.png",
+      "input_sha256": "e594b02578def6a4fa2658975a8b1a8e9750c8d7d9d10b26c5748506eaba3fdb",
+      "annotation_path": "data/product/annotations/don_de_nghi_017.json",
+      "annotation_sha256": "e22e2f047e609b172fe430f388025c8439a64372b91681bfd357c1e93ad0e6ea",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_018",
+      "parent_document_id": "don_de_nghi_018",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_018.png",
+      "input_sha256": "c87b501b37dd6d9f781d4a463da9c0997c8a7c8cd599cfe907960f87518261a1",
+      "annotation_path": "data/product/annotations/don_de_nghi_018.json",
+      "annotation_sha256": "a19af240b313726be6f5ea5604aa32a31125582aae825f9cf304ea38da81d5a4",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese",
+        "mild_blur"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_019",
+      "parent_document_id": "don_de_nghi_019",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_019.png",
+      "input_sha256": "e23d43233403f4252362cb2dbba9836ac61a7b6c2c76d969aea1e6689dac8097",
+      "annotation_path": "data/product/annotations/don_de_nghi_019.json",
+      "annotation_sha256": "174379531805bce5748b8a6ff7872616ac365b58b71a345d829038c888341aed",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_020",
+      "parent_document_id": "don_de_nghi_020",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/don_de_nghi_020.png",
+      "input_sha256": "035f3e1429bfc5895b08b128ac91cc1623e9703bec602a60e1e54cb88fcadd9c",
+      "annotation_path": "data/product/annotations/don_de_nghi_020.json",
+      "annotation_sha256": "0b716cd712bb7950279a6fdea84ae702c920b23bee410b0630de17b86b67431c",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese",
+        "absent"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_021",
+      "parent_document_id": "don_de_nghi_021",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/don_de_nghi_021.png",
+      "input_sha256": "c163be24a9356a8733f76d57369562efa97bee339f940e9118b9bffe09fef942",
+      "annotation_path": "data/product/annotations/don_de_nghi_021.json",
+      "annotation_sha256": "5d8f07a77be9bb85fcba0b77fd9db8d423fe1d2d914e484a82da71651c4fd091",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese",
+        "unreadable"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_022",
+      "parent_document_id": "don_de_nghi_022",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_022.png",
+      "input_sha256": "b7d2410782e5faae6b3a17649ce28d70a158fda9ce663153bccaa74f977ef8d2",
+      "annotation_path": "data/product/annotations/don_de_nghi_022.json",
+      "annotation_sha256": "18a7aa2f9b0bc09ebb49738696dcac6027f3953f5289a82644990f191eb6c3be",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_023",
+      "parent_document_id": "don_de_nghi_023",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_023.png",
+      "input_sha256": "f3c104626e87c4eb98a58cabbbc75976bd337a95798acba44f89b08ef29b3187",
+      "annotation_path": "data/product/annotations/don_de_nghi_023.json",
+      "annotation_sha256": "6e6de8d49bb9b4347daa0575fe216bd830ed853cd17ed9690b603c4b61640501",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_024",
+      "parent_document_id": "don_de_nghi_024",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_024.png",
+      "input_sha256": "b0e4c4900aab016d29e604db367ab55e38a032a41fe6905f52f4800ebc06b698",
+      "annotation_path": "data/product/annotations/don_de_nghi_024.json",
+      "annotation_sha256": "c7a9984f21f6448d90bb47244eb4790fe8dfae677ac8dc0b1990ab09665dbd8b",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_025",
+      "parent_document_id": "don_de_nghi_025",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/don_de_nghi_025.png",
+      "input_sha256": "440b55fc028f32cf4558615384acdf6538d0c33424b97614ad39201282438d12",
+      "annotation_path": "data/product/annotations/don_de_nghi_025.json",
+      "annotation_sha256": "3d280080b04db8030b2b138e25e2a78f63b832799fd7200448c8686fc2bed34a",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_026",
+      "parent_document_id": "don_de_nghi_026",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/don_de_nghi_026.png",
+      "input_sha256": "33280628e35567c9d73c908c66aa9b5053428383024fb10a8d90d3022a2e0831",
+      "annotation_path": "data/product/annotations/don_de_nghi_026.json",
+      "annotation_sha256": "82091c32a79313f19449d2065b68fbe00684b1e785ec2f5c506abaa3ea710cf9",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_027",
+      "parent_document_id": "don_de_nghi_027",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_027.png",
+      "input_sha256": "5ce295402c50242c6606df6506daf01c5801320d7fdf08c12907f32e3ddf5821",
+      "annotation_path": "data/product/annotations/don_de_nghi_027.json",
+      "annotation_sha256": "13a552fc71c6e81cced957ef6e8d5134489c44d038d0c5f7803484fbff7c26eb",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese",
+        "invalid_calendar_source"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_028",
+      "parent_document_id": "don_de_nghi_028",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_028.png",
+      "input_sha256": "e78e658e787d1b36218604e50c36f0ad7d50443ddd22f932b2628419725cedfb",
+      "annotation_path": "data/product/annotations/don_de_nghi_028.json",
+      "annotation_sha256": "b1f79832fa1fbfaa7368cbe23f9f28f68196eac7718d96fde1e77aa435ffffd9",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_029",
+      "parent_document_id": "don_de_nghi_029",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_029.png",
+      "input_sha256": "7044beda66071e29c39625066ac899e70c0eb9acd0da28e9d1f6ce8fd4810d29",
+      "annotation_path": "data/product/annotations/don_de_nghi_029.json",
+      "annotation_sha256": "619fa3096151cbd691107e7537a73b4c5099c6a1656a0234afae6aac452ca3be",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_030",
+      "parent_document_id": "don_de_nghi_030",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/don_de_nghi_030.png",
+      "input_sha256": "c3617af63cdd74f4cd4a59121ae6fe4dbd26c653497dfe9a0955b0e9de8d67f1",
+      "annotation_path": "data/product/annotations/don_de_nghi_030.json",
+      "annotation_sha256": "c7d72fedca720318450a9efa436ead2bc637012c6fbd2ddedfd6586bb13e7b92",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_031",
+      "parent_document_id": "don_de_nghi_031",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/don_de_nghi_031.png",
+      "input_sha256": "1c67f79e83995756ba7031059cee9c8beb8f0fd9c6199726393f7a92e6513cae",
+      "annotation_path": "data/product/annotations/don_de_nghi_031.json",
+      "annotation_sha256": "af2effdc01ed3313476349b9afbf719b8647eaa46359e4f01fd879f45e40260e",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese",
+        "mild_blur"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_032",
+      "parent_document_id": "don_de_nghi_032",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_032.png",
+      "input_sha256": "453a04a5b7c186b018d16ccdbf5a3c3e674969776b260f9d31d1cc9c30603639",
+      "annotation_path": "data/product/annotations/don_de_nghi_032.json",
+      "annotation_sha256": "fdea4fa1219bffa4537fd24673d075adac95b8035746d87fe000533fcff3e481",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_033",
+      "parent_document_id": "don_de_nghi_033",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_033.png",
+      "input_sha256": "771d87139de58164d425fb2ed5e47c976a565cf8e6229ba06420375b71bb3793",
+      "annotation_path": "data/product/annotations/don_de_nghi_033.json",
+      "annotation_sha256": "65d5e86f3fff4cd1a65b8f69b2b69fbcefa40b29ad2b5ecbe03c09ea76c2846c",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_034",
+      "parent_document_id": "don_de_nghi_034",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_034.png",
+      "input_sha256": "72d71867e73cfec35420c634dc84f026994f8600a3a48a99cbd4c249645932e6",
+      "annotation_path": "data/product/annotations/don_de_nghi_034.json",
+      "annotation_sha256": "a9ff29f9e08574ef4b02ec17d37cafd3af0208cb592182820064264b564d30be",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_035",
+      "parent_document_id": "don_de_nghi_035",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/don_de_nghi_035.png",
+      "input_sha256": "273834c37698ffb2d748fb7435611b81433dc7d203adfc42303348017fa6b42c",
+      "annotation_path": "data/product/annotations/don_de_nghi_035.json",
+      "annotation_sha256": "37ce71ee02f5e00c9b58966173ca8833ac52a7062d7b5f63841597fa331dbe24",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_036",
+      "parent_document_id": "don_de_nghi_036",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/don_de_nghi_036.png",
+      "input_sha256": "e86d21d3faa1b05d23ad2bce5236253d72a0e483b0ca8fa4b519fd481f1ebaec",
+      "annotation_path": "data/product/annotations/don_de_nghi_036.json",
+      "annotation_sha256": "5354bfa98a6d94a9e774f093371e679ef027f691c859cc9bb46a9da6fd137f0b",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_037",
+      "parent_document_id": "don_de_nghi_037",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_037.png",
+      "input_sha256": "101966fe3fecf84b5c70b5bc356034756a5fa946ec31c56fcbe1ac99c3d5ce2e",
+      "annotation_path": "data/product/annotations/don_de_nghi_037.json",
+      "annotation_sha256": "d9a30ba1f08ffd6dd0376239cbd917b140c001fb5caa8e17d640760b5d7db3d1",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese",
+        "absent"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_038",
+      "parent_document_id": "don_de_nghi_038",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_038.png",
+      "input_sha256": "c9c6dc8e5b8fcadd9e4d820ac918921ef310de147fddc23def8e3ac7ac11f22e",
+      "annotation_path": "data/product/annotations/don_de_nghi_038.json",
+      "annotation_sha256": "20ba43854c0250c24c70c2e822ec3fec4712baefd5700bcb8184eae7395df15b",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_039",
+      "parent_document_id": "don_de_nghi_039",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_039.png",
+      "input_sha256": "86e816e2404ac926bfc7ea7b772f8aedc77022bf3ffa69978a41fea7e07cc980",
+      "annotation_path": "data/product/annotations/don_de_nghi_039.json",
+      "annotation_sha256": "b5aca3ec67dd9cb435ae93e839bb3fd9f9d4acb2aa88063a25aa07af935c7211",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_040",
+      "parent_document_id": "don_de_nghi_040",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/don_de_nghi_040.png",
+      "input_sha256": "f1065b52c1e09cd3edd7084de0f9437c5f0670b7023b1a17f1dbbcf885d2d2e0",
+      "annotation_path": "data/product/annotations/don_de_nghi_040.json",
+      "annotation_sha256": "1cc2d6235e4832e90f3947e34ab92c02692d800dde337dc6aa91721f58f344d4",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese",
+        "unreadable"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_041",
+      "parent_document_id": "don_de_nghi_041",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/don_de_nghi_041.png",
+      "input_sha256": "795cf71deb74a27e3c5ed993f0a77b593afef99cc21d917832db9bc61c4fb5d6",
+      "annotation_path": "data/product/annotations/don_de_nghi_041.json",
+      "annotation_sha256": "ba7ee7426184437ea0ed902746516fa2243c357341b0ecbfc3bfc04adeb894bb",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_042",
+      "parent_document_id": "don_de_nghi_042",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_042.png",
+      "input_sha256": "63cc646f811b620954fd6fa397173eec7f9ba91373973c1c3b99290db03e80bf",
+      "annotation_path": "data/product/annotations/don_de_nghi_042.json",
+      "annotation_sha256": "6ad6964d40d92d29b6321e02c56e0d0f492838eba844cace001fb9f42a7b0410",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_043",
+      "parent_document_id": "don_de_nghi_043",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_043.png",
+      "input_sha256": "f3698996f895dfedf7b1fcc9065400e7425be945fb6b8d240bf699cd84d17992",
+      "annotation_path": "data/product/annotations/don_de_nghi_043.json",
+      "annotation_sha256": "216797044b1095ea9bd8b67ff8ee8dd943d8e4b22d3780baa10d528804e75dd5",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_044",
+      "parent_document_id": "don_de_nghi_044",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_044.png",
+      "input_sha256": "ba31da32cbf6825bb23f064c66709235db85e082768098979805a2528ebaff77",
+      "annotation_path": "data/product/annotations/don_de_nghi_044.json",
+      "annotation_sha256": "e6aecc2e20b71f52838e135f2ea57841cc92e1a2503c8dd689e9f84973a43080",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese",
+        "mild_blur"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_045",
+      "parent_document_id": "don_de_nghi_045",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/don_de_nghi_045.png",
+      "input_sha256": "4576d960df1223e78838ee728c087cdadce5d100478bd1937eb6bd46f3cac81c",
+      "annotation_path": "data/product/annotations/don_de_nghi_045.json",
+      "annotation_sha256": "660e3a094e7fa6cdde9cb1ea5045879b3f625e51d3f805216eaff33a5b3ffeaf",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_046",
+      "parent_document_id": "don_de_nghi_046",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/don_de_nghi_046.png",
+      "input_sha256": "9286cede9bac2154fb361d789a7a36b4273b95c47b2e45243b2c5be1c8ca8019",
+      "annotation_path": "data/product/annotations/don_de_nghi_046.json",
+      "annotation_sha256": "98a7d9a731ff862e69a7e16448d15cef04711887559fdcda5ef616a17f285546",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_047",
+      "parent_document_id": "don_de_nghi_047",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_047.png",
+      "input_sha256": "f25d33a47859d023adc5b492395207e27c0d6d2baa39e6c248cfdd3970c15707",
+      "annotation_path": "data/product/annotations/don_de_nghi_047.json",
+      "annotation_sha256": "2dd891f0a33e864758d0a5f9b12701b0609e6ab5f7be61e423eafda72df1381a",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_048",
+      "parent_document_id": "don_de_nghi_048",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_048.png",
+      "input_sha256": "0a9f61a19b7ac495cad1b4216549a8d6461126c29c39d09f5d4ee9e48346735d",
+      "annotation_path": "data/product/annotations/don_de_nghi_048.json",
+      "annotation_sha256": "e55619a168fb9c15e7566e143c6b3fc68a44bba63680b13da0568195ed6c6942",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_049",
+      "parent_document_id": "don_de_nghi_049",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_049.png",
+      "input_sha256": "d32090aed687cbc65c7b924cfe61a3abeb9170679034cd2df097dc919d4f5d4a",
+      "annotation_path": "data/product/annotations/don_de_nghi_049.json",
+      "annotation_sha256": "d852265b898dd87ed9ea71d7dd680cbecaa5f8e72f1ef8583e340dfeb086f55a",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_050",
+      "parent_document_id": "don_de_nghi_050",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/don_de_nghi_050.png",
+      "input_sha256": "5d190e810142401e9a58b38f38ea0323ab5dd018836857333ff120c1f53bc6a2",
+      "annotation_path": "data/product/annotations/don_de_nghi_050.json",
+      "annotation_sha256": "e27c9f9dfa9ada950c60c1ba4963baab94ea42477e387694a1b5ceea024ad664",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese",
+        "invalid_calendar_source"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_051",
+      "parent_document_id": "don_de_nghi_051",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/don_de_nghi_051.png",
+      "input_sha256": "014c90889b63b2a37f3851380229ac3ee83e9549bf2c29a77be68b048817dfdb",
+      "annotation_path": "data/product/annotations/don_de_nghi_051.json",
+      "annotation_sha256": "3f25f2554deefdbc2c55d0fcfc857aebf0d675898c2133431e9abd3d3291dfe0",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_052",
+      "parent_document_id": "don_de_nghi_052",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_052.png",
+      "input_sha256": "9db9de41f4a01def5db56249d8aa6bb74b6187f0aeeae764ef3d64eae05aa39e",
+      "annotation_path": "data/product/annotations/don_de_nghi_052.json",
+      "annotation_sha256": "7b3603fcf07dc9f11e3e2e31fbe69d936501dae098aa1099bd3df334e13307e6",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_053",
+      "parent_document_id": "don_de_nghi_053",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_053.png",
+      "input_sha256": "f88793796c5a7fb76e349422a8293176761a5fcb635f8f7afae9312422338175",
+      "annotation_path": "data/product/annotations/don_de_nghi_053.json",
+      "annotation_sha256": "b991fe1f8fe2685a0c0c8c4ec4253c7c5286290ea7077b62e61e13b64a325251",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_054",
+      "parent_document_id": "don_de_nghi_054",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_054.png",
+      "input_sha256": "88acf61e0dac7eba43dac2983c497718bec373a74d8e7286c679f9b903e23244",
+      "annotation_path": "data/product/annotations/don_de_nghi_054.json",
+      "annotation_sha256": "0bebf1f4a0f580bfbd0875461a28b874d0d0ccef493693b5996754bdb91e5330",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese",
+        "absent"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_055",
+      "parent_document_id": "don_de_nghi_055",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/don_de_nghi_055.png",
+      "input_sha256": "b82f862c80d8718a05108b17ec05eed8ac665166446a4a2464313a6713ce2f6d",
+      "annotation_path": "data/product/annotations/don_de_nghi_055.json",
+      "annotation_sha256": "e53033c9ff8b2001410ad0a42c29f203d93058f3d44ae88ef94fa8f15c0ee1c3",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_056",
+      "parent_document_id": "don_de_nghi_056",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/don_de_nghi_056.png",
+      "input_sha256": "fd335fca25eb696990f4cc8351915d50296d263a44b1fcdcb3623163fea02fe1",
+      "annotation_path": "data/product/annotations/don_de_nghi_056.json",
+      "annotation_sha256": "a2ce2414e0735ff976ffba63ccc456d81a0a5afb891506e07e5a41c0f6e0644f",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_057",
+      "parent_document_id": "don_de_nghi_057",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_057.png",
+      "input_sha256": "0bb679abae9aa651ade861dc379bd4cbe6009e0b1c4a69e5374183f1237c03e7",
+      "annotation_path": "data/product/annotations/don_de_nghi_057.json",
+      "annotation_sha256": "60e93e83d4688babd3456b5caeba0c47c4c8a2a63cfa4e6397600b4938e7a225",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese",
+        "mild_blur"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_058",
+      "parent_document_id": "don_de_nghi_058",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_058.png",
+      "input_sha256": "ce1fcb499197177e4c0cd97856c595b86b76a6defb2a474f113c082e22335dfd",
+      "annotation_path": "data/product/annotations/don_de_nghi_058.json",
+      "annotation_sha256": "28f39576f3bf31fdaf6e0e83018760f7de4a707569048d9fc040635b2184c659",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_059",
+      "parent_document_id": "don_de_nghi_059",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_059.png",
+      "input_sha256": "ab00aa8dbf5ff5762eb31262e4b9d0aa3543acb41045f15efe2adf95eb7bbc9d",
+      "annotation_path": "data/product/annotations/don_de_nghi_059.json",
+      "annotation_sha256": "1ffc5de9b69f863498a88ae4c04f5d4c40db15e5f5afc06e0ace0418a55d1dbf",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese",
+        "unreadable"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_060",
+      "parent_document_id": "don_de_nghi_060",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/don_de_nghi_060.png",
+      "input_sha256": "d0487eae8c5211c582600df312ca07bbff0e3396e941499bf35af1f43599d9af",
+      "annotation_path": "data/product/annotations/don_de_nghi_060.json",
+      "annotation_sha256": "cd3c06e35802321e0ef43bcebe48148f9f4f8e381cad0975bdacde9569597c00",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_061",
+      "parent_document_id": "don_de_nghi_061",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/don_de_nghi_061.png",
+      "input_sha256": "aa9e6bcd5908df097b9d382fcde9da4f23865b3cfda31826ebf761aafc2142e7",
+      "annotation_path": "data/product/annotations/don_de_nghi_061.json",
+      "annotation_sha256": "4589b38ca6b21ec69ac1e323ebb5e338b30d4727f784ab41de0bf4e5ec1a0584",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_062",
+      "parent_document_id": "don_de_nghi_062",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_062.png",
+      "input_sha256": "0be756f366bd403f8df935018bbbb64d81fdd8f89e556278efe042751331bea0",
+      "annotation_path": "data/product/annotations/don_de_nghi_062.json",
+      "annotation_sha256": "73327f99818aad341884d02bf9f7a86e325e61b2ab0b14c3787e9fcfad3869a1",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_063",
+      "parent_document_id": "don_de_nghi_063",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_063.png",
+      "input_sha256": "01aa4014e945c531b61c1cd222d52c5113594bb34d8dd1180d62c00d85e198d8",
+      "annotation_path": "data/product/annotations/don_de_nghi_063.json",
+      "annotation_sha256": "292dc260a3a308c1513218180682cdd460a90693f0993082b10384886fdebac5",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_064",
+      "parent_document_id": "don_de_nghi_064",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_064.png",
+      "input_sha256": "54312404535b83ffbef8da530bcf131efe62581a365c68e59d5b29d8dd6f178c",
+      "annotation_path": "data/product/annotations/don_de_nghi_064.json",
+      "annotation_sha256": "5894d0fa5e11e31ea8a2903989429b7e40f4f23bfd8ac45219325fbd54e2549f",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_065",
+      "parent_document_id": "don_de_nghi_065",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/don_de_nghi_065.png",
+      "input_sha256": "80d688e7b55af5e91bb784437d7638cb6c6e983bcdce3f240a61e731e9814177",
+      "annotation_path": "data/product/annotations/don_de_nghi_065.json",
+      "annotation_sha256": "331e4f01111654cf0ac1574cbce33241b70f1e53ca0c51426c67e27d3967c59f",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_066",
+      "parent_document_id": "don_de_nghi_066",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/don_de_nghi_066.png",
+      "input_sha256": "f1fdb9b6e2b3d1e11962201d00881c39b6dc58aea89942649a46e7a1efd766ac",
+      "annotation_path": "data/product/annotations/don_de_nghi_066.json",
+      "annotation_sha256": "397601cc68486073ee67a8c7862317ffc7097157aea280ee860081f755778cc1",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_067",
+      "parent_document_id": "don_de_nghi_067",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_067.png",
+      "input_sha256": "f24ec6df2e9e86a698f9b615631104f71ecce1cabe21e639665a846e5aaa333b",
+      "annotation_path": "data/product/annotations/don_de_nghi_067.json",
+      "annotation_sha256": "e7082ce21d922365d911ac79c21a698c1990be05333ab0f9c9d0a02b3057ed51",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_068",
+      "parent_document_id": "don_de_nghi_068",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_068.png",
+      "input_sha256": "b8c46d89fab65d1a03b59b066d48022dbb47ed1c838e93c89a5d9dfb85dfa93d",
+      "annotation_path": "data/product/annotations/don_de_nghi_068.json",
+      "annotation_sha256": "a02196b6cd5a4377954c1a7de0215dadf93e82015557fe0220c2bc56c4fbede6",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_069",
+      "parent_document_id": "don_de_nghi_069",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_069.png",
+      "input_sha256": "6a5f4ccc0ca3a2d0e11aaf60d90f184d7b93b4fc6e92fd3676c2103ac1edfada",
+      "annotation_path": "data/product/annotations/don_de_nghi_069.json",
+      "annotation_sha256": "32b1462a14533986258a79abf643741e4c9e258c2360aeb748c19662c175f8fc",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_070",
+      "parent_document_id": "don_de_nghi_070",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "test",
+      "input_path": "data/product/images/don_de_nghi_070.png",
+      "input_sha256": "9caa2cb2f0feec7a79444b1c066bf105a024ddc01349f44cd9b1dca1c3ecc411",
+      "annotation_path": "data/product/annotations/don_de_nghi_070.json",
+      "annotation_sha256": "e6dba2d2c02fe0ff656fdaa6acacbd139b4a3b01089b02951f293b184ac0cb9d",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese",
+        "mild_blur"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_071",
+      "parent_document_id": "don_de_nghi_071",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "validation",
+      "input_path": "data/product/images/don_de_nghi_071.png",
+      "input_sha256": "a0631c267057a797c2111b81860a9e18da2ddc9c507ee5ec021aba6f2fc3dd78",
+      "annotation_path": "data/product/annotations/don_de_nghi_071.json",
+      "annotation_sha256": "1faafb7949391ae55be2beb79c98089dd70435a49323b95679e12701f9301ece",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese",
+        "absent"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_072",
+      "parent_document_id": "don_de_nghi_072",
+      "template_id": "don_de_nghi_layout_0",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_072.png",
+      "input_sha256": "c74fa300be0804d258878ba31127ba8cafdac5a886cbc5e5aac36d860769b23a",
+      "annotation_path": "data/product/annotations/don_de_nghi_072.json",
+      "annotation_sha256": "e42a53e573f74310c2d83b19fb547e0b47081f9db8932ec3b2add1e0a1e6be94",
+      "quality_tags": [
+        "layout_0",
+        "typed",
+        "vietnamese"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_073",
+      "parent_document_id": "don_de_nghi_073",
+      "template_id": "don_de_nghi_layout_1",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_073.png",
+      "input_sha256": "1bc8e6cf6d8e402b06f84258dbf8e86d6accb3428a8e1bf4cb0c7524ac159a96",
+      "annotation_path": "data/product/annotations/don_de_nghi_073.json",
+      "annotation_sha256": "3a1bba97c793361aa558ce8c29ffa72b7c764a463e54800995ab9f42ac6b5579",
+      "quality_tags": [
+        "layout_1",
+        "typed",
+        "vietnamese",
+        "invalid_calendar_source"
+      ]
+    },
+    {
+      "sample_id": "don_de_nghi_074",
+      "parent_document_id": "don_de_nghi_074",
+      "template_id": "don_de_nghi_layout_2",
+      "document_type": "don_de_nghi",
+      "data_origin": "synthetic",
+      "split": "development",
+      "input_path": "data/product/images/don_de_nghi_074.png",
+      "input_sha256": "4333f7ee731eee092eb816a6071b62f394a23e2b8a7abd0b14990e5acbb7bff2",
+      "annotation_path": "data/product/annotations/don_de_nghi_074.json",
+      "annotation_sha256": "1b830dc8b5f2de828599933c9272b8798532b66a5f0a7ee4379b83c4f5868fbc",
+      "quality_tags": [
+        "layout_2",
+        "typed",
+        "vietnamese"
+      ]
+    }
+  ]
+}

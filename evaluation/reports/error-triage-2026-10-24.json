@@ -1,0 +1,137 @@
+{
+  "report_type": "development_error_triage",
+  "source_run_id": "6cfa26a96ea044a894102ed116f00544",
+  "field_errors": 5,
+  "documents": 4,
+  "records": [
+    {
+      "sample_id": "hoa_don_012",
+      "field_id": "seller_name",
+      "expected": "Công ty Giả Lập 112",
+      "predicted": "Công ty Giả Lap 112",
+      "primary_cause": "OCR_CHARACTER",
+      "severity": "major",
+      "status": "open",
+      "issue_reference": null,
+      "note": "Symptom identified automatically; root cause needs source/OCR review",
+      "run_id": "6cfa26a96ea044a894102ed116f00544",
+      "secondary_tags": [
+        "DIACRITIC_ERROR"
+      ],
+      "source_image": "data/product/images/hoa_don_012.png",
+      "ocr_evidence_text": [
+        "Don",
+        "vi",
+        "ban",
+        "hang:",
+        "Công",
+        "ty",
+        "Giả",
+        "Lap",
+        "112"
+      ],
+      "review_method": "agent_source_image_and_ocr_comparison",
+      "analysis": "Compared the rendered source image with OCR tokens: visible Vietnamese accents were misrecognized. Nonblank business validation cannot detect a source mismatch; review remains necessary."
+    },
+    {
+      "sample_id": "hoa_don_039",
+      "field_id": "seller_name",
+      "expected": "Công ty Giả Lập 139",
+      "predicted": "Công ty Giả Lap 139",
+      "primary_cause": "OCR_CHARACTER",
+      "severity": "major",
+      "status": "open",
+      "issue_reference": null,
+      "note": "Symptom identified automatically; root cause needs source/OCR review",
+      "run_id": "6cfa26a96ea044a894102ed116f00544",
+      "secondary_tags": [
+        "DIACRITIC_ERROR"
+      ],
+      "source_image": "data/product/images/hoa_don_039.png",
+      "ocr_evidence_text": [
+        "Don",
+        "vi",
+        "ban",
+        "hang:",
+        "Công",
+        "ty",
+        "Giả",
+        "Lap",
+        "139"
+      ],
+      "review_method": "agent_source_image_and_ocr_comparison",
+      "analysis": "Compared the rendered source image with OCR tokens: visible Vietnamese accents were misrecognized. Nonblank business validation cannot detect a source mismatch; review remains necessary."
+    },
+    {
+      "sample_id": "hoa_don_039",
+      "field_id": "total_amount",
+      "expected": 5000000,
+      "predicted": null,
+      "primary_cause": "OCR_CHARACTER",
+      "severity": "major",
+      "status": "open",
+      "issue_reference": null,
+      "note": "Symptom identified automatically; root cause needs source/OCR review",
+      "run_id": "6cfa26a96ea044a894102ed116f00544",
+      "secondary_tags": [
+        "FIELD_MISSING",
+        "LABEL_NOT_MATCHED"
+      ],
+      "source_image": "data/product/images/hoa_don_039.png",
+      "ocr_evidence_text": [],
+      "review_method": "agent_source_image_and_ocr_comparison",
+      "analysis": "Source label Tổng thanh toán was read as Téng thanh toan; literal mapping abstained. Value 5.000.000 is visible but no corrected rule was added after holdout."
+    },
+    {
+      "sample_id": "don_de_nghi_002",
+      "field_id": "faculty",
+      "expected": "Công nghệ thông tin",
+      "predicted": "Céng nghé théng tin",
+      "primary_cause": "OCR_CHARACTER",
+      "severity": "major",
+      "status": "open",
+      "issue_reference": null,
+      "note": "Symptom identified automatically; root cause needs source/OCR review",
+      "run_id": "6cfa26a96ea044a894102ed116f00544",
+      "secondary_tags": [
+        "DIACRITIC_ERROR"
+      ],
+      "source_image": "data/product/images/don_de_nghi_002.png",
+      "ocr_evidence_text": [
+        "Khoa:",
+        "Céng",
+        "nghé",
+        "théng",
+        "tin"
+      ],
+      "review_method": "agent_source_image_and_ocr_comparison",
+      "analysis": "Compared the rendered source image with OCR tokens: visible Vietnamese accents were misrecognized. Nonblank business validation cannot detect a source mismatch; review remains necessary."
+    },
+    {
+      "sample_id": "don_de_nghi_059",
+      "field_id": "faculty",
+      "expected": "Công nghệ thông tin",
+      "predicted": "Céng nghé théng tin",
+      "primary_cause": "OCR_CHARACTER",
+      "severity": "major",
+      "status": "open",
+      "issue_reference": null,
+      "note": "Symptom identified automatically; root cause needs source/OCR review",
+      "run_id": "6cfa26a96ea044a894102ed116f00544",
+      "secondary_tags": [
+        "DIACRITIC_ERROR"
+      ],
+      "source_image": "data/product/images/don_de_nghi_059.png",
+      "ocr_evidence_text": [
+        "Khoa:",
+        "Céng",
+        "nghé",
+        "théng",
+        "tin"
+      ],
+      "review_method": "agent_source_image_and_ocr_comparison",
+      "analysis": "Compared the rendered source image with OCR tokens: visible Vietnamese accents were misrecognized. Nonblank business validation cannot detect a source mismatch; review remains necessary."
+    }
+  ],
+  "note": "Agent inspected four source PNGs; not a claim of independent team gold review. No model changes after final test."
+}

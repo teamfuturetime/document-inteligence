@@ -1,0 +1,25 @@
+{
+  "sample_id": "hoa_don_054",
+  "fields": {
+    "invoice_number": {
+      "status": "present",
+      "value": "0041054"
+    },
+    "invoice_date": {
+      "status": "present",
+      "value": "2026-10-01"
+    },
+    "seller_name": {
+      "status": "absent",
+      "value": null
+    },
+    "total_amount": {
+      "status": "present",
+      "value": 6875000
+    },
+    "currency": {
+      "status": "present",
+      "value": "VND"
+    }
+  }
+}

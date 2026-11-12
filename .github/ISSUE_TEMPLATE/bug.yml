@@ -1,0 +1,29 @@
+name: Lỗi phần mềm
+description: Báo hành vi sai có thể tái hiện bằng dữ liệu được phép.
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Vấn đề và phạm vi
+      description: Hành vi sai, module và requirement IDs liên quan.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Cách tái hiện và môi trường
+      description: Lệnh/bước, runtime/config và sample hợp lệ; không secret/PII.
+    validations:
+      required: true
+  - type: textarea
+    id: expected_actual
+    attributes:
+      label: Mong đợi và thực tế
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Tiêu chí sửa xong, kiểm tra và dependencies
+    validations:
+      required: true

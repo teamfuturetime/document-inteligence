@@ -1,0 +1,138 @@
+{
+  "$defs": {
+    "ReviewedField": {
+      "additionalProperties": false,
+      "properties": {
+        "is_reviewed": {
+          "title": "Is Reviewed",
+          "type": "boolean"
+        },
+        "reviewed_value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Reviewed Value"
+        }
+      },
+      "required": [
+        "is_reviewed",
+        "reviewed_value"
+      ],
+      "title": "ReviewedField",
+      "type": "object"
+    },
+    "ValidationIssue": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "field_path": {
+          "enum": [
+            "full_name",
+            "student_id",
+            "date_of_birth",
+            "class_name",
+            "faculty",
+            "request_content",
+            "request_date"
+          ],
+          "title": "Field Path",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "error",
+            "warning"
+          ],
+          "title": "Severity",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "field_path",
+        "severity",
+        "message"
+      ],
+      "title": "ValidationIssue",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "document_id": {
+      "title": "Document Id",
+      "type": "string"
+    },
+    "fields": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ReviewedField"
+      },
+      "propertyNames": {
+        "enum": [
+          "full_name",
+          "student_id",
+          "date_of_birth",
+          "class_name",
+          "faculty",
+          "request_content",
+          "request_date"
+        ]
+      },
+      "title": "Fields",
+      "type": "object"
+    },
+    "review_status": {
+      "enum": [
+        "draft",
+        "confirmed"
+      ],
+      "title": "Review Status",
+      "type": "string"
+    },
+    "revision": {
+      "minimum": 1,
+      "title": "Revision",
+      "type": "integer"
+    },
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "saved_at": {
+      "format": "date-time",
+      "title": "Saved At",
+      "type": "string"
+    },
+    "validation_issues": {
+      "items": {
+        "$ref": "#/$defs/ValidationIssue"
+      },
+      "title": "Validation Issues",
+      "type": "array"
+    }
+  },
+  "required": [
+    "document_id",
+    "run_id",
+    "revision",
+    "review_status",
+    "fields",
+    "validation_issues",
+    "saved_at"
+  ],
+  "title": "ReviewRevision",
+  "type": "object"
+}

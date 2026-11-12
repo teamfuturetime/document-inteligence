@@ -1,0 +1,830 @@
+{
+  "observed_at": "2026-11-12T10:01:11.945385+00:00",
+  "repository": "teamfuturetime/document-inteligence",
+  "default_branch": "main",
+  "read_permissions": {
+    "admin": true,
+    "push": true
+  },
+  "main_protection": {
+    "http_status": 404,
+    "message": "Branch not protected"
+  },
+  "rulesets": [],
+  "issues": [],
+  "pull_requests": [
+    {
+      "number": 2,
+      "title": "[VT-043] OCR Autosave with Concurrency Control and Quality Engineering",
+      "state": "closed",
+      "merged_at": "2026-11-09T17:17:13Z",
+      "merge_commit_sha": "55e9c74daed487af675a15c276bf6830448e6cea",
+      "html_url": "https://github.com/teamfuturetime/document-inteligence/pull/2",
+      "head": "bt3-vt043-autosave",
+      "head_sha": "55e9c74daed487af675a15c276bf6830448e6cea",
+      "base": "minhthao"
+    },
+    {
+      "number": 1,
+      "title": "Khoi tao repo",
+      "state": "open",
+      "merged_at": null,
+      "merge_commit_sha": "546b5a2c5323783c29457e8e7f97076955c009a0",
+      "html_url": "https://github.com/teamfuturetime/document-inteligence/pull/1",
+      "head": "nhatquang",
+      "head_sha": "a03ea309ada1480e537cb7de8936ad0d52d53698",
+      "base": "main"
+    }
+  ],
+  "branches": [
+    {
+      "branch": "origin/bt3-vt043-autosave",
+      "sha": "55e9c74daed487af675a15c276bf6830448e6cea",
+      "subject": "test: verify VT-043 concurrency mutation and HTTP performance",
+      "files": 199,
+      "comparison": {
+        "origin/main": {
+          "behind": 0,
+          "ahead": 38,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-main": {
+          "behind": 35,
+          "ahead": 38,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-solo": {
+          "behind": 61,
+          "ahead": 38,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/nhatquang": {
+          "behind": 6,
+          "ahead": 38,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/minhthao": {
+          "behind": 2,
+          "ahead": 0,
+          "merge_base": "55e9c74daed487af675a15c276bf6830448e6cea"
+        },
+        "origin/congtri": {
+          "behind": 62,
+          "ahead": 38,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        }
+      },
+      "checks": []
+    },
+    {
+      "branch": "origin/bt3/23001945-vt044",
+      "sha": "3809193ba6eb5e5501cd82c351247228232ae17c",
+      "subject": "docs(vt044): follow the five assignment requirements in exact order",
+      "files": 205,
+      "comparison": {
+        "origin/main": {
+          "behind": 0,
+          "ahead": 72,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-main": {
+          "behind": 35,
+          "ahead": 72,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-solo": {
+          "behind": 61,
+          "ahead": 72,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/nhatquang": {
+          "behind": 6,
+          "ahead": 72,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/minhthao": {
+          "behind": 40,
+          "ahead": 72,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/congtri": {
+          "behind": 0,
+          "ahead": 10,
+          "merge_base": "66074f4ecc384b6006ac8b574001a0b4aced86ef"
+        }
+      },
+      "checks": [
+        {
+          "name": "frontend",
+          "conclusion": "success",
+          "head_sha": "3809193ba6eb5e5501cd82c351247228232ae17c",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/43174654558/job/131035857892"
+        },
+        {
+          "name": "backend",
+          "conclusion": "success",
+          "head_sha": "3809193ba6eb5e5501cd82c351247228232ae17c",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/43174654558/job/131035857501"
+        }
+      ]
+    },
+    {
+      "branch": "origin/chore/ci-checks",
+      "sha": "55ae3c6ccfb2d17b521880d068629267558fa8a9",
+      "subject": "docs(ci): record verified GitHub Actions run",
+      "files": 119,
+      "comparison": {
+        "origin/main": {
+          "behind": 0,
+          "ahead": 16,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-main": {
+          "behind": 19,
+          "ahead": 0,
+          "merge_base": "55ae3c6ccfb2d17b521880d068629267558fa8a9"
+        },
+        "origin/personal/canhtung-solo": {
+          "behind": 45,
+          "ahead": 0,
+          "merge_base": "55ae3c6ccfb2d17b521880d068629267558fa8a9"
+        },
+        "origin/nhatquang": {
+          "behind": 6,
+          "ahead": 16,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/minhthao": {
+          "behind": 40,
+          "ahead": 16,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/congtri": {
+          "behind": 62,
+          "ahead": 16,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        }
+      },
+      "checks": [
+        {
+          "name": "Backend checks",
+          "conclusion": "success",
+          "head_sha": "55ae3c6ccfb2d17b521880d068629267558fa8a9",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/38506663731/job/115665624501"
+        },
+        {
+          "name": "Frontend checks",
+          "conclusion": "success",
+          "head_sha": "55ae3c6ccfb2d17b521880d068629267558fa8a9",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/38506663731/job/115665624369"
+        }
+      ]
+    },
+    {
+      "branch": "origin/codex/bt3-vt042-async-retry",
+      "sha": "9d38ae7b88fb14774caa2ab3d4e59882ee0f757f",
+      "subject": "chore(vt042): scope evidence manifest to versioned artifacts",
+      "files": 596,
+      "comparison": {
+        "origin/main": {
+          "behind": 0,
+          "ahead": 6,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-main": {
+          "behind": 35,
+          "ahead": 6,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-solo": {
+          "behind": 61,
+          "ahead": 6,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/nhatquang": {
+          "behind": 4,
+          "ahead": 4,
+          "merge_base": "db727496312087af6495aa12e7c9a52df3dfa230"
+        },
+        "origin/minhthao": {
+          "behind": 40,
+          "ahead": 6,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/congtri": {
+          "behind": 62,
+          "ahead": 6,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        }
+      },
+      "checks": []
+    },
+    {
+      "branch": "origin/congtri",
+      "sha": "66074f4ecc384b6006ac8b574001a0b4aced86ef",
+      "subject": "ci: validate backend and frontend with isolated workflow tests",
+      "files": 111,
+      "comparison": {
+        "origin/main": {
+          "behind": 0,
+          "ahead": 62,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-main": {
+          "behind": 35,
+          "ahead": 62,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-solo": {
+          "behind": 61,
+          "ahead": 62,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/nhatquang": {
+          "behind": 6,
+          "ahead": 62,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/minhthao": {
+          "behind": 40,
+          "ahead": 62,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/congtri": {
+          "behind": 0,
+          "ahead": 0,
+          "merge_base": "66074f4ecc384b6006ac8b574001a0b4aced86ef"
+        }
+      },
+      "checks": [
+        {
+          "name": "frontend",
+          "conclusion": "success",
+          "head_sha": "66074f4ecc384b6006ac8b574001a0b4aced86ef",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/42511347247/job/128824885949"
+        },
+        {
+          "name": "backend",
+          "conclusion": "success",
+          "head_sha": "66074f4ecc384b6006ac8b574001a0b4aced86ef",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/42511347247/job/128824885585"
+        }
+      ]
+    },
+    {
+      "branch": "origin/feat/backend-skeleton",
+      "sha": "a2810298ff71f18950cc1502359f0f53f505ab9d",
+      "subject": "feat(api): add FastAPI health endpoint and error handlers",
+      "files": 83,
+      "comparison": {
+        "origin/main": {
+          "behind": 0,
+          "ahead": 9,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-main": {
+          "behind": 26,
+          "ahead": 0,
+          "merge_base": "a2810298ff71f18950cc1502359f0f53f505ab9d"
+        },
+        "origin/personal/canhtung-solo": {
+          "behind": 52,
+          "ahead": 0,
+          "merge_base": "a2810298ff71f18950cc1502359f0f53f505ab9d"
+        },
+        "origin/nhatquang": {
+          "behind": 6,
+          "ahead": 9,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/minhthao": {
+          "behind": 40,
+          "ahead": 9,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/congtri": {
+          "behind": 62,
+          "ahead": 9,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        }
+      },
+      "checks": []
+    },
+    {
+      "branch": "origin/feat/solo-theme-modes",
+      "sha": "026174c7c69871ce523715a66d20569acc477829",
+      "subject": "docs(solo): explain appearance preferences and theme checks",
+      "files": 373,
+      "comparison": {
+        "origin/main": {
+          "behind": 0,
+          "ahead": 60,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-main": {
+          "behind": 0,
+          "ahead": 25,
+          "merge_base": "61a31ab5888b925f35259b6e9966d0f979bb9cad"
+        },
+        "origin/personal/canhtung-solo": {
+          "behind": 1,
+          "ahead": 0,
+          "merge_base": "026174c7c69871ce523715a66d20569acc477829"
+        },
+        "origin/nhatquang": {
+          "behind": 6,
+          "ahead": 60,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/minhthao": {
+          "behind": 40,
+          "ahead": 60,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/congtri": {
+          "behind": 62,
+          "ahead": 60,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        }
+      },
+      "checks": [
+        {
+          "name": "Backend checks",
+          "conclusion": "success",
+          "head_sha": "026174c7c69871ce523715a66d20569acc477829",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/42996329204/job/130441231228"
+        },
+        {
+          "name": "OCR integration",
+          "conclusion": "success",
+          "head_sha": "026174c7c69871ce523715a66d20569acc477829",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/42996329204/job/130441231222"
+        },
+        {
+          "name": "Frontend checks",
+          "conclusion": "success",
+          "head_sha": "026174c7c69871ce523715a66d20569acc477829",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/42996329204/job/130441230913"
+        },
+        {
+          "name": "Independent app and real OCR",
+          "conclusion": "success",
+          "head_sha": "026174c7c69871ce523715a66d20569acc477829",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/42996329200/job/130441230863"
+        }
+      ]
+    },
+    {
+      "branch": "origin/feat/solo-workspace-design",
+      "sha": "28742929edaee3087f60761494afd4c3f5ce078a",
+      "subject": "docs(solo): explain redesigned review workflow and verification",
+      "files": 368,
+      "comparison": {
+        "origin/main": {
+          "behind": 0,
+          "ahead": 56,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-main": {
+          "behind": 0,
+          "ahead": 21,
+          "merge_base": "61a31ab5888b925f35259b6e9966d0f979bb9cad"
+        },
+        "origin/personal/canhtung-solo": {
+          "behind": 5,
+          "ahead": 0,
+          "merge_base": "28742929edaee3087f60761494afd4c3f5ce078a"
+        },
+        "origin/nhatquang": {
+          "behind": 6,
+          "ahead": 56,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/minhthao": {
+          "behind": 40,
+          "ahead": 56,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/congtri": {
+          "behind": 62,
+          "ahead": 56,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        }
+      },
+      "checks": [
+        {
+          "name": "Independent app and real OCR",
+          "conclusion": "success",
+          "head_sha": "28742929edaee3087f60761494afd4c3f5ce078a",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/42968291550/job/130350553641"
+        },
+        {
+          "name": "Frontend checks",
+          "conclusion": "success",
+          "head_sha": "28742929edaee3087f60761494afd4c3f5ce078a",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/42968291600/job/130350553472"
+        },
+        {
+          "name": "Backend checks",
+          "conclusion": "success",
+          "head_sha": "28742929edaee3087f60761494afd4c3f5ce078a",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/42968291600/job/130350553418"
+        },
+        {
+          "name": "OCR integration",
+          "conclusion": "success",
+          "head_sha": "28742929edaee3087f60761494afd4c3f5ce078a",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/42968291600/job/130350553207"
+        }
+      ]
+    },
+    {
+      "branch": "origin/feat/vt046-validation-notification",
+      "sha": "31a18bb13f04ff8fe8259cabde542c49993a2327",
+      "subject": "test(api): add reproducible notification risk experiments",
+      "files": 379,
+      "comparison": {
+        "origin/main": {
+          "behind": 0,
+          "ahead": 64,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-main": {
+          "behind": 0,
+          "ahead": 29,
+          "merge_base": "61a31ab5888b925f35259b6e9966d0f979bb9cad"
+        },
+        "origin/personal/canhtung-solo": {
+          "behind": 0,
+          "ahead": 3,
+          "merge_base": "c884a0b6c53eab169eb7ef696ae297ec89464383"
+        },
+        "origin/nhatquang": {
+          "behind": 6,
+          "ahead": 64,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/minhthao": {
+          "behind": 40,
+          "ahead": 64,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/congtri": {
+          "behind": 62,
+          "ahead": 64,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        }
+      },
+      "checks": [
+        {
+          "name": "Frontend checks",
+          "conclusion": "success",
+          "head_sha": "31a18bb13f04ff8fe8259cabde542c49993a2327",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/43065793914/job/130680258523"
+        },
+        {
+          "name": "Backend checks",
+          "conclusion": "success",
+          "head_sha": "31a18bb13f04ff8fe8259cabde542c49993a2327",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/43065793914/job/130680258446"
+        },
+        {
+          "name": "OCR integration",
+          "conclusion": "success",
+          "head_sha": "31a18bb13f04ff8fe8259cabde542c49993a2327",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/43065793914/job/130680257931"
+        }
+      ]
+    },
+    {
+      "branch": "origin/hw3/23001948-vt045-config-contract",
+      "sha": "69106d4e94243d2a12ab55a71158a853264d3816",
+      "subject": "docs(vt045): package eight-page report and reproducible engineering evidence",
+      "files": 102,
+      "comparison": {
+        "origin/main": {
+          "behind": 0,
+          "ahead": 15,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-main": {
+          "behind": 35,
+          "ahead": 15,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-solo": {
+          "behind": 61,
+          "ahead": 15,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/nhatquang": {
+          "behind": 6,
+          "ahead": 15,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/minhthao": {
+          "behind": 40,
+          "ahead": 15,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/congtri": {
+          "behind": 62,
+          "ahead": 15,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        }
+      },
+      "checks": []
+    },
+    {
+      "branch": "origin/main",
+      "sha": "94c5101b94a43f1b0e2814d1cdfeee4139289673",
+      "subject": "first commit",
+      "files": 1,
+      "comparison": {
+        "origin/main": {
+          "behind": 0,
+          "ahead": 0,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-main": {
+          "behind": 35,
+          "ahead": 0,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-solo": {
+          "behind": 61,
+          "ahead": 0,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/nhatquang": {
+          "behind": 6,
+          "ahead": 0,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/minhthao": {
+          "behind": 40,
+          "ahead": 0,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/congtri": {
+          "behind": 62,
+          "ahead": 0,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        }
+      },
+      "checks": []
+    },
+    {
+      "branch": "origin/minhthao",
+      "sha": "760ccdcc0d8de29842fb1261685ddda3eb036e9e",
+      "subject": "feat: extract Vietnamese document fields and protect reviewed data",
+      "files": 217,
+      "comparison": {
+        "origin/main": {
+          "behind": 0,
+          "ahead": 40,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-main": {
+          "behind": 35,
+          "ahead": 40,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-solo": {
+          "behind": 61,
+          "ahead": 40,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/nhatquang": {
+          "behind": 6,
+          "ahead": 40,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/minhthao": {
+          "behind": 0,
+          "ahead": 0,
+          "merge_base": "760ccdcc0d8de29842fb1261685ddda3eb036e9e"
+        },
+        "origin/congtri": {
+          "behind": 62,
+          "ahead": 40,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        }
+      },
+      "checks": []
+    },
+    {
+      "branch": "origin/nhatquang",
+      "sha": "a03ea309ada1480e537cb7de8936ad0d52d53698",
+      "subject": "fix(ui): preserve upload retry keys per selected file",
+      "files": 529,
+      "comparison": {
+        "origin/main": {
+          "behind": 0,
+          "ahead": 6,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-main": {
+          "behind": 35,
+          "ahead": 6,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-solo": {
+          "behind": 61,
+          "ahead": 6,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/nhatquang": {
+          "behind": 0,
+          "ahead": 0,
+          "merge_base": "a03ea309ada1480e537cb7de8936ad0d52d53698"
+        },
+        "origin/minhthao": {
+          "behind": 40,
+          "ahead": 6,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/congtri": {
+          "behind": 62,
+          "ahead": 6,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        }
+      },
+      "checks": [
+        {
+          "name": "backend-checks",
+          "conclusion": "success",
+          "head_sha": "a03ea309ada1480e537cb7de8936ad0d52d53698",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/42554333131/job/128956578729"
+        },
+        {
+          "name": "frontend-checks",
+          "conclusion": "success",
+          "head_sha": "a03ea309ada1480e537cb7de8936ad0d52d53698",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/42554333131/job/128956578558"
+        }
+      ]
+    },
+    {
+      "branch": "origin/personal/canhtung-main",
+      "sha": "61a31ab5888b925f35259b6e9966d0f979bb9cad",
+      "subject": "feat(integration): complete local invoice review and evaluation phases",
+      "files": 227,
+      "comparison": {
+        "origin/main": {
+          "behind": 0,
+          "ahead": 35,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-main": {
+          "behind": 0,
+          "ahead": 0,
+          "merge_base": "61a31ab5888b925f35259b6e9966d0f979bb9cad"
+        },
+        "origin/personal/canhtung-solo": {
+          "behind": 26,
+          "ahead": 0,
+          "merge_base": "61a31ab5888b925f35259b6e9966d0f979bb9cad"
+        },
+        "origin/nhatquang": {
+          "behind": 6,
+          "ahead": 35,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/minhthao": {
+          "behind": 40,
+          "ahead": 35,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/congtri": {
+          "behind": 62,
+          "ahead": 35,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        }
+      },
+      "checks": [
+        {
+          "name": "OCR integration",
+          "conclusion": "success",
+          "head_sha": "61a31ab5888b925f35259b6e9966d0f979bb9cad",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/39379629604/job/118485513786"
+        },
+        {
+          "name": "Backend checks",
+          "conclusion": "success",
+          "head_sha": "61a31ab5888b925f35259b6e9966d0f979bb9cad",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/39379629604/job/118485513766"
+        },
+        {
+          "name": "Frontend checks",
+          "conclusion": "success",
+          "head_sha": "61a31ab5888b925f35259b6e9966d0f979bb9cad",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/39379629604/job/118485513591"
+        }
+      ]
+    },
+    {
+      "branch": "origin/personal/canhtung-solo",
+      "sha": "c884a0b6c53eab169eb7ef696ae297ec89464383",
+      "subject": "feat(solo): integrate light and dark appearance modes",
+      "files": 373,
+      "comparison": {
+        "origin/main": {
+          "behind": 0,
+          "ahead": 61,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-main": {
+          "behind": 0,
+          "ahead": 26,
+          "merge_base": "61a31ab5888b925f35259b6e9966d0f979bb9cad"
+        },
+        "origin/personal/canhtung-solo": {
+          "behind": 0,
+          "ahead": 0,
+          "merge_base": "c884a0b6c53eab169eb7ef696ae297ec89464383"
+        },
+        "origin/nhatquang": {
+          "behind": 6,
+          "ahead": 61,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/minhthao": {
+          "behind": 40,
+          "ahead": 61,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/congtri": {
+          "behind": 62,
+          "ahead": 61,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        }
+      },
+      "checks": [
+        {
+          "name": "Frontend checks",
+          "conclusion": "success",
+          "head_sha": "c884a0b6c53eab169eb7ef696ae297ec89464383",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/42996680242/job/130442382032"
+        },
+        {
+          "name": "OCR integration",
+          "conclusion": "success",
+          "head_sha": "c884a0b6c53eab169eb7ef696ae297ec89464383",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/42996680242/job/130442382028"
+        },
+        {
+          "name": "Independent app and real OCR",
+          "conclusion": "success",
+          "head_sha": "c884a0b6c53eab169eb7ef696ae297ec89464383",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/42996680162/job/130442381938"
+        },
+        {
+          "name": "Backend checks",
+          "conclusion": "success",
+          "head_sha": "c884a0b6c53eab169eb7ef696ae297ec89464383",
+          "url": "https://github.com/teamfuturetime/document-inteligence/actions/runs/42996680242/job/130442381634"
+        }
+      ]
+    },
+    {
+      "branch": "origin/tuannguyen",
+      "sha": "52067697c1e4505eb36042e5fbe525ed984d2637",
+      "subject": "docs: update session handoff after progress push",
+      "files": 68,
+      "comparison": {
+        "origin/main": {
+          "behind": 0,
+          "ahead": 12,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-main": {
+          "behind": 35,
+          "ahead": 12,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/personal/canhtung-solo": {
+          "behind": 61,
+          "ahead": 12,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/nhatquang": {
+          "behind": 6,
+          "ahead": 12,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/minhthao": {
+          "behind": 40,
+          "ahead": 12,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        },
+        "origin/congtri": {
+          "behind": 62,
+          "ahead": 12,
+          "merge_base": "94c5101b94a43f1b0e2814d1cdfeee4139289673"
+        }
+      },
+      "checks": []
+    }
+  ]
+}
