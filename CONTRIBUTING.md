@@ -7,7 +7,7 @@
 ## GitHub Flow
 
 1. Chọn một issue/task có problem, phạm vi, acceptance, dependencies, dữ liệu synthetic và cách kiểm tra (Definition of Ready).
-2. Sau khi nền đã vào main: `git switch main`, `git pull --ff-only origin main`, rồi `git switch -c feat/<task>` (hoặc fix/docs/test/chore). Trong thời gian chờ PR nền, branch từ chore/repository-consolidation và ghi dependency/base rõ trong PR; không coi main cũ là runnable.
+2. Nền đã ở main: giữ thay đổi local trên đúng nhánh trước, chạy `git fetch origin`, `git switch main`, `git pull --ff-only origin main`, rồi `git switch -c feat/<issue>-<task>` (hoặc fix/docs/test/chore). Không tạo task mới từ nhánh consolidation/cá nhân cũ. PR phụ thuộc chỉ dùng base khác khi đã ghi dependency rõ và thống nhất với người điều phối.
 3. Hoàn tất từng thay đổi nhỏ có thể kiểm tra, commit Conventional Commits. Agent dùng cùng quy ước, không yêu cầu phát triển trên nhánh cá nhân dài hạn. Trước mỗi commit xem status/diff, stage đường dẫn cụ thể, xem staged diff và `git diff --cached --check`; không include file của người khác/output/runtime/secret.
 4. Chạy `python scripts/dev.py check`; thay OCR/workflow còn cần `ocr`/`e2e`, thay dataset/config giữ hashes/version/evidence. Đẩy nhánh hoặc tạo PR chỉ khi được ủy quyền. PR đích main, dùng template, ghi lệnh/kết quả/phần chưa chạy. Không coi test với doubles là OCR/provider thật.
 5. `Product checks` phải đạt: Backend checks, Frontend checks, Evaluation regression, OCR integration, Browser E2E. Không path filters có thể làm required check mất ở docs-only PR; không continue-on-error. Remote evidence và settings đã xác minh tại [publication record](docs/github-publication.md); luôn kiểm đúng SHA hiện tại.

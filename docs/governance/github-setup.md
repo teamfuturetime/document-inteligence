@@ -14,8 +14,10 @@ Gate có tests chạy **chính script workflow** với success/failure/skipped/c
 
 GitHub Actions/Ubuntu đã được xác minh ở push/PR runs của d597eb5, xem publication record. Docker vẫn chưa build/run; không suy Docker đạt từ CI. Các run URL/head_sha/check names và GET protection được ghi trong snapshot kết quả; checks xanh của a03ea30 không thay evidence mới.
 
-## Đường vào main và PR hiện có
+## Main và phát triển tiếp
 
-PR consolidation→main chứa original nhatquang history; ghi nguồn PR #1 và giữ attribution. Merge commit sau ít nhất1 reviewer để bảo toàn lịch sử, không rebase/squash baseline. Không merge #1 trước chỉ để tạo check cũ rồi bật gate mới chặn PR. Khi consolidation được chấp nhận/merge, đọc lại trạng thái #1; nếu còn mở, chuẩn bị comment delivered/superseded có URL thật rồi chỉ đóng khi được duyệt. #2 là autosave trên nhánh cá nhân, không cần reopen/merge lại, port có issue CONS-04.
+PR #3 đã merge vào main bằng `fb24bc1`, giữ original nhatquang ancestry; PR #14 và #17 lần lượt tích hợp hướng dẫn nhóm và bản vá dependency. Xem [các mốc tích hợp](../github-publication.md). PR #1 hiện closed; không cần mở lại/merge lại hoặc xóa nhánh nguồn. PR #2 là autosave trên nhánh cá nhân; port vào nền chung tiếp tục ở issue #7.
+
+Tạo task mới từ main đã cập nhật; mỗi PR cần Product checks trên SHA mới nhất và review theo protection. Nếu nhánh BEHIND, merge main, giải quyết conflict rồi kiểm tra lại; không dùng approval/CI cũ để bỏ qua thay đổi nghiệp vụ mới. Không tự áp lại settings từ gói publish.
 
 Main ổn định → feat/fix/test/docs/chore ngắn → PR/checks/review, xem [CONTRIBUTING](../../CONTRIBUTING.md). Các kế hoạch phân công cá nhân cũ chỉ là lịch sử. Không nhầm việc có quyền admin với việc đã được chủ dự án cho phép ghi.
