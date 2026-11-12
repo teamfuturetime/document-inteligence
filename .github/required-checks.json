@@ -1,0 +1,11 @@
+{
+  "gate_job": "product-checks",
+  "gate_name": "Product checks",
+  "jobs": {
+    "backend-checks": "Backend checks",
+    "frontend-checks": "Frontend checks",
+    "evaluation-checks": "Evaluation regression",
+    "ocr-integration": "OCR integration",
+    "browser-e2e": "Browser E2E"
+  }
+}

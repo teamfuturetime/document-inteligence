@@ -11,7 +11,7 @@ body:
     id: scope
     attributes:
       label: Scope, requirement IDs và mã backlog
-      description: FOUNDATION hay MVP; phạm vi có/ngoài và nguồn yêu cầu.
+      description: OCR hóa đơn local hay mở rộng; source branch/commit khi port, phạm vi có/ngoài.
     validations:
       required: true
   - type: textarea

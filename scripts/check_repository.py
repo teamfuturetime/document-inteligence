@@ -35,13 +35,50 @@ workflow = yaml.safe_load(
 )
 if workflow["permissions"] != {"contents": "read"}:
     errors.append("CI permissions are not minimal")
-if set(workflow["jobs"]) != {"backend-checks", "frontend-checks"}:
-    errors.append("CI required check names drift")
+required = json.loads(
+    (ROOT / ".github/required-checks.json").read_text(encoding="utf-8")
+)
+expected_jobs = set(required["jobs"]) | {required["gate_job"]}
+if set(workflow["jobs"]) != expected_jobs:
+    errors.append("CI required jobs drift")
+triggers = workflow.get("on", {})
+if "pull_request_target" in triggers:
+    errors.append("Do not run untrusted PR code with privileged events")
+for event in ("pull_request", "push"):
+    trigger = triggers.get(event, {})
+    if "main" not in trigger.get("branches", []):
+        errors.append(f"{event} must cover main")
+    if "chore/repository-consolidation" not in trigger.get("branches", []):
+        errors.append(f"{event} must cover consolidation")
+    if "paths" in trigger or "paths-ignore" in trigger:
+        errors.append(
+            "Required product checks must not disappear for paths/docs-only changes"
+        )
+for job_id, name in required["jobs"].items():
+    job = workflow["jobs"].get(job_id, {})
+    if job.get("name") != name or "if" in job:
+        errors.append(f"CI check is renamed or conditionally skipped: {job_id}")
+gate = workflow["jobs"].get(required["gate_job"], {})
+if (
+    gate.get("name") != required["gate_name"]
+    or set(gate.get("needs", [])) != set(required["jobs"])
+    or "always()" not in gate.get("if", "")
+):
+    errors.append("Aggregate gate must always require every product job")
+protection = json.loads(
+    (ROOT / ".github/consolidation/main-protection.json").read_text(encoding="utf-8")
+)
+if protection["required_status_checks"]["contexts"] != [required["gate_name"]]:
+    errors.append("Prepared main protection does not match the actual CI gate name")
 for job in workflow["jobs"].values():
+    if not job.get("timeout-minutes"):
+        errors.append("CI job needs a finite timeout")
+    if "continue-on-error" in job:
+        errors.append("CI masks failures")
     for step in job["steps"]:
         if "uses" in step and not re.fullmatch(r"[^@]+@[0-9a-f]{40}", step["uses"]):
             errors.append("Unpinned Action ref")
-        if "continue-on-error" in step or "continue-on-error" in job:
+        if "continue-on-error" in step:
             errors.append("CI masks failures")
 for name in ("bug", "feature", "data-model-error"):
     form = yaml.safe_load(

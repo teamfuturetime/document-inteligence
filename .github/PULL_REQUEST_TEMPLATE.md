@@ -1,21 +1,22 @@
-## Vấn đề và issue
+## Vấn đề và hành vi thay đổi
 
-Mô tả vấn đề, issue thật hoặc mã BL local, requirement IDs và scope.
+Issue/CONS ID, trước → sau, phạm vi hóa đơn và phần mở rộng bị ảnh hưởng. Port từ đâu: branch/commit/author, phần giữ/chưa chuyển.
 
-## Hành vi thay đổi
+## Kiểm chứng trên đúng SHA
 
-Mô tả kết quả trước/sau, contract/data/config nào đổi và phiên bản tương ứng.
+- `python scripts/dev.py check`: kết quả / chưa chạy + lý do
+- `python scripts/dev.py ocr`: native hay doubles, engine/model/config/dataset/source SHA
+- `python scripts/dev.py e2e`: browser/native result
+- Thay domain/API/data/model: version/hash/schema/types và evaluation regression nào đã kiểm tra?
 
-## Kiểm chứng
+## Tương thích và rủi ro
 
-Ghi chính xác lệnh đã chạy và pass/fail/blocked. Fixture evidence hay model benchmark? Prediction trước review? Run/dataset/model/config/locks có truy vết? Không coi fixture metric là chất lượng OCR/model.
+API/schema/runtime/DB path có thay đổi không? Có cần backup/migration? Giữ null/CAS/history/server export/owner boundary ra sao? Giới hạn còn lại và rollback.
 
-## Tài liệu và giới hạn
+## Review
 
-Liên kết docs/evidence đã cập nhật, rủi ro, phần chưa xác minh và dependencies.
-
-- [ ] Checks phù hợp đạt, không che failure hoặc sửa expected để né bug.
-- [ ] Generated contracts/types/examples đồng bộ nếu đổi nguồn chuẩn.
-- [ ] Không secret/dữ liệu thật/trái phép/model weights lớn/runtime DB.
-- [ ] Prediction máy và review tách; version/evidence trung thực.
-- [ ] Nhờ reviewer khác theo quy trình khi có người review.
+- [ ] Diff đã đọc; stage/commit chỉ thuộc task, không secret/PII/model/runtime/output cá nhân.
+- [ ] Không sửa gold/threshold/expected để che regression.
+- [ ] CI đúng head/merge SHA và mọi Product checks đều pass; không chỉ nhãn xanh của commit khác.
+- [ ] README/docs hiện hành khớp implementation; báo cáo cũ được ghi là lịch sử.
+- [ ] Một người khác review trước merge; chưa tự merge hoặc đổi quyền GitHub.

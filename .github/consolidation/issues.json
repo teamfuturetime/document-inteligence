@@ -1,0 +1,97 @@
+[
+  {
+    "local_id": "CONS-01",
+    "title": "Đưa nền OCR hóa đơn local đã kiểm chứng vào main",
+    "body": "Main hiện chỉ README tại 94c5101. Nền nhatquang a03ea30 được chọn theo ADR0008 và phạm vi chủ dự án xác nhận; PR #1 là nguồn nền, PR consolidation giữ ancestry gốc.\n\nAcceptance:\n- Một PR consolidation→main có audit/inventory/ADR và README chạy từ checkout sạch.\n- Backend/frontend/contracts/evaluator/native/browser đều pass trên đúng SHA; Product checks xuất hiện trước khi bật protection.\n- Một reviewer khác đọc diff/domain/persistence; merge commit sau ủy quyền, không squash lại original authors.\n- Xử lý #1 sau khi PR hợp nhất được chấp nhận/merge, không đóng sớm. Không xóa submission refs.\n\nDependency: nội dung local đã chuẩn bị; GitHub writes cần người dùng duyệt. Không coi issue này là ủy quyền merge.",
+    "milestone": "M1 - Nền OCR local dùng chung",
+    "labels": [
+      "area:repo",
+      "priority:P0"
+    ]
+  },
+  {
+    "local_id": "CONS-02",
+    "title": "Review chéo nhãn và provenance của baseline nền chính",
+    "body": "Nguồn: data/manifests/product.json, data/product/ và evaluation/runs/2026-10-24-test-frozen của nền nhatquang. Dataset synthetic có layouts lặp; score Windows5.4 không phải macOS/Linux và không đại diện hóa đơn thật.\n\nAcceptance:\n- Reviewer khác đối chiếu sample ảnh/labels, absent/unreadable và splits/parent/hash, ghi người thực sự review.\n- Không sửa gold theo predictions hoặc tune trên test holdout.\n- Giữ engine/model/config/source/run fingerprints; báo cáo native mới có output directory mới.\n- Frozen evaluator replay vẫn pass; đề xuất dataset unseen-layout là phiên bản mới nếu cần.\n\nDependency: CONS-01; không tự gán reviewer hoặc công bố accuracy thực tế từ synthetic.",
+    "milestone": "M1 - Nền OCR local dùng chung",
+    "labels": [
+      "area:data",
+      "priority:P0"
+    ]
+  },
+  {
+    "local_id": "CONS-03",
+    "title": "Port PDF một trang vào pipeline chính với giới hạn tài nguyên",
+    "body": "Nguồn tham chiếu: personal/canhtung-main@61a31ab preprocessing/API/tests và congtri@66074f4. Nền chính hiện PNG/JPEG-only.\n\nAcceptance:\n- Chốt một trang, bytes/pixels/decoded dimensions/deadline trước implementation; magic bytes/encoded PDF/encryption/multipage errors có tests.\n- Giữ geometry/evidence về preview cùng frame; server/pipeline chung budget; không fallback giả.\n- Schema/capabilities/UI/docs cùng version; native invoice upload→review→export và existing application tests pass.\n- Không copy backend/React app thứ hai hoặc import public schemas cạnh tranh.\n\nDependency: CONS-01; ước lượng sau spike, chưa đổi nền ở task consolidation.",
+    "milestone": "M2 - Định dạng và review mở rộng",
+    "labels": [
+      "area:ocr",
+      "priority:P1",
+      "migration"
+    ]
+  },
+  {
+    "local_id": "CONS-04",
+    "title": "Port autosave vào field review có CAS và conflict UI",
+    "body": "Nguồn: PR #2 bt3-vt043-autosave@55e9c74 đã merge vào minhthao; backend OCR correction khác field review của docintel.\n\nAcceptance:\n- Mapping spec raw OCR vs field review; debounce không làm mất explicit null hoặc edits mới sau ACK cũ.\n- Atomic expected_revision; hai tabs/stale409/retry/network error/order tests; không silent overwrite.\n- Manual save/confirm/latest persisted export giữ đúng; reload/restart không mất draft.\n- Giữ source commit/authorship; chưa claim đã port vì PR #2 merged cá nhân.\n\nDependency: CONS-01.",
+    "milestone": "M2 - Định dạng và review mở rộng",
+    "labels": [
+      "area:review",
+      "priority:P1",
+      "migration"
+    ]
+  },
+  {
+    "local_id": "CONS-05",
+    "title": "Giới hạn receive/admission cho upload chậm và lớn",
+    "body": "Nền chính cap bytes/pixels/native deadline và pending queue đã có, nhưng api/documents.py stream upload chưa có total receive deadline; server có thể cấp phát chunk trước app.\n\nAcceptance:\n- Định nghĩa receive/admission budget phù hợp local, errors safe và không tạo DB/file khi reject.\n- Test thiếu/giả Content-Length, chunk vượt cap, slow/cancel/disconnect; không làm hỏng idempotent retries.\n- Đo HTTP thật với workload mô tả rõ, RSS/task count và latency; không dùng p95 bài tập làm SLA sản phẩm.\n- Tài liệu ingress/loopback giới hạn phải khớp code.\n\nDependency: CONS-01.",
+    "milestone": "M2 - Định dạng và review mở rộng",
+    "labels": [
+      "area:ocr",
+      "priority:P1"
+    ]
+  },
+  {
+    "local_id": "CONS-06",
+    "title": "Triage dependency audit trước mở rộng deployment",
+    "body": "npm install/ci báo moderate advisories trong dependency tree. Không chạy npm audit fix --force để làm xanh hoặc đổi toàn framework trong consolidation.\n\nAcceptance:\n- Ghi npm audit JSON trên đúng lock SHA, phân biệt dev tooling/runtime/exploit path.\n- Patch nhỏ khi có bản tương thích; contracts/component/browser tests và clean install đều pass.\n- Báo chính xác phần chưa khắc phục; không bỏ valuable checks hoặc tùy tiện hạ engine pins.\n\nDependency: CONS-01; advisory count phụ thuộc registry/time, cần snapshot thực.",
+    "milestone": "M2 - Định dạng và review mở rộng",
+    "labels": [
+      "area:repo",
+      "priority:P1"
+    ]
+  },
+  {
+    "local_id": "CONS-07",
+    "title": "Thêm notification sau persisted business event, tách lỗi gửi",
+    "body": "Nguồn: feat/vt046-validation-notification@31a18bb và backend/experiments/README.md. Đó là stateless validate slice; docintel có transaction/revisions nên không copy hook như đã tương đương.\n\nAcceptance:\n- Chọn event/recipient/delivery contract sau DB commit; lỗi/timeout gửi không đổi transaction chính.\n- Test trước implementation, exact response mapping, failure path/cancellation; payload không lộ source.\n- Nếu best-effort phải công bố mất/trùng event; nếu cần durable delivery phải ADR riêng.\n- Giữ submission branch/report gốc, không chuyển nhãn tác giả bài.\n\nDependency: CONS-01; ngoài phạm vi hiện tại.",
+    "milestone": "M3 - Quyền truy cập và tích hợp tùy chọn",
+    "labels": [
+      "area:review",
+      "priority:P2",
+      "migration"
+    ]
+  },
+  {
+    "local_id": "CONS-08",
+    "title": "Thiết kế port auth/ownership khi cần nhiều người dùng",
+    "body": "Phạm vi chủ dự án hiện local/single-user; không tạo auth giả. Nguồn minhthao@760ccdc có sessions/CSRF/owner tests và PostgreSQL/Alembic; VT-044 harness không là auth API production.\n\nAcceptance:\n- ADR identity/ownership/migration/CSRF và matrix quyền document/source/review/history/export.\n- Backend enforcement theo owner trong mọi query; không coi CORS là auth.\n- Backup+migration/version conflict và authorization tests trên DB thực được chọn.\n- Fix/triage portability path test đang fail trong nhánh nguồn trước khi dùng lại storage.\n\nDependency: CONS-01 và yêu cầu multi-user riêng; không tự đổi DB/framework.",
+    "milestone": "M3 - Quyền truy cập và tích hợp tùy chọn",
+    "labels": [
+      "area:review",
+      "priority:P2",
+      "migration"
+    ]
+  },
+  {
+    "local_id": "CONS-09",
+    "title": "Đánh giá policy và các loại tài liệu mở rộng trước khi port",
+    "body": "Giữ đơn đề nghị hiện có hoạt động. Tham chiếu VT-045/tuannguyen cho config invoice policy; minhthao/congtri cho CCCD; solo cho đơn sinh viên/VLM/OCR.space. Chưa có quyết định chạy provider thật trong consolidation.\n\nAcceptance:\n- Mỗi port có schema/data permission/evidence/validation version và dataset riêng, không mượn metric hóa đơn nền khác.\n- VLM/API/model download và secrets chỉ khi được giao; CI PR offline không yêu cầu secret.\n- Existing invoice+application native flow không regression; không thêm một production app cạnh tranh.\n- Source lineage/author và trạng thái code/mock/native được ghi chính xác.\n\nDependency: CONS-01; ưu tiên sau core hóa đơn.",
+    "milestone": "M3 - Quyền truy cập và tích hợp tùy chọn",
+    "labels": [
+      "area:ocr",
+      "priority:P2",
+      "migration"
+    ]
+  }
+]

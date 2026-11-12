@@ -29,7 +29,9 @@ Baseline: nhatquang a03ea309ada1480e537cb7de8936ad0d52d53698. Nhánh local: chor
 
 ## Main/PR/lịch sử
 
-Giữ main làm default và stable target. PR #1 đang chứa nền nhatquang; không merge bây giờ. Chuẩn bị PR consolidation→main và ghi rõ PR #1 là baseline dependency. Sau review, lựa chọn chính là merge #1 bằng merge commit, cập nhật nhánh consolidation từ main (merge, không rebase/force), chạy checks đúng merge SHA, rồi merge consolidation. Như vậy #1 vẫn có công nhận và phần consolidation tách riêng. Nếu reviewer chọn một PR hợp nhất, phải đóng #1 bằng comment superseded có link, không âm thầm merge hai codebases. Cả hai thao tác đều đợi duyệt riêng trong gói cuối.
+Giữ main làm default và stable target. Chuẩn bị một PR `chore/repository-consolidation → main`, chứa toàn bộ original ancestry nhatquang và các commits consolidation; mô tả PR #1 là nguồn nền. Dùng merge commit để giữ đóng góp, không squash lại baseline thành tác giả mới. Sau khi PR hợp nhất đã review/checks và được phép merge, đọc lại trạng thái #1: nếu chưa tự đóng bởi merge ancestry, comment superseded/delivered có link rồi đóng khi được duyệt. Không đóng #1 trước khi nền thay thế đã được chấp nhận.
+
+Lý do sửa phương án merge #1 trước: #1 hiện chạy workflow cũ, chưa sinh `Product checks`; bật protection mới trước có thể chặn nó vô hạn. PR hợp nhất mang workflow gate mới, được kiểm đúng merge SHA rồi mới bật required context đã quan sát. Không phải merge nguyên các nhánh cạnh tranh. Cấu hình, thao tác push/PR/comment/close/protection đều đợi gói duyệt, không có merge tự động.
 
 PR #2 đã merge vào minhthao theo ancestry; không đóng/mở lại hoặc gọi nó đã vào main. Autosave chuyển thành issue port có nguồn. Không cherry-pick toàn nhánh minhthao vào docintel.
 
