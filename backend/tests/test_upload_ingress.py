@@ -86,7 +86,10 @@ def assert_empty(app):
 
 @pytest.mark.parametrize(
     ("headers", "messages", "status", "code"),
-    [([(b"content-length", b"1025")], [], 413, "FILE_TOO_LARGE")],
+    [
+        ([(b"content-length", b"1025")], [], 413, "FILE_TOO_LARGE"),
+        ([(b"content-length", b"-1")], [], 400, "INVALID_CONTENT_LENGTH"),
+    ],
 )
 def test_rejects_before_persistence(tmp_path, monkeypatch, headers, messages, status, code):
     app = app_for(tmp_path, monkeypatch)
