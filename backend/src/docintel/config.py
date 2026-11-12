@@ -31,3 +31,5 @@ class Settings(BaseSettings):
     )
     tessdata_dir: Path = ROOT / "runtime/models/tessdata_fast"
     max_pending_runs: int = Field(default=5, ge=1, le=20)
+
+    notification_mode: Literal["disabled", "log"] = "log"

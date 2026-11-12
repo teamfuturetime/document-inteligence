@@ -3,8 +3,10 @@
 import asyncio
 
 import pytest
+from pydantic import ValidationError
 from test_product import product as product
 
+from docintel.config import Settings
 from docintel.services.notifications import DocumentConfirmed, notify_safely
 
 
@@ -29,3 +31,9 @@ def test_caller_cancellation_propagates_without_detached_delivery():
         assert cancelled.is_set()
 
     asyncio.run(run())
+
+
+@pytest.mark.parametrize("options", [{"notification_mode": "email"}])
+def test_invalid_delivery_configuration_is_rejected(options):
+    with pytest.raises(ValidationError):
+        Settings(_env_file=None, **options)
