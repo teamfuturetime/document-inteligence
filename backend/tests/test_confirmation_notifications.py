@@ -78,7 +78,7 @@ def test_invalid_delivery_configuration_is_rejected(options):
         Settings(_env_file=None, **options)
 
 
-@pytest.mark.parametrize("mode", ["success", "error"])
+@pytest.mark.parametrize("mode", ["success", "error", "timeout"])
 def test_delivery_runs_after_commit_and_preserves_exact_response(product, caplog, mode):
     api, settings = product
     settings.notification_timeout_seconds = 0.02
