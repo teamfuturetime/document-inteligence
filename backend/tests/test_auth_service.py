@@ -21,6 +21,23 @@ def credentials(username="alpha", password="synthetic-password-123"):
     return Credentials(username=username, password=password)
 
 
+def test_login_budget_is_global_bounded_and_resets_after_window(auth):
+    auth.clock = lambda: 100.0
+    auth.settings.max_login_attempts = 2
+    for username in ("missing", "another"):
+        with pytest.raises(ProductError) as rejected:
+            auth.login(credentials(username))
+        assert rejected.value.status == 401
+    with pytest.raises(ProductError) as throttled:
+        auth.login(credentials())
+    assert throttled.value.status == 429
+    with auth.identities.repository.transaction() as connection:
+        assert connection.execute("SELECT count(*) FROM login_budget").fetchone()[0] == 1
+        assert connection.execute("SELECT attempts FROM login_budget").fetchone()[0] == 2
+    auth.clock = lambda: 160.0
+    assert auth.login(credentials())[1].user.username == "alpha"
+
+
 def test_absolute_expiry_and_disabled_user_are_checked_on_every_request(auth):
     auth.clock = lambda: 100.0
     raw, principal = auth.login(credentials())

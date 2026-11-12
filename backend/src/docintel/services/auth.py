@@ -53,6 +53,15 @@ class AuthService:
     def login(self, credentials: Credentials) -> tuple[str, Principal]:
         if self.settings.auth_mode != "session":
             raise ProductError(404, "AUTH_DISABLED", "Chế độ tài khoản chưa được bật.")
+        if not self.identities.allow_login(
+            self.clock(), self.settings.max_login_attempts, self.settings.login_window_seconds
+        ):
+            raise ProductError(
+                429,
+                "LOGIN_BUSY",
+                "Quá số lần đăng nhập. Vui lòng thử lại sau.",
+                headers={"Retry-After": str(self.settings.login_window_seconds)},
+            )
         row = self.identities.user(credentials.username)
         encoded = row["password_hash"] if row else DUMMY_HASH
         verified = verify_password(credentials.password.get_secret_value(), encoded)

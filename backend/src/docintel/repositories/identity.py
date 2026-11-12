@@ -10,6 +10,22 @@ class IdentityRepository:
     def __init__(self, repository: DocumentRepository):
         self.repository = repository
 
+    def allow_login(self, timestamp: float, maximum: int, window: int) -> bool:
+        # One bounded row, never a dictionary/table keyed by attacker-controlled usernames.
+        with self.repository.transaction(write=True) as connection:
+            row = connection.execute(
+                "SELECT window_start,attempts FROM login_budget WHERE id=1"
+            ).fetchone()
+            if row is None or timestamp >= row["window_start"] + window:
+                connection.execute(
+                    "INSERT OR REPLACE INTO login_budget VALUES(1,?,1)", (timestamp,)
+                )
+                return True
+            if row["attempts"] >= maximum:
+                return False
+            connection.execute("UPDATE login_budget SET attempts=attempts+1 WHERE id=1")
+            return True
+
     def create_user(self, username: str, password_hash: str) -> str:
         if not re.fullmatch(r"[a-z][a-z0-9_-]{2,31}", username):
             raise ValueError("Invalid canonical username")
