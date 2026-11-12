@@ -1,6 +1,8 @@
+import asyncio
 from contextlib import asynccontextmanager
 from uuid import uuid4
 
+from anyio import CapacityLimiter
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
@@ -25,11 +27,16 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = True) -
     async def lifespan(application: FastAPI):
         application.state.documents = DocumentService(config)
         application.state.confirmation_notifier = LoggingConfirmationNotifier()
+        application.state.upload_limiter = CapacityLimiter(config.max_concurrent_uploads)
+        application.state.upload_tasks = set()
         worker = None
         if start_worker and config.provider_mode == "tesseract":
             worker = LocalInferenceWorker(application.state.documents)
             worker.start()
         yield
+        # A complete upload may still be committing after its client went away.
+        if application.state.upload_tasks:
+            await asyncio.gather(*application.state.upload_tasks, return_exceptions=True)
         if worker:
             worker.close()
 
@@ -80,6 +87,7 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = True) -
     async def product_error(request: Request, exc: ProductError):
         return JSONResponse(
             status_code=exc.status,
+            headers=exc.headers,
             content={
                 "error": {
                     "code": exc.code,

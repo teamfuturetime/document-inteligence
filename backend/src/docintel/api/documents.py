@@ -1,10 +1,14 @@
+import asyncio
 import re
 from typing import Annotated, Literal
 
+from anyio import WouldBlock
 from fastapi import APIRouter, Header, Query, Request
 from fastapi.responses import FileResponse, JSONResponse
 from starlette.concurrency import run_in_threadpool
 
+from docintel.api.models import ErrorEnvelope
+from docintel.api.uploads import receive_upload, upload_error
 from docintel.domain.documents import (
     DEFINITIONS,
     DocumentDetail,
@@ -18,7 +22,7 @@ from docintel.domain.documents import (
     ReviewRequest,
     RevisionRequest,
 )
-from docintel.services.documents import DocumentService, ProductError
+from docintel.services.documents import DocumentService
 from docintel.services.notifications import notify_safely
 
 router = APIRouter(prefix="/api/v1", tags=["product"])
@@ -46,7 +50,12 @@ def documents(
     return service(request).list_documents(limit, offset, document_type, status)
 
 
-@router.post("/documents", response_model=DocumentDetail, status_code=202)
+@router.post(
+    "/documents",
+    response_model=DocumentDetail,
+    status_code=202,
+    responses={400: {"model": ErrorEnvelope}, 408: {"model": ErrorEnvelope}},
+)
 async def upload_document(
     request: Request,
     document_type: DocumentType,
@@ -54,17 +63,39 @@ async def upload_document(
     filename: Annotated[str, Query(min_length=1, max_length=200)] = "document.png",
     idempotency_key: Annotated[str | None, Header(pattern=r"^[A-Za-z0-9_-]{1,96}$")] = None,
 ):
-    maximum = service(request).settings.max_upload_bytes
-    data = bytearray()
-    async for chunk in request.stream():
-        if len(data) + len(chunk) > maximum:
-            raise ProductError(413, "FILE_TOO_LARGE", "Tài liệu vượt giới hạn kích thước.")
-        data.extend(chunk)
-    filename = re.split(r"[/\\]", filename)[-1]
-    filename = "".join(character for character in filename if character.isprintable()) or "document"
-    return await run_in_threadpool(
-        service(request).upload, bytes(data), document_type, data_origin, filename, idempotency_key
-    )
+    limiter = request.app.state.upload_limiter
+    borrower = object()
+    try:
+        limiter.acquire_on_behalf_of_nowait(borrower)
+    except WouldBlock as exc:
+        raise upload_error(
+            request, 429, "UPLOAD_BUSY", "Đang nhận đủ số tài liệu. Vui lòng thử lại sau."
+        ) from exc
+    task = None
+    try:
+        data = await receive_upload(request, service(request).settings)
+        filename = re.split(r"[/\\]", filename)[-1]
+        filename = "".join(c for c in filename if c.isprintable()) or "document"
+        # Keep the slot through preprocessing/persistence; no waiting upload queue.
+        task = asyncio.create_task(
+            run_in_threadpool(
+                service(request).upload, data, document_type, data_origin, filename, idempotency_key
+            )
+        )
+        tasks = request.app.state.upload_tasks
+        tasks.add(task)
+
+        def complete(done):
+            tasks.discard(done)
+            limiter.release_on_behalf_of(borrower)
+            if not done.cancelled():
+                done.exception()  # Retrieve failures even if the HTTP task has been cancelled.
+
+        task.add_done_callback(complete)
+        return await asyncio.shield(task)
+    finally:
+        if task is None:
+            limiter.release_on_behalf_of(borrower)
 
 
 @router.get("/documents/{document_id}", response_model=DocumentDetail)
