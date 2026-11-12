@@ -10,10 +10,13 @@ from contextlib import contextmanager
 
 import pytest
 from pydantic import ValidationError
+from starlette.requests import Request
 from test_product import processed, revision_request
 from test_product import product as product
 
+from docintel.api.documents import confirm
 from docintel.config import Settings
+from docintel.domain.documents import RevisionRequest
 from docintel.services.notifications import DocumentConfirmed, notify_safely
 
 
@@ -204,3 +207,37 @@ def test_disabled_mode_does_not_attempt_delivery(product):
     )
     assert response.status_code == 200
     assert sender.events == []
+
+
+def test_cancellation_after_commit_keeps_persisted_confirmation(product):
+    api, _ = product
+    document = processed(api)
+
+    async def run():
+        entered, stopped = asyncio.Event(), asyncio.Event()
+
+        class Blocked:
+            async def send(self, notice):
+                entered.set()
+                try:
+                    await asyncio.sleep(3600)
+                finally:
+                    stopped.set()
+
+        api.app.state.confirmation_notifier = Blocked()
+        request = Request({"type": "http", "app": api.app})
+        task = asyncio.create_task(
+            confirm(request, document["document_id"], RevisionRequest(**revision_request(document)))
+        )
+        await asyncio.wait_for(entered.wait(), 2)
+        task.cancel()
+        with pytest.raises(asyncio.CancelledError):
+            await task
+        assert stopped.is_set()
+
+    asyncio.run(run())
+    persisted = api.app.state.documents.detail(document["document_id"])
+    assert persisted.review.review_status == "confirmed"
+    assert api.app.state.documents.export(
+        document["document_id"], RevisionRequest(**revision_request(document))
+    )
