@@ -16,7 +16,7 @@ Baseline: nhatquang a03ea309ada1480e537cb7de8936ad0d52d53698. Nhánh local: chor
 |---|---|---|
 | docintel/domain/SQLite/worker/evidence UI từ nhatquang | Giữ nguyên làm nền chính, toàn original commits là ancestors | Baseline + post-change native/revision/conflict/export/restart checks |
 | Model pin lineage từ Tùng | Đã có trong nền; giữ attribution docs/ml/source-lineage.md | Không nhận là đóng góp mới; hashes bất biến |
-| Retry admission VT-042 | Hai production files đã cùng nội dung; chỉ port test regression, không UI/personal report | Chạy test mới với real SQLite/storage, giữ sample doubles là doubles |
+| Retry admission VT-042 | Hai production files đã cùng nội dung; đã port nguyên test regression backend/tests/test_async_retry_vt042.py, không UI/personal report | Chạy test mới với real SQLite/storage, giữ sample doubles là doubles |
 | PDF single-page từ core Tùng/congtri | Backlog P1; chưa port | ADR limit byte/page/pixel, geometry transform, timeout; contract regen + native/API/E2E; không claim PNG-only hiện tại có PDF |
 | OCR autosave VT-043/minhthao | Backlog P1; manual draft hiện vẫn hoạt động | Map raw OCR correction vs field review, debounce/CAS/ACK ordering, conflict UI; giữ explicit-null và export revision |
 | Notification VT-046 | Giữ nộp bài; backlog P2, chưa port | Chọn event sau transaction commit, delivery isolated/deadline; không reuse stateless validate hook như đã là persisted feature |

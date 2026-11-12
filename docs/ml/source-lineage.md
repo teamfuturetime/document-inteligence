@@ -13,3 +13,7 @@ Lượt triển khai trên nhatquang ngày 24/10/2026 thực hiện theo yêu c�
 Không import nguyên ứng dụng Tùng hoặc thêm package document_contracts thứ hai cạnh domain models hiện tại. `pipeline.models` là DTO nội bộ inference; public HTTP contracts vẫn ở backend domain. `docintel.adapters.pipeline` là điểm chuyển đổi duy nhất. Khi nhóm chốt một nền khác, dùng adapter và bảng ánh xạ trong [handoff](../product/integration-handoff.md), không giữ hai app production chạy song song.
 
 Tham chiếu: [Tesseract CLI](https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage.html), [Tesseract image quality](https://tesseract-ocr.github.io/tessdoc/ImproveQuality.html), [Pillow Image](https://pillow.readthedocs.io/en/stable/reference/Image.html). Nguồn kỹ thuật không thay rubric hoặc tạo ra benchmark.
+
+## Consolidation 2026-11-12
+
+`backend/tests/test_async_retry_vt042.py` được lấy **nguyên nội dung** từ commit `9a76a6ed5d064336df5ba3eb275f7ee9996e5615` / nhánh VT-042 tại `9d38ae7`. Tác giả original commit: NhatquangPham `<23001920@vnu.edu.vn>` (đối chiếu Git metadata). Blob hash được giữ nguyên; không copy báo cáo/prompt/evidence cá nhân như bài mới. Test provider/decode doubles + SQLite thật, không OCR benchmark. Hai production files retry đã giống baseline a03ea30 nên không cherry-pick lại fix/UI cũ. Commit port giữ attribution Co-authored-by và Source-Commit; không sửa author history cũ.
