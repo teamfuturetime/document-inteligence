@@ -113,3 +113,36 @@ def test_delivery_runs_after_commit_and_preserves_exact_response(product, caplog
         api.get(path + "/export", params={"run_id": notice.run_id, "revision": 1}).status_code
         == 200
     )
+
+
+def test_failed_business_requests_never_send(product):
+    api, _ = product
+    sender = Sender(api.app.state.documents)
+    api.app.state.confirmation_notifier = sender
+    document = processed(api)
+    path = f"/api/v1/documents/{document['document_id']}"
+    assert (
+        api.post(
+            path + "/confirm", json={**revision_request(document), "expected_revision": 99}
+        ).status_code
+        == 409
+    )
+    assert (
+        api.post("/api/v1/documents/missing/confirm", json=revision_request(document)).status_code
+        == 404
+    )
+    assert (
+        api.post(
+            path + "/confirm", json={**revision_request(document), "approved": True}
+        ).status_code
+        == 422
+    )
+    saved = api.put(
+        path + "/review",
+        json={
+            **revision_request(document),
+            "fields": {"seller_name": {"is_reviewed": True, "reviewed_value": None}},
+        },
+    ).json()
+    assert api.post(path + "/confirm", json=revision_request(saved)).status_code == 422
+    assert sender.events == []
