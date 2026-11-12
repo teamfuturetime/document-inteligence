@@ -184,3 +184,29 @@ def test_shutdown_waits_for_inflight_upload(tmp_path, monkeypatch):
         assert task.done()
 
     asyncio.run(run())
+
+
+@pytest.mark.parametrize("headers", [[]])
+def test_complete_upload_and_idempotent_retry_with_full_queue(tmp_path, monkeypatch, headers):
+    app = app_for(tmp_path, monkeypatch, max_pending_runs=1)
+
+    async def run():
+        async with app.router.lifespan_context(app):
+            key = (b"idempotency-key", b"ingress-retry")
+            data = png()
+            messages = [body(data[:20], True), body(data[20:])]
+            first = await post(app, messages, [*headers, key])
+            retry = await post(app, messages, [*headers, key])
+            assert first[0] == retry[0] == 202
+            assert first[1]["document_id"] == retry[1]["document_id"]
+            conflict = await post(app, [body(b"different")], [key])
+            assert conflict[0] == 409
+            assert conflict[1]["error"]["code"] == "IDEMPOTENCY_CONFLICT"
+            service = app.state.documents
+            with service.repository.transaction() as connection:
+                for table in ("documents", "runs", "events"):
+                    assert connection.execute(f"SELECT count(*) FROM {table}").fetchone()[0] == 1
+            assert len(list(service.storage.root.iterdir())) == 2
+            assert app.state.upload_limiter.borrowed_tokens == 0
+
+    asyncio.run(run())
