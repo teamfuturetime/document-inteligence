@@ -1,0 +1,47 @@
+[
+  {
+    "iteration": 1,
+    "exit": 1,
+    "successful_tasks": 190,
+    "requests": 1140,
+    "errors": 10,
+    "task_p95": 1.1176028329937253,
+    "acceptance_pass": false,
+    "server_config": {
+      "uvicorn": "0.34.0",
+      "loop": "asyncio",
+      "http_protocol": "HttpToolsProtocol",
+      "connection_start": "cold; included in task latency; no retries"
+    }
+  },
+  {
+    "iteration": 2,
+    "exit": 0,
+    "successful_tasks": 200,
+    "requests": 1200,
+    "errors": 0,
+    "task_p95": 1.1434203750104643,
+    "acceptance_pass": true,
+    "server_config": {
+      "uvicorn": "0.34.0",
+      "loop": "asyncio",
+      "http_protocol": "HttpToolsProtocol",
+      "connection_start": "cold; included in task latency; no retries"
+    }
+  },
+  {
+    "iteration": 3,
+    "exit": 0,
+    "successful_tasks": 200,
+    "requests": 1200,
+    "errors": 0,
+    "task_p95": 1.1688086250214837,
+    "acceptance_pass": true,
+    "server_config": {
+      "uvicorn": "0.34.0",
+      "loop": "asyncio",
+      "http_protocol": "HttpToolsProtocol",
+      "connection_start": "cold; included in task latency; no retries"
+    }
+  }
+]

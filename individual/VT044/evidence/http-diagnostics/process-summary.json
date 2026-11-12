@@ -1,0 +1,62 @@
+[
+  {
+    "iteration": 1,
+    "exit": 1,
+    "successful_tasks": 131,
+    "requests": 786,
+    "errors": 69,
+    "task_p95": 0.7362980420002714,
+    "acceptance_pass": false,
+    "server_config": {
+      "started": true,
+      "architecture": "spawned process",
+      "server_pid": 47575,
+      "uvicorn": "0.34.0",
+      "loop_option": "auto",
+      "actual_loop": "uvloop.Loop",
+      "http_protocol": "HttpToolsProtocol",
+      "client_pid": 47573,
+      "connection_start": "cold; included in task latency; no retries or warm-up"
+    }
+  },
+  {
+    "iteration": 2,
+    "exit": 1,
+    "successful_tasks": 176,
+    "requests": 1056,
+    "errors": 24,
+    "task_p95": 0.9341697079944424,
+    "acceptance_pass": false,
+    "server_config": {
+      "started": true,
+      "architecture": "spawned process",
+      "server_pid": 47584,
+      "uvicorn": "0.34.0",
+      "loop_option": "auto",
+      "actual_loop": "uvloop.Loop",
+      "http_protocol": "HttpToolsProtocol",
+      "client_pid": 47577,
+      "connection_start": "cold; included in task latency; no retries or warm-up"
+    }
+  },
+  {
+    "iteration": 3,
+    "exit": 1,
+    "successful_tasks": 179,
+    "requests": 1074,
+    "errors": 21,
+    "task_p95": 0.9097738749987911,
+    "acceptance_pass": false,
+    "server_config": {
+      "started": true,
+      "architecture": "spawned process",
+      "server_pid": 47588,
+      "uvicorn": "0.34.0",
+      "loop_option": "auto",
+      "actual_loop": "uvloop.Loop",
+      "http_protocol": "HttpToolsProtocol",
+      "client_pid": 47586,
+      "connection_start": "cold; included in task latency; no retries or warm-up"
+    }
+  }
+]

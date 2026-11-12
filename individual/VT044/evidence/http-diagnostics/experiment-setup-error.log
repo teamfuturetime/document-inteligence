@@ -1,0 +1,18 @@
+CONTROLLED_CONFIG --transport stdlib
+Exception in thread Thread-1 (run):
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/threading.py", line 1073, in _bootstrap_inner
+    self.run()
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/threading.py", line 1010, in run
+    self._target(*self._args, **self._kwargs)
+  File "/Users/nguyencongtri/Documents/SE/document-inteligence/.venv312/lib/python3.12/site-packages/uvicorn/server.py", line 65, in run
+    self.config.setup_event_loop()
+  File "/Users/nguyencongtri/Documents/SE/document-inteligence/.venv312/lib/python3.12/site-packages/uvicorn/config.py", line 476, in setup_event_loop
+    loop_setup: Callable | None = import_from_string(LOOP_SETUPS[self.loop])
+                                                     ~~~~~~~~~~~^^^^^^^^^^^
+KeyError: '--transport'
+Traceback (most recent call last):
+  File "<string>", line 13, in <module>
+  File "/Users/nguyencongtri/Documents/SE/bt3-vt044/individual/VT044/load.py", line 226, in main
+    raise RuntimeError("local server did not start")
+RuntimeError: local server did not start

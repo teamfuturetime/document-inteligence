@@ -1,0 +1,3 @@
+usage: load.py [-h] [--transport {stdlib,async,asgi}]
+               [--connection-mode {cold,preconnected}] [--output OUTPUT]
+load.py: error: --connection-mode preconnected requires --transport stdlib

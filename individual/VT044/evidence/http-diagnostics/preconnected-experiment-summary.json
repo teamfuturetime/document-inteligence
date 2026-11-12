@@ -1,0 +1,35 @@
+[
+  {
+    "iteration": 1,
+    "exit": 0,
+    "successful_tasks": 200,
+    "requests": 1200,
+    "errors": 0,
+    "task_p95": 1.119086042017443,
+    "setup_requests": 200,
+    "setup_seconds": 0.17019995901500806,
+    "acceptance_pass": true
+  },
+  {
+    "iteration": 2,
+    "exit": 0,
+    "successful_tasks": 200,
+    "requests": 1200,
+    "errors": 0,
+    "task_p95": 1.1196949169971049,
+    "setup_requests": 200,
+    "setup_seconds": 0.203747999999905,
+    "acceptance_pass": true
+  },
+  {
+    "iteration": 3,
+    "exit": 0,
+    "successful_tasks": 200,
+    "requests": 1200,
+    "errors": 0,
+    "task_p95": 1.16083875001641,
+    "setup_requests": 200,
+    "setup_seconds": 0.17176491700229235,
+    "acceptance_pass": true
+  }
+]

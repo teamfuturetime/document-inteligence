@@ -40,6 +40,28 @@ in the selected transport's scope. It is never a production SLA assertion.
 Both new drivers start all task clocks at their common barrier release, so
 post-barrier scheduling is included. No retries are used in either driver.
 
+### HTTP connection profiles (12/11/2026)
+
+The default `--connection-mode cold` retains the original experiment: all 200
+tasks open NEW connections at the measured barrier. That profile still has
+connection errors on this Mac; p95 below 5s does not make it a passing run.
+
+To separately measure 200 concurrent API workflows on established connections:
+
+```bash
+PYTHONPATH=backend:. python -m individual.VT044.load --transport stdlib --connection-mode preconnected --output ../output/BT3_23001945_tu_chay/load-http-preconnected.json
+```
+
+This profile prepares 200 separate connections with 200 validated GET requests
+before the barrier, then starts all 200 measured workflows together. The output
+records `setup_requests=200`, `setup_seconds`, `setup_in_task_latency=false`,
+`requests=1200` and `total_http_requests=1400`. No retries or concurrency
+reduction are used. Setup is excluded from measured latency, so a pass here
+does NOT prove cold-connection capacity or replace the previous failing runs.
+Three CLI runs passed all 200 workflows, p95 1.337/1.171/1.128s. See
+`HTTP_LOAD_NOTES.md`, `LOAD_FIX_PLAN.md` and `evidence/http-diagnostics/` for all
+outcomes, including experiments that did not resolve the original failure.
+
 ## Evidence and results
 
 - RED commit contains the tests and a deliberate 501 transition scaffold:

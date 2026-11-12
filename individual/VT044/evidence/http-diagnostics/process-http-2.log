@@ -1,0 +1,50 @@
+{
+  "transport": "stdlib http.client; 200 threads; one socket per task; no retries",
+  "concurrent_tasks": 200,
+  "completed_tasks": 200,
+  "successful_tasks": 176,
+  "failed_tasks": 24,
+  "requests": 1056,
+  "expected_requests": 1200,
+  "error_count": 24,
+  "task_p50_seconds": 0.7529255829867907,
+  "task_p95_seconds": 0.9341697079944424,
+  "task_max_seconds": 1.3996679580013733,
+  "request_p95_seconds": 0.27142354199895635,
+  "elapsed_seconds": 1.4071455829835031,
+  "percentile_method": "nearest rank ceil(0.95*n); task clock starts at common barrier release",
+  "server_config": {
+    "started": true,
+    "architecture": "spawned process",
+    "server_pid": 47584,
+    "uvicorn": "0.34.0",
+    "loop_option": "auto",
+    "actual_loop": "uvloop.Loop",
+    "http_protocol": "HttpToolsProtocol",
+    "client_pid": 47577,
+    "connection_start": "cold; included in task latency; no retries or warm-up"
+  },
+  "all_restored": true,
+  "extraction_count": 200,
+  "confirmed_documents": 200,
+  "all_extractions_preserved": true,
+  "all_files_preserved": true,
+  "target_seconds": 5.0,
+  "task_p95_meets_target": true,
+  "correctness_pass": false,
+  "acceptance_pass": false,
+  "environment": {
+    "python": "3.12.3",
+    "os": "Darwin",
+    "machine": "arm64",
+    "cpu": "arm"
+  },
+  "scope": "one local uvicorn server; loopback HTTP; sync worker pool; file SQLite; 200 synthetic owners/documents; no OCR, gateway or browser",
+  "error_sample": [
+    {
+      "task": 74,
+      "exception": "ConnectionResetError",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/nguyencongtri/Documents/SE/bt3-vt044/individual/VT044/load.py\", line 216, in task\n    response = connection.getresponse()\n               ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/http/client.py\", line 1428, in getresponse\n    response.begin()\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/http/client.py\", line 331, in begin\n    version, status, reason = self._read_status()\n                              ^^^^^^^^^^^^^^^^^^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/http/client.py\", line 292, in _read_status\n    line = str(self.fp.readline(_MAXLINE + 1), \"iso-8859-1\")\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/socket.py\", line 707, in readinto\n    return self._sock.recv_into(b)\n           ^^^^^^^^^^^^^^^^^^^^^^^\nConnectionResetError: [Errno 54] Connection reset by peer\n"
+    }
+  ]
+}
