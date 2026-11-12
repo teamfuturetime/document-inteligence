@@ -16,6 +16,7 @@ from docintel.config import ROOT, Settings
 from docintel.domain.models import FIELD_IDS, SCHEMA_VERSION, FixtureView
 from docintel.services.documents import DocumentService, ProductError
 from docintel.services.fixtures import FixtureService
+from docintel.services.notifications import LoggingConfirmationNotifier
 from docintel.services.worker import LocalInferenceWorker
 
 
@@ -25,6 +26,7 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = True) -
     @asynccontextmanager
     async def lifespan(application: FastAPI):
         application.state.documents = DocumentService(config)
+        application.state.confirmation_notifier = LoggingConfirmationNotifier()
         application.state.upload_limiter = CapacityLimiter(config.max_concurrent_uploads)
         application.state.upload_tasks = set()
         worker = None
