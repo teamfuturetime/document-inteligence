@@ -1,11 +1,13 @@
 import pytest
 from fastapi.testclient import TestClient
+from starlette.requests import Request
 from test_product import image_bytes, inference
 
 from docintel.api.app import create_app
+from docintel.api.identity import COOKIE_NAME, check_csrf
 from docintel.config import Settings
 from docintel.security import hash_password
-from docintel.services.documents import DocumentService
+from docintel.services.documents import DocumentService, ProductError
 
 ORIGIN = "http://127.0.0.1:5173"
 PASSWORD = "synthetic-password-123"
@@ -37,6 +39,52 @@ def login(api, username="alpha"):
     )
     assert response.status_code == 200, response.text
     return response.json()
+
+
+def test_cookie_is_http_only_secure_scoped_and_not_readable_from_status(session_api):
+    api, _ = session_api
+    response = api.post(
+        "/api/v1/auth/login",
+        json={"username": "alpha", "password": PASSWORD},
+        headers={"Origin": ORIGIN, "X-Requested-With": "docintel"},
+    )
+    cookie = response.headers["set-cookie"].lower()
+    assert "httponly" in cookie and "secure" in cookie and "samesite=lax" in cookie
+    assert "path=/api/v1" in cookie and "domain=" not in cookie
+    assert api.cookies.get(COOKIE_NAME) not in response.text
+
+
+@pytest.mark.parametrize("csrf", ["", "wrong", "a" * 44])
+def test_missing_or_wrong_csrf_cannot_create_document(session_api, csrf):
+    api, _ = session_api
+    login(api)
+    response = upload(api, csrf)
+    assert response.status_code == 403
+    assert api.get("/api/v1/documents").json()["total"] == 0
+
+
+def test_nonascii_csrf_is_safe_rejection_not_an_internal_error(session_api):
+    api, _ = session_api
+    login(api)
+    principal = api.app.state.auth.session(api.cookies.get(COOKIE_NAME))
+    request = Request(
+        {"type": "http", "app": api.app, "headers": [(b"x-csrf-token", b"\xff" * 43)]}
+    )
+    with pytest.raises(ProductError) as denied:
+        check_csrf(request, principal)
+    assert denied.value.status == 403
+
+
+def test_logout_requires_csrf_and_revokes_cookie_with_matching_path(session_api):
+    api, _ = session_api
+    state = login(api)
+    assert api.post("/api/v1/auth/logout").status_code == 403
+    assert api.get("/api/v1/documents").status_code == 200
+    response = api.post("/api/v1/auth/logout", headers={"X-CSRF-Token": state["csrf_token"]})
+    assert response.status_code == 204
+    assert "Max-Age=0" in response.headers["set-cookie"]
+    assert "Path=/api/v1" in response.headers["set-cookie"]
+    assert api.get("/api/v1/documents").status_code == 401
 
 
 def upload(api, csrf):
