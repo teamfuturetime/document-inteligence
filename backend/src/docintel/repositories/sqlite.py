@@ -4,6 +4,8 @@ from datetime import UTC, datetime
 from importlib.resources import files
 from pathlib import Path
 
+from docintel.repositories.schema import SCHEMA_VERSION, upgrade_connection, version
+
 
 def now() -> str:
     return datetime.now(UTC).isoformat()
@@ -24,27 +26,29 @@ class DocumentRepository:
     def initialize(self):
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with closing(self.connect()) as connection:
-            exists = connection.execute(
-                "SELECT 1 FROM sqlite_master WHERE type='table' AND name='schema_migrations'"
-            ).fetchone()
-            if (
-                exists
-                and (
-                    connection.execute("SELECT max(version) FROM schema_migrations").fetchone()[0]
-                    or 0
-                )
-                > 1
-            ):
+            current = version(connection)
+            if current > SCHEMA_VERSION:
                 raise RuntimeError("Database schema is newer than this application")
             connection.execute("PRAGMA journal_mode=WAL")
-            script = (
-                files("docintel")
-                .joinpath("repositories/migrations/001_documents.sql")
-                .read_text(encoding="utf-8")
-            )
-            connection.executescript(script)
-            connection.execute("INSERT OR IGNORE INTO schema_migrations VALUES(1,?)", (now(),))
-            connection.commit()
+            if current == 0:
+                existing = connection.execute(
+                    "SELECT 1 FROM sqlite_master WHERE name='documents'"
+                ).fetchone()
+                if existing and connection.execute("SELECT count(*) FROM documents").fetchone()[0]:
+                    raise RuntimeError("Unversioned populated database requires manual recovery")
+                script = (
+                    files("docintel")
+                    .joinpath("repositories/migrations/001_documents.sql")
+                    .read_text()
+                )
+                connection.executescript(script)
+                connection.execute("INSERT OR IGNORE INTO schema_migrations VALUES(1,?)", (now(),))
+                connection.commit()
+            if version(connection) == 1:
+                if connection.execute("SELECT count(*) FROM documents").fetchone()[0]:
+                    raise RuntimeError("Populated schema 1 requires offline backup and migration")
+                upgrade_connection(connection)
+        self.path.chmod(0o600)
 
     @contextmanager
     def transaction(self, *, write: bool = False):

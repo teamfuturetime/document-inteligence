@@ -1,9 +1,16 @@
+import pytest
 from fastapi.testclient import TestClient
 
 from docintel import __version__
 from docintel.adapters.fixture import FixtureExtractionAdapter, FixtureOCRAdapter
 from docintel.api.app import create_app
 from docintel.config import ROOT, Settings
+
+
+@pytest.fixture(autouse=True)
+def isolated_runtime(tmp_path, monkeypatch):
+    # API tests must never migrate or write the user's default runtime database.
+    monkeypatch.setenv("DOCINTEL_RUNTIME_DIR", str(tmp_path))
 
 
 def client(mode="unconfigured"):

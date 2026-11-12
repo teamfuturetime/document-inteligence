@@ -246,7 +246,10 @@ class DocumentService:
                     return self.detail(replay["document_id"])
                 self.check_capacity(connection)
                 connection.execute(
-                    "INSERT INTO documents VALUES(?,?,?,?,?,?,?,?,?,?)",
+                    "INSERT INTO documents(document_id,document_type,filename,data_origin,"
+                    "input_sha256,image_width,image_height,created_at,"
+                    "latest_run_id,idempotency_key) "
+                    "VALUES(?,?,?,?,?,?,?,?,?,?)",
                     (
                         document_id,
                         document_type,

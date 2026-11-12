@@ -4,6 +4,7 @@ from importlib.resources import files
 import pytest
 
 from docintel.repositories import schema
+from docintel.repositories.sqlite import DocumentRepository
 
 
 def legacy_database(path):
@@ -86,3 +87,15 @@ def test_existing_backup_is_never_overwritten(tmp_path):
     with pytest.raises(FileExistsError):
         schema.upgrade_database(database, backup)
     assert backup.read_bytes() == b"preserve"
+
+
+def test_empty_repository_bootstraps_owner_schema_and_reopens_safely(tmp_path):
+    repository = DocumentRepository(tmp_path / "fresh.sqlite3")
+    repository.initialize()
+    repository.initialize()
+    with repository.transaction() as connection:
+        assert schema.version(connection) == 2
+        assert (
+            connection.execute("SELECT user_id,is_active FROM users").fetchone()["user_id"]
+            == "local"
+        )

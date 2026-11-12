@@ -458,6 +458,7 @@ def test_worker_lock_and_newer_database_schema_rejected(tmp_path):
     repository = DocumentRepository(tmp_path / "future.sqlite3")
     repository.initialize()
     with repository.transaction(write=True) as connection:
-        connection.execute("INSERT INTO schema_migrations VALUES(2,'future')")
+        # Schema 2 is now supported; schema 3 is still a future/unsupported database.
+        connection.execute("INSERT INTO schema_migrations VALUES(3,'future')")
     with pytest.raises(RuntimeError, match="newer"):
         repository.initialize()
