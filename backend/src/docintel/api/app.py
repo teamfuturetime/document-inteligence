@@ -1,3 +1,4 @@
+import asyncio
 from contextlib import asynccontextmanager
 from uuid import uuid4
 
@@ -31,6 +32,9 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = True) -
             worker = LocalInferenceWorker(application.state.documents)
             worker.start()
         yield
+        # A complete upload may still be committing after its client went away.
+        if application.state.upload_tasks:
+            await asyncio.gather(*application.state.upload_tasks, return_exceptions=True)
         if worker:
             worker.close()
 

@@ -162,3 +162,25 @@ def test_cancellation_during_persistence_keeps_slot_until_worker_finishes(tmp_pa
             assert service.list_documents(20, 0).total == 1
 
     asyncio.run(run())
+
+
+def test_shutdown_waits_for_inflight_upload(tmp_path, monkeypatch):
+    app = app_for(tmp_path, monkeypatch)
+
+    async def run():
+        context = app.router.lifespan_context(app)
+        await context.__aenter__()
+        release = asyncio.Event()
+        task = asyncio.create_task(release.wait())
+        app.state.upload_tasks.add(task)
+        task.add_done_callback(app.state.upload_tasks.discard)
+        shutdown = asyncio.create_task(context.__aexit__(None, None, None))
+        try:
+            await asyncio.sleep(0)
+            assert not shutdown.done()
+        finally:
+            release.set()
+            await asyncio.wait_for(shutdown, 2)
+        assert task.done()
+
+    asyncio.run(run())
