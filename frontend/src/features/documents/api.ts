@@ -33,8 +33,14 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
   return response.json() as Promise<T>;
 }
 
-export function jsonRequest<T>(path: string, method: string, body: unknown): Promise<T> {
+export function jsonRequest<T>(
+  path: string,
+  method: string,
+  body: unknown,
+  signal?: AbortSignal,
+): Promise<T> {
   return request(path, {
+    signal,
     method,
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),

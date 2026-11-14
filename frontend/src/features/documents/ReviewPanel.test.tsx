@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ReviewPanel } from './ReviewPanel';
 import type { DocumentDetail } from './api';
@@ -52,7 +52,169 @@ function document(revision = 1): DocumentDetail {
   };
 }
 
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => {
+  vi.unstubAllGlobals();
+  vi.useRealTimers();
+  sessionStorage.clear();
+});
+
+describe('Autosave ordering', () => {
+  function mount() {
+    return render(
+      <ReviewPanel
+        document={document()}
+        onUpdated={vi.fn()}
+        onDirtyChange={vi.fn()}
+        onFieldChange={vi.fn()}
+      />,
+    );
+  }
+  function edit(value: string) {
+    fireEvent.change(screen.getByLabelText('Đơn vị bán hàng *'), { target: { value } });
+  }
+  it.each([401, 403, 422, 500])(
+    'retains draft and stops automatic retries after HTTP %s',
+    async (status) => {
+      vi.useFakeTimers();
+      const fetchMock = vi.fn().mockResolvedValue({
+        ok: false,
+        status,
+        json: async () => ({ error: { code: 'REJECTED', message: 'Rejected' } }),
+      });
+      vi.stubGlobal('fetch', fetchMock);
+      mount();
+      edit('Keep me');
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(800);
+      });
+      expect(screen.getByRole('alert')).toHaveTextContent('Rejected');
+      edit('Keep me too');
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(3000);
+      });
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      expect(screen.getByLabelText('Đơn vị bán hàng *')).toHaveValue('Keep me too');
+    },
+  );
+  it('retains an ambiguous network failure and allows one explicit retry', async () => {
+    vi.useFakeTimers();
+    const fetchMock = vi
+      .fn()
+      .mockRejectedValueOnce(new TypeError('Network failed'))
+      .mockResolvedValue({ ok: true, json: async () => document(2) });
+    vi.stubGlobal('fetch', fetchMock);
+    mount();
+    edit('Retry');
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(800);
+    });
+    expect(screen.getByLabelText('Đơn vị bán hàng *')).toHaveValue('Retry');
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Lưu nháp' }));
+    });
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(3000);
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(JSON.parse(fetchMock.mock.calls[1][1].body).expected_revision).toBe(1);
+  });
+  it('does not autosave edits to a confirmed review until explicit manual save', async () => {
+    vi.useFakeTimers();
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => document(2) });
+    vi.stubGlobal('fetch', fetchMock);
+    const confirmed = document();
+    confirmed.review!.review_status = 'confirmed';
+    render(
+      <ReviewPanel
+        document={confirmed}
+        onUpdated={vi.fn()}
+        onDirtyChange={vi.fn()}
+        onFieldChange={vi.fn()}
+      />,
+    );
+    edit('Reopened');
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(3000);
+    });
+    expect(fetchMock).not.toHaveBeenCalled();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Lưu nháp' }));
+    });
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body).expected_status).toBe('confirmed');
+  });
+  it('debounces edits and does not create a save loop', async () => {
+    vi.useFakeTimers();
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => document(2) });
+    vi.stubGlobal('fetch', fetchMock);
+    mount();
+    edit('A');
+    edit('AB');
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(799);
+    });
+    expect(fetchMock).not.toHaveBeenCalled();
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1);
+    });
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body).fields.seller_name.reviewed_value).toBe(
+      'AB',
+    );
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(3000);
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+  it('keeps typing enabled during save and serializes the newer snapshot after ACK', async () => {
+    vi.useFakeTimers();
+    let resolve!: (value: unknown) => void;
+    const fetchMock = vi
+      .fn()
+      .mockImplementationOnce(
+        () =>
+          new Promise((r) => {
+            resolve = r;
+          }),
+      )
+      .mockResolvedValue({ ok: true, json: async () => document(3) });
+    vi.stubGlobal('fetch', fetchMock);
+    mount();
+    edit('A');
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(800);
+    });
+    expect(screen.getByLabelText('Đơn vị bán hàng *')).toBeEnabled();
+    edit('AB');
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1600);
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    await act(async () => {
+      resolve({ ok: true, json: async () => document(2) });
+    });
+    expect(screen.getByLabelText('Đơn vị bán hàng *')).toHaveValue('AB');
+    expect(screen.getByRole('button', { name: 'Xác nhận bản lưu' })).toBeDisabled();
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(800);
+    });
+    const body = JSON.parse(fetchMock.mock.calls[1][1].body);
+    expect(body.expected_revision).toBe(2);
+    expect(body.fields.seller_name.reviewed_value).toBe('AB');
+  });
+  it('recovers edits after unmount without sending a background write', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('fetch', vi.fn());
+    const view = mount();
+    edit('Draft');
+    view.unmount();
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1600);
+    });
+    expect(fetch).not.toHaveBeenCalled();
+    mount();
+    expect(screen.getByLabelText('Đơn vị bán hàng *')).toHaveValue('Draft');
+    expect(screen.getByRole('button', { name: 'Xác nhận bản lưu' })).toBeDisabled();
+  });
+});
 
 describe('Review product data', () => {
   it('sends explicit null and disables confirm until edits are saved', async () => {
