@@ -852,6 +852,8 @@ export interface components {
         ReviewRequest: {
             /** Expected Revision */
             expected_revision: number;
+            /** Expected Status */
+            expected_status?: ("draft" | "confirmed") | null;
             /** Fields */
             fields: {
                 [key: string]: components["schemas"]["ProductReviewedField"];

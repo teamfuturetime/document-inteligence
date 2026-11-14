@@ -126,6 +126,7 @@ class ProductRevision(Contract):
 class ReviewRequest(Contract):
     run_id: str
     expected_revision: Annotated[int, Field(ge=1)]
+    expected_status: Literal["draft", "confirmed"] | None = None
     fields: dict[ProductFieldId, ProductReviewedField]
 
 

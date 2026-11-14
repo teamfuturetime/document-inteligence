@@ -39,6 +39,22 @@
       "title": "Expected Revision",
       "type": "integer"
     },
+    "expected_status": {
+      "anyOf": [
+        {
+          "enum": [
+            "draft",
+            "confirmed"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Expected Status"
+    },
     "fields": {
       "additionalProperties": {
         "$ref": "#/$defs/ProductReviewedField"

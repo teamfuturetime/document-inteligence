@@ -219,6 +219,31 @@ def test_concurrent_saves_compare_and_swap(product):
         assert sorted(pool.map(save, ("A", "B"))) == [200, 409]
 
 
+def test_autosave_cannot_reopen_after_other_tab_confirms(product):
+    api, _ = product
+    document = processed(api)
+    path = "/api/v1/documents/" + document["document_id"]
+    assert api.post(path + "/confirm", json=revision_request(document)).status_code == 200
+    body = {
+        **revision_request(document),
+        "expected_status": "draft",
+        "fields": {"seller_name": {"is_reviewed": True, "reviewed_value": "late autosave"}},
+    }
+    rejected = api.put(path + "/review", json=body)
+    assert rejected.status_code == 409
+    assert rejected.json()["error"]["code"] == "REVIEW_STATE_CONFLICT"
+    assert api.get(path).json()["review"]["review_status"] == "confirmed"
+    exported = api.get(path + "/export", params={"run_id": body["run_id"], "revision": 1})
+    assert exported.status_code == 200
+    assert exported.json()["data"]["seller_name"] == INVOICE["seller_name"]
+    body["expected_status"] = "confirmed"
+    reopened = api.put(path + "/review", json=body)
+    assert reopened.status_code == 200
+    assert reopened.json()["review"]["review_status"] == "draft"
+    assert reopened.json()["review"]["revision"] == 2
+    assert api.put(path + "/review", json=body).status_code == 409
+
+
 def test_reprocess_keeps_previous_machine_and_review(product):
     api, _ = product
     old = processed(api)
