@@ -1,6 +1,6 @@
 [project]
 name = "docintel"
-version = "0.3.0"
+version = "0.3.1"
 description = "Document Intelligence AI-02: real OCR, persisted review and verified export"
 requires-python = ">=3.14,<3.15"
 dependencies = [

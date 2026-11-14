@@ -355,10 +355,7 @@ class DocumentService:
                 ),
             )
             allowed = {field.field_id for field in DEFINITIONS[document["document_type"]]}
-            if (
-                request.expected_status is not None
-                and row["review_status"] != request.expected_status
-            ):
+            if row["review_status"] != (request.expected_status or "draft"):
                 raise ProductError(
                     409,
                     "REVIEW_STATE_CONFLICT",

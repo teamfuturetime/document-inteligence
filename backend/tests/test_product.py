@@ -190,6 +190,7 @@ def test_clear_null_and_revision_conflict(product):
             path + "/review",
             json={
                 **revision_request(corrected),
+                "expected_status": "confirmed",
                 "fields": {
                     "total_amount": {"is_reviewed": True, "reviewed_value": "0"},
                 },
@@ -486,3 +487,26 @@ def test_worker_lock_and_newer_database_schema_rejected(tmp_path):
         connection.execute("INSERT INTO schema_migrations VALUES(2,'future')")
     with pytest.raises(RuntimeError, match="newer"):
         repository.initialize()
+
+
+@pytest.mark.parametrize("status_field", [{}, {"expected_status": None}])
+def test_legacy_status_cannot_reopen_confirmed(product, status_field):
+    api, _ = product
+    document = processed(api)
+    path = "/api/v1/documents/" + document["document_id"]
+    assert api.post(path + "/confirm", json=revision_request(document)).status_code == 200
+    result = api.put(
+        path + "/review",
+        json={
+            **revision_request(document),
+            **status_field,
+            "fields": {"seller_name": {"is_reviewed": True, "reviewed_value": "late legacy write"}},
+        },
+    )
+    assert result.status_code == 409
+    assert api.get(path).json()["review"]["review_status"] == "confirmed"
+    exported = api.get(
+        path + "/export", params={"run_id": document["run"]["run_id"], "revision": 1}
+    )
+    assert exported.status_code == 200
+    assert exported.json()["data"] == INVOICE

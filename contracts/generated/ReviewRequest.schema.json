@@ -53,6 +53,7 @@
         }
       ],
       "default": null,
+      "description": "Omitted/null means draft. Reopening a confirmed review requires confirmed explicitly.",
       "title": "Expected Status"
     },
     "fields": {
