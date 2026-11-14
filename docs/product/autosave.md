@@ -28,7 +28,7 @@ the machine prediction; it does not modify OCR or extraction.
 {"run_id":"run-id","expected_revision":2,"expected_status":"draft","fields":{"seller_name":{"is_reviewed":true,"reviewed_value":null}}}
 ```
 
-Response remains `DocumentDetail`. App API version is 0.3.0; invoice/export
+Response remains `DocumentDetail`. App API version is 0.3.1; invoice/export
 schema 1.0.0 is unchanged. Generated OpenAPI, ReviewRequest schema and TS types
 come from backend models. No database migration is required; rollback reverts
 the code and generated contracts, without rewriting revisions.
@@ -41,11 +41,12 @@ updates the same revision in place. A delayed draft autosave must not reopen
 a confirmed revision. Explicit manual save from a confirmed view supplies
 `expected_status=confirmed`, creating the next draft revision.
 
-For compatibility, omitted/null `expected_status` preserves the legacy manual
-save contract. Old API clients therefore do not receive the additional status
-guard. All writes from this UI supply status. Trí should review this additive
-contract and decide whether a future API version must require status for every
-external client; this patch does not claim to enforce that on legacy clients.
+Omitted/null `expected_status` now means **draft**, preserving legacy draft
+saves while refusing writes to confirmed records. Explicit `confirmed` remains
+required to reopen, alongside the latest revision. A rejected legacy write leaves
+both the confirmed revision and export unchanged. This intentionally narrows the
+old implicit-reopen behavior; old clients must opt in to reopen confirmed records.
+No database migration is needed. Generated request descriptions document this rule.
 
 ## State and recovery
 
@@ -75,11 +76,13 @@ cleanup before using this mechanism.
 
 Draft recovery is valid for 24 hours; expired entries for the opened document/run
 are removed when recovery runs (there is no background physical deletion of
-unopened documents). ACK/discard removes this tab's entry. A recovered source
-entry is removed only if its serialized value has not changed, avoiding deletion
-of another tab's subsequent edits. Other tabs have separate entries. Recovery
-selects the newest available draft for the run; it does not merge competing
-browser drafts. All recovery is paused until explicit server comparison.
+unopened documents). ACK/discard removes only the **current editor's** entry.
+Recovery never transfers ownership of a source key: even an unchanged recovered
+source can belong to another live editor. Source entries are left for their owner
+or expiry cleanup, so an old draft may appear again after reload until it expires.
+The user must compare it with the server; it is never automatically replayed.
+Recovery selects the newest available draft for the run; it does not merge
+competing browser drafts. All recovery is paused until explicit server comparison.
 
 Reload and normal browser-process restart with the same profile are tested.
 Browser data clearing, incognito disposal, storage denial/quota and OS/disk loss
@@ -250,3 +253,37 @@ native upload/OCR/browser regression awaits Tesseract+models, and independent
 review by the assigned teammates remains outstanding. A Draft PR using Refs #7
 can be reviewed with these explicit blockers; it is not ready to merge/Closes #7.
 No push, merge, PR, or GitHub message was performed.
+
+## PR #23 review fixes (supersedes earlier pending conclusions)
+
+Reviewer reproduced three findings at 1f43e11. All three now have runtime fixes:
+
+| Finding | Fix and regression evidence |
+| --- | --- |
+| P1 Legacy omitted/null status can reopen Confirm | Apply the previously proposed guard to DocumentService inside BEGIN IMMEDIATE. Both missing and null status return 409 after confirm; the persisted status, original data and export stay confirmed/200. Explicit reopen remains tested. API 0.3.1 and generated contracts updated. |
+| P2 Tab B discard deletes A's source draft | Remove source-key deletion on ACK/discard. Component regression failed before the fix. Browser test covers ordinary discard, server-comparison discard, closing A, and recovery by a new tab. |
+| P2 Windows-only browser launcher | Replace the hardcoded executable with `uv run --project backend --locked python backend/tests/browser_autosave_server.py`. Uses the repository's pinned uv environment on Windows/macOS/Linux. Add this suite to the Ubuntu Browser E2E job, under the existing Product checks gate. |
+
+The old reviewer-only proposal file was removed after applying it. Its historical
+content remains at commit 1f43e11; it is no longer a pending patch to apply.
+Local commits for code fixes: a567ce1 (status CAS), eb23c08 (draft ownership),
+plus the cross-platform launcher/CI commit in this PR. The earlier sections record
+historical verification and blockers; this section describes current disposition.
+
+Final local verification on Windows, same pinned dependencies as above:
+
+- Backend/pipeline: **134 passed**, 0 failed/skipped; focused final product tests
+  **16 passed** after adding export-preservation assertions.
+- Frontend: **24 passed**, 0 failed/skipped; typecheck, lint, format, build and
+  generated contracts check PASS.
+- Autosave browser suite using the uv launcher: **11 passed in 46.4s**, no retries,
+  failures or skips. Uses real UI/HTTP/SQLite with explicit synthetic OCR doubles.
+- Ruff lint/format, 25 backend generated contracts and repository/docs checks PASS.
+- macOS execution is not available on this Windows machine; new Ubuntu CI provides
+  Linux coverage after push. Do not label macOS as locally tested.
+
+Reviewer reported 14 native OCR checks and all six CI checks passed at 1f43e11.
+That is reviewer evidence for the old head, not a native run on this Windows host
+or verification of the new commits. This machine still lacks native OCR prerequisites;
+no pipeline changes were made. Updated CI and independent re-review must be checked
+on the new head before merge. Keep PR #23 Draft; no merge or issue closure.
