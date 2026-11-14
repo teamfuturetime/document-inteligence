@@ -56,9 +56,72 @@ afterEach(() => {
   vi.unstubAllGlobals();
   vi.useRealTimers();
   sessionStorage.clear();
+  localStorage.clear();
 });
 
 describe('Autosave ordering', () => {
+  it('migrates the previous session draft without applying it to the server', () => {
+    sessionStorage.setItem(
+      'field-review:doc:run',
+      JSON.stringify({
+        at: Date.now(),
+        fields: { seller_name: { is_reviewed: true, reviewed_value: 'Previous session' } },
+      }),
+    );
+    render(
+      <ReviewPanel
+        document={document()}
+        onUpdated={vi.fn()}
+        onDirtyChange={vi.fn()}
+        onFieldChange={vi.fn()}
+      />,
+    );
+    expect(screen.getByLabelText('Đơn vị bán hàng *')).toHaveValue('Previous session');
+    expect(screen.getByRole('alert')).toHaveTextContent('RECOVERED_DRAFT');
+    expect(localStorage.getItem('field-review:doc:run:legacy')).not.toBeNull();
+  });
+  it('ignores expired drafts and never overwrites a newer server from recovery', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('fetch', vi.fn());
+    localStorage.setItem(
+      'field-review:doc:run:old',
+      JSON.stringify({
+        at: Date.now() - 86_400_001,
+        fields: { seller_name: { is_reviewed: true, reviewed_value: 'Expired' } },
+      }),
+    );
+    const view = render(
+      <ReviewPanel
+        document={document(5)}
+        onUpdated={vi.fn()}
+        onDirtyChange={vi.fn()}
+        onFieldChange={vi.fn()}
+      />,
+    );
+    expect(screen.getByLabelText('Đơn vị bán hàng *')).toHaveValue('Công ty Mẫu');
+    view.unmount();
+    localStorage.setItem(
+      'field-review:doc:run:old',
+      JSON.stringify({
+        at: Date.now(),
+        fields: { seller_name: { is_reviewed: true, reviewed_value: 'Stale' } },
+      }),
+    );
+    render(
+      <ReviewPanel
+        document={document(5)}
+        onUpdated={vi.fn()}
+        onDirtyChange={vi.fn()}
+        onFieldChange={vi.fn()}
+      />,
+    );
+    expect(screen.getByLabelText('Đơn vị bán hàng *')).toHaveValue('Stale');
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(3000);
+    });
+    expect(fetch).not.toHaveBeenCalled();
+    expect(screen.getByRole('alert')).toHaveTextContent('RECOVERED_DRAFT');
+  });
   function mount() {
     return render(
       <ReviewPanel

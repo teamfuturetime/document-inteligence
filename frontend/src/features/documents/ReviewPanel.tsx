@@ -4,13 +4,48 @@ import type { DocumentDetail, ProductFieldId, ReviewRequest } from './api';
 
 type Changes = ReviewRequest['fields'];
 
-// Same-tab recovery only, scoped to this local single-user product and run.
-function recover(document: DocumentDetail): Changes {
+// Bounded recovery of changed review fields; never restores server authority.
+function draftPrefix(document: DocumentDetail) {
+  return `field-review:${document.document_id}:${document.run.run_id}:`;
+}
+function tabId() {
+  let id = sessionStorage.getItem('field-review-tab');
+  if (!id) {
+    id = crypto.randomUUID();
+    sessionStorage.setItem('field-review-tab', id);
+  }
+  return id;
+}
+function recover(
+  document: DocumentDetail,
+  source: { current: { key: string; raw: string } | null },
+): Changes {
   try {
-    const value = JSON.parse(
-      sessionStorage.getItem(`field-review:${document.document_id}:${document.run.run_id}`) ??
-        'null',
-    );
+    const prefix = draftPrefix(document);
+    const legacyKey = prefix.slice(0, -1);
+    const legacy = sessionStorage.getItem(legacyKey);
+    if (legacy) {
+      // Keep the old entry unless durable storage has accepted the copy.
+      localStorage.setItem(prefix + 'legacy', legacy);
+      sessionStorage.removeItem(legacyKey);
+    }
+    const candidates = Object.keys(localStorage).filter((key) => key.startsWith(prefix));
+    const values = candidates.map((key) => {
+      try {
+        const raw = localStorage.getItem(key) ?? 'null';
+        const parsed = JSON.parse(raw);
+        if (!parsed || !Number.isFinite(parsed.at) || Date.now() - parsed.at > 86_400_000) {
+          localStorage.removeItem(key);
+          return null;
+        }
+        return { ...parsed, key, raw };
+      } catch {
+        return null;
+      }
+    });
+    const value = values
+      .filter((item) => item && Number.isFinite(item.at) && Date.now() - item.at <= 86_400_000)
+      .sort((a, b) => b.at - a.at)[0];
     if (
       !value ||
       !Number.isFinite(value.at) ||
@@ -19,6 +54,7 @@ function recover(document: DocumentDetail): Changes {
       typeof value.fields !== 'object'
     )
       return {};
+    source.current = { key: value.key, raw: value.raw };
     const result: Changes = {};
     for (const definition of document.definitions) {
       const field = value.fields[definition.field_id];
@@ -47,22 +83,36 @@ export function ReviewPanel({
   onFieldChange: (value: string) => void;
 }) {
   const [base, setBase] = useState(document);
-  const [changes, updateChanges] = useState<Changes>(() => recover(document));
+  const recoverySource = useRef<{ key: string; raw: string } | null>(null);
+  const [changes, updateChanges] = useState<Changes>(() => recover(document, recoverySource));
   const changesRef = useRef(changes);
   const baseRef = useRef(base);
   const mounted = useRef(true);
   const inFlight = useRef(false);
   const [saving, setSaving] = useState(false);
   const [storageError, setStorageError] = useState(false);
-  const storageKey = `field-review:${document.document_id}:${document.run.run_id}`;
+  const [storageKey] = useState(() => {
+    try {
+      return draftPrefix(document) + tabId();
+    } catch {
+      return null;
+    }
+  });
   function setChanges(next: Changes | ((old: Changes) => Changes)) {
     const value = typeof next === 'function' ? next(changesRef.current) : next;
     changesRef.current = value;
     updateChanges(value);
     try {
+      if (!storageKey) throw new Error('Storage unavailable');
       if (Object.keys(value).length)
-        sessionStorage.setItem(storageKey, JSON.stringify({ at: Date.now(), fields: value }));
-      else sessionStorage.removeItem(storageKey);
+        localStorage.setItem(storageKey, JSON.stringify({ at: Date.now(), fields: value }));
+      else {
+        localStorage.removeItem(storageKey);
+        const source = recoverySource.current;
+        if (source && localStorage.getItem(source.key) === source.raw)
+          localStorage.removeItem(source.key);
+        recoverySource.current = null;
+      }
       setStorageError(false);
     } catch {
       setStorageError(true);
