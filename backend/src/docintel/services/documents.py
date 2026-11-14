@@ -355,6 +355,12 @@ class DocumentService:
                 ),
             )
             allowed = {field.field_id for field in DEFINITIONS[document["document_type"]]}
+            if row["review_status"] != (request.expected_status or "draft"):
+                raise ProductError(
+                    409,
+                    "REVIEW_STATE_CONFLICT",
+                    "Trạng thái đã thay đổi; hãy đối chiếu trước khi lưu.",
+                )
             if set(request.fields) - allowed:
                 raise ProductError(422, "INVALID_FIELD", "Trường không thuộc schema tài liệu.")
             previous = json.loads(row["fields_json"])

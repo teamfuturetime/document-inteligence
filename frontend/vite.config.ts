@@ -9,7 +9,7 @@ export default defineConfig({
     proxy: { '/api': { target: process.env.API_PROXY_TARGET ?? 'http://127.0.0.1:8000' } },
   },
   test: {
-    exclude: [...configDefaults.exclude, 'e2e/**'],
+    exclude: [...configDefaults.exclude, 'e2e/**', 'autosave-e2e/**'],
     environment: 'jsdom',
     setupFiles: ['./src/test-setup.ts'],
     clearMocks: true,

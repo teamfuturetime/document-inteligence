@@ -1,8 +1,63 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { APIError, downloadExport, jsonRequest, request, statusLabels } from './api';
 import type { DocumentDetail, ProductFieldId, ReviewRequest } from './api';
 
 type Changes = ReviewRequest['fields'];
+
+// Bounded recovery of changed review fields; never restores server authority.
+function draftPrefix(document: DocumentDetail) {
+  return `field-review:${document.document_id}:${document.run.run_id}:`;
+}
+function recover(document: DocumentDetail): Changes {
+  try {
+    const prefix = draftPrefix(document);
+    const legacyKey = prefix.slice(0, -1);
+    const legacy = sessionStorage.getItem(legacyKey);
+    if (legacy) {
+      // Keep the old entry unless durable storage has accepted the copy.
+      localStorage.setItem(prefix + 'legacy', legacy);
+      sessionStorage.removeItem(legacyKey);
+    }
+    const candidates = Object.keys(localStorage).filter((key) => key.startsWith(prefix));
+    const values = candidates.map((key) => {
+      try {
+        const raw = localStorage.getItem(key) ?? 'null';
+        const parsed = JSON.parse(raw);
+        if (!parsed || !Number.isFinite(parsed.at) || Date.now() - parsed.at > 86_400_000) {
+          localStorage.removeItem(key);
+          return null;
+        }
+        return { ...parsed, key, raw };
+      } catch {
+        return null;
+      }
+    });
+    const value = values
+      .filter((item) => item && Number.isFinite(item.at) && Date.now() - item.at <= 86_400_000)
+      .sort((a, b) => b.at - a.at)[0];
+    if (
+      !value ||
+      !Number.isFinite(value.at) ||
+      Date.now() - value.at > 86_400_000 ||
+      !value.fields ||
+      typeof value.fields !== 'object'
+    )
+      return {};
+    const result: Changes = {};
+    for (const definition of document.definitions) {
+      const field = value.fields[definition.field_id];
+      if (
+        field &&
+        typeof field.is_reviewed === 'boolean' &&
+        (field.reviewed_value === null || typeof field.reviewed_value === 'string')
+      )
+        result[definition.field_id] = field;
+    }
+    return result;
+  } catch {
+    return {};
+  }
+}
 
 export function ReviewPanel({
   document,
@@ -16,17 +71,66 @@ export function ReviewPanel({
   onFieldChange: (value: string) => void;
 }) {
   const [base, setBase] = useState(document);
-  const [changes, setChanges] = useState<Changes>({});
+  const [changes, updateChanges] = useState<Changes>(() => recover(document));
+  const changesRef = useRef(changes);
+  const baseRef = useRef(base);
+  const mounted = useRef(true);
+  const inFlight = useRef(false);
+  const [saving, setSaving] = useState(false);
+  const [storageError, setStorageError] = useState(false);
+  const [storageKey] = useState(() => {
+    try {
+      // sessionStorage is cloned by window.open/duplicate-tab. Each mounted
+      // editor needs its own key, including when its opener has pending edits.
+      return draftPrefix(document) + crypto.randomUUID();
+    } catch {
+      return null;
+    }
+  });
+  function setChanges(next: Changes | ((old: Changes) => Changes)) {
+    const value = typeof next === 'function' ? next(changesRef.current) : next;
+    changesRef.current = value;
+    updateChanges(value);
+    try {
+      if (!storageKey) throw new Error('Storage unavailable');
+      if (Object.keys(value).length)
+        localStorage.setItem(storageKey, JSON.stringify({ at: Date.now(), fields: value }));
+      else {
+        localStorage.removeItem(storageKey);
+        // Recovery never transfers ownership of another editor's key.
+      }
+      setStorageError(false);
+    } catch {
+      setStorageError(true);
+    }
+  }
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<Error | null>(() =>
+    Object.keys(changes).length
+      ? new APIError(
+          409,
+          'RECOVERED_DRAFT',
+          'Đã khôi phục bản nháp. Hãy đối chiếu máy chủ trước khi lưu.',
+        )
+      : null,
+  );
   const [conflict, setConflict] = useState<DocumentDetail | null>(null);
   useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+  useEffect(() => {
+    if (document === baseRef.current) return;
+    // Parent refreshes must never discard local edits or race a save ACK.
+    if (inFlight.current || Object.keys(changesRef.current).length) return;
+    baseRef.current = document;
     setBase(document);
-    setChanges({});
     setConflict(null);
   }, [document]);
-  const dirty = Object.keys(changes).length > 0;
+  const dirty = Object.keys(changes).length > 0 || saving;
   useEffect(() => {
     onDirtyChange(dirty);
   }, [dirty, onDirtyChange]);
@@ -40,6 +144,22 @@ export function ReviewPanel({
   }, [dirty]);
   const review = base.review;
   const editable = base.is_latest_run && !!review && !busy;
+  useEffect(() => {
+    if (
+      !dirty ||
+      saving ||
+      busy ||
+      error ||
+      conflict ||
+      !base.is_latest_run ||
+      base.review?.review_status !== 'draft'
+    )
+      return;
+    const timer = setTimeout(() => {
+      void save();
+    }, 800);
+    return () => clearTimeout(timer);
+  });
   const values = review?.effective_data ?? {};
   const issues = review?.validation_issues ?? [];
   function valueOf(key: ProductFieldId): string {
@@ -54,7 +174,7 @@ export function ReviewPanel({
   function change(key: ProductFieldId, value: string | null, reviewed = true) {
     setChanges((old) => ({ ...old, [key]: { is_reviewed: reviewed, reviewed_value: value } }));
     setMessage('Có thay đổi chưa lưu.');
-    setError(null);
+    // Failed/ambiguous requests require explicit retry; 409 requires comparison.
   }
   async function act(operation: () => Promise<void>) {
     setBusy(true);
@@ -69,21 +189,51 @@ export function ReviewPanel({
     }
   }
   async function save() {
-    if (!review) return;
-    await act(async () => {
+    if (
+      !review ||
+      inFlight.current ||
+      busy ||
+      !editable ||
+      conflict ||
+      !Object.keys(changesRef.current).length ||
+      (error instanceof APIError && error.status === 409)
+    )
+      return;
+    const snapshot = changesRef.current;
+    inFlight.current = true;
+    setSaving(true);
+    setError(null);
+    try {
       const result = await jsonRequest<DocumentDetail>(
         `/documents/${base.document_id}/review`,
         'PUT',
         {
           run_id: base.run.run_id,
           expected_revision: review.revision,
-          fields: changes,
+          expected_status: review.review_status,
+          fields: snapshot,
         },
+        AbortSignal.timeout(15_000),
+      );
+      if (!mounted.current) return;
+      baseRef.current = result;
+      setBase(result);
+      setChanges(
+        (latest) =>
+          Object.fromEntries(
+            Object.entries(latest).filter(
+              ([key, value]) => value !== snapshot[key as ProductFieldId],
+            ),
+          ) as Changes,
       );
       onUpdated(result);
-      setChanges({});
       setMessage('Đã lưu nháp trên máy chủ.');
-    });
+    } catch (reason) {
+      if (mounted.current) setError(reason as Error);
+    } finally {
+      inFlight.current = false;
+      if (mounted.current) setSaving(false);
+    }
   }
   return (
     <section className="review-panel" aria-label="Kiểm tra và sửa kết quả">
@@ -130,6 +280,15 @@ export function ReviewPanel({
           )}
         </div>
       )}
+      {storageError && (
+        <p role="alert">
+          Không thể giữ bản nháp trong trình duyệt. Hãy lưu hoặc sao chép chỉnh sửa trước khi rời
+          trang.
+        </p>
+      )}
+      {review?.review_status === 'confirmed' && (
+        <p>Bản đã xác nhận không tự động lưu. Chỉnh sửa rồi bấm Lưu nháp để mở lại review.</p>
+      )}
       {conflict && (
         <div className="conflict-box">
           <h3>Bản trên máy chủ và chỉnh sửa của bạn</h3>
@@ -160,6 +319,7 @@ export function ReviewPanel({
             <button
               onClick={() => {
                 setBase(conflict);
+                baseRef.current = conflict;
                 setConflict(null);
                 setError(null);
                 setMessage('Đã đối chiếu. Chỉnh sửa vẫn chưa lưu; hãy lưu lại nếu muốn áp dụng.');
@@ -171,6 +331,10 @@ export function ReviewPanel({
           <button
             onClick={() => {
               onUpdated(conflict);
+              baseRef.current = conflict;
+              setBase(conflict);
+              setConflict(null);
+              setError(null);
               setChanges({});
             }}
           >
@@ -274,11 +438,17 @@ export function ReviewPanel({
         })}
       </div>
       <div className="review-actions">
-        <button className="primary" disabled={!editable || !dirty} onClick={() => void save()}>
+        <button
+          className="primary"
+          disabled={
+            !editable || !dirty || saving || (error instanceof APIError && error.status === 409)
+          }
+          onClick={() => void save()}
+        >
           {busy ? 'Đang xử lý…' : 'Lưu nháp'}
         </button>
         <button
-          disabled={!editable || !dirty}
+          disabled={!editable || !dirty || saving}
           onClick={() => {
             setChanges({});
             setMessage('Đã bỏ chỉnh sửa chưa lưu.');
@@ -288,7 +458,11 @@ export function ReviewPanel({
         </button>
         <button
           disabled={
-            !editable || dirty || issues.length > 0 || review?.review_status === 'confirmed'
+            !editable ||
+            saving ||
+            dirty ||
+            issues.length > 0 ||
+            review?.review_status === 'confirmed'
           }
           onClick={() =>
             void act(async () => {
@@ -308,7 +482,7 @@ export function ReviewPanel({
           Xác nhận bản lưu
         </button>
         <button
-          disabled={!editable || dirty || review?.review_status !== 'confirmed'}
+          disabled={!editable || saving || dirty || review?.review_status !== 'confirmed'}
           onClick={() =>
             void act(async () => {
               await downloadExport(base);
@@ -320,9 +494,15 @@ export function ReviewPanel({
         </button>
       </div>
       <p role="status" aria-live="polite" className="save-status">
-        {busy
-          ? 'Đang trao đổi với máy chủ…'
-          : message || (dirty ? 'Chưa lưu.' : 'Không có thay đổi chưa lưu.')}
+        {saving
+          ? 'Đang lưu nháp…'
+          : error
+            ? 'Lưu thất bại. Chỉnh sửa được giữ; hãy thử Lưu nháp hoặc đối chiếu khi xung đột.'
+            : busy
+              ? 'Đang trao đổi với máy chủ…'
+              : dirty
+                ? 'Chưa lưu. Tự động lưu sau khi ngừng nhập.'
+                : message || 'Không có thay đổi chưa lưu.'}
       </p>
     </section>
   );
