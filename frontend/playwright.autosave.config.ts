@@ -11,7 +11,7 @@ export default defineConfig({
   use: { baseURL: 'http://127.0.0.1:15174', trace: 'retain-on-failure' },
   webServer: [
     {
-      command: 'backend\\.venv\\Scripts\\python.exe backend/tests/browser_autosave_server.py',
+      command: 'uv run --project backend --locked python backend/tests/browser_autosave_server.py',
       cwd: root,
       url: 'http://127.0.0.1:18812/api/v1/health',
       reuseExistingServer: false,
