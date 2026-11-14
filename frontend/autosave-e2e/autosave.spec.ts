@@ -18,6 +18,23 @@ async function saved(page: Page) {
 test.beforeEach(() => {
   index = sequence++;
 });
+test('duplicated tab keeps separate pending browser drafts', async ({ page }) => {
+  await open(page);
+  const popupEvent = page.waitForEvent('popup');
+  await page.evaluate(() => window.open('/'));
+  const popup = await popupEvent;
+  await open(popup);
+  await page.context().route('**/api/v1/documents/*/review', (route) => route.abort());
+  await seller(page).fill('Original tab draft');
+  await seller(popup).fill('Duplicated tab draft');
+  const drafts = await page.evaluate(() =>
+    Object.keys(localStorage)
+      .filter((key) => key.startsWith('field-review:'))
+      .map((key) => localStorage.getItem(key)),
+  );
+  expect(drafts.join('\n')).toContain('Original tab draft');
+  expect(drafts.join('\n')).toContain('Duplicated tab draft');
+});
 test('1 debounce autosave', async ({ page }) => {
   await open(page);
   let writes = 0;

@@ -8,14 +8,6 @@ type Changes = ReviewRequest['fields'];
 function draftPrefix(document: DocumentDetail) {
   return `field-review:${document.document_id}:${document.run.run_id}:`;
 }
-function tabId() {
-  let id = sessionStorage.getItem('field-review-tab');
-  if (!id) {
-    id = crypto.randomUUID();
-    sessionStorage.setItem('field-review-tab', id);
-  }
-  return id;
-}
 function recover(
   document: DocumentDetail,
   source: { current: { key: string; raw: string } | null },
@@ -93,7 +85,9 @@ export function ReviewPanel({
   const [storageError, setStorageError] = useState(false);
   const [storageKey] = useState(() => {
     try {
-      return draftPrefix(document) + tabId();
+      // sessionStorage is cloned by window.open/duplicate-tab. Each mounted
+      // editor needs its own key, including when its opener has pending edits.
+      return draftPrefix(document) + crypto.randomUUID();
     } catch {
       return null;
     }
