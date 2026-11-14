@@ -1,0 +1,45 @@
+diff --git a/backend/src/docintel/services/documents.py b/backend/src/docintel/services/documents.py
+index 78635b6..1d33594 100644
+--- a/backend/src/docintel/services/documents.py
++++ b/backend/src/docintel/services/documents.py
+@@ -355,10 +355,7 @@ class DocumentService:
+                 ),
+             )
+             allowed = {field.field_id for field in DEFINITIONS[document["document_type"]]}
+-            if (
+-                request.expected_status is not None
+-                and row["review_status"] != request.expected_status
+-            ):
++            if row["review_status"] != (request.expected_status or "draft"):
+                 raise ProductError(
+                     409,
+                     "REVIEW_STATE_CONFLICT",
+diff --git a/backend/tests/test_product.py b/backend/tests/test_product.py
+index ffe8591..d7fb8fc 100644
+--- a/backend/tests/test_product.py
++++ b/backend/tests/test_product.py
+@@ -190,6 +190,7 @@ def test_clear_null_and_revision_conflict(product):
+             path + "/review",
+             json={
+                 **revision_request(corrected),
++                "expected_status": "confirmed",
+                 "fields": {
+                     "total_amount": {"is_reviewed": True, "reviewed_value": "0"},
+                 },
+@@ -486,3 +487,16 @@ def test_worker_lock_and_newer_database_schema_rejected(tmp_path):
+         connection.execute("INSERT INTO schema_migrations VALUES(2,'future')")
+     with pytest.raises(RuntimeError, match="newer"):
+         repository.initialize()
++
++
++@pytest.mark.parametrize("status_field", [{}, {"expected_status": None}])
++def test_legacy_status_cannot_reopen_confirmed(product, status_field):
++    api, _ = product
++    document = processed(api)
++    path = "/api/v1/documents/" + document["document_id"]
++    assert api.post(path + "/confirm", json=revision_request(document)).status_code == 200
++    result = api.put(
++        path + "/review", json={**revision_request(document), **status_field, "fields": {}}
++    )
++    assert result.status_code == 409
++    assert api.get(path).json()["review"]["review_status"] == "confirmed"
