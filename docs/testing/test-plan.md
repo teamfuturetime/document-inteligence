@@ -1,5 +1,7 @@
 # Kế hoạch kiểm thử
 
+Kế hoạch nền FOUNDATION dưới đây giữ bối cảnh lúc viết. Nghiệm thu sản phẩm hiện hành dùng [ma trận tích hợp](integration-acceptance.md), phân biệt tests có sẵn, native workflow và ca PDF/autosave/notification còn chờ. README là nguồn runtime/commands; không lấy mô tả CI foundation bên dưới thay workflow hiện tại.
+
 | Yêu cầu | Kiểm tra foundation | Kiểm tra khi MVP thực sự triển khai |
 | --- | --- | --- |
 | MVP-02/05/06 | Schemas/examples, strict types/extra, draft missing/invalid, ID giữ 0, NFC/dấu Việt, ngày tồn tại/liên trường, final confirmed/required | Schema mới/rules/domain regression, persisted export gate |
