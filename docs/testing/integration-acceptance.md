@@ -13,6 +13,8 @@ Task điều phối [#21](https://github.com/teamfuturetime/document-inteligence
 
 Nền tham chiếu `921541d` đã có upload budgets qua PR #16. Các đường dẫn dưới là coverage có sẵn, chưa tự chứng minh lần chạy mới đã đạt. Khi thay source, chạy kiểm tra phù hợp và ghi kết quả lại.
 
+[Baseline ngày 14/11/2026](../reports/integration-baseline-2026-11-14.md) ghi kết quả đã chạy trên cùng source sản phẩm, phân biệt 131 tests, native workflow và HTTP ingress với browser/feature còn Pending.
+
 | Ca | Thao tác/điều kiện | Kết quả mong đợi | Coverage hiện có |
 |---|---|---|---|
 | U1 — giới hạn và body hỏng | Content-Length quá lớn/lặp/sai, stream vượt cap, mismatch, disconnect | 400/413 đúng envelope; không document/run/event/source/preview mới; slot được giải phóng | [ASGI ingress tests](../../backend/tests/test_upload_ingress.py), [receiver tests](../../backend/tests/test_upload_receiver.py) |
