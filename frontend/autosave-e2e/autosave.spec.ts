@@ -7,7 +7,11 @@ let index = 0;
 async function open(page: Page) {
   await page.goto('/');
   await page.getByRole('button', { name: 'Xử lý tài liệu', exact: true }).click();
-  await page.getByRole('button', { name: 'Mở tài liệu', exact: true }).nth(index).click();
+  if (index >= 10) await page.getByRole('button', { name: 'Trang sau', exact: true }).click();
+  await page
+    .getByRole('button', { name: 'Mở tài liệu', exact: true })
+    .nth(index % 10)
+    .click();
   await expect(page.locator('#field-seller_name')).toBeEnabled();
 }
 const seller = (page: Page) => page.locator('#field-seller_name');
@@ -186,4 +190,46 @@ test('8 export uses confirmed persisted revision', async ({ page }) => {
   const value = JSON.parse(json);
   expect(value.data.seller_name).toBe('Export seller');
   expect(value.revision).toBe(2);
+});
+test('recovering tab cannot discard the original tabs pending draft', async ({ page, context }) => {
+  await open(page);
+  await page.route('**/api/v1/documents/*/review', (route) => route.abort());
+  await seller(page).fill('Draft owned by A');
+  const original = await page.evaluate(() =>
+    Object.fromEntries(
+      Object.keys(localStorage)
+        .filter((k) => k.startsWith('field-review:'))
+        .map((k) => [k, localStorage.getItem(k)]),
+    ),
+  );
+  const other = await context.newPage();
+  await open(other);
+  await expect(seller(other)).toHaveValue('Draft owned by A');
+  await other.getByRole('button', { name: 'Bỏ chỉnh sửa', exact: true }).click();
+  expect(
+    await other.evaluate(() =>
+      Object.fromEntries(
+        Object.keys(localStorage)
+          .filter((k) => k.startsWith('field-review:'))
+          .map((k) => [k, localStorage.getItem(k)]),
+      ),
+    ),
+  ).toEqual(original);
+  await open(other);
+  await other.getByRole('button', { name: 'Đối chiếu bản mới' }).click();
+  await other.getByRole('button', { name: 'Bỏ chỉnh sửa, tải bản máy chủ' }).click();
+  expect(
+    await other.evaluate(() =>
+      Object.fromEntries(
+        Object.keys(localStorage)
+          .filter((k) => k.startsWith('field-review:'))
+          .map((k) => [k, localStorage.getItem(k)]),
+      ),
+    ),
+  ).toEqual(original);
+  await page.close();
+  const recovered = await context.newPage();
+  await open(recovered);
+  await expect(seller(recovered)).toHaveValue('Draft owned by A');
+  await expect(recovered.getByRole('alert')).toContainText('RECOVERED_DRAFT');
 });

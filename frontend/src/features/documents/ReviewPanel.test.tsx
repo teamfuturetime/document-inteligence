@@ -60,6 +60,25 @@ afterEach(() => {
 });
 
 describe('Autosave ordering', () => {
+  it('discarding a recovered draft does not delete the source owned by another editor', () => {
+    const key = 'field-review:doc:run:tab-a';
+    const raw = JSON.stringify({
+      at: Date.now(),
+      fields: { seller_name: { is_reviewed: true, reviewed_value: 'Tab A' } },
+    });
+    localStorage.setItem(key, raw);
+    render(
+      <ReviewPanel
+        document={document()}
+        onUpdated={vi.fn()}
+        onDirtyChange={vi.fn()}
+        onFieldChange={vi.fn()}
+      />,
+    );
+    expect(screen.getByLabelText('Đơn vị bán hàng *')).toHaveValue('Tab A');
+    fireEvent.click(screen.getByRole('button', { name: 'Bỏ chỉnh sửa' }));
+    expect(localStorage.getItem(key)).toBe(raw);
+  });
   it('migrates the previous session draft without applying it to the server', () => {
     sessionStorage.setItem(
       'field-review:doc:run',

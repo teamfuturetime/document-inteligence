@@ -8,10 +8,7 @@ type Changes = ReviewRequest['fields'];
 function draftPrefix(document: DocumentDetail) {
   return `field-review:${document.document_id}:${document.run.run_id}:`;
 }
-function recover(
-  document: DocumentDetail,
-  source: { current: { key: string; raw: string } | null },
-): Changes {
+function recover(document: DocumentDetail): Changes {
   try {
     const prefix = draftPrefix(document);
     const legacyKey = prefix.slice(0, -1);
@@ -46,7 +43,6 @@ function recover(
       typeof value.fields !== 'object'
     )
       return {};
-    source.current = { key: value.key, raw: value.raw };
     const result: Changes = {};
     for (const definition of document.definitions) {
       const field = value.fields[definition.field_id];
@@ -75,8 +71,7 @@ export function ReviewPanel({
   onFieldChange: (value: string) => void;
 }) {
   const [base, setBase] = useState(document);
-  const recoverySource = useRef<{ key: string; raw: string } | null>(null);
-  const [changes, updateChanges] = useState<Changes>(() => recover(document, recoverySource));
+  const [changes, updateChanges] = useState<Changes>(() => recover(document));
   const changesRef = useRef(changes);
   const baseRef = useRef(base);
   const mounted = useRef(true);
@@ -102,10 +97,7 @@ export function ReviewPanel({
         localStorage.setItem(storageKey, JSON.stringify({ at: Date.now(), fields: value }));
       else {
         localStorage.removeItem(storageKey);
-        const source = recoverySource.current;
-        if (source && localStorage.getItem(source.key) === source.raw)
-          localStorage.removeItem(source.key);
-        recoverySource.current = null;
+        // Recovery never transfers ownership of another editor's key.
       }
       setStorageError(false);
     } catch {

@@ -30,6 +30,6 @@ if __name__ == "__main__":
             from test_product import inference
 
             api.app.state.documents.pipeline.run = inference
-            for _ in range(10):
+            for _ in range(11):
                 processed(api)
             uvicorn.run(app, host="127.0.0.1", port=18812, log_level="warning")
