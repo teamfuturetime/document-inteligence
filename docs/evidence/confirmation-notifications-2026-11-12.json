@@ -1,0 +1,32 @@
+{
+  "source_commit": "76ac46e33589abd437cdae6d9843833a3f13ab59",
+  "base": "0868cf6",
+  "purpose": "local_post_commit_notification_workflow_checks",
+  "external_delivery": false,
+  "native_evidence": "confirmation-notifications-native-2026-11-12.json",
+  "source_sha256": {
+    "backend/src/docintel/services/notifications.py": "9e7b6d371c74c39962846957a9cec3d9cc783108772e5a19fe725e280a8684c0",
+    "backend/src/docintel/services/documents.py": "86b5e12b70096fb0aa5a92baccac15ed27241cb37de0e623fe50646e65cbf067",
+    "backend/src/docintel/api/documents.py": "0709a68ac405d1f534570797940c7199a58a78ff9519fbd84b1fa53d28bb4660",
+    "backend/src/docintel/api/app.py": "7f2c17d36202a9468acc3438891c9b4599e515c4d7b650ce74c554a62bd223f7",
+    "backend/src/docintel/config.py": "d20418ee9e8e8f4d88e1a4926d9a3940cf61c5569f045b9594de413179d75a6b",
+    "backend/tests/test_confirmation_notifications.py": "cf07150ea2621e62962d010ac96d0c67292f39449e1db11646122ceae22b4def",
+    "configs/logging-local.json": "b5075b3ef52a42770e8d176d0fa0461b3bb874c77f969a2031167f6968f5fc87"
+  },
+  "checks": {
+    "backend_pipeline_tests": 118,
+    "notification_tests": 15,
+    "frontend_tests": 12,
+    "native_checks": 14,
+    "chrome_e2e": 1,
+    "contracts": 25
+  },
+  "limitations": [
+    "Local logging sink only, no email or webhook delivery",
+    "Best-effort loss/duplicate semantics; no durable outbox",
+    "Cooperative sender timeout; blocking/noncooperative adapters unsupported",
+    "Node 24.18.0/npm 11.16.0 differ from repository pins",
+    "Chrome 157 used because bundled Chromium does not support macOS 13",
+    "No remote CI or reviewer approval yet"
+  ]
+}
