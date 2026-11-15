@@ -2,7 +2,7 @@
 
 Một ứng dụng local: tải ảnh hóa đơn → OCR Tesseract tiếng Việt → trích xuất có vùng nguồn → sửa/lưu nháp → kiểm tra và xác nhận → tải JSON từ bản đã lưu trên server.
 
-**Nền sản phẩm chính:** React trong `frontend/`, FastAPI `docintel` trong `backend/`, native pipeline trong `pipeline/`, SQLite cho lịch sử/revisions. Nhánh tổ chức lại `chore/repository-consolidation` kế thừa `nhatquang@a03ea30`. `main` là đích ổn định sau PR/review, hiện trên GitHub vẫn chỉ có README khởi tạo. Chưa merge hoặc thay default branch. [Quyết định nền](docs/decisions/0008-primary-invoice-platform.md) · [khảo sát 16 nhánh](docs/branch-inventory.md).
+**Nền sản phẩm chính trên `main`:** React trong `frontend/`, FastAPI `docintel` trong `backend/`, native pipeline trong `pipeline/`, SQLite cho lịch sử/revisions. Nền kế thừa `nhatquang@a03ea30`, được tích hợp qua [PR #3](https://github.com/teamfuturetime/document-inteligence/pull/3); hướng dẫn nhóm qua [PR #14](https://github.com/teamfuturetime/document-inteligence/pull/14). [Quyết định nền](docs/decisions/0008-primary-invoice-platform.md) · [khảo sát nhánh tại thời điểm consolidation](docs/branch-inventory.md).
 
 ## Bắt đầu từ checkout sạch
 
@@ -10,17 +10,17 @@ Cần Git, Python 3.14.5 (uv có thể cài theo `backend/.python-version`), uv 
 
 Các lệnh dưới dùng `python`; trên macOS/Linux nếu không có alias này, dùng `python3`. uv chọn Python backend theo pin, không cần sửa Python toàn máy.
 
-Trong giai đoạn chờ tích hợp main:
+Clone nền chung từ `main`:
 
 ```sh
 git clone https://github.com/teamfuturetime/document-inteligence.git
 cd document-inteligence
-git switch chore/repository-consolidation
+git switch main
 python scripts/dev.py setup
 python scripts/dev.py models
 ```
 
-Nhánh consolidation đã được push tại [PR #3](https://github.com/teamfuturetime/document-inteligence/pull/3), CI đạt và main đã có protection; PR chưa merge nên không nhầm với main chỉ README. [Trạng thái GitHub](docs/github-publication.md) có backlog và evidence thực. Sau khi PR nền được merge, clone mặc định vào main và tạo nhánh mới từ main theo CONTRIBUTING.
+Với clone đã có sẵn, giữ các thay đổi local trên đúng nhánh trước, rồi `git fetch origin`, `git switch main`, `git pull --ff-only origin main`. Tạo nhánh task mới từ main theo [CONTRIBUTING](CONTRIBUTING.md); không dùng nhánh cá nhân cũ làm nền mặc định. [Trạng thái bàn giao GitHub](docs/github-publication.md) ghi các mốc đã tích hợp; theo dõi phân công hiện hành tại [issue #15](https://github.com/teamfuturetime/document-inteligence/issues/15).
 
 `setup` cài đúng lockfiles và chỉ tạo `.env` khi chưa có; không ghi đè cấu hình cũ. File mẫu chọn `DOCINTEL_PROVIDER_MODE=tesseract`. Nếu giữ `.env` cũ, kiểm tra provider và runtime path. Nếu Tesseract không ở PATH, đặt `DOCINTEL_TESSERACT_EXECUTABLE` bằng đường dẫn cài thật. `models` tải vie+eng (~4,7MB), kiểm SHA256 và lưu dưới `runtime/` đã ignore.
 

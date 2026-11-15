@@ -1,6 +1,18 @@
 # GitHub publication — consolidation
 
-Chủ dự án đã duyệt gói thao tác sau khi xem nội dung local. Chỉ push nhánh consolidation, mở PR, tạo backlog và bảo vệ main sau CI; không ủy quyền merge/đóng PR #1/xóa refs.
+## Các mốc đã tích hợp vào main — cập nhật 12/11/2026
+
+| Đầu ra | PR và merge commit | Issue |
+|---|---|---|
+| Nền docintel/SQLite và consolidation | [PR #3](https://github.com/teamfuturetime/document-inteligence/pull/3), `fb24bc1` | #4 đã đóng |
+| Quy ước agent và hướng dẫn nhóm | [PR #14](https://github.com/teamfuturetime/document-inteligence/pull/14), `0868cf6` | #13 đã đóng |
+| Triage/vá minimatch cho lint tooling | [PR #17](https://github.com/teamfuturetime/document-inteligence/pull/17), `da00c6d` | #9 đã đóng |
+
+Các PR trên đã được congtri2103 approve và Product checks đạt trước merge theo ủy quyền riêng của chủ dự án. Main đã có ứng dụng để clone/chạy; task mới tạo từ main theo CONTRIBUTING. PR #1 hiện CLOSED, không được ghi như đã merge trực tiếp; lịch sử nền của nó được giữ qua PR #3. PR #2 vẫn là autosave merge vào minhthao, không phải tính năng đã có trên main. [Issue #15](https://github.com/teamfuturetime/document-inteligence/issues/15) là nguồn phân công/tiến độ hiện hành.
+
+## Hồ sơ publish ban đầu (giữ theo mốc thời gian)
+
+Các mục dưới là snapshot lúc publish, không phải trạng thái hiện tại. Ở mốc đó chủ dự án chỉ duyệt push nhánh consolidation, mở PR, tạo backlog và bảo vệ main sau CI; chưa ủy quyền merge/đóng PR #1/xóa refs. Những lần merge trong bảng trên được duyệt sau đó. Không áp lại payload settings hoặc thay lịch sử để đồng bộ snapshot.
 
 ## Nhánh và PR
 
