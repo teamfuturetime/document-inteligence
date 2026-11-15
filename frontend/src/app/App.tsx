@@ -66,7 +66,7 @@ export function App() {
             Mẫu minh họa
           </button>
         </nav>
-        <span className="pill">LOCAL · 0.2.0</span>
+        <span className="pill">LOCAL</span>
       </header>
       <main>
         {navigationError && (
@@ -132,7 +132,7 @@ export function App() {
                 <article>
                   <span className="status-dot gray" /> <h3>Phạm vi có giới hạn</h3>
                   <p>
-                    Ảnh đánh máy một trang. Chưa hỗ trợ PDF, chữ viết tay, tài khoản hoặc triển khai
+                    Biểu mẫu đánh máy một trang. Chưa hỗ trợ chữ viết tay, tài khoản hoặc triển khai
                     công khai.
                   </p>
                 </article>
