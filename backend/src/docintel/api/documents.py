@@ -23,6 +23,7 @@ from docintel.domain.documents import (
     RevisionRequest,
 )
 from docintel.services.documents import DocumentService
+from docintel.services.notifications import notify_safely
 
 router = APIRouter(prefix="/api/v1", tags=["product"])
 
@@ -127,8 +128,16 @@ def save_review(request: Request, document_id: str, body: ReviewRequest):
 
 
 @router.post("/documents/{document_id}/confirm", response_model=DocumentDetail)
-def confirm(request: Request, document_id: str, body: RevisionRequest):
-    return service(request).confirm(document_id, body)
+async def confirm(request: Request, document_id: str, body: RevisionRequest):
+    documents = service(request)
+    result = await run_in_threadpool(documents.confirm_with_notice, document_id, body)
+    if result.notice is not None and documents.settings.notification_mode != "disabled":
+        await notify_safely(
+            request.app.state.confirmation_notifier,
+            result.notice,
+            documents.settings.notification_timeout_seconds,
+        )
+    return result.detail
 
 
 @router.get("/documents/{document_id}/export", response_model=ProductExportArtifact)
