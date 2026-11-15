@@ -6,7 +6,7 @@
 
 1. Dùng GitHub cá nhân, cung cấp handle cho nhóm trưởng; kiểm tra quyền truy cập repository. Không dùng chung tài khoản để commit/review cho nhiều người.
 2. Kiểm tra `git config user.name` và `git config user.email`. Email commit cần gắn với GitHub của bạn (có thể dùng noreply chính xác từ Settings → Emails). Chỉ sửa cấu hình cho repo khi cần; không đổi author của commits cũ.
-3. Đọc Issues và PR đang mở, đặc biệt PR nền. Khi main chưa chứa nền docintel, làm theo base tạm trong CONTRIBUTING; không tiếp tục nhánh cá nhân cũ theo thói quen.
+3. Đọc Issues và PR đang mở; nền docintel đã ở main qua PR #3. Cập nhật main theo CONTRIBUTING trước khi tạo nhánh task; không tiếp tục nhánh cá nhân cũ theo thói quen.
 4. Tìm việc chưa có người nhận, comment nhận việc theo mẫu bên dưới. Chờ xác nhận phân công trước khi làm việc có nguy cơ trùng với người khác.
 5. Tạo nhánh theo issue, làm phần nhỏ, commit có nghĩa, mở Draft PR khi đã có diff hữu ích. Mời một thành viên khác review khi sẵn sàng.
 
@@ -90,15 +90,16 @@ Nếu bị chặn, cập nhật issue: đang thiếu gì, đã thử gì, link d
 
 Nhóm chủ động tăng số issue/PR/commits bằng cách chia công việc thật thành các đầu ra nhỏ có thể nghiệm thu. Trước task lớn, ghi `đầu ra → issue → PR → mốc commit → kiểm tra → dependency` ngay trên issue điều phối; xem [quy tắc tối ưu cho agent](../../AGENTS.md#chủ-động-tối-ưu-số-lượng-commit-issue-và-pull-request). Mỗi đầu ra độc lập nên có issue và PR riêng; mỗi mốc hoàn chỉnh, đã kiểm tra trong PR nên được commit ngay. Không chờ gom cả tính năng lớn hoặc cả tuần, không áp số lượng tối thiểu cho task nhỏ và không tách những phần buộc phải đi cùng nhau.
 
-Sau khi main đã nhận nền chung, chạy từng lệnh:
+Nền chung đã ở main. Sau khi giữ các thay đổi local trên đúng nhánh, chạy từng lệnh:
 
 ```sh
+git fetch origin
 git switch main
 git pull --ff-only origin main
 git switch -c feat/ISSUE_NUMBER-pdf-single-page
 ```
 
-Thay `ISSUE_NUMBER` bằng số issue thật. Nếu main chưa có nền, theo CONTRIBUTING để branch từ consolidation; ghi base và dependency trong PR, không merge thẳng vào main khi thiếu nền. Không áp dụng chuỗi lệnh bằng cách ghi đè một working tree đang có thay đổi.
+Thay `ISSUE_NUMBER` bằng số issue thật. Với nhánh task đã tồn tại, đồng bộ main bằng merge và kiểm tra lại trước khi đề xuất tích hợp; không tạo task mới từ consolidation. PR phụ thuộc phải ghi base/dependency và thống nhất với người điều phối. Không áp dụng chuỗi lệnh bằng cách ghi đè một working tree đang có thay đổi.
 
 - Commit mỗi phần nhỏ hoàn chỉnh: một lỗi + regression test, một adapter chạy được, một cập nhật contract đồng bộ, hoặc một hướng dẫn nghiệm thu riêng.
 - Dùng Conventional Commits, ví dụ `fix(api): reject encrypted PDFs` với body `Refs #<số issue thật>`; placeholder phải được thay trước khi commit.

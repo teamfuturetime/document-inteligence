@@ -1,6 +1,6 @@
 # Tài liệu hiện hành
 
-Bắt đầu tại [README root](../README.md). Chỉ có một nền sản phẩm docintel/SQLite/pipeline, đang trên nhánh consolidation chờ PR; foundation reports và các nhánh cá nhân là lịch sử có nguồn gốc.
+Bắt đầu tại [README root](../README.md). Nền sản phẩm docintel/SQLite/pipeline đã có trên `main`; tạo nhánh task từ main mới nhất. Foundation reports, snapshot consolidation và các nhánh cá nhân là lịch sử có nguồn gốc.
 
 | Cần làm gì | Nguồn chuẩn |
 |---|---|
