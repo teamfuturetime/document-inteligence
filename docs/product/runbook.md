@@ -20,6 +20,10 @@ uv run --project backend --locked python scripts/verify_product.py
 
 Lệnh này thực sự gọi Tesseract và HTTP workflow, fail nếu không có môi trường; không skip hoặc fallback. Nó dùng DB tạm, scripted review chỉ kiểm workflow, không được báo như accuracy AI.
 
+## PDF một trang
+
+Dùng nút tải tài liệu trên workspace, chọn PDF synthetic một trang, chờ OCR rồi đối chiếu các trường trên preview PNG. Xem [giới hạn, lỗi và ca thử PDF](../operations/single-page-pdf.md).
+
 ## Backup và khôi phục
 
 ```powershell

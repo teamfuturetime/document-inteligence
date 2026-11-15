@@ -4,6 +4,8 @@ App 0.2.0 bổ sung nguồn chuẩn `docintel.domain.documents`: invoice/applica
 
 App 0.2.1 bổ sung receive/admission budget cho upload và OpenAPI lỗi 400/408; envelope lỗi và product/export schema giữ nguyên. [Chi tiết lỗi, retry và budget](../docs/operations/upload-ingress.md).
 
+App 0.2.2 thêm PDF một trang vào upload raw và `upload_media_types` trong capabilities. Product/export schema 1.0.0 giữ nguyên. Xem [ngân sách và lỗi PDF](../docs/operations/single-page-pdf.md).
+
 Domain models backend và FastAPI là nguồn chuẩn. `generated/*.schema.json` (JSON Schema 2020-12) và `generated/openapi.json` được sinh bằng:
 
 ```powershell

@@ -40,7 +40,7 @@ Mở **http://127.0.0.1:5173**, chọn **Xử lý tài liệu**. API docs: http:
 
 ```mermaid
 flowchart LR
-    A[Upload PNG/JPEG] --> B[SQLite job queue]
+    A[Upload PNG/JPEG/PDF] --> B[SQLite job queue]
     B --> C[Bounded preprocessing + Tesseract vie/eng]
     C --> D[Extraction + immutable prediction/evidence]
     D --> E[Review fields + save revision]
@@ -76,7 +76,7 @@ Mỗi số liệu phải đi cùng dataset/engine/model/config/source SHA. `eval
 
 ## Phạm vi và giới hạn
 
-Hóa đơn header/tổng tiền: invoice_number, invoice_date, seller_name, total_amount integer VND, currency. PNG/JPEG một trang; mặc định 5MiB/16M pixels, deadline pipeline30s, tối đa5 pending/running jobs và một worker. Nhận body có tổng deadline 30 giây, tối đa hai upload đang nhận/tiền xử lý/lưu; đường chạy chuẩn giới hạn Uvicorn 16 connection/task. [Receive/admission, lỗi và giới hạn ingress](docs/operations/upload-ingress.md). Chưa PDF/multi-page/handwriting/line-items. Evidence/confidence là heuristic chưa calibrated; người dùng vẫn phải đối chiếu ảnh.
+Hóa đơn header/tổng tiền: invoice_number, invoice_date, seller_name, total_amount integer VND, currency. PNG/JPEG hoặc PDF một trang; mặc định 5MiB/16M pixels, deadline pipeline30s, tối đa5 pending/running jobs và một worker. Nhận body có tổng deadline 30 giây, tối đa hai upload đang nhận/tiền xử lý/lưu; đường chạy chuẩn giới hạn Uvicorn 16 connection/task. [Receive/admission, lỗi và giới hạn ingress](docs/operations/upload-ingress.md). PDF raster local ở 200 DPI, tối đa 8192 px mỗi chiều, dùng chung giới hạn pixel. Xem [hướng dẫn PDF](docs/operations/single-page-pdf.md). Chưa hỗ trợ nhiều trang, chữ viết tay hoặc line items. Evidence/confidence là heuristic chưa calibrated; người dùng vẫn phải đối chiếu ảnh.
 
 Local một người dùng, không auth/tenant isolation. Chỉ synthetic/sample có quyền, không hồ sơ thật. Đơn đề nghị 7 trường đang có tiếp tục hoạt động trong cùng app. CCCD, đơn sinh viên, autosave, PDF và VLM/OCR.space của các nhánh khác được [giữ tham chiếu và lên kế hoạch port](docs/consolidation-plan.md); không tuyên bố đã tích hợp chúng. [Bài tập VT-042..046](homework/README.md) giữ tại nguồn lịch sử.
 

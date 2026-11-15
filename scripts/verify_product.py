@@ -1,6 +1,7 @@
 """Native OCR + HTTP workflow check. Missing engines/models fail, never skip."""
 
 import argparse
+import io
 import json
 import tempfile
 import time
@@ -10,6 +11,7 @@ from pathlib import Path
 from docintel.api.app import create_app
 from docintel.config import ROOT, Settings
 from fastapi.testclient import TestClient
+from PIL import Image
 
 
 def check(response, expected=200):
@@ -221,6 +223,82 @@ def main():
                 )
             )
             checks.append("both_document_schemas_real_pipeline")
+            pdf = ROOT / "pipeline/tests/fixtures/pdf/hoa_don_007.pdf"
+            pdf_document = wait_for_run(
+                api,
+                check(
+                    api.post(
+                        "/api/v1/documents",
+                        params={
+                            "document_type": "hoa_don",
+                            "data_origin": "synthetic",
+                            "filename": pdf.name,
+                        },
+                        content=pdf.read_bytes(),
+                        headers={"Content-Type": "application/pdf"},
+                    ),
+                    202,
+                ),
+            )
+            pdf_run = pdf_document["run"]
+            pdf_metadata = pdf_run["metadata"]
+            assert pdf_metadata["prediction_source"] == "model"
+            assert (
+                pdf_metadata["preprocessing"]["source_frame"]
+                == "pdf_raster_pixels_top_left"
+            )
+            preview = api.get(pdf_document["image_url"])
+            assert (
+                preview.status_code == 200
+                and preview.headers["content-type"] == "image/png"
+            )
+            with Image.open(io.BytesIO(preview.content)) as raster:
+                width, height = raster.size
+            assert (width, height) == (
+                pdf_document["image_width"],
+                pdf_document["image_height"],
+            )
+            assert pdf_run["spans"]
+            for span in pdf_run["spans"]:
+                x1, y1, x2, y2 = span["box"]
+                assert 0 <= x1 < x2 <= width and 0 <= y1 < y2 <= height
+            pdf_path = "/api/v1/documents/" + pdf_document["document_id"]
+            pdf_saved = check(
+                api.put(
+                    pdf_path + "/review",
+                    json={
+                        "run_id": pdf_run["run_id"],
+                        "expected_revision": pdf_document["review"]["revision"],
+                        "fields": {
+                            key: {"is_reviewed": True, "reviewed_value": value}
+                            for key, value in visible.items()
+                        },
+                    },
+                )
+            )
+            pdf_revision = pdf_saved["review"]["revision"]
+            check(
+                api.post(
+                    pdf_path + "/confirm",
+                    json={
+                        "run_id": pdf_run["run_id"],
+                        "expected_revision": pdf_revision,
+                    },
+                )
+            )
+            pdf_artifact = check(
+                api.get(
+                    pdf_path + "/export",
+                    params={"run_id": pdf_run["run_id"], "revision": pdf_revision},
+                )
+            )
+            assert (
+                pdf_artifact["data"] == visible
+                and pdf_artifact["revision"] == pdf_revision
+            )
+            checks.extend(
+                ["pdf_native_raster_and_evidence", "pdf_review_confirm_export"]
+            )
         with TestClient(create_app(settings)) as restarted:
             assert (
                 check(restarted.get(path, params={"run_id": original_run}))["review"][
@@ -235,6 +313,7 @@ def main():
         "checked_at": datetime.now(UTC).isoformat(),
         "checks": checks,
         "native_run_metadata": document["run"]["metadata"],
+        "pdf_native_run_metadata": pdf_metadata,
         "note": "Actual Tesseract inference and HTTP workflow; scripted review is not AI accuracy",
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)

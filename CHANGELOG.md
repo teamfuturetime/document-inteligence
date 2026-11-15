@@ -1,5 +1,9 @@
 # Thay đổi
 
+## PDF một trang 0.2.2 — 15/11/2026
+
+Issue #6: đọc PDF một trang bằng PDFium trong subprocess, giới hạn bytes, trang, kích thước và deadline. Giữ raw source, preview PNG và OCR evidence cùng frame. Capabilities, OpenAPI và frontend types đồng bộ. Thêm kiểm thử lỗi PDF, native workflow và browser. Xem [vận hành PDF](docs/operations/single-page-pdf.md).
+
 ## Upload ingress 0.2.1 — 12/11/2026
 
 Issue #8: giới hạn tổng thời gian nhận body, số upload đồng thời và Uvicorn connection/task; kiểm Content-Length và byte stream trước persistence. Thêm lỗi receive/admission an toàn, giải phóng slot khi timeout/disconnect/cancel và giữ slot nếu thread lưu vẫn chạy; bảo toàn idempotent retry/queue semantics. Sinh lại OpenAPI/frontend types, bổ sung ASGI tests và probe HTTP loopback đo latency/RSS/tasks. Xem [budget và giới hạn](docs/operations/upload-ingress.md). Đây là thay đổi trên nhánh nhiệm vụ, chưa là release/tag đã xuất bản.
