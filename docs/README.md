@@ -10,6 +10,7 @@ Bắt đầu tại [README root](../README.md). Nền sản phẩm docintel/SQLi
 | Kiến trúc sản phẩm | [product/architecture](product/architecture.md), [contracts](../contracts/README.md) |
 | OCR/evidence/metrics | [source lineage](ml/source-lineage.md), [protocol](ml/evaluation-protocol.md), [dataset](../data/product/README.md) |
 | Demo/backup | [runbook](product/runbook.md) |
+| Session, tài khoản, ownership và migration | [Auth operations](operations/auth-ownership.md), [ADR0011](decisions/0011-authentication-ownership.md) |
 | Thông báo xác nhận local | [Notification operations](operations/confirmation-notifications.md), [ADR0009](decisions/0009-confirmation-notifications.md) |
 | Quyết định nền và port | [ADR0008](decisions/0008-primary-invoice-platform.md), [audit](repository-audit.md), [inventory](branch-inventory.md), [migration](consolidation-plan.md) |
 | Kết quả thực tế | [consolidation verification](consolidation-verification.md), [GitHub publication](github-publication.md) |

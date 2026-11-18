@@ -36,6 +36,11 @@ python scripts/dev.py frontend
 
 Mở **http://127.0.0.1:5173**, chọn **Xử lý tài liệu**. API docs: http://127.0.0.1:8000/docs. Health `/api/v1/health` chỉ báo tiến trình; kiểm `/api/v1/capabilities` có `ocr_ready=true`. Một backend/worker cho mỗi runtime DB; không thêm `--workers` để vượt lock.
 
+Nhánh issue #11 thêm **session opt-in** trong cùng app; mặc định vẫn `local` không đăng nhập.
+Muốn dùng nhiều tài khoản, theo [hướng dẫn tài khoản/migration](docs/operations/auth-ownership.md)
+để backup runtime cũ, tạo user offline và bật profile đúng cookie/origin. Không tự gán tài liệu
+legacy cho người đầu tiên đăng nhập; đây chưa là cấu hình triển khai public.
+
 ## Luồng hóa đơn có thể thử ngay
 
 ```mermaid

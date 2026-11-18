@@ -1,5 +1,11 @@
 # Issue #11 — kế hoạch mốc triển khai
 
+Cập nhật 18/11/2026: tiếp tục nhánh đã có, giữ nguyên commits và đồng bộ main@259ea63.
+Các số bên dưới là mốc kế hoạch ban đầu, không phải yêu cầu tạo đủ số commit mới khi tiếp tục.
+Phần backend/session/ownership được nối với UI, contracts 0.4.0, native hai profile và browser
+hai account; bàn giao qua một PR vì gates/API/UI cần đồng bộ. Chi tiết vận hành ở
+[auth runbook](../operations/auth-ownership.md); kết quả đúng source sẽ ghi trong báo cáo acceptance.
+
 Yêu cầu người dùng: 50 commit bổ sung cho task này. Mỗi mốc dưới có thay đổi thực và kiểm tra phù hợp, không commit rỗng, backdate hoặc sửa lịch sử PR #16/#18. Nhánh `feat/11-auth-ownership`, base main@921541d. Chỉ công việc issue #11, không push/merge main.
 
 1. Quyết định identity/session/ownership/migration (ADR0011) và kế hoạch.
