@@ -43,7 +43,8 @@ def run(command):
     executable = shutil.which(command[0])
     if executable is None:
         raise FileNotFoundError(f"Executable not found on PATH: {command[0]}")
-    resolved = [executable, *command[1:]]
+    # Freeze relative PATH entries in the caller's cwd before changing to ROOT.
+    resolved = [str(Path(executable).absolute()), *command[1:]]
     print("+ " + " ".join(resolved), flush=True)
     subprocess.run(resolved, cwd=ROOT, check=True, shell=False)
 
