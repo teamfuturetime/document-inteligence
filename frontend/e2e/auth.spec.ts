@@ -65,6 +65,133 @@ test('focus refresh during pending login preserves the successful authenticated 
   await expect(page.getByRole('button', { name: 'Đăng nhập', exact: true })).toHaveCount(0);
 });
 
+test('owner recovery survives reload and is cleared by logout in another tab', async ({
+  browser,
+}) => {
+  const context = await browser.newContext({ baseURL });
+  try {
+    const first = await context.newPage();
+    await workspace(first);
+    await login(first, 'epsilon');
+    const doc = await upload(first);
+    const session = await (await first.request.get('/api/v1/auth/session')).json();
+    const prefix = `field-review:user:${session.user.id}:`;
+    await first.route('**/api/v1/documents/*/review', (route) => route.abort());
+    await first.locator('#field-seller_name').fill('Private epsilon recovery');
+    await expect(first.locator('.save-status')).toContainText('Lưu thất bại');
+    expect(
+      await first.evaluate(
+        (prefix) => Object.keys(localStorage).some((key) => key.startsWith(prefix)),
+        prefix,
+      ),
+    ).toBe(true);
+    await first.reload();
+    await first.getByRole('button', { name: 'Xử lý tài liệu', exact: true }).click();
+    await first.getByRole('button', { name: 'Mở tài liệu', exact: true }).click();
+    await expect(first.locator('#field-seller_name')).toHaveValue('Private epsilon recovery');
+    await expect(first.getByRole('alert')).toContainText('RECOVERED_DRAFT');
+    const persisted = await (
+      await first.request.get(`/api/v1/documents/${doc.document_id}`)
+    ).json();
+    expect(persisted.review.effective_data.seller_name).toBe(doc.review.effective_data.seller_name);
+    const second = await context.newPage();
+    await workspace(second);
+    await second.getByRole('button', { name: 'Đăng xuất', exact: true }).click();
+    await expect(first.getByRole('button', { name: 'Đăng nhập', exact: true })).toBeVisible();
+    expect(
+      await first.evaluate(
+        (prefix) => Object.keys(localStorage).some((key) => key.startsWith(prefix)),
+        prefix,
+      ),
+    ).toBe(false);
+    await login(second, 'zeta');
+    await expect(first.getByRole('region', { name: 'Tài khoản hiện tại' })).toContainText('zeta');
+    await first.unroute('**/api/v1/documents/*/review');
+    await upload(first);
+    await expect(first.locator('#field-seller_name')).not.toHaveValue('Private epsilon recovery');
+    await expect(first.getByRole('alert').filter({ hasText: 'RECOVERED_DRAFT' })).toHaveCount(0);
+  } finally {
+    await context.close();
+  }
+});
+
+test('revoked session clears a pending owner draft and a late successful ACK cannot alter the next account', async ({
+  browser,
+}) => {
+  const context = await browser.newContext({ baseURL });
+  let release!: () => void;
+  try {
+    const page = await context.newPage();
+    await workspace(page);
+    await login(page, 'eta');
+    const doc = await upload(page);
+    const session = await (await page.request.get('/api/v1/auth/session')).json();
+    const oldPrefix = `field-review:user:${session.user.id}:`;
+    let saved!: () => void;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    const accepted = new Promise<void>((resolve) => {
+      saved = resolve;
+    });
+    await page.route(`**/api/v1/documents/${doc.document_id}/review`, async (route) => {
+      const response = await route.fetch();
+      expect(response.status()).toBe(200);
+      saved();
+      await gate;
+      await route.fulfill({ response });
+    });
+    await page.locator('#field-seller_name').fill('Old eta acknowledged draft');
+    await accepted;
+    expect(
+      (
+        await page.request.post('/api/v1/auth/logout', {
+          headers: { 'X-CSRF-Token': session.csrf_token, Origin: baseURL },
+        })
+      ).status(),
+    ).toBe(204);
+    await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+    await expect(page.getByRole('button', { name: 'Đăng nhập', exact: true })).toBeVisible();
+    expect(
+      await page.evaluate(
+        (prefix) => Object.keys(localStorage).some((key) => key.startsWith(prefix)),
+        oldPrefix,
+      ),
+    ).toBe(false);
+    await login(page, 'theta');
+    const own = await upload(page);
+    await page.route(`**/api/v1/documents/${own.document_id}/review`, (route) => route.abort());
+    await page.locator('#field-seller_name').fill('Theta pending recovery');
+    await expect(page.locator('.save-status')).toContainText('Lưu thất bại');
+    const oldAck = page.waitForResponse(
+      (response) =>
+        response.url().endsWith(`/documents/${doc.document_id}/review`) &&
+        response.status() === 200,
+    );
+    release();
+    await oldAck;
+    await expect(page.getByRole('region', { name: 'Tài khoản hiện tại' })).toContainText('theta');
+    await expect(page.locator('#field-seller_name')).toHaveValue('Theta pending recovery');
+    expect(
+      await page.evaluate(
+        (prefix) => Object.keys(localStorage).some((key) => key.startsWith(prefix)),
+        oldPrefix,
+      ),
+    ).toBe(false);
+    const stored = await page.evaluate(() =>
+      Object.keys(localStorage)
+        .filter((key) => key.startsWith('field-review:'))
+        .map((key) => localStorage.getItem(key))
+        .join('\n'),
+    );
+    expect(stored).toContain('Theta pending recovery');
+    expect(stored).not.toContain('Old eta acknowledged draft');
+  } finally {
+    release?.();
+    await context.close();
+  }
+});
+
 test('two accounts: native review/export, foreign identifiers, independent cookies and logout', async ({
   browser,
 }) => {

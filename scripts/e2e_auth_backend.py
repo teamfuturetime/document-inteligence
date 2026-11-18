@@ -23,7 +23,16 @@ def main():
             max_login_attempts=100,
         )
         identities = IdentityRepository(DocumentService(settings).repository)
-        for username in ("alpha", "beta", "gamma", "delta"):
+        for username in (
+            "alpha",
+            "beta",
+            "gamma",
+            "delta",
+            "epsilon",
+            "zeta",
+            "eta",
+            "theta",
+        ):
             identities.create_user(
                 username, hash_password("synthetic-browser-password-123")
             )
