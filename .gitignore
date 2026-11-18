@@ -28,4 +28,5 @@ Thumbs.db
 # Browser verification and local reports
 playwright-report/
 test-results/
+test-results-auth/
 output/
