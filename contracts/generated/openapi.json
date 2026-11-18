@@ -1607,6 +1607,22 @@
             "title": "Expected Revision",
             "type": "integer"
           },
+          "expected_status": {
+            "anyOf": [
+              {
+                "enum": [
+                  "draft",
+                  "confirmed"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Omitted/null means draft. Reopening a confirmed review requires confirmed explicitly.",
+            "title": "Expected Status"
+          },
           "fields": {
             "additionalProperties": {
               "$ref": "#/components/schemas/ProductReviewedField"

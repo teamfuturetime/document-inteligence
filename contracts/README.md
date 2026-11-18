@@ -10,6 +10,16 @@ Local mode giữ namespace reserved `local`. 401 là phiên thiếu/hết hạn,
 Examples `session-local.json`/`session-anonymous.json` không chứa tài khoản mặc định hoặc secret.
 SQLite schema 2 cần offline migration cho runtime schema 1 có dữ liệu; export schema 1.0.0 giữ nguyên.
 
+App 0.3.1 hardens the optional status contract: omitted/null `expected_status`
+means `draft`, including for legacy clients. A confirmed review can only be
+reopened with explicit `expected_status=confirmed` and the current revision.
+This intentionally rejects implicit reopening by old clients with HTTP 409;
+their draft saves remain compatible. No database migration is required.
+
+App 0.3.0 adds optional `ReviewRequest.expected_status` for atomic review-state
+CAS alongside revision CAS. The autosave UI always supplies it; legacy clients
+may omit it. See [autosave contract and compatibility](../docs/product/autosave.md).
+
 App 0.2.0 bổ sung nguồn chuẩn `docintel.domain.documents`: invoice/application workflow, review requests, history và persisted export. Product schema 1.0.0 sinh cùng generator; không đổi nghĩa foundation fixture schema 1.0.0. `pipeline.models` chỉ là DTO implementation được adapter chuyển sang backend domain, không nguồn HTTP thứ hai.
 
 App 0.2.1 bổ sung receive/admission budget cho upload và OpenAPI lỗi 400/408; envelope lỗi và product/export schema giữ nguyên. [Chi tiết lỗi, retry và budget](../docs/operations/upload-ingress.md).
