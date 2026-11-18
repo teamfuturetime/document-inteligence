@@ -45,6 +45,29 @@ jobs:
       - run: npm install --global npm@11.13.0
       - run: npm --prefix frontend ci
       - run: python3 scripts/dev.py frontend-check
+  windows-launcher-checks:
+    name: Windows launcher checks
+    runs-on: windows-latest
+    timeout-minutes: 15
+    env:
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # verified v5
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@d0d8abe699bfb85fec6de9f7adb5ae17292296ff # verified v6
+        with:
+          version: "0.12.22"
+          python-version: "3.14.5"
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # verified v4
+        with:
+          node-version: "24.16.0"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm install --global npm@11.13.0
+      - run: python scripts/dev.py setup
+      - run: uv run --project backend --locked pytest backend/tests/test_dev_launcher.py -q
+      - run: python scripts/dev.py frontend-check
   evaluation-checks:
     name: Evaluation regression
     runs-on: ubuntu-24.04
@@ -105,7 +128,7 @@ jobs:
   product-checks:
     name: Product checks
     if: ${{ always() }}
-    needs: [backend-checks, frontend-checks, evaluation-checks, ocr-integration, browser-e2e]
+    needs: [backend-checks, frontend-checks, windows-launcher-checks, evaluation-checks, ocr-integration, browser-e2e]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -117,7 +140,7 @@ jobs:
           import json, os
           results = json.loads(os.environ['JOB_RESULTS'])
           failed = {job: value['result'] for job, value in results.items() if value['result'] != 'success'}
-          if len(results) != 5 or failed:
+          if len(results) != 6 or failed:
               raise SystemExit(f'Product checks blocked: {failed or "missing jobs"}')
-          print('All five product checks succeeded')
+          print('All six product jobs succeeded')
           PY

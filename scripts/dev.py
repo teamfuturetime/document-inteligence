@@ -40,8 +40,12 @@ EVALUATION = [
 
 
 def run(command):
-    print("+ " + " ".join(command), flush=True)
-    subprocess.run(command, cwd=ROOT, check=True)
+    executable = shutil.which(command[0])
+    if executable is None:
+        raise FileNotFoundError(f"Executable not found on PATH: {command[0]}")
+    resolved = [executable, *command[1:]]
+    print("+ " + " ".join(resolved), flush=True)
+    subprocess.run(resolved, cwd=ROOT, check=True, shell=False)
 
 
 def main():
