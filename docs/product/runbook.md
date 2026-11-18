@@ -31,6 +31,12 @@ uv run --project backend --locked python scripts/backup_runtime.py runtime/backu
 
 Destination phải là thư mục mới ngoài source. SQLite backup API tạo snapshot nhất quán; files nguồn/preview bất biến được copy và hash. Restore kiểm tất cả hashes trước khi copy, không đè runtime đang chạy. Trỏ DOCINTEL_RUNTIME_DIR vào thư mục vừa restore rồi khởi động app. Không có chính sách tự xóa uploads/review; người dùng bảo quản và dọn runtime sau khi backup. Không chạy cleanup lên thư mục nhóm bằng wildcard.
 
+Backup do helper tạo dùng `backup.json` version **1** (số nguyên), với map `sha256` bắt buộc có `documents.sqlite3`. Các paths dùng dấu `/`, tương đối và không có `..`, drive prefix hoặc alias đường dẫn; mỗi hash là 64 ký tự hex thường. Restore từ chối manifest rỗng, thiếu database, version/cấu trúc/hash sai trước khi tạo thư mục đích. Các file được liệt kê phải tồn tại bên trong backup và khớp hash. Không sửa/xóa mục trong manifest để bỏ qua file lỗi.
+
+Nếu gặp `Invalid backup manifest` hoặc lỗi integrity/path, giữ nguyên runtime và backup gốc, chọn lại bản backup hợp lệ. Nếu runtime nguồn vẫn hoạt động, tạo backup mới vào một đường dẫn mới bằng helper; không khởi động app trên thư mục trống và coi đó là restore thành công. Nếu đích đã tồn tại, chọn tên mới, không xóa đích cũ để ép chạy. Sau restore hợp lệ, mở tài liệu đã xác nhận, kiểm run/revision và dữ liệu JSON export; `exported_at` được tạo theo lượt tải, không dùng timestamp đó để kết luận dữ liệu persisted đã đổi.
+
+Format backup v1 không đổi; đây là kiểm cấu trúc và hash của file được liệt kê, không phải chữ ký xác thực hoặc phép kiểm đầy đủ mọi tham chiếu bên trong SQLite. Không đưa backup chứa dữ liệu ngoài sample/synthetic vào Git.
+
 ## Docker local
 
 ```powershell

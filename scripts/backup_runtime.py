@@ -3,10 +3,11 @@
 import argparse
 import hashlib
 import json
+import re
 import shutil
 import sqlite3
 from contextlib import closing
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 from docintel.storage.local import LocalDocumentStorage
 
@@ -47,10 +48,40 @@ def backup(runtime: Path, destination: Path):
 
 def restore(source: Path, destination: Path):
     manifest = json.loads((source / "backup.json").read_text(encoding="utf-8"))
+    if (
+        not isinstance(manifest, dict)
+        or type(manifest.get("version")) is not int
+        or manifest["version"] != 1
+        or not isinstance(manifest.get("sha256"), dict)
+        or "documents.sqlite3" not in manifest["sha256"]
+    ):
+        raise ValueError(
+            "Invalid backup manifest: expected version 1 with database hash"
+        )
+    records = manifest["sha256"]
+    for relative, expected in records.items():
+        if (
+            not isinstance(relative, str)
+            or not relative
+            or "\\" in relative
+            or ":" in relative
+            or PurePosixPath(relative).is_absolute()
+            or ".." in PurePosixPath(relative).parts
+            or PurePosixPath(relative).as_posix() != relative
+            or not isinstance(expected, str)
+            or re.fullmatch(r"[0-9a-f]{64}", expected) is None
+        ):
+            raise ValueError(
+                "Invalid backup manifest: expected relative paths and SHA256 hashes"
+            )
     validated = []
-    for relative, expected in manifest["sha256"].items():
+    for relative, expected in records.items():
         path = (source / relative).resolve()
-        if not path.is_relative_to(source.resolve()) or sha256(path) != expected:
+        if (
+            not path.is_relative_to(source.resolve())
+            or not path.is_file()
+            or sha256(path) != expected
+        ):
             raise ValueError("Backup integrity or path check failed")
         target = (destination / relative).resolve()
         if not target.is_relative_to(destination.resolve()):
