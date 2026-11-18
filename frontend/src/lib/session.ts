@@ -1,4 +1,5 @@
 import type { components } from './api.generated';
+import { clearReviewDrafts } from './reviewDrafts';
 
 export type SessionState = components['schemas']['SessionState'];
 type Snapshot = { session: SessionState | null; error: string; revision: number };
@@ -6,6 +7,7 @@ let snapshot: Snapshot = { session: null, error: '', revision: 0 };
 let refreshSequence = 0;
 let mutationSequence = 0;
 let pendingMutation: number | null = null;
+let draftIdentity: string | null = null;
 const listeners = new Set<() => void>();
 let channel: BroadcastChannel | undefined;
 
@@ -16,6 +18,13 @@ export function subscribeSession(listener: () => void) {
 }
 
 function publish(session: SessionState | null, error = '') {
+  // A failed lookup is unknown, not proof of logout. Keep only namespaced recovery
+  // until a verified anonymous/different identity or cross-tab invalidation arrives.
+  if (session) {
+    const nextIdentity = session.mode === 'local' ? 'local' : (session.user?.id ?? null);
+    if (draftIdentity && draftIdentity !== nextIdentity) clearReviewDrafts(draftIdentity);
+    draftIdentity = nextIdentity;
+  }
   const previous = snapshot.session;
   const changed =
     previous?.mode !== session?.mode ||
@@ -83,6 +92,8 @@ export function watchSession() {
     channel = new BroadcastChannel('docintel-session');
     channel.onmessage = () => {
       invalidateSessionRequests();
+      if (draftIdentity) clearReviewDrafts(draftIdentity);
+      draftIdentity = null;
       publish(null);
       refresh();
     };

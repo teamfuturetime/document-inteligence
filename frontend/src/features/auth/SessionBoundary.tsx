@@ -1,5 +1,6 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { ReactNode } from 'react';
+import { ReviewIdentityContext } from '../../lib/reviewDrafts';
 import {
   getSessionSnapshot,
   login,
@@ -111,29 +112,31 @@ export function SessionBoundary({
     );
   }
   return (
-    <div key={revision}>
-      {session.mode === 'session' && session.user && (
-        <section className="session-bar" aria-label="Tài khoản hiện tại">
-          <span>
-            Đang đăng nhập: <strong>{session.user.username}</strong>
-          </span>
-          <button
-            disabled={busy || unsaved}
-            onClick={() => {
-              setBusy(true);
-              setActionError('');
-              void logout()
-                .catch((reason: Error) => setActionError(reason.message))
-                .finally(() => setBusy(false));
-            }}
-          >
-            Đăng xuất
-          </button>
-          {unsaved && <span>Hãy lưu hoặc bỏ chỉnh sửa trước khi đăng xuất.</span>}
-          {actionError && <p role="alert">{actionError}</p>}
-        </section>
-      )}
-      {children}
-    </div>
+    <ReviewIdentityContext.Provider key={revision} value={session.user?.id ?? 'local'}>
+      <div>
+        {session.mode === 'session' && session.user && (
+          <section className="session-bar" aria-label="Tài khoản hiện tại">
+            <span>
+              Đang đăng nhập: <strong>{session.user.username}</strong>
+            </span>
+            <button
+              disabled={busy || unsaved}
+              onClick={() => {
+                setBusy(true);
+                setActionError('');
+                void logout()
+                  .catch((reason: Error) => setActionError(reason.message))
+                  .finally(() => setBusy(false));
+              }}
+            >
+              Đăng xuất
+            </button>
+            {unsaved && <span>Hãy lưu hoặc bỏ chỉnh sửa trước khi đăng xuất.</span>}
+            {actionError && <p role="alert">{actionError}</p>}
+          </section>
+        )}
+        {children}
+      </div>
+    </ReviewIdentityContext.Provider>
   );
 }
