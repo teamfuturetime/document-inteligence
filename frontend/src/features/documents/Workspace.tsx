@@ -327,7 +327,7 @@ export function Workspace({
       </section>
       <section className="document-list">
         <div className="panel-heading">
-          <h2>Tài liệu của phiên làm việc local</h2>
+          <h2>Tài liệu trong không gian của bạn</h2>
           <label>
             Trạng thái
             <select
