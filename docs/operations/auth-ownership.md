@@ -34,7 +34,10 @@ Chạy một backend và một frontend theo README; mở đúng `http://127.0.0
 suốt phiên. Không đặt wildcard CORS. Cấu hình cookie không Secure bị từ chối với origin ngoài
 localhost/127.0.0.1/::1. Không mở cổng public hoặc coi HTTP profile này là triển khai an toàn
 qua mạng. CORS không thay authentication/CSRF. Cookies HttpOnly, SameSite=Lax, path `/api/v1`;
-UI chỉ giữ user/CSRF trong memory, không ghi password/token/tài liệu vào localStorage.
+UI giữ user/CSRF trong memory, không ghi password/token, ảnh nguồn hoặc raw OCR vào storage.
+Autosave đã tích hợp từ #23 lưu **changed review fields** trong localStorage để recovery;
+session mode dùng namespace user ID + document + run + editor, không nhận draft local cũ
+hoặc draft của tài khoản khác. Local mode giữ định dạng key cũ trong namespace reserved local.
 
 ## Dùng và xử lý phiên
 
@@ -52,6 +55,15 @@ Login có budget chung trong SQLite, mặc định 20 attempts/60 giây, không 
 | Đổi tài khoản/đăng xuất ở tab khác | BroadcastChannel chỉ gửi tín hiệu đổi phiên, không gửi credentials/data; workspace cũ bị gỡ. Focus/pageshow/visibility cũng đối chiếu server session. |
 | Có chỉnh sửa chưa lưu khi đăng xuất | Lưu nháp hoặc bỏ chỉnh sửa trước. Khi session bị thu hồi, dữ liệu chưa lưu không được mang sang account khác. |
 | 409 / revision hoặc run cũ | Giữ quy trình CAS hiện có: tải bản mới, so sánh rồi thao tác; không ghi đè silent. |
+
+Logout thành công, 401 hoặc server xác nhận đổi owner sẽ xóa các recovery keys của owner trước
+trong localStorage/sessionStorage; signal đổi phiên từ tab khác cũng cleanup owner đã biết.
+ACK về trễ không được ghi lại key hoặc thay draft của owner mới. Lỗi mạng khi đọc session là
+trạng thái chưa biết: workspace đóng, draft chỉ giữ trong namespace cũ để cùng account có thể
+đối chiếu khi kết nối trở lại. Cleanup phụ thuộc browser cho phép truy cập storage; dù storage
+bị chặn, không fallback sang owner khác. Browser storage không mã hóa hoặc thay quyền OS.
+Recovery 24 giờ vẫn dừng trước server comparison, không tự replay write. Trong lúc login/logout
+pending, focus refresh không được hủy mutation thành công; observation cũ về trễ bị bỏ qua.
 
 Đăng xuất thu hồi phiên hiện tại ở server và xóa cookie cùng path; reset password/disable thu hồi
 mọi phiên của tài khoản. CLI quản trị chỉ chạy offline; các lệnh đều kiểm app.lock/worker.lock:

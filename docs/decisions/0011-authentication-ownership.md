@@ -2,7 +2,7 @@
 
 Status: đề xuất trong PR issue #11 / CONS-08; kế thừa triển khai local ngày 13/11 và hoàn thiện theo
 yêu cầu người điều khiển tài khoản congtri2103 ngày 18/11/2026. Base ban đầu main@921541d,
-đã đồng bộ main@fdf757c (gồm #32/#30). Nhóm cần review phạm vi trước tích hợp; không đổi SQLite/FastAPI hoặc
+đã đồng bộ main@bb1489a (gồm #23/#35, giữ #32/#30). Nhóm cần review phạm vi trước tích hợp; không đổi SQLite/FastAPI hoặc
 nhập app PostgreSQL/Alembic cạnh tranh. Chưa là quyết định public deployment hay cho phép truy cập dữ liệu thật.
 
 ## Identity và scope
@@ -24,6 +24,13 @@ Rollback về binary/schema1 phải restore backup; không reset lịch sử ho�
 Nguồn Minh Thảo `minhthao@760ccdc`: tham khảo opaque sessions/CSRF/owner enforcement, không copy PostgreSQL/Alembic model hoặc gọi VT-044 harness là auth production. Phải triage lỗi Windows-style path trên POSIX trước khi reuse storage; giữ opaque-ID storage của docintel và tests đường dẫn độc lập. Không đổi submission refs/authors.
 
 ## Kiểm chứng và giới hạn
+
+Sau tích hợp autosave #23, changed review fields có recovery localStorage tối đa 24 giờ theo
+owner/document/run/editor, không có password/session token/source image/raw OCR. Không nhận
+draft local cũ vào account. Logout/401/đổi identity cleanup owner đã biết và gỡ workspace;
+ACK cũ không được ghi storage hoặc autosave sau khi session generation đổi. Refresh quan sát
+được tách khỏi login/logout mutation để focus không hủy login 200. Recovery luôn dừng trước
+đối chiếu server; storage không mã hóa và cleanup phụ thuộc browser cho phép truy cập.
 
 Matrix hai tài khoản trên SQLite thật: mỗi user chỉ thấy dữ liệu của mình; direct URL/source, forged run/revision, idempotency replay và aggregate không vượt owner. Kiểm session expiry/disable/logout/rotation, CSRF/login CSRF, migration/backup/version conflict/restore, legacy adoption và local compatibility. Có UI login/logout, native/browser checks cho cả local lẫn session mode.
 

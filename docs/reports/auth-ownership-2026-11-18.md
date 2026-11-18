@@ -1,5 +1,9 @@
 # Auth/ownership acceptance — 18/11/2026
 
+> Báo cáo lịch sử của head 8db03bc trước tích hợp autosave #23. Kết luận browser storage tại
+> mốc đó không áp dụng cho bản ghép autosave. Xem [review follow-up](auth-ownership-review-2026-11-18.md)
+> để biết fix login/focus, recovery theo identity và kết quả trên source mới.
+
 Issue [#11](https://github.com/teamfuturetime/document-inteligence/issues/11), PR
 [#33](https://github.com/teamfuturetime/document-inteligence/pull/33), tài khoản thực hiện
 congtri2103 với Codex hỗ trợ. Đây là verification workflow synthetic/sample trên SQLite thật;
