@@ -2,7 +2,7 @@
 
 Yêu cầu người dùng: 50 commit bổ sung cho task này. Mỗi mốc dưới có thay đổi thực và kiểm tra phù hợp, không commit rỗng, backdate hoặc sửa lịch sử PR #16/#18. Nhánh `feat/11-auth-ownership`, base main@921541d. Chỉ công việc issue #11, không push/merge main.
 
-1. Quyết định identity/session/ownership/migration (ADR0010) và kế hoạch.
+1. Quyết định identity/session/ownership/migration (ADR0011) và kế hoạch.
 2. Matrix quyền document/source/review/history/export và owner boundary.
 3. Triage storage portability ở nguồn Minh Thảo.
 4. Password hashing có salt và work factor đã pin.

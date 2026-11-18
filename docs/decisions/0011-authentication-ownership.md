@@ -1,4 +1,4 @@
-# ADR0010 — Opt-in session identity và document ownership
+# ADR0011 — Opt-in session identity và document ownership
 
 Status: triển khai local theo yêu cầu người dùng ngày 13/11/2026, issue #11 / CONS-08. Base main@921541d; không đổi SQLite/FastAPI hoặc nhập app PostgreSQL/Alembic cạnh tranh. Chưa là quyết định public deployment hay cho phép truy cập dữ liệu thật.
 

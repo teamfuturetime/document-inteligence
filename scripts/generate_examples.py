@@ -1,6 +1,7 @@
 import json
 
 from docintel.config import ROOT
+from docintel.domain.auth import SessionState
 from docintel.domain.models import ExportArtifact
 from docintel.services.fixtures import FixtureService
 
@@ -38,3 +39,5 @@ write(
     },
 )
 print("Generated contract examples; confirmed export is illustrative only.")
+write("session-local.json", SessionState(mode="local").model_dump(mode="json"))
+write("session-anonymous.json", SessionState(mode="session").model_dump(mode="json"))

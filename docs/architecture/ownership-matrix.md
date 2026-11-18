@@ -1,6 +1,6 @@
 # Matrix quyền và actor — issue #11
 
-Theo [ADR0010](../decisions/0010-authentication-ownership.md), principal được server lấy từ session DB. Owner ID không phải query/header/body option do client chọn. `local` là actor reserved của mode không auth, không phải tài khoản có thể đăng nhập. Local mode chỉ truy cập tài liệu local, không được coi là đường tắt vào tài liệu của tài khoản khác khi đổi cấu hình.
+Theo [ADR0011](../decisions/0011-authentication-ownership.md), principal được server lấy từ session DB. Owner ID không phải query/header/body option do client chọn. `local` là actor reserved của mode không auth, không phải tài khoản có thể đăng nhập. Local mode chỉ truy cập tài liệu local, không được coi là đường tắt vào tài liệu của tài khoản khác khi đổi cấu hình.
 
 | Resource / operation | Anonymous session mode | Chủ tài liệu | User khác | Local mode |
 | --- | --- | --- | --- | --- |

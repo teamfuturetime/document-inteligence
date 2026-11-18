@@ -71,7 +71,7 @@ export function App() {
             Mẫu minh họa
           </button>
         </nav>
-        <span className="pill">LOCAL · 0.2.0</span>
+        <span className="pill">LOCAL · 0.4.0</span>
       </header>
       <main>
         {navigationError && (
