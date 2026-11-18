@@ -8,4 +8,6 @@ PNG và annotation UTF-8/LF có SHA256. Parent IDs được chia trước phép 
 
 Generator/labeling cùng nguồn nên cần nhóm review chéo nhãn trước golden nghiệm thu cuối. Lượt này kiểm checksum/schema/bounds và xem mẫu ảnh; không bịa rằng 150 nhãn đã được nhiều người kiểm tra độc lập. Chưa đại diện ảnh chụp thật, chữ viết tay, đa trang hoặc mọi hóa đơn.
 
+[Audit mẫu ngày 18/11/2026 — issue #5](../../docs/data/baseline-review-2026-11-18.md) ghi 18 ảnh/108 trường do Codex đối chiếu, coverage toàn bộ splits/parent/hash và giới hạn template dùng chung. Review con người trên PR còn chờ; không coi record do agent tạo là hai người đã duyệt golden. Chạy `uv run --project backend --locked python scripts/audit_product_data.py` để in audit hiện tại; `check_data.py` cũng kiểm status/null/type và nội dung nhãn trùng chéo split, không chạy OCR.
+
 Development phục vụ sửa rules; validation chọn policy; test chỉ dùng sau khi chốt. Report nêu split/support/exclusions và model/config/source versions. Tạo lại với font/runtime khác phải tăng dataset version, cập nhật hashes và chạy lại evidence; không sửa gold theo prediction.

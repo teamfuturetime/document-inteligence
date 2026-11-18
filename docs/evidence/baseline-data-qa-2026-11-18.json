@@ -1,0 +1,468 @@
+{
+  "issue": 5,
+  "review_date": "2026-11-18",
+  "timezone": "Asia/Saigon",
+  "review_base_commit": "fdf757c7f730a52e86bcef9c81f96dd1ae699f1a",
+  "performed_by": "Codex in a user-authorized session authenticated as tuanqtb123-creator; no human approval claimed",
+  "audit": {
+    "audit_version": "1.0.0",
+    "purpose": "dataset_integrity_audit; not OCR inference or human label approval",
+    "dataset_version": "product-synthetic-1.0.0",
+    "manifest_sha256": "3e5cf4c039b7c4f678ba3a5c3ac39a8b0aa7b921f9d1923b2040053f04d3ccdb",
+    "provenance": {
+      "creator": "scripts/generate_product_dataset.py",
+      "template": "Self-designed",
+      "font": "arial.ttf",
+      "font_sha256": "74d696e666f696e93db685a85c94bfbfcc0796dfcf8a2e2e2e2c908a54e82949",
+      "font_distribution": "System font is referenced, never redistributed"
+    },
+    "samples": 150,
+    "parents": 150,
+    "splits": {
+      "development": 90,
+      "test": 30,
+      "validation": 30
+    },
+    "document_splits": {
+      "don_de_nghi": {
+        "development": 45,
+        "test": 15,
+        "validation": 15
+      },
+      "hoa_don": {
+        "development": 45,
+        "test": 15,
+        "validation": 15
+      }
+    },
+    "field_statuses": {
+      "absent": 10,
+      "present": 882,
+      "unreadable": 8
+    },
+    "quality_tags": {
+      "absent": 10,
+      "invalid_calendar_source": 8,
+      "layout_0": 50,
+      "layout_1": 50,
+      "layout_2": 50,
+      "mild_blur": 12,
+      "typed": 150,
+      "unreadable": 8,
+      "vietnamese": 150
+    },
+    "template_splits": {
+      "don_de_nghi_layout_0": {
+        "development": 15,
+        "test": 5,
+        "validation": 5
+      },
+      "don_de_nghi_layout_1": {
+        "development": 15,
+        "test": 5,
+        "validation": 5
+      },
+      "don_de_nghi_layout_2": {
+        "development": 15,
+        "test": 5,
+        "validation": 5
+      },
+      "hoa_don_layout_0": {
+        "development": 15,
+        "test": 5,
+        "validation": 5
+      },
+      "hoa_don_layout_1": {
+        "development": 15,
+        "test": 5,
+        "validation": 5
+      },
+      "hoa_don_layout_2": {
+        "development": 15,
+        "test": 5,
+        "validation": 5
+      }
+    },
+    "templates_shared_across_splits": [
+      "don_de_nghi_layout_0",
+      "don_de_nghi_layout_1",
+      "don_de_nghi_layout_2",
+      "hoa_don_layout_0",
+      "hoa_don_layout_1",
+      "hoa_don_layout_2"
+    ],
+    "new_inference": false,
+    "visual_review_performed": false
+  },
+  "visual_sample_review": {
+    "method": "Original PNGs opened with view_image and compared to annotations; not a blinded study",
+    "selection": "Indices 000,001,002,003,004,005,006,010,011 for each document type; metadata coverage, not prediction errors",
+    "documents": 18,
+    "fields": 108,
+    "present": 104,
+    "absent": 2,
+    "unreadable": 2,
+    "disagreements_observed": [],
+    "independent_human_review": "pending on PR; not performed or approved by Codex on behalf of a human",
+    "samples": [
+      {
+        "sample_id": "hoa_don_000",
+        "document_type": "hoa_don",
+        "split": "test",
+        "template_id": "hoa_don_layout_0",
+        "input_path": "data/product/images/hoa_don_000.png",
+        "input_sha256": "fe2c356f573d6dae452f108f2ce73181242b8ccbe348c0f3d4667d2c02607b68",
+        "annotation_path": "data/product/annotations/hoa_don_000.json",
+        "annotation_sha256": "50666e8b4a31e644a67683b5710b2d00cd92c28ff8a71b51e3e9d0c172b6e8b1",
+        "quality_tags": [
+          "layout_0",
+          "typed",
+          "vietnamese"
+        ]
+      },
+      {
+        "sample_id": "hoa_don_001",
+        "document_type": "hoa_don",
+        "split": "validation",
+        "template_id": "hoa_don_layout_1",
+        "input_path": "data/product/images/hoa_don_001.png",
+        "input_sha256": "c011eb2ca0ab0d14625648f6b085a06b175f2f2f69347ac7406aeedcd0ba880b",
+        "annotation_path": "data/product/annotations/hoa_don_001.json",
+        "annotation_sha256": "9c27e928c342465ad32c53a672e3dc3ee53c842e678e2d534d9315c32af5a2ec",
+        "quality_tags": [
+          "layout_1",
+          "typed",
+          "vietnamese"
+        ]
+      },
+      {
+        "sample_id": "hoa_don_002",
+        "document_type": "hoa_don",
+        "split": "development",
+        "template_id": "hoa_don_layout_2",
+        "input_path": "data/product/images/hoa_don_002.png",
+        "input_sha256": "950d9c48193a8e59946fb0878d69c85d1b149a29c1a1aba2c5e5997fdaadf7fe",
+        "annotation_path": "data/product/annotations/hoa_don_002.json",
+        "annotation_sha256": "7cb9468ec40efc00a3a459033eaaebc3680bb316622ccb9773ab343eb384df67",
+        "quality_tags": [
+          "layout_2",
+          "typed",
+          "vietnamese",
+          "unreadable"
+        ]
+      },
+      {
+        "sample_id": "hoa_don_003",
+        "document_type": "hoa_don",
+        "split": "development",
+        "template_id": "hoa_don_layout_0",
+        "input_path": "data/product/images/hoa_don_003.png",
+        "input_sha256": "bfedd67f5664a8e46b9c5e5646d9a2fe0450bc28941dd6472bbc14f83a4d31cd",
+        "annotation_path": "data/product/annotations/hoa_don_003.json",
+        "annotation_sha256": "52f8b0cd2b3eebf2b3a855c64b5d03448ccb21e5bff783bc26e1b3965174edc5",
+        "quality_tags": [
+          "layout_0",
+          "typed",
+          "vietnamese",
+          "absent"
+        ]
+      },
+      {
+        "sample_id": "hoa_don_004",
+        "document_type": "hoa_don",
+        "split": "development",
+        "template_id": "hoa_don_layout_1",
+        "input_path": "data/product/images/hoa_don_004.png",
+        "input_sha256": "d978452b160a98e2e9b1607e39c0f5db5dc0fcab9dd5d1d04169ad3017477003",
+        "annotation_path": "data/product/annotations/hoa_don_004.json",
+        "annotation_sha256": "77e78b9ae3be596997d3f265074264551643b7a8c218146703c72da56b795211",
+        "quality_tags": [
+          "layout_1",
+          "typed",
+          "vietnamese",
+          "invalid_calendar_source"
+        ]
+      },
+      {
+        "sample_id": "hoa_don_005",
+        "document_type": "hoa_don",
+        "split": "test",
+        "template_id": "hoa_don_layout_2",
+        "input_path": "data/product/images/hoa_don_005.png",
+        "input_sha256": "946711f668d215f5c3f03bfa8a7038f2c9bbb82d5c14cd261e5c8512896b2833",
+        "annotation_path": "data/product/annotations/hoa_don_005.json",
+        "annotation_sha256": "d4e72cfb99db03572ec97373b688e1dddb988a567361868147ba0610abfbd2c5",
+        "quality_tags": [
+          "layout_2",
+          "typed",
+          "vietnamese",
+          "mild_blur"
+        ]
+      },
+      {
+        "sample_id": "hoa_don_006",
+        "document_type": "hoa_don",
+        "split": "validation",
+        "template_id": "hoa_don_layout_0",
+        "input_path": "data/product/images/hoa_don_006.png",
+        "input_sha256": "120dab2d6148efe47af4ee763c0b6eac32114f256c247e16a04653f53fee8dbd",
+        "annotation_path": "data/product/annotations/hoa_don_006.json",
+        "annotation_sha256": "77703d89d07c08caaf3208e1726cabaca2d50b126dcdbef7ce16145fd0d66d29",
+        "quality_tags": [
+          "layout_0",
+          "typed",
+          "vietnamese"
+        ]
+      },
+      {
+        "sample_id": "hoa_don_010",
+        "document_type": "hoa_don",
+        "split": "test",
+        "template_id": "hoa_don_layout_1",
+        "input_path": "data/product/images/hoa_don_010.png",
+        "input_sha256": "faf539e0ff3a3cf2585bf4d8a732901670fab4b6e4f42b7cd475357dd4570259",
+        "annotation_path": "data/product/annotations/hoa_don_010.json",
+        "annotation_sha256": "9bb382ac005479d7fc5f3b600d3ab79298c0676c730446f27daf6a45158a0001",
+        "quality_tags": [
+          "layout_1",
+          "typed",
+          "vietnamese"
+        ]
+      },
+      {
+        "sample_id": "hoa_don_011",
+        "document_type": "hoa_don",
+        "split": "validation",
+        "template_id": "hoa_don_layout_2",
+        "input_path": "data/product/images/hoa_don_011.png",
+        "input_sha256": "729f186c04745b1d13cc96e5be899b53a7e48344972a1471f66dde6472b9e6b8",
+        "annotation_path": "data/product/annotations/hoa_don_011.json",
+        "annotation_sha256": "9bd5c42faa6dc02fe7ceafa50d8e1f385d909df57c53a150c60dc9962433aa7c",
+        "quality_tags": [
+          "layout_2",
+          "typed",
+          "vietnamese"
+        ]
+      },
+      {
+        "sample_id": "don_de_nghi_000",
+        "document_type": "don_de_nghi",
+        "split": "test",
+        "template_id": "don_de_nghi_layout_0",
+        "input_path": "data/product/images/don_de_nghi_000.png",
+        "input_sha256": "a7e31f11dd8746ff03725c34932759bb1555dfeaa821f360b10ac6d73fb2f5ea",
+        "annotation_path": "data/product/annotations/don_de_nghi_000.json",
+        "annotation_sha256": "1e2a342aec4c28e4b0201c97e17e27ec396c0460212ec5958698539fa3d92cfc",
+        "quality_tags": [
+          "layout_0",
+          "typed",
+          "vietnamese"
+        ]
+      },
+      {
+        "sample_id": "don_de_nghi_001",
+        "document_type": "don_de_nghi",
+        "split": "validation",
+        "template_id": "don_de_nghi_layout_1",
+        "input_path": "data/product/images/don_de_nghi_001.png",
+        "input_sha256": "e82953f125620e7c93bb1992ac94e7241537e1479816897fcb2fd19cd90644ec",
+        "annotation_path": "data/product/annotations/don_de_nghi_001.json",
+        "annotation_sha256": "c1c785f8f2db0b0944d1aa57e956aa054fd5a15adb6d7a80a98db2eeaed66c37",
+        "quality_tags": [
+          "layout_1",
+          "typed",
+          "vietnamese"
+        ]
+      },
+      {
+        "sample_id": "don_de_nghi_002",
+        "document_type": "don_de_nghi",
+        "split": "development",
+        "template_id": "don_de_nghi_layout_2",
+        "input_path": "data/product/images/don_de_nghi_002.png",
+        "input_sha256": "e0c541cb967666a41973590359dec3153e4eb7882bdff955da0538c09230f994",
+        "annotation_path": "data/product/annotations/don_de_nghi_002.json",
+        "annotation_sha256": "749c81958f41a0fd8afda30f1ae5a964e60acc20fe92829c7e293f8a6ae8a173",
+        "quality_tags": [
+          "layout_2",
+          "typed",
+          "vietnamese",
+          "unreadable"
+        ]
+      },
+      {
+        "sample_id": "don_de_nghi_003",
+        "document_type": "don_de_nghi",
+        "split": "development",
+        "template_id": "don_de_nghi_layout_0",
+        "input_path": "data/product/images/don_de_nghi_003.png",
+        "input_sha256": "e1ed62323e834fa87cec6e75b7531c3ec397b4ae0285b3ed4f8e9c955492229d",
+        "annotation_path": "data/product/annotations/don_de_nghi_003.json",
+        "annotation_sha256": "5e10c564c5d9083830b42290beb7de591610a76cd2f3b8b9834eaa00feb81472",
+        "quality_tags": [
+          "layout_0",
+          "typed",
+          "vietnamese",
+          "absent"
+        ]
+      },
+      {
+        "sample_id": "don_de_nghi_004",
+        "document_type": "don_de_nghi",
+        "split": "development",
+        "template_id": "don_de_nghi_layout_1",
+        "input_path": "data/product/images/don_de_nghi_004.png",
+        "input_sha256": "384d5b10ebd17472c28ca18e467658234c841356d633c2895c663808a313a0cd",
+        "annotation_path": "data/product/annotations/don_de_nghi_004.json",
+        "annotation_sha256": "bcf718fe946d6f4a5b3972b19acd5f5c4623c39ceb99314eac46b6ce5cf23e7e",
+        "quality_tags": [
+          "layout_1",
+          "typed",
+          "vietnamese",
+          "invalid_calendar_source"
+        ]
+      },
+      {
+        "sample_id": "don_de_nghi_005",
+        "document_type": "don_de_nghi",
+        "split": "test",
+        "template_id": "don_de_nghi_layout_2",
+        "input_path": "data/product/images/don_de_nghi_005.png",
+        "input_sha256": "e09f4451c8ea57796dadbbb50ebde758b16c23e5cc2f8cc2ddc894bfd1639da1",
+        "annotation_path": "data/product/annotations/don_de_nghi_005.json",
+        "annotation_sha256": "d5cac6db3e93af5053ac2012ef880edc81a84df9efc4e83615f83cc10be7e9a0",
+        "quality_tags": [
+          "layout_2",
+          "typed",
+          "vietnamese",
+          "mild_blur"
+        ]
+      },
+      {
+        "sample_id": "don_de_nghi_006",
+        "document_type": "don_de_nghi",
+        "split": "validation",
+        "template_id": "don_de_nghi_layout_0",
+        "input_path": "data/product/images/don_de_nghi_006.png",
+        "input_sha256": "4588bcc9e69f5f2595a84506fab22b82ab420c9e5cff99f2ef2f18900425695d",
+        "annotation_path": "data/product/annotations/don_de_nghi_006.json",
+        "annotation_sha256": "5109806c6ec7deea214d1b269deced73566f100bb7afe5e7f747c0148e651238",
+        "quality_tags": [
+          "layout_0",
+          "typed",
+          "vietnamese"
+        ]
+      },
+      {
+        "sample_id": "don_de_nghi_010",
+        "document_type": "don_de_nghi",
+        "split": "test",
+        "template_id": "don_de_nghi_layout_1",
+        "input_path": "data/product/images/don_de_nghi_010.png",
+        "input_sha256": "ae97ba5864036fa54b76b8e6d219bc130b8bf9badfa3aa2908855599ee155942",
+        "annotation_path": "data/product/annotations/don_de_nghi_010.json",
+        "annotation_sha256": "c937d82f3b602c370af06ab79ca1c0a86b2a065f72dda95340cc5aba19c50705",
+        "quality_tags": [
+          "layout_1",
+          "typed",
+          "vietnamese"
+        ]
+      },
+      {
+        "sample_id": "don_de_nghi_011",
+        "document_type": "don_de_nghi",
+        "split": "validation",
+        "template_id": "don_de_nghi_layout_2",
+        "input_path": "data/product/images/don_de_nghi_011.png",
+        "input_sha256": "b97f1ca05e22ffad27e5183862f7aed00ab453ab84b8c41e8b864246cc9f7b11",
+        "annotation_path": "data/product/annotations/don_de_nghi_011.json",
+        "annotation_sha256": "153012ed85b9b75fa4493640c409d2ecd6542a85d820c2771403f8f52952316c",
+        "quality_tags": [
+          "layout_2",
+          "typed",
+          "vietnamese"
+        ]
+      }
+    ]
+  },
+  "frozen_baseline": {
+    "run_id": "0c2a99f6fa474616a63b3bacd161f750",
+    "dataset_version": "product-synthetic-1.0.0",
+    "manifest_sha256": "3e5cf4c039b7c4f678ba3a5c3ac39a8b0aa7b921f9d1923b2040053f04d3ccdb",
+    "run_metadata": {
+      "engine_version": "5.4.0.20240606",
+      "model_revision": "87416418657359cb625c412a48b6e1d6d41c29bd",
+      "model_sha256": {
+        "vie": "79df64caf7bcfb2a27df5042ecb6121e196eada34da774956995747636d5bfa1",
+        "eng": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+      },
+      "git_commit": "f37bfbdbb6c4669c8a867d15610129fb7d351928",
+      "git_dirty": true,
+      "pipeline_source_sha256": "8576b1df9b1d327f5119f6d8ae686920a2a7f4469363b1a73b828f5bbae33fcf",
+      "runtime": {
+        "python": "3.14.5",
+        "pillow": "12.3.0",
+        "pydantic": "2.13.5"
+      },
+      "hardware": {
+        "architecture": "AMD64",
+        "processor": "Intel64 Family 6 Model 141 Stepping 1, GenuineIntel",
+        "platform": "Windows",
+        "acceleration": "CPU"
+      },
+      "reproducibility_limitations": [
+        "OCR confidence is heuristic, not calibrated"
+      ],
+      "input_sha256": "fe2c356f573d6dae452f108f2ce73181242b8ccbe348c0f3d4667d2c02607b68",
+      "config": {
+        "version": "inference-config-1.1.0",
+        "max_upload_bytes": 5242880,
+        "max_image_pixels": 16000000,
+        "timeout_seconds": 30.0,
+        "psm": 6,
+        "rotation": 0,
+        "scale": 1.0,
+        "autocontrast": false,
+        "minimum_field_ocr_score": 0.5
+      },
+      "config_sha256": "3615bd047d1f1e3897482040368f991002d12cfc9bc2e8a9591e871308d1b5ff",
+      "rules_version": "label-rules-1.0.0",
+      "rules_sha256": "10e7c040a535cbdbeac240f68a24d0f7149041619d131ec190e6a2d5937eebcd",
+      "confidence_version": "evidence-minimum-ocr-abstain-1.1.0",
+      "preprocessing": {
+        "version": "image-preprocessing-1.0.0",
+        "width": 1200,
+        "height": 1550,
+        "processed_width": 1200,
+        "processed_height": 1550,
+        "rotation": 0,
+        "scale": 1.0,
+        "source_frame": "exif_normalized_pixels_top_left"
+      },
+      "elapsed_seconds": 1.0964,
+      "prediction_source": "model",
+      "report_type": "inference_run"
+    },
+    "files_sha256": {
+      "data/manifests/product.json": "3e5cf4c039b7c4f678ba3a5c3ac39a8b0aa7b921f9d1923b2040053f04d3ccdb",
+      "scripts/generate_product_dataset.py": "904485fcf331011d2146450b54a099b7b8028b8f1db2b4c76616bd4934ca3b4c",
+      "configs/pipeline-baseline.json": "94e5cbfabd448f0d0d97e58e881fbd1a8ddf78b4fcaeb252c122923ecc86ccd6",
+      "pipeline/src/document_pipeline/resources/fields.json": "10e7c040a535cbdbeac240f68a24d0f7149041619d131ec190e6a2d5937eebcd",
+      "pipeline/src/document_pipeline/resources/tessdata-lock.json": "a4a8629541144155d387688c0c2e968f9e473c6d647f0d573fd90c4848faa796",
+      "evaluation/runs/2026-10-24-test-frozen/report.json": "3dec797477e15bd366048ea86548dc3bea3b00de16055df1739b6ff158dbddad",
+      "evaluation/runs/2026-10-24-test-frozen/predictions.json": "2fd02aa1f7ef769a76bf5c11751a4893776ec71e65d5b33bf69085d9501fe8ec"
+    },
+    "replay": {
+      "status": "passed",
+      "documents": 30,
+      "new_inference": false,
+      "command": "uv run --project backend --locked python scripts/check_evaluation_regression.py"
+    }
+  },
+  "limits": [
+    "Synthetic, repeated template families across all splits; not real-invoice or unseen-layout accuracy",
+    "Only 18 images visually sampled by Codex; automated audit covers all 150",
+    "No gold, dataset split, pipeline config, model, prediction or frozen report changes; no new native benchmark",
+    "Human reviewer must confirm sampling and conclusions on the PR"
+  ]
+}
