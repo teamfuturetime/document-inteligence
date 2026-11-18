@@ -452,6 +452,10 @@ def test_backup_restore_preserves_reviews_and_checks_integrity(product, tmp_path
     api.post(
         "/api/v1/documents/" + document["document_id"] + "/confirm", json=revision_request(document)
     )
+    export_path = "/api/v1/documents/" + document["document_id"] + "/export"
+    export_params = {"run_id": document["run"]["run_id"], "revision": 1}
+    before = api.get(export_path, params=export_params)
+    assert before.status_code == 200
     destination = tmp_path.parent / (tmp_path.name + "-backup")
     restored = tmp_path.parent / (tmp_path.name + "-restore")
     module.backup(settings.runtime_dir, destination)
@@ -461,6 +465,13 @@ def test_backup_restore_preserves_reviews_and_checks_integrity(product, tmp_path
     ) as clone:
         detail = clone.get("/api/v1/documents/" + document["document_id"]).json()
         assert detail["review"]["review_status"] == "confirmed"
+        after = clone.get(export_path, params=export_params)
+        assert after.status_code == 200
+        # Download time is generated afresh; persisted content and revision must survive.
+        original_export, restored_export = before.json(), after.json()
+        original_export.pop("exported_at")
+        restored_export.pop("exported_at")
+        assert restored_export == original_export
     with pytest.raises(FileExistsError):
         module.restore(destination, restored)
     (destination / "documents.sqlite3").write_bytes(b"corrupt")
