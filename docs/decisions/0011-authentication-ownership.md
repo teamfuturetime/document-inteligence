@@ -2,7 +2,7 @@
 
 Status: đề xuất trong PR issue #11 / CONS-08; kế thừa triển khai local ngày 13/11 và hoàn thiện theo
 yêu cầu người điều khiển tài khoản congtri2103 ngày 18/11/2026. Base ban đầu main@921541d,
-đã đồng bộ main@259ea63. Nhóm cần review phạm vi trước tích hợp; không đổi SQLite/FastAPI hoặc
+đã đồng bộ main@fdf757c (gồm #32/#30). Nhóm cần review phạm vi trước tích hợp; không đổi SQLite/FastAPI hoặc
 nhập app PostgreSQL/Alembic cạnh tranh. Chưa là quyết định public deployment hay cho phép truy cập dữ liệu thật.
 
 ## Identity và scope

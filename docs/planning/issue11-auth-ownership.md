@@ -1,6 +1,6 @@
 # Issue #11 — kế hoạch mốc triển khai
 
-Cập nhật 18/11/2026: tiếp tục nhánh đã có, giữ nguyên commits và đồng bộ main@259ea63.
+Cập nhật 18/11/2026: tiếp tục nhánh đã có, giữ nguyên commits và đồng bộ main@fdf757c (gồm #32/#30).
 Các số bên dưới là mốc kế hoạch ban đầu, không phải yêu cầu tạo đủ số commit mới khi tiếp tục.
 Phần backend/session/ownership được nối với UI, contracts 0.4.0, native hai profile và browser
 hai account; bàn giao qua một PR vì gates/API/UI cần đồng bộ. Chi tiết vận hành ở

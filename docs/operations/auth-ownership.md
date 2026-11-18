@@ -94,8 +94,8 @@ Chọn đích mới; kiểm confirmed state, source, owner và JSON export sau r
 password hashes và session state: giữ private, không commit/upload hoặc đặt trong web root.
 Restore có thể phục hồi session chưa hết hạn trong backup; reset password offline nếu cần thu hồi
 các phiên đó trước khởi động. Hash manifest kiểm file được liệt kê, không là chữ ký xác thực.
-Bug validation manifest được review riêng ở [PR #32](https://github.com/teamfuturetime/document-inteligence/pull/32);
-đồng bộ và kiểm lại helper khi PR đó vào main.
+Validation manifest từ [PR #32](https://github.com/teamfuturetime/document-inteligence/pull/32)
+đã được merge vào main và đồng bộ vào nhánh auth; giữ cả kiểm manifest trước mkdir và permissions private.
 
 Rollback binary schema 1 phải restore **backup schema 1** vào directory mới rồi trỏ runtime
 của binary cũ vào đó. Không chạy binary cũ lên DB2 hoặc sửa số version. Thay đổi sau mốc backup
