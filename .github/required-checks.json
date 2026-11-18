@@ -4,6 +4,7 @@
   "jobs": {
     "backend-checks": "Backend checks",
     "frontend-checks": "Frontend checks",
+    "windows-launcher-checks": "Windows launcher checks",
     "evaluation-checks": "Evaluation regression",
     "ocr-integration": "OCR integration",
     "browser-e2e": "Browser E2E"
