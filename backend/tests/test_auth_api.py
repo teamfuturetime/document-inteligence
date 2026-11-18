@@ -133,6 +133,68 @@ def processed_document(api, csrf):
 
 
 @pytest.mark.parametrize(
+    ("method", "path"),
+    [
+        ("GET", "/documents"),
+        ("GET", "/document-schemas"),
+        ("GET", "/insights"),
+        ("POST", "/documents"),
+        ("GET", "/documents/" + "a" * 32),
+        ("GET", "/documents/" + "a" * 32 + "/image"),
+        ("GET", "/documents/" + "a" * 32 + "/history"),
+        ("PUT", "/documents/" + "a" * 32 + "/review"),
+        ("POST", "/documents/" + "a" * 32 + "/confirm"),
+        ("POST", "/documents/" + "a" * 32 + "/runs"),
+        ("GET", "/documents/" + "a" * 32 + "/export?run_id=missing&revision=1"),
+    ],
+)
+def test_anonymous_requests_are_rejected_before_product_validation(session_api, method, path):
+    api, _ = session_api
+    response = api.request(method, "/api/v1" + path)
+    assert response.status_code == 401, response.text
+    assert response.json()["error"]["code"] == "AUTH_REQUIRED"
+    assert response.headers["cache-control"] == "no-store"
+
+
+@pytest.mark.parametrize("endpoint", ["login", "logout"])
+def test_cross_site_auth_requests_preserve_existing_session(session_api, endpoint):
+    api, _ = session_api
+    state = login(api)
+    response = api.post(
+        "/api/v1/auth/" + endpoint,
+        json={"username": "beta", "password": PASSWORD},
+        headers={
+            "Origin": ORIGIN,
+            "Sec-Fetch-Site": "cross-site",
+            "X-Requested-With": "docintel",
+            "X-CSRF-Token": state["csrf_token"],
+        },
+    )
+    assert response.status_code == 403
+    assert api.get("/api/v1/auth/session").json()["user"] == state["user"]
+
+
+@pytest.mark.parametrize("invalidation", ["expiry", "disable", "password-reset"])
+def test_invalidated_session_cannot_read_or_write_and_status_is_anonymous(
+    session_api, invalidation
+):
+    api, _ = session_api
+    state = login(api)
+    identities = api.app.state.auth.identities
+    if invalidation == "expiry":
+        with identities.repository.transaction(write=True) as connection:
+            connection.execute("UPDATE sessions SET expires_at=0")
+    elif invalidation == "disable":
+        identities.disable(state["user"]["id"])
+    else:
+        identities.reset_password(state["user"]["id"], hash_password("replacement-password-123"))
+    status = api.get("/api/v1/auth/session")
+    assert status.json() == {"mode": "session", "user": None, "csrf_token": None}
+    assert api.get("/api/v1/documents").status_code == 401
+    assert upload(api, state["csrf_token"]).status_code == 401
+
+
+@pytest.mark.parametrize(
     "operation", ["detail", "source", "history", "review", "confirm", "export", "reprocess"]
 )
 def test_two_user_resource_authorization_matrix(session_api, operation):
