@@ -28,6 +28,43 @@ async function upload(page: Page) {
   return document;
 }
 
+test('focus refresh during pending login preserves the successful authenticated UI', async ({
+  page,
+}) => {
+  await workspace(page);
+  await expect(page.getByRole('button', { name: 'Đăng nhập', exact: true })).toBeVisible();
+  let releaseLogin!: () => void;
+  let loginStarted!: () => void;
+  const held = new Promise<void>((resolve) => {
+    releaseLogin = resolve;
+  });
+  const started = new Promise<void>((resolve) => {
+    loginStarted = resolve;
+  });
+  await page.route('**/api/v1/auth/login', async (route) => {
+    loginStarted();
+    await held;
+    await route.continue();
+  });
+  await page.getByLabel('Tên đăng nhập').fill('alpha');
+  await page.getByLabel('Mật khẩu', { exact: true }).fill('synthetic-browser-password-123');
+  await page.getByRole('button', { name: 'Đăng nhập', exact: true }).click();
+  await started;
+  const observed = page.waitForResponse('**/api/v1/auth/session');
+  await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+  expect((await (await observed).json()).user).toBeNull();
+  const loggedIn = page.waitForResponse('**/api/v1/auth/login');
+  releaseLogin();
+  expect((await loggedIn).status()).toBe(200);
+  expect((await (await page.request.get('/api/v1/auth/session')).json()).user.username).toBe(
+    'alpha',
+  );
+  await expect(page.getByRole('region', { name: 'Tài khoản hiện tại' })).toContainText('alpha', {
+    timeout: 3000,
+  });
+  await expect(page.getByRole('button', { name: 'Đăng nhập', exact: true })).toHaveCount(0);
+});
+
 test('two accounts: native review/export, foreign identifiers, independent cookies and logout', async ({
   browser,
 }) => {

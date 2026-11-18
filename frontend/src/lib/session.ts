@@ -4,6 +4,8 @@ export type SessionState = components['schemas']['SessionState'];
 type Snapshot = { session: SessionState | null; error: string; revision: number };
 let snapshot: Snapshot = { session: null, error: '', revision: 0 };
 let refreshSequence = 0;
+let mutationSequence = 0;
+let pendingMutation: number | null = null;
 const listeners = new Set<() => void>();
 let channel: BroadcastChannel | undefined;
 
@@ -33,14 +35,36 @@ async function sessionResponse(response: Response): Promise<SessionState> {
 
 export async function refreshSession() {
   const sequence = ++refreshSequence;
+  const mutation = mutationSequence;
+  const isCurrent = () =>
+    sequence === refreshSequence && mutation === mutationSequence && pendingMutation === null;
   try {
     const state = await sessionResponse(
       await fetch('/api/v1/auth/session', { credentials: 'same-origin', cache: 'no-store' }),
     );
-    if (sequence === refreshSequence) publish(state);
+    if (isCurrent()) publish(state);
   } catch {
-    if (sequence === refreshSequence) publish(null, 'Không kiểm tra được phiên. Hãy thử lại.');
+    if (isCurrent()) publish(null, 'Không kiểm tra được phiên. Hãy thử lại.');
   }
+}
+
+function invalidateSessionRequests() {
+  ++refreshSequence;
+  ++mutationSequence;
+  pendingMutation = null;
+}
+
+function beginMutation() {
+  ++refreshSequence;
+  pendingMutation = ++mutationSequence;
+  return pendingMutation;
+}
+
+function finishMutation(sequence: number) {
+  if (sequence !== mutationSequence) return;
+  pendingMutation = null;
+  // Discard observations started during the mutation, even if their bodies arrive later.
+  ++refreshSequence;
 }
 
 function notifyOtherTabs() {
@@ -58,6 +82,7 @@ export function watchSession() {
   if (typeof BroadcastChannel !== 'undefined') {
     channel = new BroadcastChannel('docintel-session');
     channel.onmessage = () => {
+      invalidateSessionRequests();
       publish(null);
       refresh();
     };
@@ -72,18 +97,22 @@ export function watchSession() {
 }
 
 export async function login(username: string, password: string) {
-  const sequence = ++refreshSequence;
-  const state = await sessionResponse(
-    await fetch('/api/v1/auth/login', {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'docintel' },
-      body: JSON.stringify({ username, password }),
-    }),
-  );
-  if (sequence !== refreshSequence) throw new Error('Phiên đã thay đổi. Hãy đăng nhập lại.');
-  publish(state);
-  notifyOtherTabs();
+  const sequence = beginMutation();
+  try {
+    const state = await sessionResponse(
+      await fetch('/api/v1/auth/login', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'docintel' },
+        body: JSON.stringify({ username, password }),
+      }),
+    );
+    if (sequence !== mutationSequence) throw new Error('Phiên đã thay đổi. Hãy đăng nhập lại.');
+    publish(state);
+    notifyOtherTabs();
+  } finally {
+    finishMutation(sequence);
+  }
 }
 
 export function assertCurrentSession(revision: number) {
@@ -101,7 +130,7 @@ export async function sessionFetch(path: string, options: RequestInit = {}) {
   const response = await fetch(path, { ...options, headers, credentials: 'same-origin' });
   assertCurrentSession(revision);
   if (response.status === 401) {
-    ++refreshSequence;
+    invalidateSessionRequests();
     publish(
       { mode: 'session', user: null, csrf_token: null },
       'Phiên đã hết hạn. Vui lòng đăng nhập lại.',
@@ -115,9 +144,14 @@ export async function sessionFetch(path: string, options: RequestInit = {}) {
 }
 
 export async function logout() {
-  const response = await sessionFetch('/api/v1/auth/logout', { method: 'POST' });
-  if (!response.ok) throw new Error('Chưa đăng xuất được. Hãy thử lại.');
-  ++refreshSequence;
-  publish({ mode: 'session', user: null, csrf_token: null });
-  notifyOtherTabs();
+  const sequence = beginMutation();
+  try {
+    const response = await sessionFetch('/api/v1/auth/logout', { method: 'POST' });
+    if (!response.ok) throw new Error('Chưa đăng xuất được. Hãy thử lại.');
+    if (sequence !== mutationSequence) throw new Error('Phiên đã thay đổi. Hãy kiểm tra lại.');
+    publish({ mode: 'session', user: null, csrf_token: null });
+    notifyOtherTabs();
+  } finally {
+    finishMutation(sequence);
+  }
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { SessionBoundary } from './SessionBoundary';
 import { getSessionSnapshot, refreshSession, sessionFetch } from '../../lib/session';
@@ -52,6 +52,110 @@ beforeEach(async () => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe('Session boundary and account isolation', () => {
+  it('does not restore an authenticated observation completed after logout', async () => {
+    state = authenticated();
+    renderBoundary();
+    await screen.findByText('Tài liệu bí mật của phiên');
+    let finishLogout!: (value: Response) => void;
+    let finishRefresh!: (value: Response) => void;
+    const logoutResponse = new Promise<Response>((resolve) => {
+      finishLogout = resolve;
+    });
+    const refreshResponse = new Promise<Response>((resolve) => {
+      finishRefresh = resolve;
+    });
+    vi.mocked(fetch).mockImplementation(async (path) =>
+      String(path).endsWith('/logout') ? logoutResponse : refreshResponse,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Đăng xuất' }));
+    window.dispatchEvent(new Event('focus'));
+    await act(async () => {
+      finishLogout(response(null, 204));
+    });
+    await act(async () => {
+      finishRefresh(response(authenticated()));
+    });
+    expect(await screen.findByRole('button', { name: 'Đăng nhập' })).toBeVisible();
+    expect(screen.queryByText('Tài liệu bí mật của phiên')).not.toBeInTheDocument();
+  });
+
+  it('still rejects a pending login invalidated by a real cross-tab session change', async () => {
+    let notify!: () => void;
+    vi.stubGlobal(
+      'BroadcastChannel',
+      class {
+        set onmessage(value: () => void) {
+          notify = value;
+        }
+        postMessage() {}
+        close() {}
+      },
+    );
+    renderBoundary();
+    await screen.findByRole('button', { name: 'Đăng nhập' });
+    let finishLogin!: (value: Response) => void;
+    const loginResponse = new Promise<Response>((resolve) => {
+      finishLogin = resolve;
+    });
+    vi.mocked(fetch).mockImplementation(async (path) =>
+      String(path).endsWith('/login') ? loginResponse : response(authenticated(beta)),
+    );
+    fireEvent.change(screen.getByLabelText('Tên đăng nhập'), { target: { value: 'alpha' } });
+    fireEvent.change(screen.getByLabelText('Mật khẩu'), {
+      target: { value: 'synthetic-password-123' },
+    });
+    fireEvent.submit(screen.getByLabelText('Mật khẩu').closest('form')!);
+    await act(async () => {
+      notify();
+    });
+    expect(await screen.findByText('beta')).toBeVisible();
+    await act(async () => {
+      finishLogin(response(authenticated()));
+    });
+    expect(getSessionSnapshot().session?.user?.id).toBe(beta.id);
+    expect(screen.queryByText('alpha')).not.toBeInTheDocument();
+  });
+
+  it.each(['before', 'after'])(
+    'accepts successful login when focus refresh finishes %s the login response',
+    async (timing) => {
+      renderBoundary();
+      await screen.findByRole('button', { name: 'Đăng nhập' });
+      let finishLogin!: (value: Response) => void;
+      let finishRefresh!: (value: Response) => void;
+      const loginResponse = new Promise<Response>((resolve) => {
+        finishLogin = resolve;
+      });
+      const refreshResponse = new Promise<Response>((resolve) => {
+        finishRefresh = resolve;
+      });
+      vi.mocked(fetch).mockImplementation(async (path) =>
+        String(path).endsWith('/login') ? loginResponse : refreshResponse,
+      );
+      fireEvent.change(screen.getByLabelText('Tên đăng nhập'), { target: { value: 'alpha' } });
+      fireEvent.change(screen.getByLabelText('Mật khẩu'), {
+        target: { value: 'synthetic-password-123' },
+      });
+      fireEvent.submit(screen.getByLabelText('Mật khẩu').closest('form')!);
+      window.dispatchEvent(new Event('focus'));
+      if (timing === 'before')
+        await act(async () => {
+          finishRefresh(response(anonymous));
+        });
+      await act(async () => {
+        finishLogin(response(authenticated()));
+      });
+      if (timing === 'after')
+        await act(async () => {
+          finishRefresh(response(anonymous));
+        });
+      expect(await screen.findByText('alpha')).toBeVisible();
+      expect(screen.getByText('Tài liệu bí mật của phiên')).toBeVisible();
+      expect(screen.queryByRole('button', { name: 'Đăng nhập' })).not.toBeInTheDocument();
+      expect(screen.queryByText('Phiên đã thay đổi. Hãy đăng nhập lại.')).not.toBeInTheDocument();
+    },
+  );
+
   it('gates documents, logs in without storing credentials and sends CSRF for logout', async () => {
     renderBoundary();
     expect(await screen.findByRole('button', { name: 'Đăng nhập' })).toBeVisible();
