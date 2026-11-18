@@ -17,6 +17,7 @@ def sha256(path: Path) -> str:
 
 
 def backup(runtime: Path, destination: Path):
+    runtime, destination = runtime.resolve(), destination.resolve()
     if not (runtime / "documents.sqlite3").is_file():
         raise ValueError("Runtime database not found")
     destination.mkdir(parents=True, exist_ok=False)
@@ -47,6 +48,7 @@ def backup(runtime: Path, destination: Path):
 
 
 def restore(source: Path, destination: Path):
+    source, destination = source.resolve(), destination.resolve()
     manifest = json.loads((source / "backup.json").read_text(encoding="utf-8"))
     if (
         not isinstance(manifest, dict)
