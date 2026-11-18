@@ -1,5 +1,9 @@
 # Thay đổi
 
+## Post-commit confirmation notifications — 12/11/2026
+
+Issue #10: local logging notification sau transaction confirm, receipt tối thiểu và timeout cooperative. Giữ response/schema/export và transaction chính khi sender lỗi, không gửi lại cho confirmed retries. Cấu hình disabled/log, runbook và tests SQLite/cancellation/restart. Thay đổi local theo [ADR0009](docs/decisions/0009-confirmation-notifications.md), chưa là release hoặc tính năng đã merge; chưa email/webhook/durable outbox.
+
 ## Upload ingress 0.2.1 — 12/11/2026
 
 Issue #8: giới hạn tổng thời gian nhận body, số upload đồng thời và Uvicorn connection/task; kiểm Content-Length và byte stream trước persistence. Thêm lỗi receive/admission an toàn, giải phóng slot khi timeout/disconnect/cancel và giữ slot nếu thread lưu vẫn chạy; bảo toàn idempotent retry/queue semantics. Sinh lại OpenAPI/frontend types, bổ sung ASGI tests và probe HTTP loopback đo latency/RSS/tasks. Xem [budget và giới hạn](docs/operations/upload-ingress.md). Đây là thay đổi trên nhánh nhiệm vụ, chưa là release/tag đã xuất bản.

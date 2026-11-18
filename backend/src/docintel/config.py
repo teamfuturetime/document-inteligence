@@ -40,6 +40,9 @@ class Settings(BaseSettings):
     max_login_attempts: int = Field(default=20, ge=1, le=100)
     login_window_seconds: int = Field(default=60, ge=10, le=3600)
 
+    notification_mode: Literal["disabled", "log"] = "log"
+    notification_timeout_seconds: float = Field(default=0.05, gt=0, le=1)
+
     @model_validator(mode="after")
     def validate_session_origins(self):
         if self.auth_mode == "session":

@@ -19,6 +19,7 @@ from docintel.repositories.locking import RuntimeLock
 from docintel.services.auth import AuthService
 from docintel.services.documents import DocumentService, ProductError
 from docintel.services.fixtures import FixtureService
+from docintel.services.notifications import LoggingConfirmationNotifier
 from docintel.services.worker import LocalInferenceWorker
 
 
@@ -33,6 +34,7 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = True) -
             app_lock.acquire()
         try:
             application.state.documents = DocumentService(config)
+            application.state.confirmation_notifier = LoggingConfirmationNotifier()
             application.state.auth = AuthService(config, application.state.documents.repository)
             application.state.upload_limiter = CapacityLimiter(config.max_concurrent_uploads)
             application.state.upload_tasks = set()
