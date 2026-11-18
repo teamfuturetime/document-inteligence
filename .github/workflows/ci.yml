@@ -102,6 +102,9 @@ jobs:
       - run: npm --prefix frontend ci
       - run: npm --prefix frontend exec -- playwright install --with-deps chromium
       - run: python3 scripts/dev.py e2e
+      - name: Verify field autosave concurrency and recovery
+        working-directory: frontend
+        run: npx playwright test --config playwright.autosave.config.ts
   product-checks:
     name: Product checks
     if: ${{ always() }}
