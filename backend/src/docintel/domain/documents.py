@@ -126,6 +126,12 @@ class ProductRevision(Contract):
 class ReviewRequest(Contract):
     run_id: str
     expected_revision: Annotated[int, Field(ge=1)]
+    expected_status: Literal["draft", "confirmed"] | None = Field(
+        default=None,
+        description=(
+            "Omitted/null means draft. Reopening a confirmed review requires confirmed explicitly."
+        ),
+    )
     fields: dict[ProductFieldId, ProductReviewedField]
 
 

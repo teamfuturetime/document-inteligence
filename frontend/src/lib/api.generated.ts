@@ -852,6 +852,11 @@ export interface components {
         ReviewRequest: {
             /** Expected Revision */
             expected_revision: number;
+            /**
+             * Expected Status
+             * @description Omitted/null means draft. Reopening a confirmed review requires confirmed explicitly.
+             */
+            expected_status?: ("draft" | "confirmed") | null;
             /** Fields */
             fields: {
                 [key: string]: components["schemas"]["ProductReviewedField"];
