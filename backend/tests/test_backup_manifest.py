@@ -3,12 +3,12 @@
 import importlib.util
 import json
 import os
-import sqlite3
 import subprocess
 
 import pytest
 
 from docintel.config import ROOT
+from docintel.repositories.sqlite import DocumentRepository
 
 
 @pytest.fixture
@@ -93,8 +93,7 @@ def test_unsupported_cli_backup_never_reports_verified(
 def test_destination_alias_policy(backup_module, tmp_path, operation, alias_location):
     runtime = tmp_path / "runtime"
     runtime.mkdir()
-    with sqlite3.connect(runtime / "documents.sqlite3") as connection:
-        connection.execute("CREATE TABLE documents (document_id TEXT, input_sha256 TEXT)")
+    DocumentRepository(runtime / "documents.sqlite3").initialize()
     source = runtime
     if operation == "restore":
         source = tmp_path / "valid backup"
