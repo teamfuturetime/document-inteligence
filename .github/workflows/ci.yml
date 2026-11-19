@@ -67,6 +67,8 @@ jobs:
       - run: npm install --global npm@11.13.0
       - run: python scripts/dev.py setup
       - run: uv run --project backend --locked pytest backend/tests/test_dev_launcher.py -q
+      - name: Verify backup aliases and authenticated restore on Windows
+        run: uv run --project backend --locked pytest backend/tests/test_backup_manifest.py backend/tests/test_auth_backup.py -q
       - run: python scripts/dev.py frontend-check
   evaluation-checks:
     name: Evaluation regression

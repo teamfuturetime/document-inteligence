@@ -1,7 +1,12 @@
 """Legacy migration/adoption/restore preserves authoritative content on real SQLite."""
 
+import json
+import os
 import shutil
 import sqlite3
+import stat
+import subprocess
+import sys
 from importlib.resources import files
 
 import pytest
@@ -13,8 +18,9 @@ from docintel.config import ROOT, Settings
 from docintel.services.documents import DocumentService
 
 
+@pytest.mark.parametrize("path_mode", ["absolute", "relative", "lexical_alias", "relative_cli"])
 def test_legacy_migrate_adopt_backup_restore_keeps_prediction_review_and_owner(
-    tmp_path, monkeypatch
+    tmp_path, monkeypatch, path_mode
 ):
     monkeypatch.syspath_prepend(str(ROOT / "scripts"))
     import backup_runtime
@@ -74,9 +80,59 @@ def test_legacy_migrate_adopt_backup_restore_keeps_prediction_review_and_owner(
         assert login.status_code == 200
         assert api.get(path).status_code == 404  # No first-login adoption.
     manage_auth.adopt_local(legacy, "alpha", tmp_path / "adoption-backup")
-    backup_runtime.backup(legacy, tmp_path / "owner-backup")
+    destination = tmp_path / "owner-backup"
     restored = tmp_path / "restored"
-    backup_runtime.restore(tmp_path / "owner-backup", restored)
+    runtime = legacy
+    if path_mode in {"relative", "relative_cli"}:
+        monkeypatch.chdir(tmp_path)
+        runtime = runtime.relative_to(tmp_path)
+        destination = destination.relative_to(tmp_path)
+        restored = restored.relative_to(tmp_path)
+    elif path_mode == "lexical_alias":
+        destination = source / ".." / destination.name
+        restored = source / ".." / restored.name
+    if path_mode == "relative_cli":
+        for input_path, output_path, flags in [
+            (runtime, destination, []),
+            (destination, restored, ["--restore"]),
+        ]:
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts/backup_runtime.py"),
+                    str(input_path),
+                    str(output_path),
+                    *flags,
+                ],
+                env={
+                    **os.environ,
+                    "PYTHONPATH": os.pathsep.join(
+                        str(ROOT / part) for part in ("backend/src", "pipeline/src")
+                    ),
+                },
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+    else:
+        backup_runtime.backup(runtime, destination)
+        backup_runtime.restore(destination, restored)
+    manifest = json.loads((destination / "backup.json").read_text(encoding="utf-8"))
+    assert manifest["version"] == 1
+    assert "documents.sqlite3" in manifest["sha256"]
+    if os.name == "posix":
+        for directory in (destination, restored):
+            assert stat.S_IMODE(directory.stat().st_mode) == 0o700
+        assert stat.S_IMODE((destination / "documents.sqlite3").stat().st_mode) == 0o600
+        for relative in manifest["sha256"]:
+            assert stat.S_IMODE((restored / relative).stat().st_mode) == 0o600
+    with sqlite3.connect(restored / "documents.sqlite3") as database:
+        assert database.execute("SELECT max(version) FROM schema_migrations").fetchone() == (2,)
+        assert database.execute(
+            "SELECT documents.owner_id = users.user_id FROM documents "
+            "JOIN users ON users.username = 'alpha' WHERE document_id = ?",
+            (document_id,),
+        ).fetchone() == (1,)
     restored_settings = session_settings.model_copy(update={"runtime_dir": restored})
     with TestClient(
         create_app(restored_settings, start_worker=False), base_url="https://testserver"
