@@ -1,8 +1,10 @@
 """Exercise the shared dev entry point without a shell or global tool changes."""
 
 import importlib.util
+import json
 import os
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -16,6 +18,60 @@ def dev():
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+@pytest.mark.parametrize(
+    "version,code",
+    [
+        ((3, 11, 7), "python_unsupported"),
+        ((3, 13, 0), "python_unsupported"),
+        ((3, 14, 5), "dependencies_missing"),
+    ],
+)
+def test_doctor_without_venv_preflights_before_backend_import(
+    dev, tmp_path, monkeypatch, version, code
+):
+    package = tmp_path / "backend/src/docintel"
+    package.mkdir(parents=True)
+    (package / "__init__.py").write_text("")
+    # Importing this under the simulated old interpreter must fail compilation.
+    # Supported Python instead exercises the missing-dependency report.
+    (package / "doctor.py").write_text(
+        "invalid syntax PRIVATE_CANARY\n"
+        if version < (3, 14)
+        else "raise ImportError('PRIVATE_CANARY dependency')\n"
+    )
+    (tmp_path / ".env").write_text("PRIVATE_CANARY=preserve\n")
+    before = {p.relative_to(tmp_path): p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()}
+    monkeypatch.setattr(dev, "ROOT", tmp_path)
+    monkeypatch.setattr(sys, "argv", ["dev.py", "doctor", "--json", "--runtime", "missing"])
+    real_run = subprocess.run
+    results = []
+
+    def selected_interpreter(argv, **kwargs):
+        assert argv[0] == sys.executable  # No backend venv in this checkout.
+        assert kwargs["env"]["PYTHONDONTWRITEBYTECODE"] == "1"
+        assert kwargs["timeout"] == 30 and not kwargs.get("shell", False)
+        # Execute the actual bootstrap, including compile/import and SystemExit,
+        # with controlled version metadata; do not mock a successful report.
+        argv[2] = "import sys\nsys.version_info = " + repr(version) + "\n" + argv[2]
+        result = real_run(argv, **kwargs, capture_output=True, text=True)
+        results.append(result)
+        return result
+
+    monkeypatch.setattr(dev.subprocess, "run", selected_interpreter)
+    with pytest.raises(SystemExit) as exited:
+        dev.main()
+    assert exited.value.code == 1
+    result = results[0]
+    report = json.loads(result.stdout)
+    assert report["report_version"] == 1 and report["status"] == "action_required"
+    assert report["checks"][0]["code"] == code and report["checks"][0]["action"]
+    assert not result.stderr and "PRIVATE_CANARY" not in result.stdout
+    assert str(tmp_path) not in result.stdout
+    assert before == {
+        p.relative_to(tmp_path): p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()
+    }
 
 
 @pytest.mark.parametrize("task", ["setup", "frontend", "frontend-check", "e2e", "check"])
