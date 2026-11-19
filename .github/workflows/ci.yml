@@ -71,6 +71,8 @@ jobs:
         run: uv run --project backend --locked pytest backend/tests/test_backup_manifest.py backend/tests/test_auth_backup.py -q
       - name: Verify bounded readiness lifecycle on Windows
         run: uv run --project backend --locked pytest backend/tests/test_readiness.py -q
+      - name: Verify read-only doctor diagnostics on Windows
+        run: uv run --project backend --locked pytest backend/tests/test_doctor.py -q
       - run: python scripts/dev.py frontend-check
   evaluation-checks:
     name: Evaluation regression
