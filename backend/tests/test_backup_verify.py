@@ -3,10 +3,12 @@
 import importlib.util
 import json
 import os
+import shutil
 import sqlite3
 import subprocess
 import sys
 from contextlib import closing
+from pathlib import Path
 
 import pytest
 from test_auth_cli import prepare_legacy
@@ -43,6 +45,39 @@ def rehash(source):
     manifest = json.loads(p.read_text())
     manifest["sha256"]["documents.sqlite3"] = sha256(source / "documents.sqlite3")
     p.write_text(json.dumps(manifest))
+
+
+@pytest.mark.parametrize("suffix", ["-wal", "-journal"])
+def test_file_alias_cannot_hide_database_recovery_sidecars(valid_backup, helper, tmp_path, suffix):
+    source = valid_backup
+    database = source / "documents.sqlite3"
+    target = source / "nested/actual.sqlite3"
+    target.parent.mkdir()
+    if suffix == "-wal":
+        live = tmp_path / "live.sqlite3"
+        shutil.copyfile(database, live)
+        with closing(sqlite3.connect(live)) as db:
+            assert db.execute("PRAGMA journal_mode=WAL").fetchone() == ("wal",)
+            db.execute("UPDATE documents SET latest_run_id='missing'")
+            db.commit()
+            shutil.copyfile(live, target)
+            shutil.copyfile(Path(str(live) + suffix), Path(str(target) + suffix))
+    else:
+        shutil.copyfile(database, target)
+        Path(str(target) + suffix).write_bytes(b"pending recovery")
+    database.unlink()
+    try:
+        database.symlink_to(target)
+    except OSError:
+        pytest.skip("This runner does not permit file symlinks")
+    rehash(source)
+    before = tree(source)
+    destination = tmp_path / "must not exist"
+    with pytest.raises(BackupVerificationError) as failed:
+        helper.restore(source, destination)
+    assert failed.value.code == "DATABASE_NOT_OFFLINE"
+    assert not destination.exists() and before == tree(source)
+    assert database.is_symlink()
 
 
 @pytest.mark.parametrize(
