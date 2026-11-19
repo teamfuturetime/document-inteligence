@@ -23,6 +23,7 @@
     "playwright.config.ts",
     "playwright.autosave.config.ts",
     "playwright.auth.config.ts",
+    "playwright.keyboard.config.ts",
     "e2e",
     "autosave-e2e"
   ]

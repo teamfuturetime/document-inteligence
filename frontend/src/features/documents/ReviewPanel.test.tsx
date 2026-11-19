@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { logout, refreshSession, sessionFetch } from '../../lib/session';
 import { SessionBoundary } from '../auth/SessionBoundary';
 import { ReviewPanel } from './ReviewPanel';
+import { SourcePreview } from './SourcePreview';
 import type { DocumentDetail } from './api';
 
 function document(revision = 1): DocumentDetail {
@@ -53,6 +54,107 @@ function document(revision = 1): DocumentDetail {
     },
   };
 }
+
+describe('Keyboard focus and announcements', () => {
+  it('describes evidence and returns preview focus after image retry', () => {
+    render(<SourcePreview document={document()} active="seller_name" />);
+    expect(
+      screen.getByRole('img', { name: 'Bằng chứng OCR: Đơn vị bán hàng' }),
+    ).toHaveAccessibleDescription(/chưa có bằng chứng/);
+    fireEvent.error(screen.getByRole('img', { name: 'Ảnh nguồn sample.png' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Thử tải lại ảnh' }));
+    expect(screen.getByRole('region', { name: 'Đối chiếu ảnh nguồn' })).toHaveFocus();
+  });
+  it('focuses manual save error and returns to editor after explicit retry', async () => {
+    const mock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ error: { code: 'FAIL', message: 'Failed' } }), {
+          status: 500,
+        }),
+      )
+      .mockResolvedValueOnce(new Response(JSON.stringify(document(2))));
+    vi.stubGlobal('fetch', mock);
+    mountReview();
+    fireEvent.change(screen.getByLabelText('Đơn vị bán hàng *'), { target: { value: 'Keep me' } });
+    const save = screen.getByRole('button', { name: 'Lưu nháp' });
+    save.focus();
+    fireEvent.click(save);
+    await waitFor(() =>
+      expect(screen.getByRole('alert', { name: 'Lỗi lưu bản rà soát' })).toHaveFocus(),
+    );
+    expect(screen.getByLabelText('Đơn vị bán hàng *')).toHaveValue('Keep me');
+    fireEvent.click(save);
+    await waitFor(() => expect(screen.getByLabelText('Đơn vị bán hàng *')).toHaveFocus());
+    expect(mock).toHaveBeenCalledTimes(2);
+  });
+  function mountReview() {
+    return render(
+      <ReviewPanel
+        document={document()}
+        onUpdated={vi.fn()}
+        onDirtyChange={vi.fn()}
+        onFieldChange={vi.fn()}
+      />,
+    );
+  }
+  it('focuses the review heading, names status, and does not repeat announcements per keystroke', () => {
+    mountReview();
+    expect(screen.getByRole('heading', { name: 'Kiểm tra dữ liệu' })).toHaveFocus();
+    const status = screen.getByRole('status', { name: 'Trạng thái lưu' });
+    expect(status).toHaveAttribute('aria-atomic', 'true');
+    const input = screen.getByLabelText('Đơn vị bán hàng *');
+    input.focus();
+    fireEvent.change(input, { target: { value: 'A' } });
+    const first = status.textContent;
+    fireEvent.change(input, { target: { value: 'AB' } });
+    expect(status.textContent).toBe(first);
+    expect(input).toHaveFocus();
+  });
+  it('focuses recovered draft error, compare region and then editor after discard, preserving foreign draft ownership', async () => {
+    const key = 'field-review:doc:run:another-editor';
+    const raw = JSON.stringify({
+      at: Date.now(),
+      fields: { seller_name: { is_reviewed: true, reviewed_value: null } },
+    });
+    localStorage.setItem(key, raw);
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response(JSON.stringify(document(2)))),
+    );
+    mountReview();
+    expect(screen.getByRole('alert', { name: 'Lỗi lưu bản rà soát' })).toHaveFocus();
+    expect(screen.getByLabelText('Đơn vị bán hàng *')).toHaveValue('');
+    fireEvent.click(screen.getByRole('button', { name: 'Đối chiếu bản mới' }));
+    await waitFor(() =>
+      expect(screen.getByRole('region', { name: 'Đối chiếu chỉnh sửa với máy chủ' })).toHaveFocus(),
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Bỏ chỉnh sửa, tải bản máy chủ' }));
+    await waitFor(() => expect(screen.getByLabelText('Đơn vị bán hàng *')).toHaveFocus());
+    expect(screen.getByLabelText('Đơn vị bán hàng *')).toHaveValue('Công ty Mẫu');
+    expect(localStorage.getItem(key)).toBe(raw);
+  });
+  it('does not steal editor focus on background save errors', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        async () =>
+          new Response(JSON.stringify({ error: { code: 'FAIL', message: 'Failed' } }), {
+            status: 500,
+          }),
+      ),
+    );
+    mountReview();
+    const input = screen.getByLabelText('Đơn vị bán hàng *');
+    input.focus();
+    fireEvent.change(input, { target: { value: 'Keep edits' } });
+    await screen.findByRole('alert', { name: 'Lỗi lưu bản rà soát' });
+    expect(input).toHaveFocus();
+    expect(input).toHaveValue('Keep edits');
+    fireEvent.click(screen.getByRole('button', { name: /^Bỏ chỉnh sửa$/ }));
+    await waitFor(() => expect(input).toHaveFocus());
+  });
+});
 
 beforeEach(async () => {
   // These standalone autosave cases exercise local mode, as the app boundary would establish.
