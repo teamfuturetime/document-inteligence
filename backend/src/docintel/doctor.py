@@ -104,7 +104,11 @@ def runtime_check(runtime):
         if not database.is_file():
             return check("runtime", "database_invalid", "error")
         # Immutable ro avoids SQLite creating shm/journal files. Never ignore pending WAL.
-        if any(Path(str(database) + suffix).exists() for suffix in ("-wal", "-journal")):
+        if any(
+            Path(str(location) + suffix).exists()
+            for location in {database, database.resolve()}
+            for suffix in ("-wal", "-journal")
+        ):
             return check("runtime", "offline_required", "action_required")
         if database.stat().st_size == 0:
             return check("runtime", "database_empty", "action_required")

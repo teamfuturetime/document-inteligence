@@ -7,6 +7,7 @@ import subprocess
 import sys
 from contextlib import closing
 from importlib.resources import files
+from pathlib import Path
 
 import pytest
 
@@ -42,6 +43,24 @@ def legacy(runtime, populated=False):
                     None,
                 ),
             )
+
+
+@pytest.mark.parametrize("suffix", ["-wal", "-journal"])
+def test_database_file_alias_checks_sidecars_at_resolved_location(tmp_path, suffix):
+    runtime = tmp_path / "runtime"
+    DocumentRepository(runtime / "documents.sqlite3").initialize()
+    alias = runtime / "documents.sqlite3"
+    target = runtime / "nested/database.sqlite3"
+    target.parent.mkdir()
+    alias.rename(target)
+    try:
+        alias.symlink_to(target)
+    except OSError:
+        pytest.skip("This runner does not permit file symlinks")
+    Path(str(target) + suffix).write_bytes(b"preserve pending recovery")
+    before = snapshot(runtime)
+    assert doctor.runtime_check(runtime)["code"] == "offline_required"
+    assert snapshot(runtime) == before and alias.is_symlink()
 
 
 @pytest.mark.parametrize(
