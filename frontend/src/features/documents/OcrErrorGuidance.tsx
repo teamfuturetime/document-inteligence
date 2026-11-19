@@ -15,6 +15,8 @@ const guidance: Record<string, string> = {
     'Engine OCR không xử lý được ảnh. Kiểm tra ảnh có đọc được và chọn Chạy OCR lại; nếu vẫn lỗi, nhờ người quản lý kiểm tra engine.',
   INVALID_DOCUMENT:
     'Không đọc được ảnh. Giữ bản nháp và tự chọn tải lên ảnh PNG/JPG một trang hợp lệ thành tài liệu mới.',
+  UNSUPPORTED_MEDIA_TYPE:
+    'Định dạng ảnh chưa được hỗ trợ. Tự chọn ảnh PNG/JPG một trang hợp lệ; không chỉ đổi phần mở rộng của file.',
   FILE_TOO_LARGE:
     'Ảnh vượt giới hạn dung lượng. Tự chọn ảnh nhỏ hơn trong giới hạn tải lên; tài liệu và bản nháp hiện tại được giữ.',
   IMAGE_TOO_LARGE:

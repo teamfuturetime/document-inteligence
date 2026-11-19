@@ -16,6 +16,7 @@ it.each([
   ['PROVIDER_FAILED', 'Engine OCR'],
   ['PROCESSING_FAILED', 'lỗi xử lý'],
   ['INVALID_DOCUMENT', 'Không đọc được'],
+  ['UNSUPPORTED_MEDIA_TYPE', 'Định dạng ảnh'],
   ['FILE_TOO_LARGE', 'dung lượng'],
   ['IMAGE_TOO_LARGE', 'điểm ảnh'],
   ['UNSUPPORTED_SCHEMA', 'Loại tài liệu'],

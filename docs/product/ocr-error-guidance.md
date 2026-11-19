@@ -14,6 +14,7 @@ Không đổi domain/schema/generated types.
 | PROCESSING_TIMEOUT | Ảnh rõ/gọn hơn, kiểm tài nguyên nếu lặp lại |
 | INVALID_OCR_OUTPUT / PROVIDER_FAILED | Chủ động chạy lại; lỗi lặp lại cần kiểm engine/model |
 | INVALID_DOCUMENT / FILE_TOO_LARGE / IMAGE_TOO_LARGE | Tự chọn ảnh hợp lệ, nhỏ hơn theo giới hạn |
+| UNSUPPORTED_MEDIA_TYPE | Chọn PNG/JPG hợp lệ, không chỉ đổi phần mở rộng |
 | UNSUPPORTED_SCHEMA | Chọn loại tài liệu được hỗ trợ |
 | PROCESSING_FAILED / unknown | Giữ bản nháp, nhờ quản lý kiểm tra; không hiển thị nội dung lỗi tùy ý |
 
