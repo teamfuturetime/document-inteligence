@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Capabilities } from '../../lib/api';
 import { HistoryPanel } from './HistoryPanel';
+import { OcrErrorGuidance } from './OcrErrorGuidance';
 import { ReviewPanel } from './ReviewPanel';
 import { SourcePreview } from './SourcePreview';
 import { APIError, jsonRequest, request, statusLabels } from './api';
@@ -36,6 +37,7 @@ export function Workspace({
   const [busy, setBusy] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [error, setError] = useState('');
+  const [retryError, setRetryError] = useState<{ code: string; requestId?: string } | null>(null);
   const [pollErrorRunId, setPollErrorRunId] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<{ message: string; retryable: boolean } | null>(
     null,
@@ -127,6 +129,7 @@ export function Workspace({
       return;
     }
     setBusy(true);
+    setRetryError(null);
     setError('');
     try {
       const query = run ? `?run_id=${encodeURIComponent(run)}` : '';
@@ -435,8 +438,17 @@ export function Workspace({
                     'POST',
                     { expected_run_id: document.latest_run_id },
                   )
-                    .then(updated)
-                    .catch((reason: Error) => setError(reason.message))
+                    .then((value) => {
+                      setRetryError(null);
+                      updated(value);
+                    })
+                    .catch((reason: unknown) =>
+                      setRetryError(
+                        reason instanceof APIError
+                          ? { code: reason.code, requestId: reason.requestId }
+                          : { code: 'UNKNOWN' },
+                      ),
+                    )
                     .finally(() => setBusy(false));
                 }}
               >
@@ -455,11 +467,11 @@ export function Workspace({
               Chưa cập nhật được trạng thái OCR. Hệ thống sẽ tự thử lại.
             </p>
           )}
-          {document.run.error_code && (
-            <div className="notice" role="alert">
-              Lần xử lý chưa thành công: {document.run.error_code}. Kiểm tra provider/ảnh rồi chọn
-              chạy lại.
-            </div>
+          {(retryError || document.run.error_code) && (
+            <OcrErrorGuidance
+              code={retryError?.code ?? document.run.error_code}
+              requestId={retryError?.requestId}
+            />
           )}
           <div className="review-workspace">
             <SourcePreview key={document.document_id} document={document} active={active} />
