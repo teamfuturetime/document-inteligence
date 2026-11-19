@@ -24,6 +24,8 @@ Với clone đã có sẵn, giữ các thay đổi local trên đúng nhánh tr�
 
 `setup` cài đúng lockfiles và chỉ tạo `.env` khi chưa có; không ghi đè cấu hình cũ. File mẫu chọn `DOCINTEL_PROVIDER_MODE=tesseract`. Nếu giữ `.env` cũ, kiểm tra provider và runtime path. Nếu Tesseract không ở PATH, đặt `DOCINTEL_TESSERACT_EXECUTABLE` bằng đường dẫn cài thật. `models` tải vie+eng (~4,7MB), kiểm SHA256 và lưu dưới `runtime/` đã ignore.
 
+Trước khi chạy app sau clone/pull, dùng `python scripts/dev.py doctor` hoặc thêm `--json --runtime runtime/app` để kiểm toolchain/config/runtime offline chỉ đọc. Không tự migrate, tạo DB hoặc tải models; xem [doctor và exit codes](docs/operations/doctor.md).
+
 `scripts/dev.py` tìm executable trên PATH trước khi gọi subprocess, gồm launcher `npm.cmd` trên Windows; các lệnh setup/frontend/check/e2e vẫn dùng cùng entry point trên. Đường dẫn executable được chuyển thành tuyệt đối theo thư mục caller trước khi child chuyển về repo root, nên PATH tương đối có khoảng trắng vẫn hoạt động. Nếu báo `Executable not found on PATH`, kiểm `uv`/`npm` trong chính terminal đó rồi mở lại terminal sau khi cài công cụ. Không cần bật shell hoặc đổi lockfile để chạy npm. CI có job **Windows launcher checks** chạy setup, regression và frontend checks trên Windows thật; regression PATH tương đối chạy `shutil.which` và subprocess thật, mock chỉ kiểm thêm các entry points/arguments.
 
 Chạy hai terminal từ repository root:
