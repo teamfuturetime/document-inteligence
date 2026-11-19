@@ -235,7 +235,7 @@ def test_backup_includes_committed_wal_data_without_ignoring_it(
     runtime, helper, tmp_path, file_alias
 ):
     actual = database_location(runtime, file_alias)
-    with closing(sqlite3.connect(runtime / "documents.sqlite3")) as source:
+    with closing(sqlite3.connect(actual)) as source:
         source.execute("PRAGMA journal_mode=WAL")
         source.execute("UPDATE documents SET filename='committed-in-wal.png'")
         source.commit()
@@ -251,6 +251,16 @@ def test_backup_includes_committed_wal_data_without_ignoring_it(
                 "committed-in-wal.png",
             )
     assert verify_backup(tmp_path / "wal-snapshot").schema_version == 1
+
+
+def test_requested_alias_wal_requires_explicit_recovery(runtime, helper, tmp_path):
+    database_location(runtime, True)
+    (runtime / "documents.sqlite3-wal").write_bytes(b"preserve ambiguous alias WAL")
+    before = tree(runtime)
+    with pytest.raises(ValueError, match="recovery"):
+        helper.backup(runtime, tmp_path / "snapshot")
+    assert not (tmp_path / "snapshot").exists() and tree(runtime) == before
+    assert not list(tmp_path.glob(".docintel-staging-*"))
 
 
 @pytest.mark.parametrize("file_alias", [False, True])

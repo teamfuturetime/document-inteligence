@@ -42,7 +42,17 @@ def write_backup(runtime: Path, destination: Path):
     locations = {source_database, source_database.resolve()}
     if any(Path(str(location) + "-journal").exists() for location in locations):
         raise ValueError("Runtime requires SQLite recovery before backup")
-    uri = source_database.as_uri() + "?mode=ro"
+    resolved_database = source_database.resolve()
+    if (
+        source_database != resolved_database
+        and Path(str(source_database) + "-wal").exists()
+    ):
+        # A WAL named after an alias has platform-dependent SQLite VFS semantics.
+        # Require explicit recovery instead of guessing which image is authoritative.
+        raise ValueError(
+            "Runtime requires SQLite recovery at the requested database location"
+        )
+    uri = resolved_database.as_uri() + "?mode=ro"
     # Stable/offline tree: avoid creating WAL/shm for a checkpointed database,
     # but never ignore existing WAL commits when taking a SQLite API snapshot.
     if not any(Path(str(location) + "-wal").exists() for location in locations):
