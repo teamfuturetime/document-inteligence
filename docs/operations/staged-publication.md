@@ -53,5 +53,5 @@ Windows job hiện có. Không đổi manifest1, API/contracts/versions/dependen
 
 #43 tạm dựa trên verifier PR #56 (`feat/42-backup-verify`), chỉ delta publication backup;
 giữ Draft chờ nền review/tích hợp, rồi đổi base/sync main và chạy CI lại. Workflow thêm đúng
-target branch để CI đủ sáu jobs + Product checks trên PR phụ thuộc. Restore staging là #44,
-được thực hiện tuần tự và tái dùng helper publication trong nhánh phụ thuộc tiếp theo.
+target branch để CI đủ sáu jobs + Product checks trên PR phụ thuộc. [Restore staging #44](staged-restore.md) tái dùng helper publication tuần tự trong nhánh phụ thuộc;
+bản #43 riêng chỉ cung cấp backup publication.

@@ -49,7 +49,7 @@ uv run --project backend --locked python scripts/backup_runtime.py runtime/app r
 uv run --project backend --locked python scripts/backup_runtime.py runtime/backups/demo-001 runtime/restored-app --restore
 ```
 
-Destination phải là thư mục mới ngoài source. SQLite backup API tạo snapshot nhất quán; files nguồn/preview bất biến được copy và hash. Restore kiểm tất cả hashes trước khi copy, không đè runtime đang chạy. Trỏ DOCINTEL_RUNTIME_DIR vào thư mục vừa restore rồi khởi động app. Không có chính sách tự xóa uploads/review; người dùng bảo quản và dọn runtime sau khi backup. Không chạy cleanup lên thư mục nhóm bằng wildcard.
+Destination phải là thư mục mới ngoài source. SQLite backup API tạo snapshot nhất quán; files nguồn/preview bất biến được copy và hash. Restore kiểm source và actual copied bytes trong staging trước publication không ghi đè; xem [restore qua staging](../operations/staged-restore.md). Trỏ DOCINTEL_RUNTIME_DIR vào thư mục vừa restore rồi khởi động app. Không có chính sách tự xóa uploads/review; người dùng bảo quản và dọn runtime sau khi backup. Không chạy cleanup lên thư mục nhóm bằng wildcard.
 
 Source/destination có thể là đường dẫn tương đối như ví dụ trên hoặc tuyệt đối. Helper chuẩn hóa cả hai trước khi tạo paths tương đối trong manifest, gồm các alias như `..` hoặc `/var` → `/private/var` trên macOS. File trong manifest vẫn dùng paths POSIX tương đối; normalize không bỏ kiểm đích mới, containment hoặc hashes. Nếu một lần backup cũ bị lỗi giữa chừng, giữ runtime nguồn và chọn một destination mới cho lần chạy lại, không ghi đè thư mục backup dở.
 
