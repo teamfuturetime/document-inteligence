@@ -34,6 +34,11 @@ durability. Fsync files + atomic namespace publication không chứng nhận má
 
 Với nguồn offline không có WAL, read-only immutable tránh tạo sidecars; khi có WAL, dùng SQLite
 read-only backup API để giữ các commits trong WAL. Không dùng immutable để bỏ qua WAL tồn tại.
+Với file DB qua symlink, kiểm sidecars cạnh cả tên được yêu cầu và file đích đã resolve;
+SQLite được mở bằng đường dẫn file đích để đọc đúng WAL của file đó trên Windows/POSIX.
+Nếu WAL nằm cạnh riêng tên symlink, helper từ chối và yêu cầu recovery ở đường dẫn được
+yêu cầu trước backup; không đoán WAL nào là nguồn chuẩn hoặc xóa sidecars. Doctor/verifier
+cũng không báo DB offline hợp lệ khi một trong hai vị trí còn WAL/journal.
 Có rollback journal phải hoàn tất recovery theo quy trình vận hành trước backup; helper không
 tự repair/init/migrate. Không tạo source assets directory khi DB rỗng; thiếu assets ở DB có docs
 thì từ chối. Giữ schema1/2, owner/prediction/review/history/source/confirmed export.
