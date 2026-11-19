@@ -83,8 +83,12 @@ def test_backup_failure_does_not_publish_partial_or_modify_source(
         )
     else:
         monkeypatch.setattr(helper, "publish_directory", lambda *_: (_ for _ in ()).throw(root))
-    with pytest.raises((OSError, BackupVerificationError)):
+    with pytest.raises((OSError, BackupVerificationError)) as failure:
         helper.backup(runtime, destination)
+    if fault == "verify":
+        assert isinstance(failure.value, BackupVerificationError)
+    else:
+        assert failure.value is root
     assert not destination.exists() and tree(runtime) == before
     assert not list(tmp_path.glob(".docintel-staging-*"))
 
