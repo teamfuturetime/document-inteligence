@@ -120,6 +120,7 @@ export function Workspace({
     };
   }, [documentId, runId, processing, busy]);
   function updated(value: DocumentDetail) {
+    setRetryError(null);
     setDocument(value);
     setRefresh((old) => old + 1);
   }
