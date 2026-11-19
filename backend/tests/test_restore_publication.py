@@ -165,7 +165,8 @@ def test_two_restore_helpers_race_without_replacement(valid_backup, helper, tmp_
         outcomes = list(pool.map(lambda _: attempt(), range(2)))
     assert sorted(outcomes) == ["published", "refused"]
     expected = {
-        relative: path.read_bytes() for relative, path in verify_backup(valid_backup).entries
+        str(Path(relative)): path.read_bytes()
+        for relative, path in verify_backup(valid_backup).entries
     }
     assert tree(final) == expected
     assert not list(tmp_path.glob(".docintel-staging-*"))
@@ -188,7 +189,9 @@ def test_verified_restore_retains_schema_shape_and_private_modes(
 
     monkeypatch.setattr(DocumentRepository, "initialize", prohibited)
     final = tmp_path / "restored"
-    expected = {relative: path.read_bytes() for relative, path in verify_backup(source).entries}
+    expected = {
+        str(Path(relative)): path.read_bytes() for relative, path in verify_backup(source).entries
+    }
     helper.restore(source, final)
     assert tree(final) == expected and tree(source) == before
     assert not (final / "backup.json").exists()
@@ -230,7 +233,8 @@ def test_restore_lost_ack_retains_complete_final(valid_backup, helper, tmp_path,
     publish = helper.publish_directory
     final = tmp_path / "published-runtime"
     expected = {
-        relative: path.read_bytes() for relative, path in verify_backup(valid_backup).entries
+        str(Path(relative)): path.read_bytes()
+        for relative, path in verify_backup(valid_backup).entries
     }
 
     def lost_ack(source, destination):
@@ -276,7 +280,8 @@ def test_restore_uses_original_verified_manifest_when_source_metadata_changes(
     valid_backup, helper, tmp_path, monkeypatch
 ):
     expected = {
-        relative: path.read_bytes() for relative, path in verify_backup(valid_backup).entries
+        str(Path(relative)): path.read_bytes()
+        for relative, path in verify_backup(valid_backup).entries
     }
     copy = helper.shutil.copyfile
 
