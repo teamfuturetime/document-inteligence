@@ -11,6 +11,11 @@ Lệnh giống nhau trên Windows/POSIX (`python3` nếu máy dùng tên đó). 
 trong `backend/.venv` nếu đã cài, nếu không dùng Python đang chạy. Không gọi `uv run`,
 setup, tải models, sửa `.env`, tạo runtime/account hoặc migrate DB. Khi thiếu dependencies,
 báo `dependencies_missing`; người vận hành chủ động chạy setup theo README rồi kiểm lại.
+Trước import backend, bootstrap kiểm Python được chọn: nếu cũ hơn 3.14, trả JSON
+`python_unsupported`, `action_required`, exit 1 với hướng dẫn dùng pin Product CI.
+Vì vậy checkout chưa setup vẫn nhận report khi chạy bằng Python cũ, thay vì traceback
+do backend dùng cú pháp Python 3.14. Kiểm phiên bản chính xác theo CI vẫn do doctor thực hiện
+khi interpreter có thể import backend; bootstrap không cài hoặc nâng cấp Python.
 Các thao tác khắc phục trong output là hướng dẫn, không được doctor tự thực hiện.
 
 Doctor dành cho **runtime offline, cây thư mục ổn định**. Dừng app/worker trước kiểm DB.

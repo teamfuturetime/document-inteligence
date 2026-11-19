@@ -73,6 +73,13 @@ def main():
                     "-c",
                     (
                         "import json,sys\n"
+                        # This code must parse before importing the Python 3.14 backend.
+                        "if sys.version_info < (3,14):\n"
+                        " print(json.dumps({'report_version':1,'status':'action_required',"
+                        "'checks':[{'name':'python','status':'action_required',"
+                        "'code':'python_unsupported','action':'Use Python 3.14 or newer; "
+                        "follow the Product CI pin and rerun doctor.'}]}))\n"
+                        " sys.exit(1)\n"
                         "try:\n from docintel.doctor import main\n"
                         "except ImportError:\n"
                         " print(json.dumps({'report_version':1,'status':'action_required',"
