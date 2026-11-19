@@ -1,8 +1,10 @@
 """One local entry point. All commands run at repository root and fail on errors."""
 
 import argparse
+import os
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -50,6 +52,49 @@ def run(command):
 
 
 def main():
+    if sys.argv[1:2] == ["doctor"]:
+        # Use installed dependencies only: uv run/setup could install or mutate files.
+        python = (
+            ROOT
+            / "backend/.venv"
+            / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+        )
+        environment = {
+            **os.environ,
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "PYTHONPATH": os.pathsep.join(
+                str(ROOT / p) for p in ("backend/src", "pipeline/src")
+            ),
+        }
+        try:
+            result = subprocess.run(
+                [
+                    str(python) if python.is_file() else sys.executable,
+                    "-c",
+                    (
+                        "import json,sys\n"
+                        "try:\n from docintel.doctor import main\n"
+                        "except ImportError:\n"
+                        " print(json.dumps({'report_version':1,'status':'action_required',"
+                        "'checks':[{'name':'dependencies','status':'action_required',"
+                        "'code':'dependencies_missing','action':'Install backend dependencies "
+                        "with the explicit setup command; rerun doctor.'}]}))\n"
+                        " sys.exit(1)\n"
+                        "sys.exit(main())"
+                    ),
+                    *sys.argv[2:],
+                ],
+                cwd=ROOT,
+                env=environment,
+                timeout=30,
+                check=False,
+            )
+        except (OSError, subprocess.TimeoutExpired):
+            print(
+                '{"report_version":1,"status":"error","checks":[{"name":"doctor","status":"error","code":"launcher_failed","action":"Check installed backend dependencies and rerun doctor."}]}'
+            )
+            raise SystemExit(2) from None
+        raise SystemExit(result.returncode)
     commands = {
         "setup": [["uv", "sync", "--project", "backend", "--locked"], NPM + ["ci"]],
         "models": [UV + ["python", "scripts/fetch_ocr_models.py"]],
@@ -74,7 +119,10 @@ def main():
         "ocr": [UV + ["python", "scripts/verify_product.py"]],
         "e2e": [NPM + ["run", "test:e2e"]],
     }
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        epilog="Read-only diagnostics: python scripts/dev.py doctor [--json] [--runtime PATH]",
+    )
     parser.add_argument("command", choices=commands)
     args = parser.parse_args()
     for command in commands[args.command]:
