@@ -1,5 +1,6 @@
 import hashlib
 import json
+import logging
 import re
 import sqlite3
 from copy import copy
@@ -38,6 +39,14 @@ from docintel.domain.models import FinalApplicationData, Provenance
 from docintel.repositories.sqlite import DocumentRepository, now
 from docintel.services.notifications import DocumentConfirmed
 from docintel.storage.local import LocalDocumentStorage
+
+logger = logging.getLogger(__name__)
+
+
+def upload_persistence_error():
+    return ProductError(
+        500, "INTERNAL_ERROR", "Không thể lưu tài liệu. Kiểm tra bộ nhớ/quyền ghi rồi thử lại."
+    )
 
 
 class ProductError(Exception):
@@ -241,9 +250,11 @@ class DocumentService:
             status = 413 if exc.code in ("FILE_TOO_LARGE", "IMAGE_TOO_LARGE") else 415
             raise ProductError(status, exc.code, str(exc)) from exc
         document_id, run_id, created = uuid4().hex, uuid4().hex, now()
+        database_started = False
         try:
             self.storage.write(document_id, "source", data)
             self.storage.write(document_id, "preview", page.png)
+            database_started = True
             with self.repository.transaction(write=True) as connection:
                 # Serialize the retry decision with admission, before capacity rejection.
                 replay = (
@@ -263,7 +274,7 @@ class DocumentService:
                         raise ProductError(
                             409, "IDEMPOTENCY_CONFLICT", "Khóa đã dùng cho tài liệu khác."
                         )
-                    self.storage.discard(document_id)
+                    self.discard_failed_upload(document_id)
                     return self.detail(replay["document_id"])
                 self.check_capacity(connection)
                 connection.execute(
@@ -290,16 +301,33 @@ class DocumentService:
                     (run_id, document_id, created),
                 )
                 event(connection, document_id, run_id, None, "uploaded", {"input_sha256": digest})
-        except sqlite3.IntegrityError:
-            self.storage.discard(document_id)
-            # A concurrent request with the same key may have won the transaction.
-            if idempotency_key:
-                return self.upload(data, document_type, data_origin, filename, idempotency_key)
-            raise
-        except BaseException:
-            self.storage.discard(document_id)
+        except BaseException as exc:
+            self.discard_failed_upload(document_id, check_persisted=database_started)
+            if isinstance(exc, (OSError, sqlite3.Error)):
+                raise upload_persistence_error() from exc
             raise
         return self.detail(document_id)
+
+    def discard_failed_upload(self, document_id: str, *, check_persisted=False):
+        if check_persisted:
+            # Commit may have succeeded before its acknowledgement failed. Never remove
+            # assets referenced by a committed row, or when rollback cannot be verified.
+            try:
+                with self.repository.transaction() as connection:
+                    persisted = connection.execute(
+                        "SELECT 1 FROM documents WHERE document_id=?", (document_id,)
+                    ).fetchone()
+                if persisted:
+                    return
+            except Exception:
+                logger.warning("Upload assets retained: persistence outcome could not be verified")
+                return
+        try:
+            self.storage.discard(document_id)
+        except Exception:
+            # Fixed message only: exception strings can contain paths or SQL. Preserve
+            # the original failure, and leave orphan assets for explicit offline inspection.
+            logger.warning("Upload cleanup failed: orphan assets require offline inspection")
 
     def check_capacity(self, connection):
         pending = connection.execute(
