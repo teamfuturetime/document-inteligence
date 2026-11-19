@@ -39,12 +39,13 @@ def write_backup(runtime: Path, destination: Path):
     destination.mkdir(parents=True, exist_ok=False, mode=0o700)
     database = destination / "documents.sqlite3"
     source_database = runtime / "documents.sqlite3"
-    if Path(str(source_database) + "-journal").exists():
+    locations = {source_database, source_database.resolve()}
+    if any(Path(str(location) + "-journal").exists() for location in locations):
         raise ValueError("Runtime requires SQLite recovery before backup")
     uri = source_database.as_uri() + "?mode=ro"
     # Stable/offline tree: avoid creating WAL/shm for a checkpointed database,
     # but never ignore existing WAL commits when taking a SQLite API snapshot.
-    if not Path(str(source_database) + "-wal").exists():
+    if not any(Path(str(location) + "-wal").exists() for location in locations):
         uri += "&immutable=1"
     with (
         closing(sqlite3.connect(uri, uri=True)) as source,

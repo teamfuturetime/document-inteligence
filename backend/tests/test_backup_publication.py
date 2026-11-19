@@ -216,12 +216,30 @@ def test_unsupported_publication_fails_without_overwrite(tmp_path, monkeypatch):
     assert not (tmp_path / "target" / "documents.sqlite3").exists()
 
 
-def test_backup_includes_committed_wal_data_without_ignoring_it(runtime, helper, tmp_path):
+def database_location(runtime, file_alias):
+    database = runtime / "documents.sqlite3"
+    if not file_alias:
+        return database
+    target = runtime / "nested/actual.sqlite3"
+    target.parent.mkdir()
+    database.rename(target)
+    try:
+        database.symlink_to(target)
+    except OSError:
+        pytest.skip("This runner does not permit file symlinks")
+    return target
+
+
+@pytest.mark.parametrize("file_alias", [False, True])
+def test_backup_includes_committed_wal_data_without_ignoring_it(
+    runtime, helper, tmp_path, file_alias
+):
+    actual = database_location(runtime, file_alias)
     with closing(sqlite3.connect(runtime / "documents.sqlite3")) as source:
         source.execute("PRAGMA journal_mode=WAL")
         source.execute("UPDATE documents SET filename='committed-in-wal.png'")
         source.commit()
-        assert (runtime / "documents.sqlite3-wal").is_file()
+        assert Path(str(actual) + "-wal").is_file()
         helper.backup(runtime, tmp_path / "wal-snapshot")
         with closing(
             sqlite3.connect(
@@ -235,8 +253,10 @@ def test_backup_includes_committed_wal_data_without_ignoring_it(runtime, helper,
     assert verify_backup(tmp_path / "wal-snapshot").schema_version == 1
 
 
-def test_runtime_journal_is_not_ignored_or_repaired(runtime, helper, tmp_path):
-    (runtime / "documents.sqlite3-journal").write_bytes(b"synthetic pending journal")
+@pytest.mark.parametrize("file_alias", [False, True])
+def test_runtime_journal_is_not_ignored_or_repaired(runtime, helper, tmp_path, file_alias):
+    actual = database_location(runtime, file_alias)
+    Path(str(actual) + "-journal").write_bytes(b"synthetic pending journal")
     before = tree(runtime)
     with pytest.raises(ValueError, match="recovery"):
         helper.backup(runtime, tmp_path / "snapshot")
