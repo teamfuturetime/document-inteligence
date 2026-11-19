@@ -264,8 +264,11 @@ def test_preview_write_failure_cleans_source_then_retry_succeeds(workflow, monke
         return original(document_id, kind, data)
 
     monkeypatch.setattr(service.storage, "write", fail_preview)
-    with pytest.raises(OSError, match="controlled preview"):
+    with pytest.raises(ProductError) as failed:
         service.upload(png(), "hoa_don", "synthetic", "sample.png", "IO")
+    assert failed.value.status == 500 and failed.value.code == "INTERNAL_ERROR"
+    assert isinstance(failed.value.__cause__, OSError)
+    assert str(failed.value.__cause__) == "controlled preview write failure"
     assert counts(service) == (0, 0, 0, 0) and stored_files(settings) == ()
     monkeypatch.setattr(service.storage, "write", original)
     assert upload(api, "IO").status_code == 202
