@@ -65,7 +65,11 @@ def verify_backup(source: Path) -> VerifiedBackup:
                 raise BackupVerificationError("FILE_INTEGRITY")
             validated.append((relative, path))
         database = source / "documents.sqlite3"
-        if any(Path(str(database) + suffix).exists() for suffix in ("-wal", "-journal")):
+        if any(
+            Path(str(location) + suffix).exists()
+            for location in {database, database.resolve()}
+            for suffix in ("-wal", "-journal")
+        ):
             raise BackupVerificationError("DATABASE_NOT_OFFLINE")
         deadline = time.monotonic() + 10
         with closing(
