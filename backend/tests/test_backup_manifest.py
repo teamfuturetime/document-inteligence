@@ -2,6 +2,9 @@
 
 import importlib.util
 import json
+import os
+import sqlite3
+import subprocess
 
 import pytest
 
@@ -83,3 +86,39 @@ def test_unsupported_cli_backup_never_reports_verified(
 
     assert "Restore verified" not in capsys.readouterr().out
     assert not destination.exists()
+
+
+@pytest.mark.parametrize("operation", ["backup", "restore"])
+@pytest.mark.parametrize("alias_location", ["dangling_leaf", "parent"])
+def test_destination_alias_policy(backup_module, tmp_path, operation, alias_location):
+    runtime = tmp_path / "runtime"
+    runtime.mkdir()
+    with sqlite3.connect(runtime / "documents.sqlite3") as connection:
+        connection.execute("CREATE TABLE documents (document_id TEXT, input_sha256 TEXT)")
+    source = runtime
+    if operation == "restore":
+        source = tmp_path / "valid backup"
+        backup_module.backup(runtime, source)
+    target = tmp_path / "alias target"
+    alias = tmp_path / "existing alias"
+    target.mkdir()
+    if os.name == "nt":
+        subprocess.run(
+            ["cmd.exe", "/d", "/c", "mklink", "/J", str(alias), str(target)],
+            check=True,
+            capture_output=True,
+        )
+    else:
+        alias.symlink_to(target, target_is_directory=True)
+    if alias_location == "parent":
+        getattr(backup_module, operation)(source, alias / "new destination")
+        assert (target / "new destination" / "documents.sqlite3").is_file()
+        return
+    target.rename(tmp_path / "moved target")
+    destination = alias
+    destination.lstat()  # The leaf entry exists even though its target is missing.
+    assert not target.exists()
+    with pytest.raises(FileExistsError):
+        getattr(backup_module, operation)(source, destination)
+    destination.lstat()
+    assert not target.exists()

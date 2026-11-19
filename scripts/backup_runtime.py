@@ -16,7 +16,17 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def new_destination(destination: Path) -> Path:
+    # Check the requested leaf before resolve follows a dangling symlink/junction.
+    try:
+        destination.lstat()
+    except FileNotFoundError:
+        return destination.resolve()
+    raise FileExistsError(f"Destination already exists: {destination}")
+
+
 def backup(runtime: Path, destination: Path):
+    runtime, destination = runtime.resolve(), new_destination(destination)
     if not (runtime / "documents.sqlite3").is_file():
         raise ValueError("Runtime database not found")
     destination.mkdir(parents=True, exist_ok=False)
@@ -47,6 +57,7 @@ def backup(runtime: Path, destination: Path):
 
 
 def restore(source: Path, destination: Path):
+    source, destination = source.resolve(), new_destination(destination)
     manifest = json.loads((source / "backup.json").read_text(encoding="utf-8"))
     if (
         not isinstance(manifest, dict)

@@ -437,7 +437,10 @@ def test_pagination_filters_and_operational_metrics(product):
     assert "accuracy" not in json.dumps(metrics)
 
 
-def test_backup_restore_preserves_reviews_and_checks_integrity(product, tmp_path):
+@pytest.mark.parametrize("path_mode", ["absolute", "relative", "lexical_alias", "relative_cli"])
+def test_backup_restore_preserves_reviews_and_checks_integrity(
+    product, tmp_path, monkeypatch, path_mode
+):
     import importlib.util
 
     from docintel.config import ROOT
@@ -458,8 +461,46 @@ def test_backup_restore_preserves_reviews_and_checks_integrity(product, tmp_path
     assert before.status_code == 200
     destination = tmp_path.parent / (tmp_path.name + "-backup")
     restored = tmp_path.parent / (tmp_path.name + "-restore")
-    module.backup(settings.runtime_dir, destination)
-    module.restore(destination, restored)
+    runtime = settings.runtime_dir
+    if path_mode in {"relative", "relative_cli"}:
+        monkeypatch.chdir(tmp_path.parent)
+        runtime = runtime.relative_to(tmp_path.parent)
+        destination = destination.relative_to(tmp_path.parent)
+        restored = restored.relative_to(tmp_path.parent)
+    elif path_mode == "lexical_alias":
+        destination = tmp_path / ".." / destination.name
+        restored = tmp_path / ".." / restored.name
+    if path_mode == "relative_cli":
+        import os
+        import subprocess
+        import sys
+
+        environment = {
+            **os.environ,
+            "PYTHONPATH": os.pathsep.join(
+                str(ROOT / part) for part in ("backend/src", "pipeline/src")
+            ),
+        }
+        for source, target, flags in [
+            (runtime, destination, []),
+            (destination, restored, ["--restore"]),
+        ]:
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts/backup_runtime.py"),
+                    str(source),
+                    str(target),
+                    *flags,
+                ],
+                env=environment,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+    else:
+        module.backup(runtime, destination)
+        module.restore(destination, restored)
     with TestClient(
         create_app(settings.model_copy(update={"runtime_dir": restored}), start_worker=False)
     ) as clone:
