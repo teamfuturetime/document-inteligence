@@ -10,10 +10,13 @@ from fastapi.responses import FileResponse, JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from docintel import __version__
+from docintel.api.auth import router as auth_router
 from docintel.api.documents import router as document_router
 from docintel.api.models import Capabilities, ErrorEnvelope, FixtureCatalog, Health, SchemaInfo
 from docintel.config import ROOT, Settings
 from docintel.domain.models import FIELD_IDS, SCHEMA_VERSION, FixtureView
+from docintel.repositories.locking import RuntimeLock
+from docintel.services.auth import AuthService
 from docintel.services.documents import DocumentService, ProductError
 from docintel.services.fixtures import FixtureService
 from docintel.services.notifications import LoggingConfirmationNotifier
@@ -25,26 +28,36 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = True) -
 
     @asynccontextmanager
     async def lifespan(application: FastAPI):
-        application.state.documents = DocumentService(config)
-        application.state.confirmation_notifier = LoggingConfirmationNotifier()
-        application.state.upload_limiter = CapacityLimiter(config.max_concurrent_uploads)
-        application.state.upload_tasks = set()
+        app_lock = RuntimeLock(config.runtime_dir / "app.lock") if start_worker else None
         worker = None
-        if start_worker and config.provider_mode == "tesseract":
-            worker = LocalInferenceWorker(application.state.documents)
-            worker.start()
-        yield
-        # A complete upload may still be committing after its client went away.
-        if application.state.upload_tasks:
-            await asyncio.gather(*application.state.upload_tasks, return_exceptions=True)
-        if worker:
-            worker.close()
+        if app_lock:
+            app_lock.acquire()
+        try:
+            application.state.documents = DocumentService(config)
+            application.state.confirmation_notifier = LoggingConfirmationNotifier()
+            application.state.auth = AuthService(config, application.state.documents.repository)
+            application.state.upload_limiter = CapacityLimiter(config.max_concurrent_uploads)
+            application.state.upload_tasks = set()
+            if start_worker and config.provider_mode == "tesseract":
+                candidate = LocalInferenceWorker(application.state.documents)
+                candidate.start()
+                worker = candidate
+            yield
+        finally:
+            if getattr(application.state, "upload_tasks", None):
+                await asyncio.gather(*application.state.upload_tasks, return_exceptions=True)
+            if worker:
+                worker.close()
+            if app_lock:
+                app_lock.release()
 
     application = FastAPI(
         title="AI-02 Document Intelligence",
         version=__version__,
         lifespan=lifespan,
         responses={
+            401: {"model": ErrorEnvelope},
+            403: {"model": ErrorEnvelope},
             409: {"model": ErrorEnvelope},
             413: {"model": ErrorEnvelope},
             415: {"model": ErrorEnvelope},
@@ -58,8 +71,9 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = True) -
     application.add_middleware(
         CORSMiddleware,
         allow_origins=config.cors_origins,
+        allow_credentials=config.auth_mode == "session",
         allow_methods=["GET", "POST", "PUT"],
-        allow_headers=["Content-Type", "Idempotency-Key"],
+        allow_headers=["Content-Type", "Idempotency-Key", "X-CSRF-Token", "X-Requested-With"],
     )
 
     @application.middleware("http")
@@ -81,6 +95,8 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = True) -
                 )
         response = await call_next(request)
         response.headers["X-Request-ID"] = request.state.request_id
+        if config.auth_mode == "session" or request.url.path.startswith("/api/v1/auth/"):
+            response.headers["Cache-Control"] = "no-store"
         return response
 
     @application.exception_handler(ProductError)
@@ -218,6 +234,7 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = True) -
     def fixture_image(sample_id: str):
         return FileResponse(check_sample(sample_id).image_path(sample_id), media_type="image/png")
 
+    application.include_router(auth_router)
     application.include_router(document_router)
     return application
 

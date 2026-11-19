@@ -67,6 +67,8 @@ jobs:
       - run: npm install --global npm@11.13.0
       - run: python scripts/dev.py setup
       - run: uv run --project backend --locked pytest backend/tests/test_dev_launcher.py -q
+      - name: Verify backup aliases and authenticated restore on Windows
+        run: uv run --project backend --locked pytest backend/tests/test_backup_manifest.py backend/tests/test_auth_backup.py -q
       - run: python scripts/dev.py frontend-check
   evaluation-checks:
     name: Evaluation regression
@@ -99,6 +101,8 @@ jobs:
       - run: uv sync --project backend --locked
       - run: python3 scripts/dev.py models
       - run: python3 scripts/dev.py ocr
+      - name: Verify authenticated native workflow and owner isolation
+        run: uv run --project backend --locked python scripts/verify_product.py --auth-mode session --output runtime/verification/session-native.json
       - name: Print native engine/model/config/source evidence
         run: cat runtime/verification/product-native.json
   browser-e2e:
@@ -125,6 +129,8 @@ jobs:
       - run: npm --prefix frontend ci
       - run: npm --prefix frontend exec -- playwright install --with-deps chromium
       - run: python3 scripts/dev.py e2e
+      - name: Verify session UI and two-user native browser workflow
+        run: npm --prefix frontend exec -- playwright test --config frontend/playwright.auth.config.ts
       - name: Verify field autosave concurrency and recovery
         working-directory: frontend
         run: npx playwright test --config playwright.autosave.config.ts

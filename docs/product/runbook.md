@@ -72,7 +72,12 @@ Backend image cài Tesseract từ apt và fetch đúng model lock trong build, c
 
 ## Phạm vi vận hành
 
-Local/single-user, chưa có authentication hoặc tenant isolation. Không expose công khai. Không dùng hồ sơ thật; chỉ synthetic/sample có quyền. Không log source text/native stderr, không gửi dữ liệu sang API AI ngoài. Lỗi mất provider không tự đổi engine hoặc dùng fixture. Timeouts/limits không phải SLA đã đo cho mọi máy.
+Mặc định local/single-user không đăng nhập. Session opt-in của #11 thêm account/document ownership
+theo [hướng dẫn cấu hình và migration](../operations/auth-ownership.md); không có multi-tenant admin,
+public deployment hoặc cam kết security audit. Không expose công khai. Không dùng hồ sơ thật;
+chỉ synthetic/sample có quyền. Không log source text/native stderr, không gửi dữ liệu sang API AI
+ngoài. Lỗi mất provider không tự đổi engine hoặc dùng fixture. Timeouts/limits không phải SLA
+đã đo cho mọi máy.
 
 Confirm đã commit có notification best-effort qua log local; không email/webhook, không đổi kết quả business khi lỗi gửi. [Cấu hình INFO, disabled mode, timeout và giới hạn delivery](../operations/confirmation-notifications.md).
 

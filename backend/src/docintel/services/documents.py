@@ -1,6 +1,8 @@
 import hashlib
 import json
+import re
 import sqlite3
+from copy import copy
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -116,6 +118,7 @@ class ConfirmationResult:
 
 class DocumentService:
     def __init__(self, settings: Settings):
+        self.owner_id = "local"
         self.settings = settings
         self.repository = DocumentRepository(settings.runtime_dir / "documents.sqlite3")
         self.repository.initialize()
@@ -128,6 +131,13 @@ class DocumentService:
         self.pipeline = DocumentPipeline(
             settings.tessdata_dir, settings.tesseract_executable, self.pipeline_config
         )
+
+    def for_owner(self, owner_id: str) -> DocumentService:
+        if owner_id != "local" and not re.fullmatch(r"[0-9a-f]{32}", owner_id):
+            raise ValueError("Invalid server principal")
+        scoped = copy(self)
+        scoped.owner_id = owner_id
+        return scoped
 
     def ensure_ready(self):
         if self.settings.provider_mode != "tesseract":
@@ -142,7 +152,7 @@ class DocumentService:
     def list_documents(
         self, limit: int, offset: int, document_type: str | None = None, status: str | None = None
     ) -> DocumentList:
-        conditions, params = [], []
+        conditions, params = ["d.owner_id=?"], [self.owner_id]
         if document_type:
             conditions.append("d.document_type=?")
             params.append(document_type)
@@ -166,7 +176,8 @@ class DocumentService:
         with self.repository.transaction() as connection:
             document = require(
                 connection.execute(
-                    SUMMARY_SELECT + " WHERE d.document_id=?", (document_id,)
+                    SUMMARY_SELECT + " WHERE d.document_id=? AND d.owner_id=?",
+                    (document_id, self.owner_id),
                 ).fetchone()
             )
             selected = run_id or document["latest_run_id"]
@@ -202,7 +213,8 @@ class DocumentService:
         with self.repository.transaction() as connection:
             existing = (
                 connection.execute(
-                    "SELECT * FROM documents WHERE idempotency_key=?", (idempotency_key,)
+                    "SELECT * FROM documents WHERE idempotency_key=? AND owner_id=?",
+                    (idempotency_key, self.owner_id),
                 ).fetchone()
                 if idempotency_key
                 else None
@@ -236,7 +248,8 @@ class DocumentService:
                 # Serialize the retry decision with admission, before capacity rejection.
                 replay = (
                     connection.execute(
-                        "SELECT * FROM documents WHERE idempotency_key=?", (idempotency_key,)
+                        "SELECT * FROM documents WHERE idempotency_key=? AND owner_id=?",
+                        (idempotency_key, self.owner_id),
                     ).fetchone()
                     if idempotency_key
                     else None
@@ -254,7 +267,10 @@ class DocumentService:
                     return self.detail(replay["document_id"])
                 self.check_capacity(connection)
                 connection.execute(
-                    "INSERT INTO documents VALUES(?,?,?,?,?,?,?,?,?,?)",
+                    "INSERT INTO documents(document_id,document_type,filename,data_origin,"
+                    "input_sha256,image_width,image_height,created_at,"
+                    "latest_run_id,idempotency_key,owner_id) "
+                    "VALUES(?,?,?,?,?,?,?,?,?,?,?)",
                     (
                         document_id,
                         document_type,
@@ -266,6 +282,7 @@ class DocumentService:
                         created,
                         run_id,
                         idempotency_key,
+                        self.owner_id,
                     ),
                 )
                 connection.execute(
@@ -292,11 +309,13 @@ class DocumentService:
             raise ProductError(429, "QUEUE_FULL", "Hàng đợi đã đầy. Vui lòng thử lại sau.")
 
     def reprocess(self, document_id: str, expected_run_id: str) -> DocumentDetail:
+        self.detail(document_id)  # Reject foreign IDs before probing the provider.
         self.ensure_ready()
         with self.repository.transaction(write=True) as connection:
             document = require(
                 connection.execute(
-                    "SELECT * FROM documents WHERE document_id=?", (document_id,)
+                    "SELECT * FROM documents WHERE document_id=? AND owner_id=?",
+                    (document_id, self.owner_id),
                 ).fetchone()
             )
             run = require(
@@ -328,7 +347,8 @@ class DocumentService:
     def checked_revision(self, connection, document_id: str, request: RevisionRequest):
         document = require(
             connection.execute(
-                "SELECT * FROM documents WHERE document_id=?", (document_id,)
+                "SELECT * FROM documents WHERE document_id=? AND owner_id=?",
+                (document_id, self.owner_id),
             ).fetchone()
         )
         if document["latest_run_id"] != request.run_id:
@@ -452,7 +472,8 @@ class DocumentService:
         with self.repository.transaction() as connection:
             require(
                 connection.execute(
-                    "SELECT 1 FROM documents WHERE document_id=?", (document_id,)
+                    "SELECT 1 FROM documents WHERE document_id=? AND owner_id=?",
+                    (document_id, self.owner_id),
                 ).fetchone()
             )
             runs = connection.execute(
@@ -478,12 +499,18 @@ class DocumentService:
     def insights(self) -> ProductInsights:
         reviewed = corrected = 0
         with self.repository.transaction() as connection:
-            count = connection.execute("SELECT count(*) FROM documents").fetchone()[0]
+            count = connection.execute(
+                "SELECT count(*) FROM documents WHERE owner_id=?", (self.owner_id,)
+            ).fetchone()[0]
             completed = connection.execute(
-                "SELECT count(*) FROM runs WHERE status='succeeded'"
+                "SELECT count(*) FROM runs r JOIN documents d USING(document_id) "
+                "WHERE r.status='succeeded' AND d.owner_id=?",
+                (self.owner_id,),
             ).fetchone()[0]
             failed = connection.execute(
-                "SELECT count(*) FROM runs WHERE status IN ('failed','unavailable')"
+                "SELECT count(*) FROM runs r JOIN documents d USING(document_id) "
+                "WHERE r.status IN ('failed','unavailable') AND d.owner_id=?",
+                (self.owner_id,),
             ).fetchone()[0]
         documents = self.list_documents(100, 0)
         # Aggregate all documents in bounded pages, not only the first screen.
@@ -510,6 +537,8 @@ class DocumentService:
         )
 
     def recover_interrupted(self):
+        if self.owner_id != "local":
+            raise RuntimeError("Only the internal worker service can recover shared jobs")
         with self.repository.transaction(write=True) as connection:
             interrupted = connection.execute("SELECT * FROM runs WHERE status='running'").fetchall()
             for row in interrupted:
@@ -521,6 +550,8 @@ class DocumentService:
                 event(connection, row["document_id"], row["run_id"], None, "interrupted", {})
 
     def process_next(self) -> bool:
+        if self.owner_id != "local":
+            raise RuntimeError("Only the internal worker service can process shared jobs")
         with self.repository.transaction(write=True) as connection:
             row = connection.execute(
                 "SELECT r.*,d.document_type,d.input_sha256 FROM runs r "

@@ -1,16 +1,18 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { ReviewIdentityContext, reviewDraftPrefix } from '../../lib/reviewDrafts';
+import { getSessionSnapshot } from '../../lib/session';
 import { APIError, downloadExport, jsonRequest, request, statusLabels } from './api';
 import type { DocumentDetail, ProductFieldId, ReviewRequest } from './api';
 
 type Changes = ReviewRequest['fields'];
 
 // Bounded recovery of changed review fields; never restores server authority.
-function draftPrefix(document: DocumentDetail) {
-  return `field-review:${document.document_id}:${document.run.run_id}:`;
+function draftPrefix(document: DocumentDetail, identity: string) {
+  return reviewDraftPrefix(identity, document.document_id, document.run.run_id);
 }
-function recover(document: DocumentDetail): Changes {
+function recover(document: DocumentDetail, identity: string): Changes {
   try {
-    const prefix = draftPrefix(document);
+    const prefix = draftPrefix(document, identity);
     const legacyKey = prefix.slice(0, -1);
     const legacy = sessionStorage.getItem(legacyKey);
     if (legacy) {
@@ -70,8 +72,10 @@ export function ReviewPanel({
   onDirtyChange: (value: boolean) => void;
   onFieldChange: (value: string) => void;
 }) {
+  const identity = useContext(ReviewIdentityContext);
+  const [sessionRevision] = useState(() => getSessionSnapshot().revision);
   const [base, setBase] = useState(document);
-  const [changes, updateChanges] = useState<Changes>(() => recover(document));
+  const [changes, updateChanges] = useState<Changes>(() => recover(document, identity));
   const changesRef = useRef(changes);
   const baseRef = useRef(base);
   const mounted = useRef(true);
@@ -82,7 +86,7 @@ export function ReviewPanel({
     try {
       // sessionStorage is cloned by window.open/duplicate-tab. Each mounted
       // editor needs its own key, including when its opener has pending edits.
-      return draftPrefix(document) + crypto.randomUUID();
+      return draftPrefix(document, identity) + crypto.randomUUID();
     } catch {
       return null;
     }
@@ -91,6 +95,7 @@ export function ReviewPanel({
     const value = typeof next === 'function' ? next(changesRef.current) : next;
     changesRef.current = value;
     updateChanges(value);
+    if (getSessionSnapshot().revision !== sessionRevision) return;
     try {
       if (!storageKey) throw new Error('Storage unavailable');
       if (Object.keys(value).length)
@@ -191,6 +196,7 @@ export function ReviewPanel({
   async function save() {
     if (
       !review ||
+      getSessionSnapshot().revision !== sessionRevision ||
       inFlight.current ||
       busy ||
       !editable ||

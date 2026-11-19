@@ -38,6 +38,11 @@ python scripts/dev.py frontend
 
 Mở **http://127.0.0.1:5173**, chọn **Xử lý tài liệu**. API docs: http://127.0.0.1:8000/docs. Health `/api/v1/health` chỉ báo tiến trình; kiểm `/api/v1/capabilities` có `ocr_ready=true`. Một backend/worker cho mỗi runtime DB; không thêm `--workers` để vượt lock.
 
+Nhánh issue #11 thêm **session opt-in** trong cùng app; mặc định vẫn `local` không đăng nhập.
+Muốn dùng nhiều tài khoản, theo [hướng dẫn tài khoản/migration](docs/operations/auth-ownership.md)
+để backup runtime cũ, tạo user offline và bật profile đúng cookie/origin. Không tự gán tài liệu
+legacy cho người đầu tiên đăng nhập; đây chưa là cấu hình triển khai public.
+
 ## Luồng hóa đơn có thể thử ngay
 
 ```mermaid
@@ -80,7 +85,12 @@ Mỗi số liệu phải đi cùng dataset/engine/model/config/source SHA. `eval
 
 Hóa đơn header/tổng tiền: invoice_number, invoice_date, seller_name, total_amount integer VND, currency. PNG/JPEG một trang; mặc định 5MiB/16M pixels, deadline pipeline30s, tối đa5 pending/running jobs và một worker. Nhận body có tổng deadline 30 giây, tối đa hai upload đang nhận/tiền xử lý/lưu; đường chạy chuẩn giới hạn Uvicorn 16 connection/task. [Receive/admission, lỗi và giới hạn ingress](docs/operations/upload-ingress.md). Chưa PDF/multi-page/handwriting/line-items. Evidence/confidence là heuristic chưa calibrated; người dùng vẫn phải đối chiếu ảnh.
 
-Local một người dùng, không auth/tenant isolation. Chỉ synthetic/sample có quyền, không hồ sơ thật. Đơn đề nghị 7 trường đang có tiếp tục hoạt động trong cùng app. CCCD, đơn sinh viên, autosave, PDF và VLM/OCR.space của các nhánh khác được [giữ tham chiếu và lên kế hoạch port](docs/consolidation-plan.md); không tuyên bố đã tích hợp chúng. [Bài tập VT-042..046](homework/README.md) giữ tại nguồn lịch sử.
+Mặc định local một người dùng, không đăng nhập; nhánh #11 đề xuất session opt-in và owner isolation
+theo hướng dẫn trên, chưa là public deployment. Chỉ synthetic/sample có quyền, không hồ sơ thật.
+Đơn đề nghị 7 trường tiếp tục hoạt động trong cùng app; autosave #23 đã vào main và được ghép
+với recovery theo owner trên nhánh auth. CCCD, đơn sinh viên, PDF và VLM/OCR.space vẫn theo
+[kế hoạch port](docs/consolidation-plan.md); không tuyên bố đã tích hợp chúng.
+[Bài tập VT-042..046](homework/README.md) giữ tại nguồn lịch sử.
 
 ## Cấu trúc và nguồn chuẩn
 

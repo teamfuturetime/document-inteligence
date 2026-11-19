@@ -9,6 +9,7 @@ from pathlib import Path
 
 from docintel.api.app import create_app
 from docintel.config import ROOT, Settings
+from docintel.security import hash_password, new_token
 from fastapi.testclient import TestClient
 
 
@@ -35,12 +36,32 @@ def main():
     parser.add_argument(
         "--output", type=Path, default=ROOT / "runtime/verification/product-native.json"
     )
+    parser.add_argument("--auth-mode", choices=("local", "session"), default="local")
     args = parser.parse_args()
-    settings = Settings(provider_mode="tesseract")
+    settings = Settings(provider_mode="tesseract", auth_mode=args.auth_mode)
+    password = new_token()
+    origin = settings.cors_origins[0]
+
+    def authenticate(api, username="verifyalpha"):
+        state = check(
+            api.post(
+                "/api/v1/auth/login",
+                json={"username": username, "password": password},
+                headers={"Origin": origin, "X-Requested-With": "docintel"},
+            )
+        )
+        api.headers["X-CSRF-Token"] = state["csrf_token"]
+
     checks = []
     with tempfile.TemporaryDirectory(prefix="docintel-verify-") as directory:
         settings.runtime_dir = Path(directory)
-        with TestClient(create_app(settings)) as api:
+        with TestClient(create_app(settings), base_url="https://testserver") as api:
+            if args.auth_mode == "session":
+                assert api.get("/api/v1/documents").status_code == 401
+                identities = api.app.state.auth.identities
+                for username in ("verifyalpha", "verifybeta"):
+                    identities.create_user(username, hash_password(password))
+                authenticate(api)
             assert check(api.get("/api/v1/capabilities"))["ocr_ready"] is True
             image = ROOT / "data/product/images/hoa_don_007.png"
             document = check(
@@ -221,7 +242,67 @@ def main():
                 )
             )
             checks.append("both_document_schemas_real_pipeline")
-        with TestClient(create_app(settings)) as restarted:
+            if args.auth_mode == "session":
+                authenticate(api, "verifybeta")
+                assert check(api.get("/api/v1/documents"))["total"] == 0
+                assert check(api.get("/api/v1/insights"))["documents"] == 0
+                for suffix in (
+                    "",
+                    "/image",
+                    "/history",
+                    f"/export?run_id={original_run}&revision={revision}",
+                ):
+                    assert api.get(path + suffix).status_code == 404
+                for method, suffix, body in (
+                    (
+                        "PUT",
+                        "/review",
+                        {
+                            "run_id": original_run,
+                            "expected_revision": revision,
+                            "fields": {},
+                        },
+                    ),
+                    (
+                        "POST",
+                        "/confirm",
+                        {"run_id": original_run, "expected_revision": revision},
+                    ),
+                    ("POST", "/runs", {"expected_run_id": document["latest_run_id"]}),
+                ):
+                    assert (
+                        api.request(method, path + suffix, json=body).status_code == 404
+                    )
+                other = check(
+                    api.post(
+                        "/api/v1/documents",
+                        params={
+                            "document_type": "hoa_don",
+                            "data_origin": "synthetic",
+                            "filename": image.name,
+                        },
+                        content=image.read_bytes(),
+                        headers={"Idempotency-Key": "native-invoice"},
+                    ),
+                    202,
+                )
+                assert other["document_id"] != document["document_id"]
+                wait_for_run(api, other)
+                assert api.post("/api/v1/auth/logout").status_code == 204
+                assert api.get("/api/v1/documents").status_code == 401
+                checks.extend(
+                    [
+                        "session_login_csrf_logout",
+                        "two_owner_resource_isolation",
+                        "owner_idempotency_namespace",
+                    ]
+                )
+        with TestClient(
+            create_app(settings), base_url="https://testserver"
+        ) as restarted:
+            if args.auth_mode == "session":
+                authenticate(restarted)
+                assert check(restarted.get("/api/v1/documents"))["total"] == 2
             assert (
                 check(restarted.get(path, params={"run_id": original_run}))["review"][
                     "effective_data"
@@ -232,6 +313,7 @@ def main():
     report = {
         "report_type": "native_workflow_check",
         "status": "passed",
+        "auth_mode": args.auth_mode,
         "checked_at": datetime.now(UTC).isoformat(),
         "checks": checks,
         "native_run_metadata": document["run"]["metadata"],

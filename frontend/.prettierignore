@@ -5,3 +5,5 @@ src/lib/api.generated.ts
 
 test-results
 playwright-report
+
+test-results-auth

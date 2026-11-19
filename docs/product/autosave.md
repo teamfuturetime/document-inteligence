@@ -28,7 +28,8 @@ the machine prediction; it does not modify OCR or extraction.
 {"run_id":"run-id","expected_revision":2,"expected_status":"draft","fields":{"seller_name":{"is_reviewed":true,"reviewed_value":null}}}
 ```
 
-Response remains `DocumentDetail`. App API version is 0.3.1; invoice/export
+Response remains `DocumentDetail`. Autosave introduced API 0.3.1; the combined
+auth proposal uses 0.4.0 and retains this CAS contract. Invoice/export
 schema 1.0.0 is unchanged. Generated OpenAPI, ReviewRequest schema and TS types
 come from backend models. No database migration is required; rollback reverts
 the code and generated contracts, without rewriting revisions.
@@ -70,9 +71,14 @@ No database migration is needed. Generated request descriptions document this ru
 Changed fields only are kept in same-origin **localStorage**, keyed by document,
 run and a random editor-mount identifier held only in memory;
 no token, source image, full OCR or prediction is stored. Draft values are
-restricted to known review fields. This remains ADR0008 local single-user,
-synthetic/sample scope; auth/multi-user must add user namespacing and logout
-cleanup before using this mechanism.
+restricted to known review fields. The original ADR0008 local mode keeps its
+existing keys. The #11 opt-in session integration adds user ID before document/run/editor;
+unscoped local or another user's keys are never adopted into an authenticated account.
+See [auth operations](../operations/auth-ownership.md) and [review follow-up](../reports/auth-ownership-review-2026-11-18.md).
+Verified logout/401/owner changes clear the previous known owner's recovery keys.
+Late callbacks cannot repopulate that namespace after session invalidation. A failed session
+lookup closes the workspace while preserving only owner-scoped recovery for reconnecting
+as the same account; it is not proof of logout. This is still synthetic/sample, local-use scope.
 
 Draft recovery is valid for 24 hours; expired entries for the opened document/run
 are removed when recovery runs (there is no background physical deletion of

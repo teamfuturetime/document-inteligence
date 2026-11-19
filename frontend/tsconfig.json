@@ -22,6 +22,7 @@
     "vite.config.ts",
     "playwright.config.ts",
     "playwright.autosave.config.ts",
+    "playwright.auth.config.ts",
     "e2e",
     "autosave-e2e"
   ]

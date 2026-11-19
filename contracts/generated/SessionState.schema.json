@@ -1,0 +1,64 @@
+{
+  "$defs": {
+    "UserIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[0-9a-f]{32}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "username": {
+          "title": "Username",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "username"
+      ],
+      "title": "UserIdentity",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "csrf_token": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Csrf Token"
+    },
+    "mode": {
+      "enum": [
+        "local",
+        "session"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "user": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/UserIdentity"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    }
+  },
+  "required": [
+    "mode"
+  ],
+  "title": "SessionState",
+  "type": "object"
+}

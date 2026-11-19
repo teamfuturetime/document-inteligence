@@ -1,0 +1,302 @@
+import pytest
+from fastapi.testclient import TestClient
+from starlette.requests import Request
+from test_product import image_bytes, inference
+
+from docintel.api.app import create_app
+from docintel.api.identity import COOKIE_NAME, check_csrf
+from docintel.config import Settings
+from docintel.security import hash_password
+from docintel.services.documents import DocumentService, ProductError
+
+ORIGIN = "http://127.0.0.1:5173"
+PASSWORD = "synthetic-password-123"
+
+
+@pytest.fixture
+def session_api(tmp_path, monkeypatch):
+    monkeypatch.setattr(DocumentService, "ensure_ready", lambda self: {})
+    settings = Settings(
+        _env_file=None,
+        auth_mode="session",
+        runtime_dir=tmp_path,
+        provider_mode="tesseract",
+        cors_origins=[ORIGIN],
+    )
+    with TestClient(create_app(settings, start_worker=False), base_url="https://testserver") as api:
+        repository = api.app.state.auth.identities
+        repository.create_user("alpha", hash_password(PASSWORD))
+        repository.create_user("beta", hash_password(PASSWORD))
+        monkeypatch.setattr(api.app.state.documents.pipeline, "run", inference)
+        yield api, settings
+
+
+def login(api, username="alpha"):
+    response = api.post(
+        "/api/v1/auth/login",
+        json={"username": username, "password": PASSWORD},
+        headers={"Origin": ORIGIN, "X-Requested-With": "docintel"},
+    )
+    assert response.status_code == 200, response.text
+    return response.json()
+
+
+def test_credentialed_cors_accepts_only_exact_configured_origin_and_headers(session_api):
+    api, _ = session_api
+    headers = {
+        "Origin": ORIGIN,
+        "Access-Control-Request-Method": "POST",
+        "Access-Control-Request-Headers": "x-csrf-token,x-requested-with,content-type",
+    }
+    response = api.options("/api/v1/auth/login", headers=headers)
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == ORIGIN
+    assert response.headers["access-control-allow-credentials"] == "true"
+    headers["Origin"] = "https://attacker.invalid"
+    rejected = api.options("/api/v1/auth/login", headers=headers)
+    assert rejected.status_code == 400
+    assert "access-control-allow-origin" not in rejected.headers
+
+
+def test_valid_session_and_csrf_do_not_bypass_foreign_origin_policy(session_api):
+    api, _ = session_api
+    state = login(api)
+    response = api.post(
+        "/api/v1/documents?document_type=hoa_don&data_origin=synthetic",
+        content=image_bytes(),
+        headers={"Origin": "https://attacker.invalid", "X-CSRF-Token": state["csrf_token"]},
+    )
+    assert response.status_code == 403
+    assert api.get("/api/v1/documents").json()["total"] == 0
+
+
+def test_cookie_is_http_only_secure_scoped_and_not_readable_from_status(session_api):
+    api, _ = session_api
+    response = api.post(
+        "/api/v1/auth/login",
+        json={"username": "alpha", "password": PASSWORD},
+        headers={"Origin": ORIGIN, "X-Requested-With": "docintel"},
+    )
+    cookie = response.headers["set-cookie"].lower()
+    assert "httponly" in cookie and "secure" in cookie and "samesite=lax" in cookie
+    assert "path=/api/v1" in cookie and "domain=" not in cookie
+    assert api.cookies.get(COOKIE_NAME) not in response.text
+
+
+@pytest.mark.parametrize("csrf", ["", "wrong", "a" * 44])
+def test_missing_or_wrong_csrf_cannot_create_document(session_api, csrf):
+    api, _ = session_api
+    login(api)
+    response = upload(api, csrf)
+    assert response.status_code == 403
+    assert api.get("/api/v1/documents").json()["total"] == 0
+
+
+def test_nonascii_csrf_is_safe_rejection_not_an_internal_error(session_api):
+    api, _ = session_api
+    login(api)
+    principal = api.app.state.auth.session(api.cookies.get(COOKIE_NAME))
+    request = Request(
+        {"type": "http", "app": api.app, "headers": [(b"x-csrf-token", b"\xff" * 43)]}
+    )
+    with pytest.raises(ProductError) as denied:
+        check_csrf(request, principal)
+    assert denied.value.status == 403
+
+
+def test_logout_requires_csrf_and_revokes_cookie_with_matching_path(session_api):
+    api, _ = session_api
+    state = login(api)
+    assert api.post("/api/v1/auth/logout").status_code == 403
+    assert api.get("/api/v1/documents").status_code == 200
+    response = api.post("/api/v1/auth/logout", headers={"X-CSRF-Token": state["csrf_token"]})
+    assert response.status_code == 204
+    assert "Max-Age=0" in response.headers["set-cookie"]
+    assert "Path=/api/v1" in response.headers["set-cookie"]
+    assert api.get("/api/v1/documents").status_code == 401
+
+
+def upload(api, csrf):
+    return api.post(
+        "/api/v1/documents?document_type=hoa_don&data_origin=synthetic",
+        content=image_bytes(),
+        headers={"X-CSRF-Token": csrf, "Idempotency-Key": "same"},
+    )
+
+
+def processed_document(api, csrf):
+    created = upload(api, csrf)
+    assert created.status_code == 202, created.text
+    document = created.json()
+    assert api.app.state.documents.process_next()
+    return api.get("/api/v1/documents/" + document["document_id"]).json()
+
+
+@pytest.mark.parametrize(
+    ("method", "path"),
+    [
+        ("GET", "/documents"),
+        ("GET", "/document-schemas"),
+        ("GET", "/insights"),
+        ("POST", "/documents"),
+        ("GET", "/documents/" + "a" * 32),
+        ("GET", "/documents/" + "a" * 32 + "/image"),
+        ("GET", "/documents/" + "a" * 32 + "/history"),
+        ("PUT", "/documents/" + "a" * 32 + "/review"),
+        ("POST", "/documents/" + "a" * 32 + "/confirm"),
+        ("POST", "/documents/" + "a" * 32 + "/runs"),
+        ("GET", "/documents/" + "a" * 32 + "/export?run_id=missing&revision=1"),
+    ],
+)
+def test_anonymous_requests_are_rejected_before_product_validation(session_api, method, path):
+    api, _ = session_api
+    response = api.request(method, "/api/v1" + path)
+    assert response.status_code == 401, response.text
+    assert response.json()["error"]["code"] == "AUTH_REQUIRED"
+    assert response.headers["cache-control"] == "no-store"
+
+
+@pytest.mark.parametrize("endpoint", ["login", "logout"])
+def test_cross_site_auth_requests_preserve_existing_session(session_api, endpoint):
+    api, _ = session_api
+    state = login(api)
+    response = api.post(
+        "/api/v1/auth/" + endpoint,
+        json={"username": "beta", "password": PASSWORD},
+        headers={
+            "Origin": ORIGIN,
+            "Sec-Fetch-Site": "cross-site",
+            "X-Requested-With": "docintel",
+            "X-CSRF-Token": state["csrf_token"],
+        },
+    )
+    assert response.status_code == 403
+    assert api.get("/api/v1/auth/session").json()["user"] == state["user"]
+
+
+@pytest.mark.parametrize("invalidation", ["expiry", "disable", "password-reset"])
+def test_invalidated_session_cannot_read_or_write_and_status_is_anonymous(
+    session_api, invalidation
+):
+    api, _ = session_api
+    state = login(api)
+    identities = api.app.state.auth.identities
+    if invalidation == "expiry":
+        with identities.repository.transaction(write=True) as connection:
+            connection.execute("UPDATE sessions SET expires_at=0")
+    elif invalidation == "disable":
+        identities.disable(state["user"]["id"])
+    else:
+        identities.reset_password(state["user"]["id"], hash_password("replacement-password-123"))
+    status = api.get("/api/v1/auth/session")
+    assert status.json() == {"mode": "session", "user": None, "csrf_token": None}
+    assert api.get("/api/v1/documents").status_code == 401
+    assert upload(api, state["csrf_token"]).status_code == 401
+
+
+@pytest.mark.parametrize(
+    "operation", ["detail", "source", "history", "review", "confirm", "export", "reprocess"]
+)
+def test_two_user_resource_authorization_matrix(session_api, operation):
+    api, _ = session_api
+    alpha = login(api)
+    document = processed_document(api, alpha["csrf_token"])
+    base = "/api/v1/documents/" + document["document_id"]
+    beta = login(api, "beta")
+    headers = {"X-CSRF-Token": beta["csrf_token"]}
+    revision = {"run_id": document["run"]["run_id"], "expected_revision": 1}
+    if operation == "detail":
+        response = api.get(base)
+    elif operation == "source":
+        response = api.get(base + "/image")
+    elif operation == "history":
+        response = api.get(base + "/history")
+    elif operation == "review":
+        response = api.put(base + "/review", json={**revision, "fields": {}}, headers=headers)
+    elif operation == "confirm":
+        response = api.post(base + "/confirm", json=revision, headers=headers)
+    elif operation == "export":
+        response = api.get(base + "/export", params={"run_id": revision["run_id"], "revision": 1})
+    else:
+        response = api.post(
+            base + "/runs", json={"expected_run_id": revision["run_id"]}, headers=headers
+        )
+    assert response.status_code == 404, response.text
+    assert response.json()["error"]["code"] == "DOCUMENT_NOT_FOUND"
+    assert api.get("/api/v1/documents").json()["total"] == 0
+    assert api.get("/api/v1/insights").json()["documents"] == 0
+
+
+def test_idempotency_replay_is_scoped_to_authenticated_owner_even_when_queue_full(session_api):
+    api, settings = session_api
+    settings.max_pending_runs = 2
+    alpha = login(api)
+    first = upload(api, alpha["csrf_token"]).json()
+    beta = login(api, "beta")
+    second = upload(api, beta["csrf_token"]).json()
+    assert first["document_id"] != second["document_id"]
+    alpha = login(api)
+    repeated = upload(api, alpha["csrf_token"])
+    assert repeated.status_code == 202
+    assert repeated.json()["document_id"] == first["document_id"]
+    conflict = api.post(
+        "/api/v1/documents?document_type=hoa_don&data_origin=synthetic",
+        content=b"different",
+        headers={"X-CSRF-Token": alpha["csrf_token"], "Idempotency-Key": "same"},
+    )
+    assert conflict.status_code == 409
+    assert api.get("/api/v1/documents").json()["total"] == 1
+
+
+def test_forged_foreign_run_cannot_be_used_with_an_owned_document(session_api):
+    api, _ = session_api
+    alpha = login(api)
+    own = processed_document(api, alpha["csrf_token"])
+    beta = login(api, "beta")
+    other = processed_document(api, beta["csrf_token"])
+    alpha = login(api)
+    base = "/api/v1/documents/" + own["document_id"]
+    foreign_run = other["run"]["run_id"]
+    assert api.get(base, params={"run_id": foreign_run}).status_code == 404
+    assert (
+        api.get(base + "/export", params={"run_id": foreign_run, "revision": 1}).status_code == 409
+    )
+    update = api.put(
+        base + "/review",
+        json={"run_id": foreign_run, "expected_revision": 1, "fields": {}},
+        headers={"X-CSRF-Token": alpha["csrf_token"]},
+    )
+    assert update.status_code == 409
+    beta = login(api, "beta")
+    persisted = api.get("/api/v1/documents/" + other["document_id"]).json()
+    assert persisted["run"]["fields"] == other["run"]["fields"]
+    assert persisted["review"] == other["review"]
+
+
+def test_real_login_owner_isolation_and_logout(session_api):
+    api, _ = session_api
+    assert api.get("/api/v1/documents").status_code == 401
+    state = login(api)
+    first = upload(api, state["csrf_token"])
+    assert first.status_code == 202, first.text
+    document = first.json()
+    assert api.get("/api/v1/documents").json()["total"] == 1
+    logout = api.post("/api/v1/auth/logout", headers={"X-CSRF-Token": state["csrf_token"]})
+    assert logout.status_code == 204 and logout.content == b""
+    assert api.get("/api/v1/documents").status_code == 401
+    state = login(api, "beta")
+    assert api.get("/api/v1/documents").json()["total"] == 0
+    assert api.get("/api/v1/documents/" + document["document_id"]).status_code == 404
+    assert upload(api, state["csrf_token"]).status_code == 202
+
+
+def test_session_status_has_no_password_or_session_credential(session_api):
+    api, _ = session_api
+    anonymous = api.get("/api/v1/auth/session")
+    assert anonymous.json() == {"mode": "session", "user": None, "csrf_token": None}
+    state = login(api)
+    response = api.get("/api/v1/auth/session")
+    assert response.json() == state
+    assert set(state) == {"mode", "user", "csrf_token"}
+    assert set(state["user"]) == {"id", "username"}
+    assert response.headers["Cache-Control"] == "no-store"
