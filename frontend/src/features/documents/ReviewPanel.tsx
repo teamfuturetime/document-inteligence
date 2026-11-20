@@ -1,4 +1,4 @@
-import { useContext, useEffect, useId, useRef, useState } from 'react';
+import { useContext, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { ReviewIdentityContext, reviewDraftPrefix } from '../../lib/reviewDrafts';
 import { getSessionSnapshot } from '../../lib/session';
 import { APIError, downloadExport, jsonRequest, request, statusLabels } from './api';
@@ -128,12 +128,20 @@ export function ReviewPanel({
   const conflictRef = useRef<HTMLDivElement>(null);
   const exportRef = useRef<HTMLButtonElement>(null);
   const focusExportAfterConfirm = useRef(false);
-  function focusEditor() {
-    setTimeout(
-      () => panelRef.current?.querySelector<HTMLElement>('[id^="field-"]:not(:disabled)')?.focus(),
-      0,
-    );
+  const [editorFocus, setEditorFocus] = useState<{ origin: Element | null } | null>(null);
+  function focusEditor(origin = window.document.activeElement) {
+    setEditorFocus({ origin });
   }
+  useLayoutEffect(() => {
+    if (!editorFocus || getSessionSnapshot().revision !== sessionRevision) return;
+    const active = window.document.activeElement;
+    const origin = editorFocus.origin;
+    // Restore after the commit enables fields/removes the action, but yield to
+    // any focus move made while a manual save was awaiting its response.
+    const lostOrigin = !origin?.isConnected || origin.matches(':disabled');
+    if (active !== origin && !(active === window.document.body && lostOrigin)) return;
+    panelRef.current?.querySelector<HTMLElement>('[id^="field-"]:not(:disabled)')?.focus();
+  }, [editorFocus, sessionRevision]);
   useEffect(() => {
     titleRef.current?.focus();
   }, []);
@@ -235,6 +243,7 @@ export function ReviewPanel({
       (error instanceof APIError && error.status === 409)
     )
       return;
+    const focusOrigin = window.document.activeElement;
     const snapshot = changesRef.current;
     inFlight.current = true;
     setSaving(true);
@@ -264,7 +273,7 @@ export function ReviewPanel({
       );
       onUpdated(result);
       setMessage('Đã lưu nháp trên máy chủ.');
-      if (restoreFocus) focusEditor();
+      if (restoreFocus) focusEditor(focusOrigin);
     } catch (reason) {
       if (mounted.current) setError(reason as Error);
     } finally {

@@ -10,7 +10,7 @@ Nhánh từ main0064e90, không cherry-pick PR #63 chưa merge và không đổi
 | Manual save lỗi / recovered draft | Alert có tên nhận focus, chỉnh sửa vẫn giữ |
 | Lỗi nền khi đang nhập | Alert thông báo nhưng input vẫn giữ focus |
 | Đối chiếu 409/recovery | Region có tên nhận focus; Tab tới hành động giữ/bỏ |
-| Giữ/bỏ chỉnh sửa, retry save thành công | Trở về field đầu tiên có thể sửa |
+| Giữ/bỏ chỉnh sửa, retry save thành công | Focus field đầu tiên sau React commit; giữ focus mới nếu người dùng đã chuyển control trong lúc lưu |
 | Confirm thành công | Đợi trạng thái confirmed render rồi focus export |
 | Retry ảnh nguồn | Trở về region preview; mô tả vùng chữ theo field đang chọn |
 
@@ -23,7 +23,8 @@ expected_revision/expected_status CAS, owner/session recovery và export từ re
 Không tự retry write khi recovery/lỗi. Giữ source key của editor khác theo implementation #23.
 
 Component tests kiểm focus/role/name/description, null recovery, foreign key ownership,
-background lỗi không giật focus và manual retry. Browser keyboard chạy ở 1280px và 390px:
+background lỗi không giật focus, manual retry, tương tác nhanh, unmount và ACK sau đổi document/run/session.
+Browser keyboard chạy ở 1280px và 390px, giữ focus control mới khi ACK của manual save đến muộn:
 mở bằng Tab/Enter → xóa null → autosave/validation → 409/compare/giữ → retry → reload/recovery/
 discard → confirm/export; Tab rời nút export để kiểm không trap. HTTP/inference là doubles
 synthetic có assertions revision/status/null/export, không là native OCR hoặc kiểm screen reader thật.

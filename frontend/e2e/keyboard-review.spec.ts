@@ -47,6 +47,8 @@ for (const width of [1280, 390]) {
       },
     };
     let failure = 0;
+    let holdSave = false;
+    let finishSave: (() => void) | undefined;
     let nullSaved = false;
     let writes = 0;
     await page.route('**/keyboard-image?*', (route) =>
@@ -91,6 +93,10 @@ for (const width of [1280, 390]) {
               },
             },
           });
+        }
+        if (holdSave) {
+          holdSave = false;
+          await new Promise<void>((resolve) => (finishSave = resolve));
         }
         const field = body.fields.seller_name;
         nullSaved ||= field.is_reviewed && field.reviewed_value === null;
@@ -184,14 +190,27 @@ for (const width of [1280, 390]) {
     failure = 500;
     await page.keyboard.insertText(' pending');
     await expect(page.getByRole('alert')).toContainText('SAVE_FAILED');
+    holdSave = true;
+    await activate('Lưu nháp');
+    await expect.poll(() => !!finishSave).toBe(true);
+    const source = button('Xem vùng nguồn: Đơn vị bán hàng');
+    await tabTo(page, source);
+    finishSave!();
+    await expect(page.getByRole('status', { name: 'Trạng thái lưu' })).toContainText('Đã lưu nháp');
+    await expect(source).toBeFocused();
+    await tabTo(page, input);
+    failure = 500;
+    await page.keyboard.press('ControlOrMeta+A');
+    await page.keyboard.insertText('Unsaved after focus move');
+    await expect(page.getByRole('alert')).toContainText('SAVE_FAILED');
     await page.reload();
     await open();
     await expect(page.getByRole('alert', { name: 'Lỗi lưu bản rà soát' })).toBeFocused();
-    await expect(input).toHaveValue('Recovered pending pending');
+    await expect(input).toHaveValue('Unsaved after focus move');
     await activate('Đối chiếu bản mới');
     await activate('Bỏ chỉnh sửa, tải bản máy chủ', 'Space');
     await expect(input).toBeFocused();
-    await expect(input).toHaveValue('Recovered pending');
+    await expect(input).toHaveValue('Recovered pending pending');
     await activate('Xác nhận bản lưu');
     await expect(button('Xuất JSON đã xác nhận')).toBeFocused();
     const downloadEvent = page.waitForEvent('download');
@@ -199,7 +218,7 @@ for (const width of [1280, 390]) {
     const stream = await (await downloadEvent).createReadStream();
     let json = '';
     for await (const chunk of stream!) json += chunk.toString();
-    expect(JSON.parse(json).data.seller_name).toBe('Recovered pending');
+    expect(JSON.parse(json).data.seller_name).toBe('Recovered pending pending');
     await page.keyboard.press('Tab');
     await expect(button('Xuất JSON đã xác nhận')).not.toBeFocused();
     await expect(

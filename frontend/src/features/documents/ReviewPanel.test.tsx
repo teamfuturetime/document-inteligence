@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { StrictMode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { logout, refreshSession, sessionFetch } from '../../lib/session';
 import { SessionBoundary } from '../auth/SessionBoundary';
@@ -98,6 +99,111 @@ describe('Keyboard focus and announcements', () => {
       />,
     );
   }
+  it('does not restore stale focus when the user moves during a manual save', async () => {
+    vi.useFakeTimers();
+    let finishSave!: (value: Response) => void;
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => new Promise<Response>((resolve) => (finishSave = resolve))),
+    );
+    mountReview();
+    const input = screen.getByLabelText('Đơn vị bán hàng *');
+    fireEvent.change(input, { target: { value: 'Keep me' } });
+    const save = screen.getByRole('button', { name: 'Lưu nháp' });
+    save.focus();
+    fireEvent.click(save);
+    const next = screen.getByRole('button', { name: 'Xem vùng nguồn: Đơn vị bán hàng' });
+    next.focus();
+    // The later edit must survive the older ACK as well as keep the user's focus.
+    fireEvent.change(input, { target: { value: 'Newer draft' } });
+    await act(async () => {
+      finishSave(new Response(JSON.stringify(document(2))));
+    });
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0);
+    });
+    expect(next).toHaveFocus();
+    expect(input).toHaveValue('Newer draft');
+    expect(Object.values(localStorage).some((raw) => raw.includes('Newer draft'))).toBe(true);
+  });
+  it('does not override a rapid focus move after discard', async () => {
+    vi.useFakeTimers();
+    mountReview();
+    fireEvent.change(screen.getByLabelText('Đơn vị bán hàng *'), {
+      target: { value: 'Discard me' },
+    });
+    const discard = screen.getByRole('button', { name: 'Bỏ chỉnh sửa' });
+    discard.focus();
+    fireEvent.click(discard);
+    const next = screen.getByRole('button', { name: 'Xem vùng nguồn: Đơn vị bán hàng' });
+    next.focus();
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0);
+    });
+    expect(next).toHaveFocus();
+  });
+  it('does not focus after discard and unmount', async () => {
+    vi.useFakeTimers();
+    const view = mountReview();
+    fireEvent.change(screen.getByLabelText('Đơn vị bán hàng *'), {
+      target: { value: 'Discard me' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Bỏ chỉnh sửa' }));
+    view.unmount();
+    render(<input aria-label="Next screen" />);
+    const next = screen.getByLabelText('Next screen');
+    next.focus();
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0);
+    });
+    expect(next).toHaveFocus();
+  });
+  it.each(['document', 'run'])('ignores a manual save ACK after switching %s', async (switchBy) => {
+    vi.useFakeTimers();
+    let finishSave!: (value: Response) => void;
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => new Promise<Response>((resolve) => (finishSave = resolve))),
+    );
+    const updated = vi.fn();
+    function editor(value: DocumentDetail) {
+      return (
+        <StrictMode>
+          <ReviewPanel
+            key={`${value.document_id}-${value.run.run_id}`}
+            document={value}
+            onUpdated={updated}
+            onDirtyChange={vi.fn()}
+            onFieldChange={vi.fn()}
+          />
+        </StrictMode>
+      );
+    }
+    const view = render(editor(document()));
+    fireEvent.change(screen.getByLabelText('Đơn vị bán hàng *'), {
+      target: { value: 'Previous document draft' },
+    });
+    const save = screen.getByRole('button', { name: 'Lưu nháp' });
+    save.focus();
+    fireEvent.click(save);
+    const nextDocument = document();
+    if (switchBy === 'document') nextDocument.document_id = 'next-doc';
+    else nextDocument.run.run_id = nextDocument.latest_run_id = 'next-run';
+    view.rerender(editor(nextDocument));
+    const next = screen.getByRole('button', { name: 'Xem vùng nguồn: Đơn vị bán hàng' });
+    next.focus();
+    await act(async () => {
+      finishSave(new Response(JSON.stringify(document(2))));
+      await vi.advanceTimersByTimeAsync(0);
+    });
+    expect(next).toHaveFocus();
+    expect(screen.getByLabelText('Đơn vị bán hàng *')).toHaveValue('Công ty Mẫu');
+    expect(updated).not.toHaveBeenCalled();
+    expect(Object.values(localStorage).some((raw) => raw.includes('Previous document draft'))).toBe(
+      true,
+    );
+    expect(vi.getTimerCount()).toBe(0);
+  });
   it('focuses the review heading, names status, and does not repeat announcements per keystroke', () => {
     mountReview();
     expect(screen.getByRole('heading', { name: 'Kiểm tra dữ liệu' })).toHaveFocus();
@@ -307,9 +413,12 @@ describe('Authenticated draft recovery', () => {
     await act(async () => {
       await refreshSession();
     });
+    const next = screen.getByRole('button', { name: 'Xem vùng nguồn: Đơn vị bán hàng' });
+    next.focus();
     await act(async () => {
       finishSave({ ok: true, status: 200, json: async () => document(2) } as Response);
     });
+    expect(next).toHaveFocus();
     expect(screen.getByLabelText('Đơn vị bán hàng *')).toHaveValue('Công ty Mẫu');
     expect(
       Object.keys(localStorage).filter((key) => key.startsWith(ownerPrefix(alpha.id))),
