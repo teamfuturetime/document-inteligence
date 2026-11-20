@@ -74,6 +74,60 @@ afterEach(() => {
   localStorage.clear();
 });
 
+describe('Connectivity interruption', () => {
+  it.each([null, 'Pending text'])(
+    'keeps %s without replaying a queued autosave after reconnect',
+    async (value) => {
+      vi.useFakeTimers();
+      const saved = vi.fn();
+      vi.stubGlobal(
+        'fetch',
+        vi.fn(async () => new Response(JSON.stringify(document(2)))),
+      );
+      const editor = (backendReady: boolean) => (
+        <ReviewPanel
+          document={document()}
+          backendReady={backendReady}
+          onUpdated={saved}
+          onDirtyChange={vi.fn()}
+          onFieldChange={vi.fn()}
+        />
+      );
+      const view = render(editor(true));
+      const input = screen.getByLabelText('Đơn vị bán hàng *');
+      fireEvent.change(input, { target: { value: value ?? '' } });
+      view.rerender(editor(false));
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(3000);
+      });
+      expect(input).toBeEnabled();
+      expect(input).toHaveValue(value ?? '');
+      expect(screen.getByRole('button', { name: 'Lưu nháp' })).toBeDisabled();
+      expect(
+        Object.values(localStorage).some(
+          (raw) => JSON.parse(raw).fields.seller_name.reviewed_value === value,
+        ),
+      ).toBe(true);
+      view.rerender(editor(true));
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(3000);
+      });
+      expect(fetch).not.toHaveBeenCalled();
+      await act(async () => {
+        fireEvent.click(screen.getByRole('button', { name: 'Lưu nháp' }));
+      });
+      const body = JSON.parse(String(vi.mocked(fetch).mock.calls[0][1]?.body));
+      expect(body).toEqual({
+        run_id: 'run',
+        expected_revision: 1,
+        expected_status: 'draft',
+        fields: { seller_name: { is_reviewed: true, reviewed_value: value } },
+      });
+      expect(saved).toHaveBeenCalledTimes(1);
+    },
+  );
+});
+
 describe('Authenticated draft recovery', () => {
   const alpha = { id: 'a'.repeat(32), username: 'alpha' };
   const beta = { id: 'b'.repeat(32), username: 'beta' };

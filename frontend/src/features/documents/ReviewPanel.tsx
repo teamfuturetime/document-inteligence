@@ -66,11 +66,13 @@ export function ReviewPanel({
   onUpdated,
   onDirtyChange,
   onFieldChange,
+  backendReady = true,
 }: {
   document: DocumentDetail;
   onUpdated: (value: DocumentDetail) => void;
   onDirtyChange: (value: boolean) => void;
   onFieldChange: (value: string) => void;
+  backendReady?: boolean;
 }) {
   const identity = useContext(ReviewIdentityContext);
   const [sessionRevision] = useState(() => getSessionSnapshot().revision);
@@ -136,6 +138,10 @@ export function ReviewPanel({
     setConflict(null);
   }, [document]);
   const dirty = Object.keys(changes).length > 0 || saving;
+  const [resumeRequired, setResumeRequired] = useState(false);
+  useEffect(() => {
+    if (!backendReady && dirty) setResumeRequired(true);
+  }, [backendReady, dirty]);
   useEffect(() => {
     onDirtyChange(dirty);
   }, [dirty, onDirtyChange]);
@@ -152,6 +158,8 @@ export function ReviewPanel({
   useEffect(() => {
     if (
       !dirty ||
+      !backendReady ||
+      resumeRequired ||
       saving ||
       busy ||
       error ||
@@ -193,9 +201,11 @@ export function ReviewPanel({
       setBusy(false);
     }
   }
-  async function save() {
+  async function save(manual = false) {
     if (
       !review ||
+      !backendReady ||
+      (!manual && resumeRequired) ||
       getSessionSnapshot().revision !== sessionRevision ||
       inFlight.current ||
       busy ||
@@ -205,6 +215,7 @@ export function ReviewPanel({
       (error instanceof APIError && error.status === 409)
     )
       return;
+    setResumeRequired(false);
     const snapshot = changesRef.current;
     inFlight.current = true;
     setSaving(true);
@@ -274,7 +285,7 @@ export function ReviewPanel({
           )}
           {error instanceof APIError && error.status === 409 && (
             <button
-              disabled={busy}
+              disabled={!backendReady || busy}
               onClick={() =>
                 void act(async () => {
                   setConflict(await request<DocumentDetail>(`/documents/${base.document_id}`));
@@ -447,9 +458,13 @@ export function ReviewPanel({
         <button
           className="primary"
           disabled={
-            !editable || !dirty || saving || (error instanceof APIError && error.status === 409)
+            !backendReady ||
+            !editable ||
+            !dirty ||
+            saving ||
+            (error instanceof APIError && error.status === 409)
           }
-          onClick={() => void save()}
+          onClick={() => void save(true)}
         >
           {busy ? 'Đang xử lý…' : 'Lưu nháp'}
         </button>
@@ -465,6 +480,7 @@ export function ReviewPanel({
         <button
           disabled={
             !editable ||
+            !backendReady ||
             saving ||
             dirty ||
             issues.length > 0 ||
@@ -488,7 +504,9 @@ export function ReviewPanel({
           Xác nhận bản lưu
         </button>
         <button
-          disabled={!editable || saving || dirty || review?.review_status !== 'confirmed'}
+          disabled={
+            !backendReady || !editable || saving || dirty || review?.review_status !== 'confirmed'
+          }
           onClick={() =>
             void act(async () => {
               await downloadExport(base);
@@ -500,15 +518,19 @@ export function ReviewPanel({
         </button>
       </div>
       <p role="status" aria-live="polite" className="save-status">
-        {saving
-          ? 'Đang lưu nháp…'
-          : error
-            ? 'Lưu thất bại. Chỉnh sửa được giữ; hãy thử Lưu nháp hoặc đối chiếu khi xung đột.'
-            : busy
-              ? 'Đang trao đổi với máy chủ…'
-              : dirty
-                ? 'Chưa lưu. Tự động lưu sau khi ngừng nhập.'
-                : message || 'Không có thay đổi chưa lưu.'}
+        {!backendReady
+          ? 'Mất kết nối hoặc backend chưa sẵn sàng. Chỉnh sửa vẫn được giữ.'
+          : resumeRequired && dirty
+            ? 'Đã kết nối lại. Hãy bấm Lưu nháp hoặc đối chiếu trước khi tiếp tục; không tự gửi lại.'
+            : saving
+              ? 'Đang lưu nháp…'
+              : error
+                ? 'Lưu thất bại. Chỉnh sửa được giữ; hãy thử Lưu nháp hoặc đối chiếu khi xung đột.'
+                : busy
+                  ? 'Đang trao đổi với máy chủ…'
+                  : dirty
+                    ? 'Chưa lưu. Tự động lưu sau khi ngừng nhập.'
+                    : message || 'Không có thay đổi chưa lưu.'}
       </p>
     </section>
   );

@@ -2,8 +2,13 @@ import type { components } from './api.generated';
 import { clearReviewDrafts } from './reviewDrafts';
 
 export type SessionState = components['schemas']['SessionState'];
-type Snapshot = { session: SessionState | null; error: string; revision: number };
-let snapshot: Snapshot = { session: null, error: '', revision: 0 };
+type Snapshot = {
+  session: SessionState | null;
+  error: string;
+  revision: number;
+  uncertain: boolean;
+};
+let snapshot: Snapshot = { session: null, error: '', revision: 0, uncertain: false };
 let refreshSequence = 0;
 let mutationSequence = 0;
 let pendingMutation: number | null = null;
@@ -30,7 +35,7 @@ function publish(session: SessionState | null, error = '') {
     previous?.mode !== session?.mode ||
     previous?.user?.id !== session?.user?.id ||
     previous?.csrf_token !== session?.csrf_token;
-  snapshot = { session, error, revision: snapshot.revision + Number(changed) };
+  snapshot = { session, error, revision: snapshot.revision + Number(changed), uncertain: false };
   listeners.forEach((listener) => listener());
 }
 
@@ -42,19 +47,41 @@ async function sessionResponse(response: Response): Promise<SessionState> {
   return response.json() as Promise<SessionState>;
 }
 
-export async function refreshSession() {
+export async function refreshSession(signal?: AbortSignal): Promise<boolean> {
   const sequence = ++refreshSequence;
   const mutation = mutationSequence;
   const isCurrent = () =>
     sequence === refreshSequence && mutation === mutationSequence && pendingMutation === null;
   try {
-    const state = await sessionResponse(
-      await fetch('/api/v1/auth/session', { credentials: 'same-origin', cache: 'no-store' }),
-    );
-    if (isCurrent()) publish(state);
+    const response = await fetch('/api/v1/auth/session', {
+      credentials: 'same-origin',
+      cache: 'no-store',
+      signal: AbortSignal.any([...(signal ? [signal] : []), AbortSignal.timeout(8000)]),
+    });
+    if (response.status === 401 && isCurrent() && !signal?.aborted) {
+      publish(
+        { mode: 'session', user: null, csrf_token: null },
+        'Phiên đã hết hạn. Vui lòng đăng nhập lại.',
+      );
+      return true;
+    }
+    const state = await sessionResponse(response);
+    if (isCurrent() && !signal?.aborted) {
+      publish(state);
+      return true;
+    }
   } catch {
-    if (isCurrent()) publish(null, 'Không kiểm tra được phiên. Hãy thử lại.');
+    if (isCurrent() && !signal?.aborted) {
+      const error = 'Không kiểm tra được phiên. Hãy thử lại.';
+      if (snapshot.session?.mode === 'local' || snapshot.session?.user) {
+        // Offline is not a verified logout. Keep the mounted editor and owner
+        // namespace, but block requests until identity has been verified again.
+        snapshot = { ...snapshot, uncertain: true, error };
+        listeners.forEach((listener) => listener());
+      } else publish(null, error);
+    }
   }
+  return false;
 }
 
 function invalidateSessionRequests() {
@@ -81,7 +108,15 @@ function notifyOtherTabs() {
 }
 
 export function watchSession() {
-  const refresh = () => void refreshSession();
+  const controller = new AbortController();
+  let refreshing = false;
+  const refresh = () => {
+    if (refreshing) return;
+    refreshing = true;
+    void refreshSession(controller.signal).finally(() => {
+      refreshing = false;
+    });
+  };
   const visible = () => {
     if (document.visibilityState === 'visible') refresh();
   };
@@ -99,6 +134,7 @@ export function watchSession() {
     };
   }
   return () => {
+    controller.abort();
     window.removeEventListener('focus', refresh);
     window.removeEventListener('pageshow', refresh);
     document.removeEventListener('visibilitychange', visible);
@@ -127,13 +163,14 @@ export async function login(username: string, password: string) {
 }
 
 export function assertCurrentSession(revision: number) {
-  if (revision !== snapshot.revision) {
+  if (revision !== snapshot.revision || snapshot.uncertain) {
     throw new DOMException('Phiên đã thay đổi; thao tác cũ đã dừng.', 'AbortError');
   }
 }
 
 export async function sessionFetch(path: string, options: RequestInit = {}) {
   const revision = snapshot.revision;
+  assertCurrentSession(revision);
   const headers = new Headers(options.headers);
   const method = (options.method ?? 'GET').toUpperCase();
   const csrf = snapshot.session?.csrf_token;

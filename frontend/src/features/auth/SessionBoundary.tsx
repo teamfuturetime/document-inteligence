@@ -27,12 +27,14 @@ export function SessionBoundary({
   const [ready, setReady] = useState(false);
   useEffect(() => {
     let active = true;
-    void refreshSession().finally(() => {
+    const controller = new AbortController();
+    void refreshSession(controller.signal).finally(() => {
       if (active) setReady(true);
     });
     const stop = watchSession();
     return () => {
       active = false;
+      controller.abort();
       stop();
     };
   }, []);
@@ -114,6 +116,11 @@ export function SessionBoundary({
   return (
     <ReviewIdentityContext.Provider key={revision} value={session.user?.id ?? 'local'}>
       <div>
+        {error && (
+          <p role="status" aria-label="Xác minh phiên">
+            Chưa xác minh lại được phiên. Bản nháp vẫn được giữ; đang chờ kết nối.
+          </p>
+        )}
         {session.mode === 'session' && session.user && (
           <section className="session-bar" aria-label="Tài khoản hiện tại">
             <span>

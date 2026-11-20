@@ -21,6 +21,7 @@ export class APIError extends Error {
 }
 
 export async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  options.signal?.throwIfAborted();
   const revision = getSessionSnapshot().revision;
   const response = await sessionFetch(`/api/v1${path}`, options);
   if (!response.ok) {
@@ -33,6 +34,7 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
     );
   }
   const result = (await response.json()) as T;
+  options.signal?.throwIfAborted();
   assertCurrentSession(revision);
   return result;
 }

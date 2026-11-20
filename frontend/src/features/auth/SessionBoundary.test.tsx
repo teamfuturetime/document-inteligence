@@ -52,6 +52,38 @@ beforeEach(async () => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe('Session boundary and account isolation', () => {
+  it('keeps a known editor mounted while offline, blocks requests until verification, then resets on verified 401', async () => {
+    state = authenticated();
+    renderBoundary(true);
+    await screen.findByText('Tài liệu bí mật của phiên');
+    const original = screen.getByText('Tài liệu bí mật của phiên');
+    const revision = getSessionSnapshot().revision;
+    localStorage.setItem(`field-review:user:${alpha.id}:doc:run:editor`, 'private draft');
+    vi.mocked(fetch).mockRejectedValueOnce(new TypeError('offline'));
+    await act(async () => {
+      await refreshSession();
+    });
+    expect(screen.getByText('Tài liệu bí mật của phiên')).toBe(original);
+    expect(getSessionSnapshot().revision).toBe(revision);
+    expect(getSessionSnapshot().uncertain).toBe(true);
+    expect(screen.getByRole('status', { name: 'Xác minh phiên' })).toHaveTextContent(
+      'Bản nháp vẫn được giữ',
+    );
+    const before = vi.mocked(fetch).mock.calls.length;
+    await expect(sessionFetch('/api/v1/documents')).rejects.toMatchObject({ name: 'AbortError' });
+    expect(fetch).toHaveBeenCalledTimes(before);
+    await act(async () => {
+      await refreshSession();
+    });
+    expect(getSessionSnapshot().uncertain).toBe(false);
+    expect(screen.getByText('Tài liệu bí mật của phiên')).toBe(original);
+    vi.mocked(fetch).mockResolvedValueOnce(response({ error: { code: 'AUTH_REQUIRED' } }, 401));
+    await act(async () => {
+      await refreshSession();
+    });
+    expect(screen.getByRole('button', { name: 'Đăng nhập' })).toBeVisible();
+    expect(localStorage.getItem(`field-review:user:${alpha.id}:doc:run:editor`)).toBeNull();
+  });
   it('does not restore an authenticated observation completed after logout', async () => {
     state = authenticated();
     renderBoundary();

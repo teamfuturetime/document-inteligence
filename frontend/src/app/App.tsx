@@ -1,10 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Notice } from '../components/Notice';
+import { useCallback, useState } from 'react';
 import { FixtureViewer } from '../features/FixtureViewer';
 import { Workspace } from '../features/documents/Workspace';
 import { SessionBoundary } from '../features/auth/SessionBoundary';
-import { getJson } from '../lib/api';
-import type { Capabilities } from '../lib/api';
+import { useLiveReadiness } from '../lib/readiness';
 
 export function App() {
   const [page, setPage] = useState<'intro' | 'demo' | 'workspace'>('intro');
@@ -22,19 +20,8 @@ export function App() {
     setNavigationError('');
     setPage(next);
   }
-  const [capabilities, setCapabilities] = useState<Capabilities | null>(null);
-  const [error, setError] = useState('');
-  const [attempt, setAttempt] = useState(0);
-  useEffect(() => {
-    const controller = new AbortController();
-    setError('');
-    getJson<Capabilities>('/capabilities', controller.signal)
-      .then(setCapabilities)
-      .catch((reason: Error) => {
-        if (!controller.signal.aborted) setError(reason.message);
-      });
-    return () => controller.abort();
-  }, [attempt]);
+  const connection = useLiveReadiness();
+  const { capabilities } = connection;
   return (
     <div className="shell">
       <header className="topbar">
@@ -79,13 +66,16 @@ export function App() {
             {navigationError}
           </div>
         )}
-        {error && (
-          <Notice
-            message={`Không kết nối được backend: ${error}`}
-            retry={() => setAttempt(attempt + 1)}
-          />
-        )}
-        {!capabilities && !error && <p role="status">Đang kiểm tra khả năng backend…</p>}
+        <section className="notice" aria-label="Kết nối backend">
+          <p role="status" aria-label="Trạng thái backend" aria-live="polite" aria-atomic="true">
+            {connection.status === 'ready'
+              ? 'Sẵn sàng — backend đã kết nối.'
+              : connection.status === 'not_ready'
+                ? 'Chưa sẵn sàng — backend đang trả lời nhưng chưa thể nhận dạng.'
+                : 'Đang kết nối lại backend. Bản nháp được giữ; không tự gửi lại thao tác.'}
+          </p>
+          {connection.status !== 'ready' && <button onClick={connection.retry}>Thử lại</button>}
+        </section>
         {page === 'intro' ? (
           <>
             <section className="hero">
@@ -159,7 +149,12 @@ export function App() {
           </>
         ) : page === 'workspace' ? (
           <SessionBoundary unsaved={unsaved} onReset={resetSession}>
-            <Workspace capabilities={capabilities} onUnsavedChange={setUnsaved} />
+            <Workspace
+              capabilities={capabilities}
+              backendReady={connection.status === 'ready'}
+              recovery={connection.recovery}
+              onUnsavedChange={setUnsaved}
+            />
           </SessionBoundary>
         ) : (
           <section className="section demo-section">

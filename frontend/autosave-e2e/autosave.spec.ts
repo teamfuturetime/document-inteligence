@@ -2,6 +2,7 @@ import { expect, test, chromium, type Page } from '@playwright/test';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import readiness from '../../contracts/examples/readiness-ready.json';
 let sequence = 0;
 let index = 0;
 async function open(page: Page) {
@@ -19,7 +20,10 @@ const confirm = (page: Page) => page.getByRole('button', { name: 'Xác nhận b�
 async function saved(page: Page) {
   await expect(page.getByText('Đã lưu nháp trên máy chủ.', { exact: true })).toBeVisible();
 }
-test.beforeEach(() => {
+test.beforeEach(async ({ context }) => {
+  // This harness deliberately disables the worker and doubles inference.
+  // Supply an explicit readiness double; native readiness is verified elsewhere.
+  await context.route('**/api/v1/readiness', (route) => route.fulfill({ json: readiness }));
   index = sequence++;
 });
 test('duplicated tab keeps separate pending browser drafts', async ({ page }) => {
