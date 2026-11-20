@@ -128,6 +128,16 @@ test('revoked session clears a pending owner draft and a late successful ACK can
     const session = await (await page.request.get('/api/v1/auth/session')).json();
     const oldPrefix = `field-review:user:${session.user.id}:`;
     let saved!: () => void;
+    let handled!: () => void;
+    let oldRequestAborted = false;
+    const oldPath = `/documents/${doc.document_id}/review`;
+    page.on('requestfailed', (request) => {
+      if (request.url().endsWith(oldPath) && request.failure()?.errorText.includes('ERR_ABORTED'))
+        oldRequestAborted = true;
+    });
+    const oldHandled = new Promise<void>((resolve) => {
+      handled = resolve;
+    });
     const gate = new Promise<void>((resolve) => {
       release = resolve;
     });
@@ -139,7 +149,13 @@ test('revoked session clears a pending owner draft and a late successful ACK can
       expect(response.status()).toBe(200);
       saved();
       await gate;
-      await route.fulfill({ response });
+      try {
+        await route.fulfill({ response });
+      } catch (error) {
+        if (!oldRequestAborted) throw error;
+      } finally {
+        handled();
+      }
     });
     await page.locator('#field-seller_name').fill('Old eta acknowledged draft');
     await accepted;
@@ -152,6 +168,7 @@ test('revoked session clears a pending owner draft and a late successful ACK can
     ).toBe(204);
     await page.evaluate(() => window.dispatchEvent(new Event('focus')));
     await expect(page.getByRole('button', { name: 'Đăng nhập', exact: true })).toBeVisible();
+    await expect.poll(() => oldRequestAborted).toBe(true);
     expect(
       await page.evaluate(
         (prefix) => Object.keys(localStorage).some((key) => key.startsWith(prefix)),
@@ -163,13 +180,10 @@ test('revoked session clears a pending owner draft and a late successful ACK can
     await page.route(`**/api/v1/documents/${own.document_id}/review`, (route) => route.abort());
     await page.locator('#field-seller_name').fill('Theta pending recovery');
     await expect(page.locator('.save-status')).toContainText('Lưu thất bại');
-    const oldAck = page.waitForResponse(
-      (response) =>
-        response.url().endsWith(`/documents/${doc.document_id}/review`) &&
-        response.status() === 200,
-    );
     release();
-    await oldAck;
+    // The server's 200 was asserted above. The editor lifecycle canceled its
+    // client request, so a response event must not be required after revocation.
+    await oldHandled;
     await expect(page.getByRole('region', { name: 'Tài khoản hiện tại' })).toContainText('theta');
     await expect(page.locator('#field-seller_name')).toHaveValue('Theta pending recovery');
     expect(
