@@ -87,6 +87,33 @@ test('PDF session: autosave ACK, null, conflict, confirmed export and foreign ow
     await expect(page.locator('.conflict-box')).toContainText('Concurrent PDF server edit');
     await page.getByRole('button', { name: 'Giữ chỉnh sửa, dùng revision mới' }).click();
     await saved();
+    const kept = await (await page.request.get(path)).json();
+    expect(kept.review.effective_data.seller_name).toBe('PDF edit retained after conflict');
+
+    const serverValue = 'PDF server edit kept after discarding';
+    const secondUpdate = await page.request.put(path + '/review', {
+      headers: { Origin: baseURL, 'X-CSRF-Token': session.csrf_token },
+      data: {
+        run_id: doc.run.run_id,
+        expected_revision: kept.review.revision,
+        expected_status: 'draft',
+        fields: { seller_name: { is_reviewed: true, reviewed_value: serverValue } },
+      },
+    });
+    expect(secondUpdate.status()).toBe(200);
+    const serverDraft = (await secondUpdate.json()).review;
+    const discardConflict = page.waitForResponse(
+      (response) => response.url().endsWith(path + '/review') && response.status() === 409,
+    );
+    await seller.fill('PDF local edit to discard');
+    await discardConflict;
+    await expect(page.getByRole('alert')).toContainText('REVISION_CONFLICT');
+    await page.getByRole('button', { name: 'Đối chiếu bản mới' }).click();
+    await expect(page.locator('.conflict-box')).toContainText(serverValue);
+    await page.getByRole('button', { name: 'Bỏ chỉnh sửa, tải bản máy chủ' }).click();
+    await expect(seller).toHaveValue(serverValue);
+    expect((await (await page.request.get(path)).json()).review).toEqual(serverDraft);
+
     const visible = {
       invoice_number: '0041007',
       invoice_date: '2026-10-08',
@@ -107,7 +134,9 @@ test('PDF session: autosave ACK, null, conflict, confirmed export and foreign ow
     await review.getByRole('button', { name: 'Xuất JSON đã xác nhận', exact: true }).click();
     const exported = JSON.parse(await readFile((await (await downloadEvent).path())!, 'utf8'));
     const confirmed = await (await page.request.get(path)).json();
+    expect(confirmed.review.review_status).toBe('confirmed');
     expect(exported.data).toEqual({ ...visible, total_amount: 1000000 });
+    expect(exported.data).toEqual(confirmed.review.effective_data);
     expect(exported.revision).toBe(confirmed.review.revision);
     expect(confirmed.run.fields).toEqual(prediction);
     const other = await foreign.newPage();
@@ -121,6 +150,26 @@ test('PDF session: autosave ACK, null, conflict, confirmed export and foreign ow
     ]) {
       expect((await other.request.get(path + suffix)).status()).toBe(404);
     }
+    const revisionRequest = { run_id: doc.run.run_id, expected_revision: exported.revision };
+    const withoutCSRF = await other.request.post(path + '/confirm', {
+      headers: { Origin: baseURL },
+      data: revisionRequest,
+    });
+    expect(withoutCSRF.status()).toBe(403);
+    const otherSession = await (await other.request.get('/api/v1/auth/session')).json();
+    const headers = { Origin: baseURL, 'X-CSRF-Token': otherSession.csrf_token };
+    expect(
+      (await other.request.post(path + '/confirm', { headers, data: revisionRequest })).status(),
+    ).toBe(404);
+    expect(
+      (
+        await other.request.put(path + '/review', {
+          headers,
+          data: { ...revisionRequest, expected_status: 'confirmed', fields: {} },
+        })
+      ).status(),
+    ).toBe(404);
+    expect((await (await page.request.get(path)).json()).review).toEqual(confirmed.review);
     expect((await (await other.request.get('/api/v1/documents')).json()).total).toBe(0);
   } finally {
     release?.();
