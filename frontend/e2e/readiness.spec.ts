@@ -166,6 +166,20 @@ async function open(page: Page) {
   await expect(page.getByLabel('Đơn vị bán hàng *')).toBeEnabled();
 }
 const status = (page: Page) => page.getByRole('status', { name: 'Trạng thái backend' });
+async function installPausedClock(page: Page) {
+  // Freeze before navigation; host/browser clock drift cannot put pauseAt in
+  // the past, and no app timers exist while advancing to the fixed pause.
+  await page.clock.install({ time: new Date('2030-01-01T00:00:00Z') });
+  await page.clock.pauseAt(new Date('2030-01-01T00:01:00Z'));
+}
+async function initialStatus(page: Page, text: string) {
+  await expect
+    .poll(async () => {
+      await page.clock.runFor(1);
+      return status(page).textContent();
+    })
+    .toContain(text);
+}
 const stored = (page: Page) =>
   page.evaluate(() =>
     Object.fromEntries(
@@ -182,10 +196,9 @@ for (const width of [1280, 390])
   }) => {
     await page.setViewportSize({ width, height: 850 });
     const api = await backend(page);
-    await page.clock.install();
+    await installPausedClock(page);
     await page.goto('/');
-    await expect(status(page)).toContainText('Chưa sẵn sàng');
-    await page.clock.pauseAt(new Date());
+    await initialStatus(page, 'Chưa sẵn sàng');
     await page.getByRole('button', { name: 'Xử lý tài liệu', exact: true }).click();
     await expect(page.getByRole('region', { name: 'Tài khoản hiện tại' })).toContainText('alpha');
     await page.getByLabel('Ảnh PNG/JPG một trang').setInputFiles({
@@ -342,10 +355,9 @@ test('cancel delayed confirm/export on disconnect; require explicit reload and d
       .fulfill({ json: { revision: doc.review!.revision, data: doc.review!.effective_data } })
       .catch(() => {});
   });
-  await page.clock.install();
+  await installPausedClock(page);
   await page.goto('/');
-  await expect(status(page)).toContainText('Sẵn sàng —');
-  await page.clock.pauseAt(new Date());
+  await initialStatus(page, 'Sẵn sàng —');
   await page.getByRole('button', { name: 'Xử lý tài liệu', exact: true }).click();
   await open(page);
   await page.getByRole('button', { name: 'Xác nhận bản lưu', exact: true }).click();
