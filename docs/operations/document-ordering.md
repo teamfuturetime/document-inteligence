@@ -31,9 +31,11 @@ Component smoke điều khiển Trang sau/Trang trước trên 12 documents có 
 offset0→10→0 và không trùng/thiếu khi server trả thứ tự đã định nghĩa. Fetch/inference doubles
 được khai báo rõ; không gọi component smoke là native browser hoặc benchmark accuracy.
 
-## Nhánh phụ thuộc
+## Tích hợp nền
 
-#46 làm tuần tự trên nền PR #57 để giữ fix persistence cùng service. PR tạm nhắm
-`fix/45-storage-failures`, chỉ chứa delta #46; giữ Draft đến khi nền được review/tích hợp.
-Workflow thêm đúng target branch này để PR phụ thuộc vẫn chạy sáu jobs + Product checks;
-không bỏ check hoặc thay protection. Sau nền vào main, đồng bộ/đổi base và chạy CI lại.
+#46 ban đầu dựa trên PR #57 để giữ fix persistence cùng service. Sau khi #57 và readiness
+#58 vào main, nhánh ordering đồng bộ main và PR #60 chuyển base về `main`; diff chỉ còn
+ordering/tests/tài liệu của #46. Workflow dùng target main thông thường, giữ sáu jobs +
+Product checks, gồm ordering/readiness/storage/doctor trên Windows. Chỉ chuyển Ready và
+request review tích hợp sau CI đúng head mới; approval trên feature base chưa thay thế
+review bản kết hợp main. Không đổi protection hoặc merge PR vào feature branch.
