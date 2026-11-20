@@ -3,6 +3,7 @@ import os
 import sqlite3
 import subprocess
 import sys
+from contextlib import closing
 
 from test_auth_migration import legacy_database
 
@@ -16,7 +17,7 @@ from docintel.security import new_token, token_digest, verify_password
 def prepare_legacy(runtime):
     runtime.mkdir()
     database = runtime / "documents.sqlite3"
-    with legacy_database(database) as connection:
+    with closing(legacy_database(database)) as connection, connection:
         connection.execute(
             "UPDATE documents SET input_sha256=?", (hashlib.sha256(b"synthetic").hexdigest(),)
         )
