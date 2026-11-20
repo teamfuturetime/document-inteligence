@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "app_version": {
+      "title": "App Version",
+      "type": "string"
+    },
+    "auth_mode": {
+      "enum": [
+        "local",
+        "session"
+      ],
+      "title": "Auth Mode",
+      "type": "string"
+    },
+    "database": {
+      "enum": [
+        "not_checked",
+        "ready",
+        "unavailable",
+        "unsupported_schema"
+      ],
+      "title": "Database",
+      "type": "string"
+    },
+    "lifecycle": {
+      "enum": [
+        "not_started",
+        "starting",
+        "running",
+        "stopping",
+        "stopped"
+      ],
+      "title": "Lifecycle",
+      "type": "string"
+    },
+    "provider": {
+      "enum": [
+        "not_checked",
+        "ready",
+        "unconfigured",
+        "fixture",
+        "unavailable"
+      ],
+      "title": "Provider",
+      "type": "string"
+    },
+    "provider_check": {
+      "const": "startup_snapshot",
+      "default": "startup_snapshot",
+      "title": "Provider Check",
+      "type": "string"
+    },
+    "provider_mode": {
+      "enum": [
+        "unconfigured",
+        "fixture",
+        "tesseract"
+      ],
+      "title": "Provider Mode",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "ready",
+        "not_ready"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "worker": {
+      "enum": [
+        "not_started",
+        "disabled",
+        "ready",
+        "stopped"
+      ],
+      "title": "Worker",
+      "type": "string"
+    }
+  },
+  "required": [
+    "status",
+    "app_version",
+    "lifecycle",
+    "database",
+    "worker",
+    "provider",
+    "provider_mode",
+    "auth_mode"
+  ],
+  "title": "Readiness",
+  "type": "object"
+}
