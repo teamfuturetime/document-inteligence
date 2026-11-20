@@ -75,6 +75,143 @@ afterEach(() => {
 });
 
 describe('Connectivity interruption', () => {
+  it('still requires comparison when a recovered-draft comparison is canceled by disconnect', async () => {
+    localStorage.setItem(
+      'field-review:doc:run:source',
+      JSON.stringify({
+        at: Date.now(),
+        fields: { seller_name: { is_reviewed: true, reviewed_value: null } },
+      }),
+    );
+    let finish!: (value: Response) => void;
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        () =>
+          new Promise((resolve) => {
+            finish = resolve;
+          }),
+      ),
+    );
+    const editor = (backendReady: boolean) => (
+      <ReviewPanel
+        document={document()}
+        backendReady={backendReady}
+        onUpdated={vi.fn()}
+        onDirtyChange={vi.fn()}
+        onFieldChange={vi.fn()}
+      />
+    );
+    const view = render(editor(true));
+    fireEvent.click(screen.getByRole('button', { name: 'Đối chiếu bản mới' }));
+    view.rerender(editor(false));
+    view.rerender(editor(true));
+    await act(async () => {
+      finish(new Response(JSON.stringify(document(2))));
+    });
+    expect(screen.getByRole('button', { name: 'Lưu nháp' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Đối chiếu bản mới' })).toBeEnabled();
+    expect(screen.getByLabelText('Đơn vị bán hàng *')).toHaveValue('');
+  });
+  it('keeps a pending null draft when an ACK arrives after readiness drops', async () => {
+    let finish!: (value: Response) => void;
+    const updated = vi.fn();
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        () =>
+          new Promise((resolve) => {
+            finish = resolve;
+          }),
+      ),
+    );
+    const editor = (backendReady: boolean) => (
+      <ReviewPanel
+        document={document()}
+        backendReady={backendReady}
+        onUpdated={updated}
+        onDirtyChange={vi.fn()}
+        onFieldChange={vi.fn()}
+      />
+    );
+    const view = render(editor(true));
+    fireEvent.change(screen.getByLabelText('Đơn vị bán hàng *'), { target: { value: '' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Lưu nháp' }));
+    view.rerender(editor(false));
+    const acknowledged = document(2);
+    acknowledged.review!.fields.seller_name = { is_reviewed: true, reviewed_value: null };
+    acknowledged.review!.effective_data.seller_name = null;
+    await act(async () => {
+      finish(new Response(JSON.stringify(acknowledged)));
+    });
+    expect(screen.getByLabelText('Đơn vị bán hàng *')).toHaveValue('');
+    expect(updated).not.toHaveBeenCalled();
+    expect(
+      Object.values(localStorage).some(
+        (raw) => JSON.parse(raw).fields.seller_name.reviewed_value === null,
+      ),
+    ).toBe(true);
+  });
+  it('ignores a confirm ACK after the editor has unmounted', async () => {
+    let finish!: (value: Response) => void;
+    const updated = vi.fn();
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        () =>
+          new Promise((resolve) => {
+            finish = resolve;
+          }),
+      ),
+    );
+    const view = render(
+      <ReviewPanel
+        document={document()}
+        onUpdated={updated}
+        onDirtyChange={vi.fn()}
+        onFieldChange={vi.fn()}
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Xác nhận bản lưu' }));
+    view.unmount();
+    await act(async () => {
+      finish(new Response(JSON.stringify(document(2))));
+    });
+    expect(updated).not.toHaveBeenCalled();
+  });
+  it('does not download a delayed export after unmount', async () => {
+    let finish!: (value: Blob) => void;
+    vi.stubGlobal('URL', { createObjectURL: vi.fn(() => 'blob:test'), revokeObjectURL: vi.fn() });
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => ({
+        ok: true,
+        blob: () =>
+          new Promise((resolve) => {
+            finish = resolve;
+          }),
+      })),
+    );
+    const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    const confirmed = document();
+    confirmed.review!.review_status = 'confirmed';
+    const view = render(
+      <ReviewPanel
+        document={confirmed}
+        onUpdated={vi.fn()}
+        onDirtyChange={vi.fn()}
+        onFieldChange={vi.fn()}
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Xuất JSON đã xác nhận' }));
+    await act(async () => {});
+    view.unmount();
+    await act(async () => {
+      finish(new Blob(['{}']));
+    });
+    expect(click).not.toHaveBeenCalled();
+    click.mockRestore();
+  });
   it.each([null, 'Pending text'])(
     'keeps %s without replaying a queued autosave after reconnect',
     async (value) => {

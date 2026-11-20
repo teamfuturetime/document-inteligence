@@ -46,11 +46,16 @@ export function Workspace({
   );
   const fileInput = useRef<HTMLInputElement>(null);
   const operations = useRef(new AbortController());
-  const selection = useRef(0);
+  const operationRevision = useRef(0);
   useEffect(() => {
     const controller = new AbortController();
     operations.current = controller;
-    return () => controller.abort();
+    ++operationRevision.current;
+    setBusy(false);
+    return () => {
+      ++operationRevision.current;
+      controller.abort();
+    };
   }, [backendReady]);
   const uploadAttempt = useRef<{ file: File; type: string; origin: string; key: string } | null>(
     null,
@@ -142,25 +147,26 @@ export function Workspace({
   }
   async function selectDocument(id: string, run?: string) {
     if (!backendReady) return;
-    const sequence = ++selection.current;
-    const signal = operations.current.signal;
     if (dirty) {
       setError('Hãy lưu nháp hoặc bỏ chỉnh sửa trước khi chuyển tài liệu/lần xử lý.');
       return;
     }
+    const sequence = ++operationRevision.current;
+    const signal = operations.current.signal;
     setBusy(true);
     setError('');
     try {
       const query = run ? `?run_id=${encodeURIComponent(run)}` : '';
       const result = await request<DocumentDetail>(`/documents/${id}${query}`, { signal });
-      if (signal.aborted || sequence !== selection.current) return;
+      if (signal.aborted || sequence !== operationRevision.current) return;
       setDocument(result);
       setPollErrorRunId(null);
       setActive(result.definitions[0].field_id);
     } catch (reason) {
-      if (!signal.aborted) setError((reason as Error).message);
+      if (!signal.aborted && sequence === operationRevision.current)
+        setError((reason as Error).message);
     } finally {
-      setBusy(false);
+      if (sequence === operationRevision.current) setBusy(false);
     }
   }
   async function upload() {
@@ -184,6 +190,7 @@ export function Workspace({
       uploadAttempt.current = attempt;
     }
     setBusy(true);
+    const sequence = ++operationRevision.current;
     setError('');
     setUploadError(null);
     try {
@@ -201,12 +208,14 @@ export function Workspace({
           'Idempotency-Key': attempt.key,
         },
       });
+      if (signal.aborted || sequence !== operationRevision.current) return;
       updated(result);
       setActive(result.definitions[0].field_id);
       uploadAttempt.current = null;
       setFile(null);
       if (fileInput.current) fileInput.current.value = '';
     } catch (reason) {
+      if (signal.aborted || sequence !== operationRevision.current) return;
       setUploadError(
         reason instanceof APIError
           ? {
@@ -219,7 +228,36 @@ export function Workspace({
             },
       );
     } finally {
-      setBusy(false);
+      if (sequence === operationRevision.current) setBusy(false);
+    }
+  }
+  async function retryOCR() {
+    if (
+      !backendReady ||
+      busy ||
+      dirty ||
+      processing ||
+      !document?.is_latest_run ||
+      !capabilities?.ocr_ready
+    )
+      return;
+    const signal = operations.current.signal;
+    const sequence = ++operationRevision.current;
+    setBusy(true);
+    setError('');
+    try {
+      const result = await jsonRequest<DocumentDetail>(
+        `/documents/${document.document_id}/runs`,
+        'POST',
+        { expected_run_id: document.latest_run_id },
+        signal,
+      );
+      if (!signal.aborted && sequence === operationRevision.current) updated(result);
+    } catch (reason) {
+      if (!signal.aborted && sequence === operationRevision.current)
+        setError((reason as Error).message);
+    } finally {
+      if (sequence === operationRevision.current) setBusy(false);
     }
   }
   return (
@@ -457,19 +495,7 @@ export function Workspace({
                   !document.is_latest_run ||
                   !capabilities?.ocr_ready
                 }
-                onClick={() => {
-                  setBusy(true);
-                  setError('');
-                  void jsonRequest<DocumentDetail>(
-                    `/documents/${document.document_id}/runs`,
-                    'POST',
-                    { expected_run_id: document.latest_run_id },
-                    operations.current.signal,
-                  )
-                    .then(updated)
-                    .catch((reason: Error) => setError(reason.message))
-                    .finally(() => setBusy(false));
-                }}
+                onClick={() => void retryOCR()}
               >
                 Chạy OCR lại
               </button>

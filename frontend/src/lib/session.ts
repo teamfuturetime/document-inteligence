@@ -7,8 +7,15 @@ type Snapshot = {
   error: string;
   revision: number;
   uncertain: boolean;
+  requestEpoch: number;
 };
-let snapshot: Snapshot = { session: null, error: '', revision: 0, uncertain: false };
+let snapshot: Snapshot = {
+  session: null,
+  error: '',
+  revision: 0,
+  uncertain: false,
+  requestEpoch: 0,
+};
 let refreshSequence = 0;
 let mutationSequence = 0;
 let pendingMutation: number | null = null;
@@ -35,7 +42,13 @@ function publish(session: SessionState | null, error = '') {
     previous?.mode !== session?.mode ||
     previous?.user?.id !== session?.user?.id ||
     previous?.csrf_token !== session?.csrf_token;
-  snapshot = { session, error, revision: snapshot.revision + Number(changed), uncertain: false };
+  snapshot = {
+    session,
+    error,
+    revision: snapshot.revision + Number(changed),
+    uncertain: false,
+    requestEpoch: snapshot.requestEpoch,
+  };
   listeners.forEach((listener) => listener());
 }
 
@@ -53,6 +66,16 @@ export async function refreshSession(signal?: AbortSignal): Promise<boolean> {
   const isCurrent = () =>
     sequence === refreshSequence && mutation === mutationSequence && pendingMutation === null;
   const requestSignal = AbortSignal.any([...(signal ? [signal] : []), AbortSignal.timeout(8000)]);
+  if (
+    pendingMutation === null &&
+    !snapshot.uncertain &&
+    (snapshot.session?.mode === 'local' || snapshot.session?.user)
+  ) {
+    // Keep the editor identity stable, but invalidate protected requests from
+    // before this observation, even if verification returns the same owner.
+    snapshot = { ...snapshot, uncertain: true, requestEpoch: snapshot.requestEpoch + 1 };
+    listeners.forEach((listener) => listener());
+  }
   try {
     const response = await fetch('/api/v1/auth/session', {
       credentials: 'same-origin',
@@ -165,21 +188,29 @@ export async function login(username: string, password: string) {
   }
 }
 
-export function assertCurrentSession(revision: number) {
-  if (revision !== snapshot.revision || snapshot.uncertain) {
+export function assertCurrentSession(revision: number, requestEpoch = snapshot.requestEpoch) {
+  if (
+    revision !== snapshot.revision ||
+    requestEpoch !== snapshot.requestEpoch ||
+    snapshot.uncertain
+  ) {
     throw new DOMException('Phiên đã thay đổi; thao tác cũ đã dừng.', 'AbortError');
   }
 }
 
 export async function sessionFetch(path: string, options: RequestInit = {}) {
-  const revision = snapshot.revision;
-  assertCurrentSession(revision);
+  const { revision, requestEpoch } = snapshot;
+  options.signal?.throwIfAborted();
+  assertCurrentSession(revision, requestEpoch);
   const headers = new Headers(options.headers);
   const method = (options.method ?? 'GET').toUpperCase();
   const csrf = snapshot.session?.csrf_token;
   if (csrf && !['GET', 'HEAD', 'OPTIONS'].includes(method)) headers.set('X-CSRF-Token', csrf);
   const response = await fetch(path, { ...options, headers, credentials: 'same-origin' });
-  assertCurrentSession(revision);
+  options.signal?.throwIfAborted();
+  // A verified 401 for this identity remains authoritative while a concurrent
+  // lookup is uncertain. A previous identity's 401 must never expire a new one.
+  if (revision !== snapshot.revision) assertCurrentSession(revision, requestEpoch);
   if (response.status === 401) {
     invalidateSessionRequests();
     publish(
@@ -187,9 +218,12 @@ export async function sessionFetch(path: string, options: RequestInit = {}) {
       'Phiên đã hết hạn. Vui lòng đăng nhập lại.',
     );
     notifyOtherTabs();
-  } else if (response.status === 403 && snapshot.session?.mode === 'session') {
-    // A cookie may have changed in another tab. Never replay the failed write.
-    void refreshSession();
+  } else {
+    assertCurrentSession(revision, requestEpoch);
+    if (response.status === 403 && snapshot.session?.mode === 'session') {
+      // A cookie may have changed in another tab. Never replay the failed write.
+      void refreshSession();
+    }
   }
   return response;
 }

@@ -300,3 +300,87 @@ test('late owner response cannot repopulate workspace; verified 401 clears only 
   await expect(page.getByLabel('Đơn vị bán hàng *')).toHaveCount(0);
   expect(Object.keys(await stored(page))).toHaveLength(0);
 });
+
+test('cancel delayed confirm/export on disconnect; require explicit reload and download (HTTP doubles)', async ({
+  page,
+}) => {
+  const api = await backend(page);
+  api.phase('ready');
+  let finishConfirm!: () => void;
+  let finishExport!: () => void;
+  let confirms = 0;
+  let exports = 0;
+  let downloads = 0;
+  page.on('download', () => {
+    downloads++;
+  });
+  await page.route('**/api/v1/documents/*/confirm', async (route) => {
+    confirms++;
+    const doc = api.documents.get('alpha')!;
+    expect(route.request().postDataJSON()).toEqual({
+      run_id: doc.run.run_id,
+      expected_revision: doc.review!.revision,
+    });
+    const confirmed = { ...doc, review: { ...doc.review!, review_status: 'confirmed' as const } };
+    api.documents.set('alpha', confirmed); // Server committed; ACK is deliberately held.
+    await new Promise<void>((resolve) => {
+      finishConfirm = resolve;
+    });
+    await route.fulfill({ json: confirmed }).catch(() => {});
+  });
+  await page.route('**/api/v1/documents/*/export?*', async (route) => {
+    exports++;
+    const doc = api.documents.get('alpha')!;
+    expect(new URL(route.request().url()).searchParams.get('revision')).toBe(
+      String(doc.review!.revision),
+    );
+    if (exports === 1)
+      await new Promise<void>((resolve) => {
+        finishExport = resolve;
+      });
+    await route
+      .fulfill({ json: { revision: doc.review!.revision, data: doc.review!.effective_data } })
+      .catch(() => {});
+  });
+  await page.clock.install();
+  await page.goto('/');
+  await expect(status(page)).toContainText('Sẵn sàng —');
+  await page.clock.pauseAt(new Date());
+  await page.getByRole('button', { name: 'Xử lý tài liệu', exact: true }).click();
+  await open(page);
+  await page.getByRole('button', { name: 'Xác nhận bản lưu', exact: true }).click();
+  await expect.poll(() => !!finishConfirm).toBe(true);
+  async function disconnect() {
+    api.phase('offline');
+    await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+    await expect(status(page)).toContainText('Đang kết nối lại');
+  }
+  async function reconnect() {
+    api.phase('ready');
+    await page.getByRole('button', { name: 'Thử lại', exact: true }).click();
+    await page.clock.runFor(1000);
+    await expect(status(page)).toContainText('Sẵn sàng —');
+  }
+  await disconnect();
+  await reconnect();
+  finishConfirm();
+  await page.clock.runFor(1000);
+  expect(confirms).toBe(1);
+  const download = page.getByRole('button', { name: 'Xuất JSON đã xác nhận', exact: true });
+  await expect(download).toBeDisabled();
+  await page.getByRole('button', { name: 'Tải bản mới nhất', exact: true }).click();
+  await expect(download).toBeEnabled();
+  await download.click();
+  await expect.poll(() => !!finishExport).toBe(true);
+  await disconnect();
+  await reconnect();
+  finishExport();
+  await page.clock.runFor(1000);
+  expect(exports).toBe(1);
+  expect(downloads).toBe(0);
+  const received = page.waitForEvent('download');
+  await download.click();
+  await received;
+  expect(exports).toBe(2);
+  expect(downloads).toBe(1);
+});

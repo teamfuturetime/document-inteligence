@@ -123,6 +123,20 @@ export function ReviewPanel({
       : null,
   );
   const [conflict, setConflict] = useState<DocumentDetail | null>(null);
+  const operations = useRef(new AbortController());
+  const operationRevision = useRef(0);
+  useEffect(() => {
+    const controller = new AbortController();
+    operations.current = controller;
+    ++operationRevision.current;
+    inFlight.current = false;
+    setSaving(false);
+    setBusy(false);
+    return () => {
+      ++operationRevision.current;
+      controller.abort();
+    };
+  }, [backendReady]);
   useEffect(() => {
     mounted.current = true;
     return () => {
@@ -189,16 +203,23 @@ export function ReviewPanel({
     setMessage('Có thay đổi chưa lưu.');
     // Failed/ambiguous requests require explicit retry; 409 requires comparison.
   }
-  async function act(operation: () => Promise<void>) {
+  async function act(operation: (signal: AbortSignal) => Promise<void>) {
+    if (!backendReady || busy || saving) return;
+    const sequence = ++operationRevision.current;
+    const signal = AbortSignal.any([operations.current.signal, AbortSignal.timeout(15000)]);
+    const current = () => mounted.current && sequence === operationRevision.current;
     setBusy(true);
-    setError(null);
     setMessage('');
     try {
-      await operation();
+      await operation(signal);
+      if (current()) setError(null);
     } catch (reason) {
-      setError(reason as Error);
+      // A failed/canceled comparison never grants permission to save a
+      // recovered/conflicted draft before the user actually compares it.
+      if (current() && !(error instanceof APIError && error.status === 409))
+        setError(reason as Error);
     } finally {
-      setBusy(false);
+      if (current()) setBusy(false);
     }
   }
   async function save(manual = false) {
@@ -216,6 +237,9 @@ export function ReviewPanel({
     )
       return;
     setResumeRequired(false);
+    const sequence = ++operationRevision.current;
+    const signal = AbortSignal.any([operations.current.signal, AbortSignal.timeout(15000)]);
+    const current = () => mounted.current && sequence === operationRevision.current;
     const snapshot = changesRef.current;
     inFlight.current = true;
     setSaving(true);
@@ -230,9 +254,9 @@ export function ReviewPanel({
           expected_status: review.review_status,
           fields: snapshot,
         },
-        AbortSignal.timeout(15_000),
+        signal,
       );
-      if (!mounted.current) return;
+      if (!current() || signal.aborted) return;
       baseRef.current = result;
       setBase(result);
       setChanges(
@@ -246,10 +270,12 @@ export function ReviewPanel({
       onUpdated(result);
       setMessage('Đã lưu nháp trên máy chủ.');
     } catch (reason) {
-      if (mounted.current) setError(reason as Error);
+      if (current()) setError(reason as Error);
     } finally {
-      inFlight.current = false;
-      if (mounted.current) setSaving(false);
+      if (current()) {
+        inFlight.current = false;
+        setSaving(false);
+      }
     }
   }
   return (
@@ -287,8 +313,12 @@ export function ReviewPanel({
             <button
               disabled={!backendReady || busy}
               onClick={() =>
-                void act(async () => {
-                  setConflict(await request<DocumentDetail>(`/documents/${base.document_id}`));
+                void act(async (signal) => {
+                  const result = await request<DocumentDetail>(`/documents/${base.document_id}`, {
+                    signal,
+                  });
+                  signal.throwIfAborted();
+                  setConflict(result);
                 })
               }
             >
@@ -487,7 +517,7 @@ export function ReviewPanel({
             review?.review_status === 'confirmed'
           }
           onClick={() =>
-            void act(async () => {
+            void act(async (signal) => {
               const result = await jsonRequest<DocumentDetail>(
                 `/documents/${base.document_id}/confirm`,
                 'POST',
@@ -495,7 +525,9 @@ export function ReviewPanel({
                   run_id: base.run.run_id,
                   expected_revision: review!.revision,
                 },
+                signal,
               );
+              signal.throwIfAborted();
               onUpdated(result);
               setMessage('Đã xác nhận bản lưu. Có thể xuất JSON.');
             })
@@ -508,8 +540,9 @@ export function ReviewPanel({
             !backendReady || !editable || saving || dirty || review?.review_status !== 'confirmed'
           }
           onClick={() =>
-            void act(async () => {
-              await downloadExport(base);
+            void act(async (signal) => {
+              await downloadExport(base, signal);
+              signal.throwIfAborted();
               setMessage('Đã tải JSON từ bản xác nhận trên máy chủ.');
             })
           }
