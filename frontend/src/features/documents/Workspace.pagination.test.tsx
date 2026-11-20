@@ -50,6 +50,7 @@ it('navigates tied document pages in server order without duplicates on a fixed 
         ocr_ready: true,
         provider_mode: 'tesseract',
         supported_schemas: [],
+        upload_media_types: ['image/png', 'image/jpeg', 'application/pdf'],
       }}
       onUnsavedChange={vi.fn()}
     />,

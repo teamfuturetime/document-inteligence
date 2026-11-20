@@ -249,7 +249,12 @@ class DocumentService:
                 ),
             )
         except PipelineError as exc:
-            status = 413 if exc.code in ("FILE_TOO_LARGE", "IMAGE_TOO_LARGE") else 415
+            if exc.code in ("FILE_TOO_LARGE", "IMAGE_TOO_LARGE"):
+                status = 413
+            elif exc.code == "PROCESSING_TIMEOUT" and data.startswith(b"%PDF-"):
+                status = 408
+            else:
+                status = 415
             raise ProductError(status, exc.code, str(exc)) from exc
         document_id, run_id, created = uuid4().hex, uuid4().hex, now()
         database_started = False
