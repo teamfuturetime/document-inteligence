@@ -1,9 +1,14 @@
-import { expect, test, chromium, type Page } from '@playwright/test';
+import { expect, test, chromium, type Page, type BrowserContext } from '@playwright/test';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import readiness from '../../contracts/examples/readiness-ready.json' with { type: 'json' };
 let sequence = 0;
 let index = 0;
+async function readyHarness(context: BrowserContext) {
+  // Worker/inference are explicit doubles in this harness, including restarts.
+  await context.route('**/api/v1/readiness', (route) => route.fulfill({ json: readiness }));
+}
 async function open(page: Page) {
   await page.goto('/');
   await page.getByRole('button', { name: 'Xử lý tài liệu', exact: true }).click();
@@ -19,7 +24,10 @@ const confirm = (page: Page) => page.getByRole('button', { name: 'Xác nhận b�
 async function saved(page: Page) {
   await expect(page.getByText('Đã lưu nháp trên máy chủ.', { exact: true })).toBeVisible();
 }
-test.beforeEach(() => {
+test.beforeEach(async ({ context }) => {
+  // This harness deliberately disables the worker and doubles inference.
+  // Supply an explicit readiness double; native readiness is verified elsewhere.
+  await readyHarness(context);
   index = sequence++;
 });
 test('duplicated tab keeps separate pending browser drafts', async ({ page }) => {
@@ -127,6 +135,7 @@ test('browser process restart recovers pending draft', async () => {
     headless: true,
     baseURL: 'http://127.0.0.1:15174',
   });
+  await readyHarness(context);
   try {
     let page = await context.newPage();
     await open(page);
@@ -136,6 +145,7 @@ test('browser process restart recovers pending draft', async () => {
       headless: true,
       baseURL: 'http://127.0.0.1:15174',
     });
+    await readyHarness(context);
     page = await context.newPage();
     await open(page);
     await expect(seller(page)).toHaveValue('Restart draft');

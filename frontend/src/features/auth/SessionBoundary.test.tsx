@@ -52,6 +52,150 @@ beforeEach(async () => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe('Session boundary and account isolation', () => {
+  it('ignores a canceled late session 401 and preserves the owner draft until verified', async () => {
+    state = authenticated();
+    await refreshSession();
+    const key = `field-review:user:${alpha.id}:doc:run:editor`;
+    localStorage.setItem(key, 'pending draft');
+    let finish!: (value: Response) => void;
+    vi.mocked(fetch).mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          finish = resolve;
+        }),
+    );
+    const controller = new AbortController();
+    const pending = refreshSession(controller.signal);
+    controller.abort();
+    finish(response({ error: { code: 'AUTH_REQUIRED' } }, 401));
+    await pending;
+    expect(getSessionSnapshot().session?.user?.id).toBe(alpha.id);
+    expect(localStorage.getItem(key)).toBe('pending draft');
+    expect(getSessionSnapshot().uncertain).toBe(true);
+    await refreshSession();
+    expect(getSessionSnapshot().uncertain).toBe(false);
+    localStorage.removeItem(key);
+  });
+  it('keeps identity/draft uncertain after a session timeout and rejects its late body', async () => {
+    state = authenticated();
+    await refreshSession();
+    vi.useFakeTimers();
+    const controller = new AbortController();
+    const timeout = vi.spyOn(AbortSignal, 'timeout').mockReturnValue(controller.signal);
+    let finish!: (value: unknown) => void;
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: () =>
+        new Promise((resolve) => {
+          finish = resolve;
+        }),
+    } as Response);
+    const pending = refreshSession();
+    await act(async () => {});
+    setTimeout(() => controller.abort(), 8000);
+    await vi.advanceTimersByTimeAsync(8000);
+    finish(authenticated(beta));
+    await pending;
+    expect(getSessionSnapshot().session?.user?.id).toBe(alpha.id);
+    expect(getSessionSnapshot().uncertain).toBe(true);
+    await expect(sessionFetch('/api/v1/documents')).rejects.toMatchObject({ name: 'AbortError' });
+    timeout.mockRestore();
+    vi.useRealTimers();
+  });
+  it('honors a verified protected 401 even after a concurrent session lookup failed', async () => {
+    state = authenticated();
+    await refreshSession();
+    const key = `field-review:user:${alpha.id}:doc:run:editor`;
+    localStorage.setItem(key, 'private draft');
+    let finish!: (value: Response) => void;
+    vi.mocked(fetch).mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          finish = resolve;
+        }),
+    );
+    const pending = sessionFetch('/api/v1/documents').catch((error) => error);
+    vi.mocked(fetch).mockRejectedValueOnce(new TypeError('offline'));
+    await refreshSession();
+    expect(getSessionSnapshot().uncertain).toBe(true);
+    finish(response({ error: { code: 'AUTH_REQUIRED' } }, 401));
+    await pending;
+    expect(getSessionSnapshot().session?.user).toBeNull();
+    expect(localStorage.getItem(key)).toBeNull();
+  });
+  it('blocks protected requests while an identity recheck is still pending', async () => {
+    state = authenticated();
+    await refreshSession();
+    let finish!: (value: Response) => void;
+    vi.mocked(fetch).mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          finish = resolve;
+        }),
+    );
+    const pending = refreshSession();
+    const before = vi.mocked(fetch).mock.calls.length;
+    const protectedCall = sessionFetch('/api/v1/documents').catch((error) => error);
+    expect(await protectedCall).toMatchObject({ name: 'AbortError' });
+    expect(fetch).toHaveBeenCalledTimes(before);
+    finish(response(authenticated(beta)));
+    await pending;
+    expect(getSessionSnapshot().session?.user?.id).toBe(beta.id);
+  });
+  it.each([200, 500])(
+    'does not accept a protected %s body from before a same-owner revalidation',
+    async (status) => {
+      state = authenticated();
+      await refreshSession();
+      let finish!: (value: unknown) => void;
+      vi.mocked(fetch).mockResolvedValueOnce({
+        ok: status === 200,
+        status,
+        json: () =>
+          new Promise((resolve) => {
+            finish = resolve;
+          }),
+      } as Response);
+      const old = request('/documents').catch((error) => error);
+      await waitFor(() => expect(finish).toBeDefined());
+      await refreshSession();
+      finish({ stale: 'private response' });
+      expect(await old).toMatchObject({ name: 'AbortError' });
+    },
+  );
+  it('keeps a known editor mounted while offline, blocks requests until verification, then resets on verified 401', async () => {
+    state = authenticated();
+    renderBoundary(true);
+    await screen.findByText('Tài liệu bí mật của phiên');
+    const original = screen.getByText('Tài liệu bí mật của phiên');
+    const revision = getSessionSnapshot().revision;
+    localStorage.setItem(`field-review:user:${alpha.id}:doc:run:editor`, 'private draft');
+    vi.mocked(fetch).mockRejectedValueOnce(new TypeError('offline'));
+    await act(async () => {
+      await refreshSession();
+    });
+    expect(screen.getByText('Tài liệu bí mật của phiên')).toBe(original);
+    expect(getSessionSnapshot().revision).toBe(revision);
+    expect(getSessionSnapshot().uncertain).toBe(true);
+    expect(screen.getByRole('status', { name: 'Xác minh phiên' })).toHaveTextContent(
+      'Bản nháp vẫn được giữ',
+    );
+    const before = vi.mocked(fetch).mock.calls.length;
+    await expect(sessionFetch('/api/v1/documents')).rejects.toMatchObject({ name: 'AbortError' });
+    expect(fetch).toHaveBeenCalledTimes(before);
+    await act(async () => {
+      await refreshSession();
+    });
+    expect(getSessionSnapshot().uncertain).toBe(false);
+    expect(screen.getByText('Tài liệu bí mật của phiên')).toBe(original);
+    vi.mocked(fetch).mockResolvedValueOnce(response({ error: { code: 'AUTH_REQUIRED' } }, 401));
+    await act(async () => {
+      await refreshSession();
+    });
+    expect(screen.getByRole('button', { name: 'Đăng nhập' })).toBeVisible();
+    expect(localStorage.getItem(`field-review:user:${alpha.id}:doc:run:editor`)).toBeNull();
+  });
   it('does not restore an authenticated observation completed after logout', async () => {
     state = authenticated();
     renderBoundary();
