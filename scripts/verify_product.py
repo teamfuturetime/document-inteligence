@@ -1,6 +1,7 @@
 """Native OCR + HTTP workflow check. Missing engines/models fail, never skip."""
 
 import argparse
+import io
 import json
 import tempfile
 import time
@@ -11,6 +12,7 @@ from docintel.api.app import create_app
 from docintel.config import ROOT, Settings
 from docintel.security import hash_password, new_token
 from fastapi.testclient import TestClient
+from PIL import Image
 
 
 def check(response, expected=200):
@@ -242,10 +244,176 @@ def main():
                 )
             )
             checks.append("both_document_schemas_real_pipeline")
+            pdf = ROOT / "pipeline/tests/fixtures/pdf/hoa_don_007.pdf"
+            pdf_document = wait_for_run(
+                api,
+                check(
+                    api.post(
+                        "/api/v1/documents",
+                        params={
+                            "document_type": "hoa_don",
+                            "data_origin": "synthetic",
+                            "filename": pdf.name,
+                        },
+                        content=pdf.read_bytes(),
+                        headers={"Content-Type": "application/pdf"},
+                    ),
+                    202,
+                ),
+            )
+            pdf_run = pdf_document["run"]
+            pdf_metadata = pdf_run["metadata"]
+            assert pdf_metadata["prediction_source"] == "model"
+            assert (
+                pdf_metadata["preprocessing"]["source_frame"]
+                == "pdf_raster_pixels_top_left"
+            )
+            preview = api.get(pdf_document["image_url"])
+            assert (
+                preview.status_code == 200
+                and preview.headers["content-type"] == "image/png"
+            )
+            with Image.open(io.BytesIO(preview.content)) as raster:
+                width, height = raster.size
+            assert (width, height) == (
+                pdf_document["image_width"],
+                pdf_document["image_height"],
+            )
+            assert pdf_run["spans"]
+            for span in pdf_run["spans"]:
+                x1, y1, x2, y2 = span["box"]
+                assert 0 <= x1 < x2 <= width and 0 <= y1 < y2 <= height
+            pdf_path = "/api/v1/documents/" + pdf_document["document_id"]
+            pdf_cleared = check(
+                api.put(
+                    pdf_path + "/review",
+                    json={
+                        "run_id": pdf_run["run_id"],
+                        "expected_revision": pdf_document["review"]["revision"],
+                        "expected_status": "draft",
+                        "fields": {
+                            "seller_name": {"is_reviewed": True, "reviewed_value": None}
+                        },
+                    },
+                )
+            )
+            assert (
+                check(api.get(pdf_path))["review"]["effective_data"]["seller_name"]
+                is None
+            )
+            check(
+                api.put(
+                    pdf_path + "/review",
+                    json={
+                        "run_id": pdf_run["run_id"],
+                        "expected_revision": 1,
+                        "fields": {},
+                    },
+                ),
+                409,
+            )
+            check(
+                api.post(
+                    pdf_path + "/confirm",
+                    json={
+                        "run_id": pdf_run["run_id"],
+                        "expected_revision": pdf_cleared["review"]["revision"],
+                    },
+                ),
+                422,
+            )
+            pdf_saved = check(
+                api.put(
+                    pdf_path + "/review",
+                    json={
+                        "run_id": pdf_run["run_id"],
+                        "expected_revision": pdf_cleared["review"]["revision"],
+                        "expected_status": "draft",
+                        "fields": {
+                            key: {"is_reviewed": True, "reviewed_value": value}
+                            for key, value in visible.items()
+                        },
+                    },
+                )
+            )
+            pdf_revision = pdf_saved["review"]["revision"]
+            check(
+                api.post(
+                    pdf_path + "/confirm",
+                    json={
+                        "run_id": pdf_run["run_id"],
+                        "expected_revision": pdf_revision,
+                    },
+                )
+            )
+            pdf_artifact = check(
+                api.get(
+                    pdf_path + "/export",
+                    params={"run_id": pdf_run["run_id"], "revision": pdf_revision},
+                )
+            )
+            assert (
+                pdf_artifact["data"] == visible
+                and pdf_artifact["revision"] == pdf_revision
+            )
+            check(
+                api.put(
+                    pdf_path + "/review",
+                    json={
+                        "run_id": pdf_run["run_id"],
+                        "expected_revision": pdf_revision,
+                        "expected_status": "draft",
+                        "fields": {},
+                    },
+                ),
+                409,
+            )
+            assert check(api.get(pdf_path))["run"] == pdf_run
+            checks.extend(
+                [
+                    "pdf_native_raster_and_evidence",
+                    "pdf_review_confirm_export",
+                    "pdf_explicit_null_and_revision_cas",
+                    "pdf_confirmed_status_cas",
+                ]
+            )
             if args.auth_mode == "session":
                 authenticate(api, "verifybeta")
                 assert check(api.get("/api/v1/documents"))["total"] == 0
                 assert check(api.get("/api/v1/insights"))["documents"] == 0
+                for suffix in (
+                    "",
+                    "/image",
+                    "/history",
+                    f"/export?run_id={pdf_run['run_id']}&revision={pdf_revision}",
+                ):
+                    assert api.get(pdf_path + suffix).status_code == 404
+                for method, suffix, body in (
+                    (
+                        "PUT",
+                        "/review",
+                        {
+                            "run_id": pdf_run["run_id"],
+                            "expected_revision": pdf_revision,
+                            "expected_status": "confirmed",
+                            "fields": {},
+                        },
+                    ),
+                    (
+                        "POST",
+                        "/confirm",
+                        {
+                            "run_id": pdf_run["run_id"],
+                            "expected_revision": pdf_revision,
+                        },
+                    ),
+                    ("POST", "/runs", {"expected_run_id": pdf_run["run_id"]}),
+                ):
+                    assert (
+                        api.request(method, pdf_path + suffix, json=body).status_code
+                        == 404
+                    )
+                checks.append("pdf_session_owner_resource_isolation")
                 for suffix in (
                     "",
                     "/image",
@@ -302,7 +470,7 @@ def main():
         ) as restarted:
             if args.auth_mode == "session":
                 authenticate(restarted)
-                assert check(restarted.get("/api/v1/documents"))["total"] == 2
+                assert check(restarted.get("/api/v1/documents"))["total"] == 3
             assert (
                 check(restarted.get(path, params={"run_id": original_run}))["review"][
                     "effective_data"
@@ -310,6 +478,18 @@ def main():
                 == visible
             )
             checks.append("sqlite_persistence_after_restart")
+            assert check(restarted.get(pdf_path))["run"] == pdf_run
+            assert restarted.get(pdf_document["image_url"]).content == preview.content
+            assert (
+                check(
+                    restarted.get(
+                        pdf_path + "/export",
+                        params={"run_id": pdf_run["run_id"], "revision": pdf_revision},
+                    )
+                )["data"]
+                == visible
+            )
+            checks.append("pdf_confirmed_persistence_after_restart")
     report = {
         "report_type": "native_workflow_check",
         "status": "passed",
@@ -317,6 +497,7 @@ def main():
         "checked_at": datetime.now(UTC).isoformat(),
         "checks": checks,
         "native_run_metadata": document["run"]["metadata"],
+        "pdf_native_run_metadata": pdf_metadata,
         "note": "Actual Tesseract inference and HTTP workflow; scripted review is not AI accuracy",
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)

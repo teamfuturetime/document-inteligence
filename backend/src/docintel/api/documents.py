@@ -56,7 +56,40 @@ def documents(
     "/documents",
     response_model=DocumentDetail,
     status_code=202,
-    responses={400: {"model": ErrorEnvelope}, 408: {"model": ErrorEnvelope}},
+    responses={
+        400: {"model": ErrorEnvelope},
+        408: {"model": ErrorEnvelope},
+        415: {
+            "model": ErrorEnvelope,
+            "description": "Unsupported content encoding or invalid document.",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "error": {
+                            "code": "PDF_ENCRYPTED",
+                            "message": "Hãy chọn bản PDF không mã hóa.",
+                            "request_id": "example-request-id",
+                        }
+                    }
+                }
+            },
+        },
+    },
+    openapi_extra={
+        "requestBody": {
+            "required": True,
+            "description": "Raw PNG, JPEG or single-page PDF bytes. Detected from content.",
+            "content": {
+                media_type: {"schema": {"type": "string", "format": "binary"}}
+                for media_type in (
+                    "application/octet-stream",
+                    "image/png",
+                    "image/jpeg",
+                    "application/pdf",
+                )
+            },
+        }
+    },
 )
 async def upload_document(
     request: Request,

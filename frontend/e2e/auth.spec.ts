@@ -5,6 +5,208 @@ import { fileURLToPath } from 'node:url';
 
 const baseURL = 'http://127.0.0.1:15174';
 const image = fileURLToPath(new URL('../../data/product/images/hoa_don_007.png', import.meta.url));
+
+// Native PDF and real HTTP/SQLite. Only response delivery is held to exercise late ACKs.
+test('PDF session: autosave ACK, null, conflict, confirmed export and foreign owner', async ({
+  browser,
+}) => {
+  const owner = await browser.newContext({ baseURL });
+  const foreign = await browser.newContext({ baseURL });
+  let release!: () => void;
+  try {
+    const page = await owner.newPage();
+    await workspace(page);
+    await login(page, 'pdfalpha');
+    const doc = await upload(page, 'pdf');
+    const path = `/api/v1/documents/${doc.document_id}`;
+    expect(doc.run.metadata.preprocessing.source_frame).toBe('pdf_raster_pixels_top_left');
+    const prediction = doc.run.fields;
+    let accepted!: () => void;
+    const committed = new Promise<void>((resolve) => {
+      accepted = resolve;
+    });
+    const held = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    await page.route(
+      `**${path}/review`,
+      async (route) => {
+        const response = await route.fetch();
+        expect(response.status()).toBe(200);
+        accepted();
+        await held;
+        await route.fulfill({ response });
+      },
+      { times: 1 },
+    );
+    const seller = page.locator('#field-seller_name');
+    const saved = () =>
+      expect(page.locator('.save-status')).toHaveText('Đã lưu nháp trên máy chủ.');
+    await seller.fill('PDF edit A');
+    await committed;
+    await seller.fill('PDF edit AB');
+    await expect(
+      page.getByRole('button', { name: 'Xác nhận bản lưu', exact: true }),
+    ).toBeDisabled();
+    release();
+    await saved();
+    await expect(seller).toHaveValue('PDF edit AB');
+    expect((await (await page.request.get(path)).json()).review.effective_data.seller_name).toBe(
+      'PDF edit AB',
+    );
+    await seller.fill('');
+    await saved();
+    expect(
+      (await (await page.request.get(path)).json()).review.effective_data.seller_name,
+    ).toBeNull();
+    await page.reload();
+    await page.getByRole('button', { name: 'Xử lý tài liệu', exact: true }).click();
+    await page.getByRole('button', { name: 'Mở tài liệu', exact: true }).click();
+    await expect(seller).toHaveValue('');
+    const session = await (await page.request.get('/api/v1/auth/session')).json();
+    const current = await (await page.request.get(path)).json();
+    const updated = await page.request.put(path + '/review', {
+      headers: { Origin: baseURL, 'X-CSRF-Token': session.csrf_token },
+      data: {
+        run_id: doc.run.run_id,
+        expected_revision: current.review.revision,
+        expected_status: 'draft',
+        fields: {
+          seller_name: { is_reviewed: true, reviewed_value: 'Concurrent PDF server edit' },
+        },
+      },
+    });
+    expect(updated.status()).toBe(200);
+    const conflictResponse = page.waitForResponse(
+      (response) => response.url().endsWith(path + '/review') && response.status() === 409,
+    );
+    await seller.fill('PDF edit retained after conflict');
+    await conflictResponse;
+    await expect(page.getByRole('alert')).toContainText('REVISION_CONFLICT');
+    await page.getByRole('button', { name: 'Đối chiếu bản mới' }).click();
+    await expect(page.locator('.conflict-box')).toContainText('Concurrent PDF server edit');
+    await page.getByRole('button', { name: 'Giữ chỉnh sửa, dùng revision mới' }).click();
+    await saved();
+    const visible = {
+      invoice_number: '0041007',
+      invoice_date: '2026-10-08',
+      seller_name: 'PDF edit retained after conflict',
+      total_amount: '1000000',
+      currency: 'VND',
+    };
+    for (const [field, value] of Object.entries(visible))
+      await page.locator(`#field-${field}`).fill(value);
+    const review = page.getByRole('region', { name: 'Kiểm tra và sửa kết quả' });
+    for (const checkbox of await review
+      .getByRole('checkbox', { name: 'Đã đối chiếu trường này', exact: true })
+      .all())
+      await checkbox.check();
+    await saved();
+    await review.getByRole('button', { name: 'Xác nhận bản lưu', exact: true }).click();
+    const downloadEvent = page.waitForEvent('download');
+    await review.getByRole('button', { name: 'Xuất JSON đã xác nhận', exact: true }).click();
+    const exported = JSON.parse(await readFile((await (await downloadEvent).path())!, 'utf8'));
+    const confirmed = await (await page.request.get(path)).json();
+    expect(exported.data).toEqual({ ...visible, total_amount: 1000000 });
+    expect(exported.revision).toBe(confirmed.review.revision);
+    expect(confirmed.run.fields).toEqual(prediction);
+    const other = await foreign.newPage();
+    await workspace(other);
+    await login(other, 'pdfbeta');
+    for (const suffix of [
+      '',
+      '/image',
+      '/history',
+      `/export?run_id=${doc.run.run_id}&revision=${exported.revision}`,
+    ]) {
+      expect((await other.request.get(path + suffix)).status()).toBe(404);
+    }
+    expect((await (await other.request.get('/api/v1/documents')).json()).total).toBe(0);
+  } finally {
+    release?.();
+    await owner.close();
+    await foreign.close();
+  }
+});
+
+test('PDF recovery: reload retains draft, cross-tab logout rejects late ACK in next account', async ({
+  browser,
+}) => {
+  const context = await browser.newContext({ baseURL });
+  let release!: () => void;
+  try {
+    const page = await context.newPage();
+    await workspace(page);
+    await login(page, 'pdfrecovery');
+    const doc = await upload(page, 'pdf');
+    const path = `/api/v1/documents/${doc.document_id}`;
+    await page.route(`**${path}/review`, (route) => route.abort());
+    await page.locator('#field-seller_name').fill('Recovered PDF draft');
+    await expect(page.locator('.save-status')).toContainText('Lưu thất bại');
+    await page.reload();
+    await page.getByRole('button', { name: 'Xử lý tài liệu', exact: true }).click();
+    await page.getByRole('button', { name: 'Mở tài liệu', exact: true }).click();
+    await expect(page.locator('#field-seller_name')).toHaveValue('Recovered PDF draft');
+    await expect(page.getByRole('alert')).toContainText('RECOVERED_DRAFT');
+    expect((await (await page.request.get(path)).json()).review.effective_data.seller_name).toBe(
+      doc.review.effective_data.seller_name,
+    );
+    await page.unroute(`**${path}/review`);
+    let accepted!: () => void;
+    const committed = new Promise<void>((resolve) => {
+      accepted = resolve;
+    });
+    const held = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    await page.route(`**${path}/review`, async (route) => {
+      const response = await route.fetch();
+      expect(response.status()).toBe(200);
+      accepted();
+      await held;
+      await route.fulfill({ response });
+    });
+    await page.getByRole('button', { name: 'Đối chiếu bản mới' }).click();
+    await page.getByRole('button', { name: 'Giữ chỉnh sửa, dùng revision mới' }).click();
+    await committed;
+    const identity = await (await page.request.get('/api/v1/auth/session')).json();
+    const prefix = `field-review:user:${identity.user.id}:`;
+    const other = await context.newPage();
+    await workspace(other);
+    await other.getByRole('button', { name: 'Đăng xuất', exact: true }).click();
+    await expect(page.getByRole('button', { name: 'Đăng nhập', exact: true })).toBeVisible();
+    await login(other, 'pdfnext');
+    await expect(page.getByRole('region', { name: 'Tài khoản hiện tại' })).toContainText('pdfnext');
+    const own = await upload(page, 'pdf');
+    expect(own.document_id).not.toBe(doc.document_id);
+    await page.route(`**/api/v1/documents/${own.document_id}/review`, (route) => route.abort());
+    await page.locator('#field-seller_name').fill('Next account PDF draft');
+    await expect(page.locator('.save-status')).toContainText('Lưu thất bại');
+    const late = page.waitForResponse(
+      (response) => response.url().endsWith(path + '/review') && response.status() === 200,
+    );
+    release();
+    await late;
+    await expect(page.locator('#field-seller_name')).toHaveValue('Next account PDF draft');
+    const storage = await page.evaluate(
+      (prefix) => ({
+        oldKeys: Object.keys(localStorage).filter((key) => key.startsWith(prefix)),
+        drafts: Object.keys(localStorage)
+          .filter((key) => key.startsWith('field-review:'))
+          .map((key) => localStorage.getItem(key))
+          .join('\n'),
+      }),
+      prefix,
+    );
+    expect(storage.oldKeys).toEqual([]);
+    expect(storage.drafts).toContain('Next account PDF draft');
+    expect(storage.drafts).not.toContain('Recovered PDF draft');
+    expect((await page.request.get(path)).status()).toBe(404);
+  } finally {
+    release?.();
+    await context.close();
+  }
+});
 async function workspace(page: Page) {
   await page.goto('/');
   await page.getByRole('button', { name: 'Xử lý tài liệu', exact: true }).click();
@@ -15,8 +217,16 @@ async function login(page: Page, username: string) {
   await page.getByRole('button', { name: 'Đăng nhập', exact: true }).click();
   await expect(page.getByRole('region', { name: 'Tài khoản hiện tại' })).toContainText(username);
 }
-async function upload(page: Page) {
-  await page.getByLabel('Ảnh PNG/JPG một trang').setInputFiles(image);
+async function upload(page: Page, format: 'png' | 'pdf' = 'png') {
+  await page
+    .getByLabel('PNG/JPG/PDF một trang')
+    .setInputFiles(
+      format === 'pdf'
+        ? fileURLToPath(
+            new URL('../../pipeline/tests/fixtures/pdf/hoa_don_007.pdf', import.meta.url),
+          )
+        : image,
+    );
   await page.getByRole('checkbox', { name: /Tôi xác nhận/ }).check();
   await page.getByRole('button', { name: 'Tải lên và nhận dạng', exact: true }).click();
   await expect(page.locator('#field-seller_name')).toBeEnabled({ timeout: 45_000 });
