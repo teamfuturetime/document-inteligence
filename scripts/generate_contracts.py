@@ -3,8 +3,10 @@ import json
 
 from docintel.api.app import create_app
 from docintel.config import ROOT, Settings
+from docintel.domain import auth as auth_models
 from docintel.domain import documents as product_models
 from docintel.domain import models
+from docintel.domain.operations import Readiness
 from docintel.domain.versioning import RunManifest
 
 
@@ -31,6 +33,7 @@ def main():
         "FixtureView",
     ):
         documents[name + ".schema.json"] = getattr(models, name).model_json_schema()
+    documents["Readiness.schema.json"] = Readiness.model_json_schema()
     documents["RunManifest.schema.json"] = RunManifest.model_json_schema()
     for name in (
         "ProductSchema",
@@ -47,6 +50,10 @@ def main():
     ):
         documents[name + ".schema.json"] = getattr(
             product_models, name
+        ).model_json_schema()
+    for name in ("Credentials", "UserIdentity", "SessionState"):
+        documents[name + ".schema.json"] = getattr(
+            auth_models, name
         ).model_json_schema()
     drift = []
     for name, document in documents.items():

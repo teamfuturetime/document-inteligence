@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Notice } from '../components/Notice';
 import { FixtureViewer } from '../features/FixtureViewer';
 import { Workspace } from '../features/documents/Workspace';
+import { SessionBoundary } from '../features/auth/SessionBoundary';
 import { getJson } from '../lib/api';
 import type { Capabilities } from '../lib/api';
 
@@ -9,6 +10,10 @@ export function App() {
   const [page, setPage] = useState<'intro' | 'demo' | 'workspace'>('intro');
   const [unsaved, setUnsaved] = useState(false);
   const [navigationError, setNavigationError] = useState('');
+  const resetSession = useCallback(() => {
+    setUnsaved(false);
+    setNavigationError('');
+  }, []);
   function navigate(next: 'intro' | 'demo' | 'workspace') {
     if (unsaved && next !== page) {
       setNavigationError('Hãy lưu nháp hoặc bỏ chỉnh sửa trước khi chuyển trang.');
@@ -66,7 +71,7 @@ export function App() {
             Mẫu minh họa
           </button>
         </nav>
-        <span className="pill">LOCAL</span>
+        <span className="pill">LOCAL · 0.6.0</span>
       </header>
       <main>
         {navigationError && (
@@ -132,8 +137,8 @@ export function App() {
                 <article>
                   <span className="status-dot gray" /> <h3>Phạm vi có giới hạn</h3>
                   <p>
-                    Biểu mẫu đánh máy một trang. Chưa hỗ trợ chữ viết tay, tài khoản hoặc triển khai
-                    công khai.
+                    Ảnh hoặc PDF đánh máy một trang. Tài khoản được bật theo cấu hình của người quản
+                    lý. Chưa hỗ trợ chữ viết tay hoặc triển khai công khai.
                   </p>
                 </article>
               </div>
@@ -153,7 +158,9 @@ export function App() {
             </section>
           </>
         ) : page === 'workspace' ? (
-          <Workspace capabilities={capabilities} onUnsavedChange={setUnsaved} />
+          <SessionBoundary unsaved={unsaved} onReset={resetSession}>
+            <Workspace capabilities={capabilities} onUnsavedChange={setUnsaved} />
+          </SessionBoundary>
         ) : (
           <section className="section demo-section">
             <p className="eyebrow">PHÒNG MẪU</p>

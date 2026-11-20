@@ -1,6 +1,9 @@
 import hashlib
 import json
+import logging
+import re
 import sqlite3
+from copy import copy
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -36,6 +39,14 @@ from docintel.domain.models import FinalApplicationData, Provenance
 from docintel.repositories.sqlite import DocumentRepository, now
 from docintel.services.notifications import DocumentConfirmed
 from docintel.storage.local import LocalDocumentStorage
+
+logger = logging.getLogger(__name__)
+
+
+def upload_persistence_error():
+    return ProductError(
+        500, "INTERNAL_ERROR", "Không thể lưu tài liệu. Kiểm tra bộ nhớ/quyền ghi rồi thử lại."
+    )
 
 
 class ProductError(Exception):
@@ -116,6 +127,7 @@ class ConfirmationResult:
 
 class DocumentService:
     def __init__(self, settings: Settings):
+        self.owner_id = "local"
         self.settings = settings
         self.repository = DocumentRepository(settings.runtime_dir / "documents.sqlite3")
         self.repository.initialize()
@@ -128,6 +140,13 @@ class DocumentService:
         self.pipeline = DocumentPipeline(
             settings.tessdata_dir, settings.tesseract_executable, self.pipeline_config
         )
+
+    def for_owner(self, owner_id: str) -> DocumentService:
+        if owner_id != "local" and not re.fullmatch(r"[0-9a-f]{32}", owner_id):
+            raise ValueError("Invalid server principal")
+        scoped = copy(self)
+        scoped.owner_id = owner_id
+        return scoped
 
     def ensure_ready(self):
         if self.settings.provider_mode != "tesseract":
@@ -142,7 +161,7 @@ class DocumentService:
     def list_documents(
         self, limit: int, offset: int, document_type: str | None = None, status: str | None = None
     ) -> DocumentList:
-        conditions, params = [], []
+        conditions, params = ["d.owner_id=?"], [self.owner_id]
         if document_type:
             conditions.append("d.document_type=?")
             params.append(document_type)
@@ -166,7 +185,8 @@ class DocumentService:
         with self.repository.transaction() as connection:
             document = require(
                 connection.execute(
-                    SUMMARY_SELECT + " WHERE d.document_id=?", (document_id,)
+                    SUMMARY_SELECT + " WHERE d.document_id=? AND d.owner_id=?",
+                    (document_id, self.owner_id),
                 ).fetchone()
             )
             selected = run_id or document["latest_run_id"]
@@ -202,7 +222,8 @@ class DocumentService:
         with self.repository.transaction() as connection:
             existing = (
                 connection.execute(
-                    "SELECT * FROM documents WHERE idempotency_key=?", (idempotency_key,)
+                    "SELECT * FROM documents WHERE idempotency_key=? AND owner_id=?",
+                    (idempotency_key, self.owner_id),
                 ).fetchone()
                 if idempotency_key
                 else None
@@ -234,14 +255,17 @@ class DocumentService:
                 status = 415
             raise ProductError(status, exc.code, str(exc)) from exc
         document_id, run_id, created = uuid4().hex, uuid4().hex, now()
+        database_started = False
         try:
             self.storage.write(document_id, "source", data)
             self.storage.write(document_id, "preview", page.png)
+            database_started = True
             with self.repository.transaction(write=True) as connection:
                 # Serialize the retry decision with admission, before capacity rejection.
                 replay = (
                     connection.execute(
-                        "SELECT * FROM documents WHERE idempotency_key=?", (idempotency_key,)
+                        "SELECT * FROM documents WHERE idempotency_key=? AND owner_id=?",
+                        (idempotency_key, self.owner_id),
                     ).fetchone()
                     if idempotency_key
                     else None
@@ -255,11 +279,14 @@ class DocumentService:
                         raise ProductError(
                             409, "IDEMPOTENCY_CONFLICT", "Khóa đã dùng cho tài liệu khác."
                         )
-                    self.storage.discard(document_id)
+                    self.discard_failed_upload(document_id)
                     return self.detail(replay["document_id"])
                 self.check_capacity(connection)
                 connection.execute(
-                    "INSERT INTO documents VALUES(?,?,?,?,?,?,?,?,?,?)",
+                    "INSERT INTO documents(document_id,document_type,filename,data_origin,"
+                    "input_sha256,image_width,image_height,created_at,"
+                    "latest_run_id,idempotency_key,owner_id) "
+                    "VALUES(?,?,?,?,?,?,?,?,?,?,?)",
                     (
                         document_id,
                         document_type,
@@ -271,6 +298,7 @@ class DocumentService:
                         created,
                         run_id,
                         idempotency_key,
+                        self.owner_id,
                     ),
                 )
                 connection.execute(
@@ -278,16 +306,33 @@ class DocumentService:
                     (run_id, document_id, created),
                 )
                 event(connection, document_id, run_id, None, "uploaded", {"input_sha256": digest})
-        except sqlite3.IntegrityError:
-            self.storage.discard(document_id)
-            # A concurrent request with the same key may have won the transaction.
-            if idempotency_key:
-                return self.upload(data, document_type, data_origin, filename, idempotency_key)
-            raise
-        except BaseException:
-            self.storage.discard(document_id)
+        except BaseException as exc:
+            self.discard_failed_upload(document_id, check_persisted=database_started)
+            if isinstance(exc, (OSError, sqlite3.Error)):
+                raise upload_persistence_error() from exc
             raise
         return self.detail(document_id)
+
+    def discard_failed_upload(self, document_id: str, *, check_persisted=False):
+        if check_persisted:
+            # Commit may have succeeded before its acknowledgement failed. Never remove
+            # assets referenced by a committed row, or when rollback cannot be verified.
+            try:
+                with self.repository.transaction() as connection:
+                    persisted = connection.execute(
+                        "SELECT 1 FROM documents WHERE document_id=?", (document_id,)
+                    ).fetchone()
+                if persisted:
+                    return
+            except Exception:
+                logger.warning("Upload assets retained: persistence outcome could not be verified")
+                return
+        try:
+            self.storage.discard(document_id)
+        except Exception:
+            # Fixed message only: exception strings can contain paths or SQL. Preserve
+            # the original failure, and leave orphan assets for explicit offline inspection.
+            logger.warning("Upload cleanup failed: orphan assets require offline inspection")
 
     def check_capacity(self, connection):
         pending = connection.execute(
@@ -297,11 +342,13 @@ class DocumentService:
             raise ProductError(429, "QUEUE_FULL", "Hàng đợi đã đầy. Vui lòng thử lại sau.")
 
     def reprocess(self, document_id: str, expected_run_id: str) -> DocumentDetail:
+        self.detail(document_id)  # Reject foreign IDs before probing the provider.
         self.ensure_ready()
         with self.repository.transaction(write=True) as connection:
             document = require(
                 connection.execute(
-                    "SELECT * FROM documents WHERE document_id=?", (document_id,)
+                    "SELECT * FROM documents WHERE document_id=? AND owner_id=?",
+                    (document_id, self.owner_id),
                 ).fetchone()
             )
             run = require(
@@ -333,7 +380,8 @@ class DocumentService:
     def checked_revision(self, connection, document_id: str, request: RevisionRequest):
         document = require(
             connection.execute(
-                "SELECT * FROM documents WHERE document_id=?", (document_id,)
+                "SELECT * FROM documents WHERE document_id=? AND owner_id=?",
+                (document_id, self.owner_id),
             ).fetchone()
         )
         if document["latest_run_id"] != request.run_id:
@@ -368,6 +416,12 @@ class DocumentService:
                 ),
             )
             allowed = {field.field_id for field in DEFINITIONS[document["document_type"]]}
+            if row["review_status"] != (request.expected_status or "draft"):
+                raise ProductError(
+                    409,
+                    "REVIEW_STATE_CONFLICT",
+                    "Trạng thái đã thay đổi; hãy đối chiếu trước khi lưu.",
+                )
             if set(request.fields) - allowed:
                 raise ProductError(422, "INVALID_FIELD", "Trường không thuộc schema tài liệu.")
             previous = json.loads(row["fields_json"])
@@ -451,7 +505,8 @@ class DocumentService:
         with self.repository.transaction() as connection:
             require(
                 connection.execute(
-                    "SELECT 1 FROM documents WHERE document_id=?", (document_id,)
+                    "SELECT 1 FROM documents WHERE document_id=? AND owner_id=?",
+                    (document_id, self.owner_id),
                 ).fetchone()
             )
             runs = connection.execute(
@@ -477,12 +532,18 @@ class DocumentService:
     def insights(self) -> ProductInsights:
         reviewed = corrected = 0
         with self.repository.transaction() as connection:
-            count = connection.execute("SELECT count(*) FROM documents").fetchone()[0]
+            count = connection.execute(
+                "SELECT count(*) FROM documents WHERE owner_id=?", (self.owner_id,)
+            ).fetchone()[0]
             completed = connection.execute(
-                "SELECT count(*) FROM runs WHERE status='succeeded'"
+                "SELECT count(*) FROM runs r JOIN documents d USING(document_id) "
+                "WHERE r.status='succeeded' AND d.owner_id=?",
+                (self.owner_id,),
             ).fetchone()[0]
             failed = connection.execute(
-                "SELECT count(*) FROM runs WHERE status IN ('failed','unavailable')"
+                "SELECT count(*) FROM runs r JOIN documents d USING(document_id) "
+                "WHERE r.status IN ('failed','unavailable') AND d.owner_id=?",
+                (self.owner_id,),
             ).fetchone()[0]
         documents = self.list_documents(100, 0)
         # Aggregate all documents in bounded pages, not only the first screen.
@@ -509,6 +570,8 @@ class DocumentService:
         )
 
     def recover_interrupted(self):
+        if self.owner_id != "local":
+            raise RuntimeError("Only the internal worker service can recover shared jobs")
         with self.repository.transaction(write=True) as connection:
             interrupted = connection.execute("SELECT * FROM runs WHERE status='running'").fetchall()
             for row in interrupted:
@@ -520,6 +583,8 @@ class DocumentService:
                 event(connection, row["document_id"], row["run_id"], None, "interrupted", {})
 
     def process_next(self) -> bool:
+        if self.owner_id != "local":
+            raise RuntimeError("Only the internal worker service can process shared jobs")
         with self.repository.transaction(write=True) as connection:
             row = connection.execute(
                 "SELECT r.*,d.document_type,d.input_sha256 FROM runs r "

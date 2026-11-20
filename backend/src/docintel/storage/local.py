@@ -14,7 +14,10 @@ class LocalDocumentStorage:
             raise ValueError("Invalid storage identifier")
         if kind not in ("source", "preview"):
             raise ValueError("Invalid storage kind")
-        return self.root / f"{document_id}.{kind}"
+        candidate = self.root / f"{document_id}.{kind}"
+        if candidate.is_symlink() or candidate.resolve().parent != self.root:
+            raise ValueError("Storage path must be an opaque regular-file location")
+        return candidate
 
     def write(self, document_id: str, kind: str, data: bytes):
         target = self.path(document_id, kind)
@@ -24,5 +27,11 @@ class LocalDocumentStorage:
             os.fsync(stream.fileno())
 
     def discard(self, document_id: str):
+        failure = None
         for kind in ("source", "preview"):
-            self.path(document_id, kind).unlink(missing_ok=True)
+            try:
+                self.path(document_id, kind).unlink(missing_ok=True)
+            except OSError as exc:
+                failure = failure or exc
+        if failure is not None:
+            raise failure

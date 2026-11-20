@@ -24,6 +24,10 @@ Với clone đã có sẵn, giữ các thay đổi local trên đúng nhánh tr�
 
 `setup` cài đúng lockfiles và chỉ tạo `.env` khi chưa có; không ghi đè cấu hình cũ. File mẫu chọn `DOCINTEL_PROVIDER_MODE=tesseract`. Nếu giữ `.env` cũ, kiểm tra provider và runtime path. Nếu Tesseract không ở PATH, đặt `DOCINTEL_TESSERACT_EXECUTABLE` bằng đường dẫn cài thật. `models` tải vie+eng (~4,7MB), kiểm SHA256 và lưu dưới `runtime/` đã ignore.
 
+Trước khi chạy app sau clone/pull, dùng `python scripts/dev.py doctor` hoặc thêm `--json --runtime runtime/app` để kiểm toolchain/config/runtime offline chỉ đọc. Không tự migrate, tạo DB hoặc tải models; xem [doctor và exit codes](docs/operations/doctor.md).
+
+`scripts/dev.py` tìm executable trên PATH trước khi gọi subprocess, gồm launcher `npm.cmd` trên Windows; các lệnh setup/frontend/check/e2e vẫn dùng cùng entry point trên. Đường dẫn executable được chuyển thành tuyệt đối theo thư mục caller trước khi child chuyển về repo root, nên PATH tương đối có khoảng trắng vẫn hoạt động. Nếu báo `Executable not found on PATH`, kiểm `uv`/`npm` trong chính terminal đó rồi mở lại terminal sau khi cài công cụ. Không cần bật shell hoặc đổi lockfile để chạy npm. CI có job **Windows launcher checks** chạy setup, regression và frontend checks trên Windows thật; regression PATH tương đối chạy `shutil.which` và subprocess thật, mock chỉ kiểm thêm các entry points/arguments.
+
 Chạy hai terminal từ repository root:
 
 ```sh
@@ -35,6 +39,11 @@ python scripts/dev.py frontend
 ```
 
 Mở **http://127.0.0.1:5173**, chọn **Xử lý tài liệu**. API docs: http://127.0.0.1:8000/docs. Health `/api/v1/health` chỉ báo tiến trình; kiểm `/api/v1/capabilities` có `ocr_ready=true`. Một backend/worker cho mỗi runtime DB; không thêm `--workers` để vượt lock.
+
+Nhánh issue #11 thêm **session opt-in** trong cùng app; mặc định vẫn `local` không đăng nhập.
+Muốn dùng nhiều tài khoản, theo [hướng dẫn tài khoản/migration](docs/operations/auth-ownership.md)
+để backup runtime cũ, tạo user offline và bật profile đúng cookie/origin. Không tự gán tài liệu
+legacy cho người đầu tiên đăng nhập; đây chưa là cấu hình triển khai public.
 
 ## Luồng hóa đơn có thể thử ngay
 
@@ -78,7 +87,12 @@ Mỗi số liệu phải đi cùng dataset/engine/model/config/source SHA. `eval
 
 Hóa đơn header/tổng tiền: invoice_number, invoice_date, seller_name, total_amount integer VND, currency. PNG/JPEG hoặc PDF một trang; mặc định 5MiB/16M pixels, deadline pipeline30s, tối đa5 pending/running jobs và một worker. Nhận body có tổng deadline 30 giây, tối đa hai upload đang nhận/tiền xử lý/lưu; đường chạy chuẩn giới hạn Uvicorn 16 connection/task. [Receive/admission, lỗi và giới hạn ingress](docs/operations/upload-ingress.md). PDF raster local ở 200 DPI, tối đa 8192 px mỗi chiều, dùng chung giới hạn pixel. Xem [hướng dẫn PDF](docs/operations/single-page-pdf.md). Chưa hỗ trợ nhiều trang, chữ viết tay hoặc line items. Evidence/confidence là heuristic chưa calibrated; người dùng vẫn phải đối chiếu ảnh.
 
-Local một người dùng, không auth/tenant isolation. Chỉ synthetic/sample có quyền, không hồ sơ thật. Đơn đề nghị 7 trường đang có tiếp tục hoạt động trong cùng app. PDF một trang tuân theo [ADR0010](docs/decisions/0010-single-page-pdf.md). CCCD, đơn sinh viên, autosave và VLM/OCR.space tiếp tục được theo dõi trong [kế hoạch port](docs/consolidation-plan.md). [Bài tập VT-042..046](homework/README.md) giữ tại nguồn lịch sử.
+Mặc định local một người dùng; có thể bật session và quyền theo chủ tài liệu theo hướng dẫn trên.
+Chỉ synthetic/sample có quyền, không hồ sơ thật hoặc triển khai công khai. Đơn đề nghị 7 trường
+và autosave/recovery theo owner tiếp tục hoạt động trong cùng app. PDF một trang tuân theo
+[ADR0010](docs/decisions/0010-single-page-pdf.md). CCCD, đơn sinh viên và VLM/OCR.space theo
+[kế hoạch port](docs/consolidation-plan.md).
+[Bài tập VT-042..046](homework/README.md) giữ tại nguồn lịch sử.
 
 ## Cấu trúc và nguồn chuẩn
 

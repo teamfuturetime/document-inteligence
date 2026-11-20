@@ -190,6 +190,7 @@ def test_clear_null_and_revision_conflict(product):
             path + "/review",
             json={
                 **revision_request(corrected),
+                "expected_status": "confirmed",
                 "fields": {
                     "total_amount": {"is_reviewed": True, "reviewed_value": "0"},
                 },
@@ -217,6 +218,31 @@ def test_concurrent_saves_compare_and_swap(product):
 
     with ThreadPoolExecutor(max_workers=2) as pool:
         assert sorted(pool.map(save, ("A", "B"))) == [200, 409]
+
+
+def test_autosave_cannot_reopen_after_other_tab_confirms(product):
+    api, _ = product
+    document = processed(api)
+    path = "/api/v1/documents/" + document["document_id"]
+    assert api.post(path + "/confirm", json=revision_request(document)).status_code == 200
+    body = {
+        **revision_request(document),
+        "expected_status": "draft",
+        "fields": {"seller_name": {"is_reviewed": True, "reviewed_value": "late autosave"}},
+    }
+    rejected = api.put(path + "/review", json=body)
+    assert rejected.status_code == 409
+    assert rejected.json()["error"]["code"] == "REVIEW_STATE_CONFLICT"
+    assert api.get(path).json()["review"]["review_status"] == "confirmed"
+    exported = api.get(path + "/export", params={"run_id": body["run_id"], "revision": 1})
+    assert exported.status_code == 200
+    assert exported.json()["data"]["seller_name"] == INVOICE["seller_name"]
+    body["expected_status"] = "confirmed"
+    reopened = api.put(path + "/review", json=body)
+    assert reopened.status_code == 200
+    assert reopened.json()["review"]["review_status"] == "draft"
+    assert reopened.json()["review"]["revision"] == 2
+    assert api.put(path + "/review", json=body).status_code == 409
 
 
 def test_reprocess_keeps_previous_machine_and_review(product):
@@ -411,7 +437,10 @@ def test_pagination_filters_and_operational_metrics(product):
     assert "accuracy" not in json.dumps(metrics)
 
 
-def test_backup_restore_preserves_reviews_and_checks_integrity(product, tmp_path):
+@pytest.mark.parametrize("path_mode", ["absolute", "relative", "lexical_alias", "relative_cli"])
+def test_backup_restore_preserves_reviews_and_checks_integrity(
+    product, tmp_path, monkeypatch, path_mode
+):
     import importlib.util
 
     from docintel.config import ROOT
@@ -432,8 +461,46 @@ def test_backup_restore_preserves_reviews_and_checks_integrity(product, tmp_path
     assert before.status_code == 200
     destination = tmp_path.parent / (tmp_path.name + "-backup")
     restored = tmp_path.parent / (tmp_path.name + "-restore")
-    module.backup(settings.runtime_dir, destination)
-    module.restore(destination, restored)
+    runtime = settings.runtime_dir
+    if path_mode in {"relative", "relative_cli"}:
+        monkeypatch.chdir(tmp_path.parent)
+        runtime = runtime.relative_to(tmp_path.parent)
+        destination = destination.relative_to(tmp_path.parent)
+        restored = restored.relative_to(tmp_path.parent)
+    elif path_mode == "lexical_alias":
+        destination = tmp_path / ".." / destination.name
+        restored = tmp_path / ".." / restored.name
+    if path_mode == "relative_cli":
+        import os
+        import subprocess
+        import sys
+
+        environment = {
+            **os.environ,
+            "PYTHONPATH": os.pathsep.join(
+                str(ROOT / part) for part in ("backend/src", "pipeline/src")
+            ),
+        }
+        for source, target, flags in [
+            (runtime, destination, []),
+            (destination, restored, ["--restore"]),
+        ]:
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts/backup_runtime.py"),
+                    str(source),
+                    str(target),
+                    *flags,
+                ],
+                env=environment,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+    else:
+        module.backup(runtime, destination)
+        module.restore(destination, restored)
     with TestClient(
         create_app(settings.model_copy(update={"runtime_dir": restored}), start_worker=False)
     ) as clone:
@@ -469,6 +536,30 @@ def test_worker_lock_and_newer_database_schema_rejected(tmp_path):
     repository = DocumentRepository(tmp_path / "future.sqlite3")
     repository.initialize()
     with repository.transaction(write=True) as connection:
-        connection.execute("INSERT INTO schema_migrations VALUES(2,'future')")
+        # Schema 2 is now supported; schema 3 is still a future/unsupported database.
+        connection.execute("INSERT INTO schema_migrations VALUES(3,'future')")
     with pytest.raises(RuntimeError, match="newer"):
         repository.initialize()
+
+
+@pytest.mark.parametrize("status_field", [{}, {"expected_status": None}])
+def test_legacy_status_cannot_reopen_confirmed(product, status_field):
+    api, _ = product
+    document = processed(api)
+    path = "/api/v1/documents/" + document["document_id"]
+    assert api.post(path + "/confirm", json=revision_request(document)).status_code == 200
+    result = api.put(
+        path + "/review",
+        json={
+            **revision_request(document),
+            **status_field,
+            "fields": {"seller_name": {"is_reviewed": True, "reviewed_value": "late legacy write"}},
+        },
+    )
+    assert result.status_code == 409
+    assert api.get(path).json()["review"]["review_status"] == "confirmed"
+    exported = api.get(
+        path + "/export", params={"run_id": document["run"]["run_id"], "revision": 1}
+    )
+    assert exported.status_code == 200
+    assert exported.json()["data"] == INVOICE

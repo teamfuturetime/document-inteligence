@@ -31,6 +31,29 @@ Header Content-Length được kiểm tra trước khi đọc body; thiếu head
 
 Từ chối ở receive/admission không thêm document/run/event hoặc source/preview. DB và thư mục runtime rỗng có thể đã được khởi tạo khi app startup. Timeout, disconnect và cancellation trong lúc nhận giải phóng slot; các request bị từ chối không chiếm idempotency key. Khi tác vụ lưu đã bắt đầu sau body hoàn chỉnh, mất response không đồng nghĩa rollback: retry cùng `Idempotency-Key` và cùng ảnh/type/origin lấy lại document hiện có, kể cả OCR queue đầy. Nội dung khác cùng key vẫn 409. Retry lúc các slot receive đều bận có thể nhận `UPLOAD_BUSY`; thử lại sau, không bỏ admission để bypass budget.
 
+## Lỗi persistence và cleanup — issue #45
+
+Lỗi ghi source/preview/fsync hoặc SQLite trong lúc lưu trả envelope hiện có
+`500 INTERNAL_ERROR` với request_id và hướng dẫn kiểm bộ nhớ/quyền ghi. Không đưa paths,
+SQL/stderr hoặc exception text vào HTTP/log cleanup. Không thêm status/code/schema API mới;
+receive/admission budgets và các lỗi 409/429 hiện có giữ nguyên.
+
+Rollback không để document/run/event trỏ tới assets thiếu. Cleanup thử xóa cả source và preview;
+lỗi cleanup ghi warning cố định, giữ nguyên nguyên nhân lỗi persistence thay vì che bằng lỗi xóa.
+Không tự retry vô hạn khi SQLite IntegrityError: concurrent replay đã được quyết định trong
+transaction, lỗi persistence cần client kiểm môi trường rồi retry cùng key/nội dung/owner.
+
+Nếu commit đã thành công trước lỗi acknowledgement, giữ assets đang được DB tham chiếu;
+retry cùng key trả document cũ. Nếu không xác minh được rollback/commit do DB tiếp tục lỗi,
+giữ assets và ghi warning an toàn. Có thể còn orphan files khi cleanup/quyền ghi lỗi: dừng app,
+giữ runtime/backup và đối chiếu DB/files offline trước xử lý, không wildcard hoặc xóa assets
+chỉ dựa vào HTTP500. Mất response không chứng minh rollback; không đổi key để ép tạo lại.
+
+Slot admission chỉ trả khi thread persistence/cleanup thực sự kết thúc, kể cả request HTTP bị
+cancel. Tests fault injection rõ ràng dùng HTTP/SQLite/files thật: ENOSPC/permission/preview/
+fsync/commit/IntegrityError/cleanup/mất ACK, cancel đang chờ write, commit outcome unknown,
+retry cùng key và owner isolation. Không mô phỏng power-loss durability hoặc native OCR accuracy.
+
 ## Ingress và giới hạn bộ nhớ
 
 Đường chạy chuẩn bind `127.0.0.1`; Docker bind trong container nhưng Compose chỉ publish loopback. Nếu chạy Uvicorn trực tiếp, giữ `--host 127.0.0.1 --limit-concurrency 16` cùng một worker. Limit Uvicorn tính cả connection/task khác, nên client giữ connection cũng tiêu tốn capacity.

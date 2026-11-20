@@ -1,10 +1,36 @@
 # Nguồn chuẩn hợp đồng
 
+App **0.5.0** bổ sung `GET /api/v1/readiness` từ backend domain `Readiness`:
+HTTP200/status ready hoặc HTTP503/status not_ready dùng cùng response schema. Health liveness
+giữ tương thích; readiness chỉ trả lifecycle/DB/worker/provider/profile, không data/counts/paths.
+Provider là startup snapshot được ghi rõ, poll không chạy OCR/probe models/migrate.
+Schema DB2/export1.0.0 giữ nguyên. Xem [readiness contract](../docs/operations/readiness.md).
+
+App **0.4.0** thêm session opt-in theo [ADR0011](../docs/decisions/0011-authentication-ownership.md).
+`docintel.domain.auth` là nguồn Credentials/UserIdentity/SessionState; schema và types được sinh cùng generator.
+`GET /auth/session` trả mode và user/CSRF hiện hành; không trả cookie token hoặc password/hash.
+Session mode yêu cầu cookie HttpOnly cho product endpoints và `X-CSRF-Token` cho POST/PUT;
+login yêu cầu JSON, `X-Requested-With: docintel` và Origin chính xác.
+Local mode giữ namespace reserved `local`. 401 là phiên thiếu/hết hạn, 403 là origin/CSRF sai,
+404 dùng chung cho tài liệu không tồn tại/khác owner. Không retry write tự động khi đổi phiên.
+Examples `session-local.json`/`session-anonymous.json` không chứa tài khoản mặc định hoặc secret.
+SQLite schema 2 cần offline migration cho runtime schema 1 có dữ liệu; export schema 1.0.0 giữ nguyên.
+
+App 0.3.1 hardens the optional status contract: omitted/null `expected_status`
+means `draft`, including for legacy clients. A confirmed review can only be
+reopened with explicit `expected_status=confirmed` and the current revision.
+This intentionally rejects implicit reopening by old clients with HTTP 409;
+their draft saves remain compatible. No database migration is required.
+
+App 0.3.0 adds optional `ReviewRequest.expected_status` for atomic review-state
+CAS alongside revision CAS. The autosave UI always supplies it; legacy clients
+may omit it. See [autosave contract and compatibility](../docs/product/autosave.md).
+
 App 0.2.0 bổ sung nguồn chuẩn `docintel.domain.documents`: invoice/application workflow, review requests, history và persisted export. Product schema 1.0.0 sinh cùng generator; không đổi nghĩa foundation fixture schema 1.0.0. `pipeline.models` chỉ là DTO implementation được adapter chuyển sang backend domain, không nguồn HTTP thứ hai.
 
 App 0.2.1 bổ sung receive/admission budget cho upload và OpenAPI lỗi 400/408; envelope lỗi và product/export schema giữ nguyên. [Chi tiết lỗi, retry và budget](../docs/operations/upload-ingress.md).
 
-App 0.2.2 thêm PDF một trang vào upload raw và `upload_media_types` trong capabilities. Product/export schema 1.0.0 giữ nguyên. Xem [ngân sách và lỗi PDF](../docs/operations/single-page-pdf.md).
+App **0.6.0** thêm PDF một trang vào upload raw và `upload_media_types` trong capabilities, kế thừa readiness, session và autosave. SQLite schema 2 và product/export schema 1.0.0 giữ nguyên. Xem [ngân sách và lỗi PDF](../docs/operations/single-page-pdf.md).
 
 Domain models backend và FastAPI là nguồn chuẩn. `generated/*.schema.json` (JSON Schema 2020-12) và `generated/openapi.json` được sinh bằng:
 

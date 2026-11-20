@@ -840,3 +840,20 @@ select {
     padding: 16px;
   }
 }
+/* Account controls share the existing form and panel styles. */
+.auth-panel form {
+  display: grid;
+  gap: 1rem;
+  max-width: 28rem;
+}
+.auth-panel label {
+  display: grid;
+  gap: 0.4rem;
+}
+.session-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1rem 0;
+}

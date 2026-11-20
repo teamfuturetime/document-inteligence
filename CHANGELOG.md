@@ -1,6 +1,8 @@
 # Thay đổi
 
-## PDF một trang 0.2.2 — 15/11/2026
+## PDF một trang 0.6.0 — 20/11/2026
+
+Tích hợp trên nền main 0.5.0, giữ session/owner, autosave CAS, readiness, storage/backup và Windows gates; SQLite schema2/export1.0.0 không đổi.
 
 Issue #6: đọc PDF một trang bằng PDFium trong subprocess, giới hạn bytes, trang, kích thước và deadline. Giữ raw source, preview PNG và OCR evidence cùng frame. Capabilities, OpenAPI và frontend types đồng bộ. Thêm kiểm thử lỗi PDF, native workflow và browser. Xem [vận hành PDF](docs/operations/single-page-pdf.md).
 
@@ -19,3 +21,9 @@ Theo yêu cầu mới, mở rộng nhatquang thành workflow local: package pipe
 ## Foundation 0.1.0 — 05/10/2026
 
 Khởi tạo FastAPI + React/TypeScript trong repository hiện có; thêm domain models, contracts được sinh và kiểm tra drift, chuẩn hóa/validation, fixture adapters bật rõ, 6 ảnh synthetic và manifest, evaluator field-level cùng tests. Thêm UI đối chiếu chỉ xem, CI local configuration, Dockerfiles/Compose, tài liệu yêu cầu/ADR/dữ liệu/cộng tác/backlog và báo cáo verification. Chưa tích hợp OCR/model, persistence hoặc luồng review/export hoàn chỉnh. Đây là phiên bản nền cục bộ, chưa phải release đã xuất bản trên GitHub.
+# 0.4.0 — session/ownership proposal (#11)
+
+- Opt-in opaque cookie sessions, bounded login, CSRF and owner-scoped document/source/review/history/export/idempotency.
+- SQLite schema 2, offline backed-up migration/adoption and CLI account administration; default local mode and export schema 1.0.0 preserved.
+- Login/logout UI, cross-tab session changes and stale response/download isolation; native and browser checks for both modes.
+- Pending independent PR review/scope approval and integration into main; not a public deployment or a security audit.

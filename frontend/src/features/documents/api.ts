@@ -1,4 +1,5 @@
 import type { components } from '../../lib/api.generated';
+import { assertCurrentSession, getSessionSnapshot, sessionFetch } from '../../lib/session';
 
 export type DocumentDetail = components['schemas']['DocumentDetail'];
 export type DocumentList = components['schemas']['DocumentList'];
@@ -20,7 +21,8 @@ export class APIError extends Error {
 }
 
 export async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const response = await fetch(`/api/v1${path}`, options);
+  const revision = getSessionSnapshot().revision;
+  const response = await sessionFetch(`/api/v1${path}`, options);
   if (!response.ok) {
     const payload = await response.json().catch(() => null);
     throw new APIError(
@@ -30,11 +32,19 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
       payload?.error?.request_id,
     );
   }
-  return response.json() as Promise<T>;
+  const result = (await response.json()) as T;
+  assertCurrentSession(revision);
+  return result;
 }
 
-export function jsonRequest<T>(path: string, method: string, body: unknown): Promise<T> {
+export function jsonRequest<T>(
+  path: string,
+  method: string,
+  body: unknown,
+  signal?: AbortSignal,
+): Promise<T> {
   return request(path, {
+    signal,
     method,
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
@@ -42,12 +52,13 @@ export function jsonRequest<T>(path: string, method: string, body: unknown): Pro
 }
 
 export async function downloadExport(document: DocumentDetail): Promise<void> {
+  const revision = getSessionSnapshot().revision;
   if (!document.review) throw new Error('Chưa có bản review.');
   const query = new URLSearchParams({
     run_id: document.run.run_id,
     revision: String(document.review.revision),
   });
-  const response = await fetch(`/api/v1/documents/${document.document_id}/export?${query}`);
+  const response = await sessionFetch(`/api/v1/documents/${document.document_id}/export?${query}`);
   if (!response.ok) {
     const payload = await response.json().catch(() => null);
     throw new APIError(
@@ -56,7 +67,9 @@ export async function downloadExport(document: DocumentDetail): Promise<void> {
       payload?.error?.message ?? 'Không xuất được JSON.',
     );
   }
-  const url = URL.createObjectURL(await response.blob());
+  const blob = await response.blob();
+  assertCurrentSession(revision);
+  const url = URL.createObjectURL(blob);
   const anchor = window.document.createElement('a');
   anchor.href = url;
   anchor.download = `document-${document.document_id}-r${document.review.revision}.json`;

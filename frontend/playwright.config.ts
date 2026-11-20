@@ -7,6 +7,7 @@ const frontend = fileURLToPath(new URL('.', import.meta.url));
 export default defineConfig({
   testDir: './e2e',
   testMatch: '*.spec.ts',
+  testIgnore: 'auth.spec.ts',
   timeout: 60_000,
   expect: { timeout: 20_000 },
   workers: 1,

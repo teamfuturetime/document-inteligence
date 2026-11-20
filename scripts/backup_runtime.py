@@ -16,16 +16,27 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def new_destination(destination: Path) -> Path:
+    # Check the requested leaf before resolve follows a dangling symlink/junction.
+    try:
+        destination.lstat()
+    except FileNotFoundError:
+        return destination.resolve()
+    raise FileExistsError(f"Destination already exists: {destination}")
+
+
 def backup(runtime: Path, destination: Path):
+    runtime, destination = runtime.resolve(), new_destination(destination)
     if not (runtime / "documents.sqlite3").is_file():
         raise ValueError("Runtime database not found")
-    destination.mkdir(parents=True, exist_ok=False)
+    destination.mkdir(parents=True, exist_ok=False, mode=0o700)
     database = destination / "documents.sqlite3"
     with (
         closing(sqlite3.connect(runtime / "documents.sqlite3")) as source,
         closing(sqlite3.connect(database)) as target,
     ):
         source.backup(target)
+        database.chmod(0o600)
         rows = target.execute(
             "SELECT document_id,input_sha256 FROM documents"
         ).fetchall()
@@ -47,6 +58,7 @@ def backup(runtime: Path, destination: Path):
 
 
 def restore(source: Path, destination: Path):
+    source, destination = source.resolve(), new_destination(destination)
     manifest = json.loads((source / "backup.json").read_text(encoding="utf-8"))
     if (
         not isinstance(manifest, dict)
@@ -87,10 +99,11 @@ def restore(source: Path, destination: Path):
         if not target.is_relative_to(destination.resolve()):
             raise ValueError("Restore path outside target")
         validated.append((path, target))
-    destination.mkdir(parents=True, exist_ok=False)
+    destination.mkdir(parents=True, exist_ok=False, mode=0o700)
     for path, target in validated:
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(path, target)
+        target.chmod(0o600)
 
 
 def main():
