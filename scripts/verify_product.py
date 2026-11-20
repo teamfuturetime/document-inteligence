@@ -1,12 +1,15 @@
 """Native OCR + HTTP workflow check. Missing engines/models fail, never skip."""
 
 import argparse
+import hashlib
 import io
 import json
 import tempfile
 import time
+from contextlib import closing
 from datetime import UTC, datetime
 from pathlib import Path
+from sqlite3 import connect
 
 from docintel.api.app import create_app
 from docintel.config import ROOT, Settings
@@ -33,6 +36,80 @@ def wait_for_run(api, document):
     raise AssertionError("Persisted run did not finish within deadline")
 
 
+def confirm_pdf_with_failed_delivery(api, runtime, path, run_id, revision, visible):
+    """Inject only delivery failure and observe the commit from a fresh SQLite connection."""
+    attempts = []
+
+    class FailingSender:
+        async def send(self, notice):
+            with closing(connect(runtime / "documents.sqlite3")) as db:
+                row = db.execute(
+                    "SELECT review_status, fields_json FROM revisions WHERE run_id=? AND revision=?",
+                    (notice.run_id, notice.revision),
+                ).fetchone()
+            attempts.append((notice.run_id, notice.revision, row))
+            raise RuntimeError("synthetic delivery failure")
+
+    body = {"run_id": run_id, "expected_revision": revision}
+    original = api.app.state.confirmation_notifier
+    api.app.state.confirmation_notifier = FailingSender()
+    try:
+        confirmed = check(api.post(path + "/confirm", json=body))
+        assert confirmed["review"]["review_status"] == "confirmed"
+        assert confirmed["review"]["revision"] == revision
+        retried = check(api.post(path + "/confirm", json=body))
+        assert retried["review"] == confirmed["review"]
+    finally:
+        api.app.state.confirmation_notifier = original
+    # Assert outside the sender so the best-effort delivery handler cannot swallow failures.
+    assert len(attempts) == 1
+    noticed_run, noticed_revision, persisted = attempts[0]
+    assert (noticed_run, noticed_revision) == (run_id, revision)
+    assert persisted is not None and persisted[0] == "confirmed"
+    assert {
+        name: field["reviewed_value"]
+        for name, field in json.loads(persisted[1]).items()
+        if field["is_reviewed"]
+    } == visible
+    history = check(api.get(path + "/history"))
+    assert [
+        event["revision"]
+        for event in history["events"]
+        if event["run_id"] == run_id and event["action"] == "confirmed"
+    ] == [revision]
+
+
+def verify_pdf_reprocess_history(api, path, run, revision, source, original_bytes):
+    run_id = run["run_id"]
+    selected_run = {"run_id": run_id}
+    old = check(api.get(path, params=selected_run))
+    old_history = check(api.get(path + "/history"))
+    queued = check(api.post(path + "/runs", json={"expected_run_id": run_id}), 202)
+    assert queued["latest_run_id"] != run_id
+    current = wait_for_run(api, queued)
+    assert current["run"]["run_id"] == queued["latest_run_id"]
+    assert current["run"]["metadata"]["prediction_source"] == "model"
+    assert current["review"]["review_status"] == "draft"
+    archived = check(api.get(path, params=selected_run))
+    assert archived["is_latest_run"] is False
+    assert archived["run"] == old["run"] == run
+    assert archived["review"] == old["review"]
+    stale = {**selected_run, "expected_revision": revision}
+    for response in (
+        api.put(path + "/review", json={**stale, "fields": {}}),
+        api.post(path + "/confirm", json=stale),
+        api.get(path + "/export", params={**selected_run, "revision": revision}),
+    ):
+        assert check(response, 409)["error"]["code"] == "STALE_RUN"
+    history = check(api.get(path + "/history"))
+    assert {entry["run_id"]: entry for entry in history["runs"]}[run_id] == run
+    assert [event for event in history["events"] if event["run_id"] == run_id] == [
+        event for event in old_history["events"] if event["run_id"] == run_id
+    ]
+    assert check(api.get(path, params=selected_run))["review"] == old["review"]
+    assert source.read_bytes() == original_bytes
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -40,7 +117,9 @@ def main():
     )
     parser.add_argument("--auth-mode", choices=("local", "session"), default="local")
     args = parser.parse_args()
-    settings = Settings(provider_mode="tesseract", auth_mode=args.auth_mode)
+    settings = Settings(
+        provider_mode="tesseract", auth_mode=args.auth_mode, notification_mode="log"
+    )
     password = new_token()
     origin = settings.cors_origins[0]
 
@@ -279,11 +358,26 @@ def main():
                 pdf_document["image_width"],
                 pdf_document["image_height"],
             )
+            frame = pdf_metadata["preprocessing"]
+            assert (frame["width"], frame["height"]) == (width, height)
             assert pdf_run["spans"]
             for span in pdf_run["spans"]:
                 x1, y1, x2, y2 = span["box"]
                 assert 0 <= x1 < x2 <= width and 0 <= y1 < y2 <= height
             pdf_path = "/api/v1/documents/" + pdf_document["document_id"]
+            pdf_bytes = pdf.read_bytes()
+            pdf_source = (
+                settings.runtime_dir
+                / "documents"
+                / (pdf_document["document_id"] + ".source")
+            )
+            assert pdf_source.read_bytes() == pdf_bytes
+            assert (
+                pdf_document["input_sha256"]
+                == pdf_metadata["input_sha256"]
+                == hashlib.sha256(pdf_bytes).hexdigest()
+            )
+            checks.append("pdf_raw_source_and_checksum")
             pdf_cleared = check(
                 api.put(
                     pdf_path + "/review",
@@ -337,20 +431,35 @@ def main():
                 )
             )
             pdf_revision = pdf_saved["review"]["revision"]
-            check(
-                api.post(
-                    pdf_path + "/confirm",
-                    json={
-                        "run_id": pdf_run["run_id"],
-                        "expected_revision": pdf_revision,
-                    },
-                )
+            pdf_export_params = {"run_id": pdf_run["run_id"], "revision": pdf_revision}
+            assert (
+                check(api.get(pdf_path + "/export", params=pdf_export_params), 409)[
+                    "error"
+                ]["code"]
+                == "NOT_CONFIRMED"
             )
-            pdf_artifact = check(
-                api.get(
-                    pdf_path + "/export",
-                    params={"run_id": pdf_run["run_id"], "revision": pdf_revision},
+            if args.auth_mode == "session":
+                confirm_pdf_with_failed_delivery(
+                    api,
+                    settings.runtime_dir,
+                    pdf_path,
+                    pdf_run["run_id"],
+                    pdf_revision,
+                    visible,
                 )
+                checks.append("pdf_notification_failure_after_sqlite_commit_and_retry")
+            else:
+                check(
+                    api.post(
+                        pdf_path + "/confirm",
+                        json={
+                            "run_id": pdf_run["run_id"],
+                            "expected_revision": pdf_revision,
+                        },
+                    )
+                )
+            pdf_artifact = check(
+                api.get(pdf_path + "/export", params=pdf_export_params)
             )
             assert (
                 pdf_artifact["data"] == visible
@@ -490,6 +599,11 @@ def main():
                 == visible
             )
             checks.append("pdf_confirmed_persistence_after_restart")
+            if args.auth_mode == "session":
+                verify_pdf_reprocess_history(
+                    restarted, pdf_path, pdf_run, pdf_revision, pdf_source, pdf_bytes
+                )
+                checks.append("pdf_native_reprocess_preserves_read_only_history")
     report = {
         "report_type": "native_workflow_check",
         "status": "passed",

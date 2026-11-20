@@ -77,5 +77,7 @@ Kết quả trên nhánh PR không đồng nghĩa PDF đã vào main. Kiểm CI 
 khác tác giả trước tích hợp; sau merge đối chiếu acceptance và cập nhật trạng thái.
 QA độc lập [#53](https://github.com/teamfuturetime/document-inteligence/issues/53) vẫn do
 người được giao thực hiện trên bản chung, không đóng bằng kết quả tự kiểm của tác giả PDF.
+Xem [báo cáo QA trên bản tích hợp](../reports/pdf-session-qa-2026-11-20.md) để đối chiếu
+các ca bổ sung, lệnh chạy và giới hạn của từng suite.
 
 Native kiểm OCR thật với PNG, PDF và đơn đề nghị, JPEG được kiểm ở pipeline. Browser chạy riêng luồng PNG và PDF đến JSON tải về. Mẫu là scan đóng gói từ ảnh synthetic và không dùng để ước lượng chất lượng OCR tổng quát. PDF nhiều trang, form tương tác, chữ viết tay và triển khai công khai nằm ngoài phạm vi. Parser chạy trong subprocess có deadline và cap bitmap, không có giới hạn RSS cứng. Bộ render pin qua lock và dùng [license notices của wheel PDFium](https://pypdfium2-team.github.io/pypdfium2/readme.html#licensing).
