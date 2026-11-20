@@ -69,6 +69,12 @@ jobs:
       - run: uv run --project backend --locked pytest backend/tests/test_dev_launcher.py -q
       - name: Verify backup aliases and authenticated restore on Windows
         run: uv run --project backend --locked pytest backend/tests/test_backup_manifest.py backend/tests/test_auth_backup.py backend/tests/test_backup_verify.py backend/tests/test_backup_publication.py -q
+      - name: Verify bounded readiness lifecycle on Windows
+        run: uv run --project backend --locked pytest backend/tests/test_readiness.py -q
+      - name: Verify upload storage failure recovery on Windows
+        run: uv run --project backend --locked pytest backend/tests/test_upload_storage_failures.py -q
+      - name: Verify read-only doctor diagnostics on Windows
+        run: uv run --project backend --locked pytest backend/tests/test_doctor.py -q
       - run: python scripts/dev.py frontend-check
   evaluation-checks:
     name: Evaluation regression

@@ -1,8 +1,10 @@
 import json
 
+from docintel import __version__
 from docintel.config import ROOT
 from docintel.domain.auth import SessionState
 from docintel.domain.models import ExportArtifact
+from docintel.domain.operations import Readiness
 from docintel.services.fixtures import FixtureService
 
 
@@ -41,3 +43,21 @@ write(
 print("Generated contract examples; confirmed export is illustrative only.")
 write("session-local.json", SessionState(mode="local").model_dump(mode="json"))
 write("session-anonymous.json", SessionState(mode="session").model_dump(mode="json"))
+for status, database, worker, provider in (
+    ("ready", "ready", "ready", "ready"),
+    ("not_ready", "unavailable", "stopped", "unavailable"),
+):
+    example = Readiness(
+        status=status,
+        app_version=__version__,
+        lifecycle="running",
+        database=database,
+        worker=worker,
+        provider=provider,
+        provider_mode="tesseract",
+        auth_mode="local",
+    )
+    write(
+        "readiness-" + status.replace("_", "-") + ".json",
+        example.model_dump(mode="json"),
+    )

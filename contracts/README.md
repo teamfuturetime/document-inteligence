@@ -1,5 +1,11 @@
 # Nguồn chuẩn hợp đồng
 
+App **0.5.0** bổ sung `GET /api/v1/readiness` từ backend domain `Readiness`:
+HTTP200/status ready hoặc HTTP503/status not_ready dùng cùng response schema. Health liveness
+giữ tương thích; readiness chỉ trả lifecycle/DB/worker/provider/profile, không data/counts/paths.
+Provider là startup snapshot được ghi rõ, poll không chạy OCR/probe models/migrate.
+Schema DB2/export1.0.0 giữ nguyên. Xem [readiness contract](../docs/operations/readiness.md).
+
 App **0.4.0** thêm session opt-in theo [ADR0011](../docs/decisions/0011-authentication-ownership.md).
 `docintel.domain.auth` là nguồn Credentials/UserIdentity/SessionState; schema và types được sinh cùng generator.
 `GET /auth/session` trả mode và user/CSRF hiện hành; không trả cookie token hoặc password/hash.
