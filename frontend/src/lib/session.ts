@@ -52,12 +52,14 @@ export async function refreshSession(signal?: AbortSignal): Promise<boolean> {
   const mutation = mutationSequence;
   const isCurrent = () =>
     sequence === refreshSequence && mutation === mutationSequence && pendingMutation === null;
+  const requestSignal = AbortSignal.any([...(signal ? [signal] : []), AbortSignal.timeout(8000)]);
   try {
     const response = await fetch('/api/v1/auth/session', {
       credentials: 'same-origin',
       cache: 'no-store',
-      signal: AbortSignal.any([...(signal ? [signal] : []), AbortSignal.timeout(8000)]),
+      signal: requestSignal,
     });
+    requestSignal.throwIfAborted();
     if (response.status === 401 && isCurrent() && !signal?.aborted) {
       publish(
         { mode: 'session', user: null, csrf_token: null },
@@ -66,6 +68,7 @@ export async function refreshSession(signal?: AbortSignal): Promise<boolean> {
       return true;
     }
     const state = await sessionResponse(response);
+    requestSignal.throwIfAborted();
     if (isCurrent() && !signal?.aborted) {
       publish(state);
       return true;

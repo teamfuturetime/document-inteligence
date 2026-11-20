@@ -231,7 +231,7 @@ export function Workspace({
           <p>Nhận dạng thật, giữ bằng chứng và xuất đúng bản bạn xác nhận.</p>
         </div>
         <span className="pill">
-          {capabilities?.ocr_ready ? 'OCR SẴN SÀNG' : 'OCR CHƯA SẴN SÀNG'}
+          {backendReady && capabilities?.ocr_ready ? 'OCR SẴN SÀNG' : 'OCR CHƯA SẴN SÀNG'}
         </span>
       </section>
       {error && (

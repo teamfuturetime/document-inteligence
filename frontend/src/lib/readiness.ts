@@ -26,6 +26,8 @@ export async function readReadiness(signal: AbortSignal): Promise<Readiness> {
   signal.throwIfAborted();
   if (!value || typeof value !== 'object') throw new Error('Invalid readiness');
   const fields = value as Record<string, unknown>;
+  if (Object.keys(fields).some((key) => !Object.hasOwn(schema.properties, key)))
+    throw new Error('Invalid readiness');
   for (const key of schema.required) if (!(key in fields)) throw new Error('Invalid readiness');
   for (const [key, field] of Object.entries(schema.properties)) {
     if (!(key in fields)) continue;
