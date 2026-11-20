@@ -27,5 +27,11 @@ class LocalDocumentStorage:
             os.fsync(stream.fileno())
 
     def discard(self, document_id: str):
+        failure = None
         for kind in ("source", "preview"):
-            self.path(document_id, kind).unlink(missing_ok=True)
+            try:
+                self.path(document_id, kind).unlink(missing_ok=True)
+            except OSError as exc:
+                failure = failure or exc
+        if failure is not None:
+            raise failure
