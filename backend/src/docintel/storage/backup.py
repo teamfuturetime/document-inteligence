@@ -20,6 +20,7 @@ class BackupVerificationError(ValueError):
 class VerifiedBackup:
     schema_version: int
     entries: tuple[tuple[str, Path], ...]
+    manifest_bytes: bytes
 
 
 def sha256(path):
@@ -34,7 +35,8 @@ def verify_backup(source: Path) -> VerifiedBackup:
     """Offline/stable tree required; never open SQLite through application repositories."""
     try:
         source = source.resolve()
-        manifest = json.loads((source / "backup.json").read_text(encoding="utf-8"))
+        manifest_bytes = (source / "backup.json").read_bytes()
+        manifest = json.loads(manifest_bytes.decode("utf-8"))
         if (
             not isinstance(manifest, dict)
             or type(manifest.get("version")) is not int
@@ -118,7 +120,7 @@ def verify_backup(source: Path) -> VerifiedBackup:
                         raise BackupVerificationError("ASSET_MISSING")
                 if records[f"documents/{document_id}.source"] != input_hash:
                     raise BackupVerificationError("SOURCE_HASH_MISMATCH")
-        return VerifiedBackup(version, tuple(validated))
+        return VerifiedBackup(version, tuple(validated), manifest_bytes)
     except BackupVerificationError:
         raise
     except (sqlite3.Error, OSError, ValueError, UnicodeError) as exc:

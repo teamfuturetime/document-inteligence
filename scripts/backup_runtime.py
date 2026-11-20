@@ -89,18 +89,27 @@ def write_backup(runtime: Path, destination: Path):
 
 def restore(source: Path, destination: Path):
     source, destination = source.resolve(), new_destination(destination)
+    if destination.is_relative_to(source):
+        raise ValueError("Destination must be outside source directory")
     verified = verify_backup(source)
-    validated = []
-    for relative, path in verified.entries:
-        target = (destination / relative).resolve()
-        if not target.is_relative_to(destination):
-            raise BackupVerificationError("RESTORE_PATH_OUTSIDE")
-        validated.append((path, target))
-    destination.mkdir(parents=True, exist_ok=False, mode=0o700)
-    for path, target in validated:
-        target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(path, target)
-        target.chmod(0o600)
+    with staging_directory(destination) as staged:
+        staged.mkdir(mode=0o700)
+        for relative, path in verified.entries:
+            target = (staged / relative).resolve()
+            if not target.is_relative_to(staged):
+                raise BackupVerificationError("RESTORE_PATH_OUTSIDE")
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(path, target)
+            target.chmod(0o600)
+        # Validate the actual copied bytes against the manifest captured by the first
+        # verification, rather than re-reading potentially changed source metadata.
+        manifest = staged / "backup.json"
+        manifest.write_bytes(verified.manifest_bytes)
+        manifest.chmod(0o600)
+        verify_backup(staged)
+        manifest.unlink()  # Runtime output keeps the previous DB/assets-only shape.
+        sync_files(staged)
+        publish_directory(staged, destination)
 
 
 def main():
