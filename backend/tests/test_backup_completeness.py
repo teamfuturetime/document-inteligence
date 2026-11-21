@@ -50,6 +50,13 @@ def confirmed_backup(request, tmp_path, monkeypatch, helper):
         expected = api.get(path).json()
         exported = api.get(path + "/export", params={"run_id": run_id, "revision": 2})
         assert exported.status_code == 200
+        assert (
+            api.post(
+                "/api/v1/documents?document_type=hoa_don&data_origin=synthetic",
+                content=image_bytes(),
+            ).status_code
+            == 202
+        )  # A valid queued run has no revision yet.
     version = request.param
     if version == 1:
         legacy = tmp_path / "legacy"
@@ -166,3 +173,38 @@ def test_missing_auth_column_is_rejected(confirmed_backup, helper, tmp_path, tab
         db.execute(f"ALTER TABLE {table} DROP COLUMN {column}")
     rehash(source)
     rejected(source, helper, tmp_path, "SNAPSHOT_UNREADABLE")
+
+
+@pytest.mark.parametrize("mutation", ["all_revisions", "confirmed_revision", "event_document"])
+def test_missing_review_relationships_are_rejected_after_rehash(
+    confirmed_backup, helper, tmp_path, mutation
+):
+    source, _, _, run_id, *_ = confirmed_backup
+    with closing(sqlite3.connect(source / "documents.sqlite3")) as db, db:
+        if mutation == "all_revisions":
+            db.execute("DELETE FROM revisions")
+        elif mutation == "confirmed_revision":
+            db.execute("DELETE FROM revisions WHERE revision=2")
+        else:
+            # Both FK targets exist, but the event's run belongs to another document.
+            other = db.execute(
+                "SELECT document_id FROM documents WHERE latest_run_id<>?", (run_id,)
+            ).fetchone()[0]
+            db.execute("UPDATE events SET document_id=? WHERE revision=2", (other,))
+        assert db.execute("PRAGMA integrity_check").fetchone() == ("ok",)
+        assert db.execute("PRAGMA foreign_key_check").fetchall() == []
+    rehash(source)
+    rejected(source, helper, tmp_path, "DATABASE_REFERENCES")
+
+
+@pytest.mark.parametrize("status", ["queued", "running", "failed", "unavailable"])
+def test_unfinished_or_failed_run_can_have_no_revision(confirmed_backup, status):
+    source, version, *_ = confirmed_backup
+    with closing(sqlite3.connect(source / "documents.sqlite3")) as db, db:
+        db.execute("DELETE FROM revisions")
+        db.execute("DELETE FROM events WHERE revision IS NOT NULL")
+        db.execute("UPDATE runs SET status=?,result_json=NULL", (status,))
+    rehash(source)
+    before = tree(source)
+    assert verify_backup(source).schema_version == version
+    assert tree(source) == before

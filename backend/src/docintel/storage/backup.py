@@ -110,6 +110,27 @@ def verify_backup(source: Path) -> VerifiedBackup:
             if type(version) is not int or version not in {1, 2}:
                 raise BackupVerificationError("SCHEMA_UNSUPPORTED")
             check_runtime_columns(db, version)
+            if (
+                db.execute(
+                    "SELECT 1 FROM runs r WHERE r.status='succeeded' AND NOT EXISTS "
+                    "(SELECT 1 FROM revisions v WHERE v.run_id=r.run_id) LIMIT 1"
+                ).fetchone()
+                is not None
+            ):
+                raise BackupVerificationError("DATABASE_REFERENCES")
+            if (
+                db.execute(
+                    "SELECT 1 FROM events e WHERE NOT EXISTS "
+                    "(SELECT 1 FROM runs r WHERE r.run_id=e.run_id "
+                    "AND r.document_id=e.document_id) "
+                    "OR (e.revision IS NOT NULL AND NOT EXISTS "
+                    "(SELECT 1 FROM revisions v WHERE v.run_id=e.run_id "
+                    "AND v.revision=e.revision)) "
+                    "LIMIT 1"
+                ).fetchone()
+                is not None
+            ):
+                raise BackupVerificationError("DATABASE_REFERENCES")
             for document_id, input_hash, latest_run_id in db.execute(
                 "SELECT document_id,input_sha256,latest_run_id FROM documents"
             ):
