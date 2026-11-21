@@ -63,7 +63,7 @@ Backup do helper tạo dùng `backup.json` version **1** (số nguyên), với m
 
 Nếu gặp `Invalid backup manifest` hoặc lỗi integrity/path, giữ nguyên runtime và backup gốc, chọn lại bản backup hợp lệ. Nếu runtime nguồn vẫn hoạt động, tạo backup mới vào một đường dẫn mới bằng helper; không khởi động app trên thư mục trống và coi đó là restore thành công. Nếu đích đã tồn tại, chọn tên mới, không xóa đích cũ để ép chạy. Sau restore hợp lệ, mở tài liệu đã xác nhận, kiểm run/revision và dữ liệu JSON export; `exported_at` được tạo theo lượt tải, không dùng timestamp đó để kết luận dữ liệu persisted đã đổi.
 
-Format backup v1 không đổi; đây là kiểm cấu trúc và hash của file được liệt kê, không phải chữ ký xác thực hoặc phép kiểm đầy đủ mọi tham chiếu bên trong SQLite. Không đưa backup chứa dữ liệu ngoài sample/synthetic vào Git.
+Format backup v1 không đổi. Verifier dùng chung kiểm cấu trúc/containment/hash, SQLite integrity/foreign keys/schema1-2 và source/preview bắt buộc của từng document trước restore; xem [verify-backup](../operations/backup-verification.md) để chạy chỉ đọc. Đây không phải chữ ký xác thực hoặc chứng nhận mọi quy tắc nghiệp vụ trong JSON. Không đưa backup chứa dữ liệu ngoài sample/synthetic vào Git.
 
 ## Docker local
 
