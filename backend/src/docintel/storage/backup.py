@@ -30,6 +30,30 @@ def sha256(path):
     return digest.hexdigest()
 
 
+def check_runtime_columns(db, version):
+    # Columns required by migrations 001/002 and runtime readers/writers. Project
+    # only these columns: extensions remain compatible; never initialize the source.
+    required = {
+        "schema_migrations": "version,applied_at",
+        "documents": "document_id,document_type,filename,data_origin,input_sha256,"
+        "image_width,image_height,created_at,latest_run_id,idempotency_key",
+        "runs": "run_id,document_id,status,created_at,finished_at,error_code,result_json",
+        "revisions": "run_id,revision,review_status,fields_json,saved_at",
+        "events": "event_id,document_id,run_id,revision,action,occurred_at,changes_json",
+    }
+    if version == 2:
+        required["documents"] += ",owner_id"
+        required.update(
+            {
+                "users": "user_id,username,password_hash,is_active,created_at",
+                "sessions": "token_hash,user_id,csrf_token,expires_at,created_at",
+                "login_budget": "id,window_start,attempts",
+            }
+        )
+    for table, columns in required.items():
+        db.execute(f"SELECT {columns} FROM {table} LIMIT 0")
+
+
 def verify_backup(source: Path) -> VerifiedBackup:
     """Offline/stable tree required; never open SQLite through application repositories."""
     try:
@@ -85,15 +109,28 @@ def verify_backup(source: Path) -> VerifiedBackup:
             version = db.execute("SELECT max(version) FROM schema_migrations").fetchone()[0]
             if type(version) is not int or version not in {1, 2}:
                 raise BackupVerificationError("SCHEMA_UNSUPPORTED")
-            # Validate fields used by supported snapshots, without dumping rows or auth state.
-            db.execute("SELECT run_id,document_id,status FROM runs LIMIT 0")
-            db.execute("SELECT run_id,revision,review_status,fields_json FROM revisions LIMIT 0")
-            db.execute("SELECT document_id,run_id,revision,action FROM events LIMIT 0")
-            if version == 2:
-                db.execute("SELECT owner_id FROM documents LIMIT 0")
-                db.execute("SELECT user_id,username,password_hash,is_active FROM users LIMIT 0")
-                db.execute("SELECT token_hash,user_id,csrf_token,expires_at FROM sessions LIMIT 0")
-                db.execute("SELECT id,window_start,attempts FROM login_budget LIMIT 0")
+            check_runtime_columns(db, version)
+            if (
+                db.execute(
+                    "SELECT 1 FROM runs r WHERE r.status='succeeded' AND NOT EXISTS "
+                    "(SELECT 1 FROM revisions v WHERE v.run_id=r.run_id) LIMIT 1"
+                ).fetchone()
+                is not None
+            ):
+                raise BackupVerificationError("DATABASE_REFERENCES")
+            if (
+                db.execute(
+                    "SELECT 1 FROM events e WHERE NOT EXISTS "
+                    "(SELECT 1 FROM runs r WHERE r.run_id=e.run_id "
+                    "AND r.document_id=e.document_id) "
+                    "OR (e.revision IS NOT NULL AND NOT EXISTS "
+                    "(SELECT 1 FROM revisions v WHERE v.run_id=e.run_id "
+                    "AND v.revision=e.revision)) "
+                    "LIMIT 1"
+                ).fetchone()
+                is not None
+            ):
+                raise BackupVerificationError("DATABASE_REFERENCES")
             for document_id, input_hash, latest_run_id in db.execute(
                 "SELECT document_id,input_sha256,latest_run_id FROM documents"
             ):

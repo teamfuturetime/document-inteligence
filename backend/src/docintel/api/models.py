@@ -12,6 +12,7 @@ class Capabilities(Contract):
     provider_mode: Literal["unconfigured", "fixture", "tesseract"]
     ocr_ready: bool = False
     max_upload_bytes: int = 5_242_880
+    upload_media_types: list[Literal["image/png", "image/jpeg", "application/pdf"]]
     model_benchmark_status: Literal["not_measured"] = "not_measured"
     supported_schemas: list[str]
     features: dict[str, Literal["implemented", "fixture", "planned", "unavailable"]]

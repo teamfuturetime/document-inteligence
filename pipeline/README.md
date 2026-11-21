@@ -1,6 +1,6 @@
 # AI pipeline
 
-Package `document-pipeline` xử lý ảnh PNG/JPG một trang, OCR Tesseract 5 vie+eng, ánh xạ theo nhãn/vị trí dòng, normalization và field confidence heuristic. Không import FastAPI, database, frontend hoặc gold labels.
+Package `document-pipeline` xử lý PNG/JPG hoặc PDF một trang, OCR Tesseract 5 vie+eng, ánh xạ theo nhãn/vị trí dòng, normalization và field confidence heuristic. Không import FastAPI, database, frontend hoặc gold labels.
 
 ```powershell
 uv sync --project backend --locked
