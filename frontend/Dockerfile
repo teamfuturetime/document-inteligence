@@ -3,6 +3,7 @@ WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ ./
+COPY contracts/ /app/contracts/
 RUN npm run build
 
 FROM nginx:1.28.0-alpine
