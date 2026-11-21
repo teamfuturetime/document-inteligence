@@ -32,6 +32,10 @@ def main():
             "zeta",
             "eta",
             "theta",
+            "pdfalpha",
+            "pdfbeta",
+            "pdfrecovery",
+            "pdfnext",
         ):
             identities.create_user(
                 username, hash_password("synthetic-browser-password-123")

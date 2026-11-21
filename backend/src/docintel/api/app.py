@@ -197,6 +197,7 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = True) -
             provider_mode=config.provider_mode,
             ocr_ready=ready,
             max_upload_bytes=config.max_upload_bytes,
+            upload_media_types=["image/png", "image/jpeg", "application/pdf"],
             supported_schemas=["don_de_nghi@1.0.0", "hoa_don@1.0.0"],
             features={
                 "normalization": "implemented",

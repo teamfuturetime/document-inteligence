@@ -382,6 +382,8 @@ export interface components {
             provider_mode: "unconfigured" | "fixture" | "tesseract";
             /** Supported Schemas */
             supported_schemas: string[];
+            /** Upload Media Types */
+            upload_media_types: ("image/png" | "image/jpeg" | "application/pdf")[];
         };
         /** Confidence */
         Confidence: {
@@ -1752,7 +1754,15 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        /** @description Raw PNG, JPEG or single-page PDF bytes. Detected from content. */
+        requestBody: {
+            content: {
+                "application/octet-stream": string;
+                "application/pdf": string;
+                "image/jpeg": string;
+                "image/png": string;
+            };
+        };
         responses: {
             /** @description Successful Response */
             202: {
@@ -1826,12 +1836,21 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Unsupported Media Type */
+            /** @description Unsupported content encoding or invalid document. */
             415: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "PDF_ENCRYPTED",
+                     *         "message": "Hãy chọn bản PDF không mã hóa.",
+                     *         "request_id": "example-request-id"
+                     *       }
+                     *     }
+                     */
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };

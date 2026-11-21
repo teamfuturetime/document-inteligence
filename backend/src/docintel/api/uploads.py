@@ -16,6 +16,11 @@ def upload_error(request: Request, status: int, code: str, message: str) -> Prod
 
 
 async def receive_upload(request: Request, settings: Settings) -> bytes:
+    encodings = request.headers.getlist("content-encoding")
+    if encodings and [value.strip().lower() for value in encodings] != ["identity"]:
+        raise upload_error(
+            request, 415, "UNSUPPORTED_CONTENT_ENCODING", "Hãy gửi trực tiếp dữ liệu tệp."
+        )
     lengths = request.headers.getlist("content-length")
     declared = None
     if lengths:

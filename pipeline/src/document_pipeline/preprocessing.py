@@ -1,4 +1,4 @@
-"""Image decoding is isolated so corrupt/native decoders have a deadline."""
+"""Document decoding is isolated so corrupt/native decoders have a deadline."""
 
 import json
 import subprocess
@@ -19,7 +19,7 @@ class PreparedImage:
     metadata: dict
 
     def source_box(self, box: tuple[int, int, int, int]) -> tuple[float, float, float, float]:
-        """Project a processed rectangle onto the EXIF-normalized source image."""
+        """Project a processed rectangle onto the source preview."""
         rotation = self.metadata["rotation"]
         width, height = self.width, self.height
         rotated_w, rotated_h = (height, width) if rotation in (90, 270) else (width, height)
@@ -63,9 +63,17 @@ def prepare_image(data: bytes, config: PipelineConfig) -> PreparedImage:
         metadata = json.loads(header)
         if completed.returncode:
             code = metadata.get("error", "INVALID_DOCUMENT")
-            if code not in {"INVALID_DOCUMENT", "IMAGE_TOO_LARGE", "UNSUPPORTED_MEDIA_TYPE"}:
+            messages = {
+                "INVALID_PDF": "PDF bị hỏng hoặc không đọc được.",
+                "PDF_ENCRYPTED": "PDF có mã hóa hoặc mật khẩu. Hãy chọn bản PDF không mã hóa.",
+                "PDF_PAGE_COUNT": "Chỉ hỗ trợ PDF đúng một trang.",
+                "IMAGE_TOO_LARGE": "Kích thước ảnh hoặc trang PDF vượt giới hạn.",
+                "FILE_TOO_LARGE": "Tài liệu vượt giới hạn kích thước.",
+                "UNSUPPORTED_MEDIA_TYPE": "Chỉ hỗ trợ PNG, JPEG hoặc PDF một trang.",
+            }
+            if code not in messages:
                 code = "INVALID_DOCUMENT"
-            raise PipelineError(code, "Ảnh không hợp lệ hoặc không được hỗ trợ.")
+            raise PipelineError(code, messages.get(code, "Ảnh không hợp lệ hoặc không đọc được."))
         if not separator or not png.startswith(b"\x89PNG\r\n\x1a\n"):
             raise ValueError("invalid worker response")
         return PreparedImage(
