@@ -26,6 +26,11 @@ Không đổi manifest v1, schema/application version hoặc caller migration/ad
   được liệt kê và có file/hash hợp lệ, source hash khớp input_sha256 trong DB.
 - Schema2 có cấu trúc identity/owner/session tương ứng. Không dump account/session/document
   rows, fields, file paths hoặc exception/SQL/stderr ra report.
+- Kiểm đầy đủ required columns theo migrations001/002, gồm filename/result_json và metadata
+  runtime/auth. Cột bổ sung vẫn được chấp nhận; cột bắt buộc thiếu trả SNAPSHOT_UNREADABLE.
+- Mỗi succeeded run phải có review revision; mọi event phải thuộc cùng run/document và
+  revision khác null phải tồn tại trong run đó. Vi phạm trả DATABASE_REFERENCES. Queued,
+  running, failed hoặc unavailable run hợp lệ có thể chưa có revision.
 
 SQLite có progress deadline10s và connect timeout1s. File hashes đọc từng chunk1MiB; tổng thời
 gian phụ thuộc kích thước snapshot. Đây là verifier local/offline, không là chữ ký chống người
@@ -44,7 +49,7 @@ Sai cú pháp argparse cũng exit2; JSON report dành cho lời gọi verify h�
 | `FILE_INTEGRITY` | File thiếu/ngoài cây/hash sai; không sửa manifest để bỏ qua. |
 | `DATABASE_NOT_OFFLINE` | Có WAL/journal; giữ nguyên snapshot, kiểm quy trình tạo backup. |
 | `DATABASE_INTEGRITY` | SQLite không đạt integrity; chọn bản backup khác. |
-| `DATABASE_REFERENCES` | Foreign key/latest-run tham chiếu không hợp lệ. |
+| `DATABASE_REFERENCES` | Foreign key/latest-run/revision/event tham chiếu không hợp lệ hoặc succeeded run thiếu revision. |
 | `SCHEMA_UNSUPPORTED` | Chỉ hỗ trợ schema1/2; không sửa version hoặc tự upgrade. |
 | `DOCUMENT_INVALID` | ID/input hash không hợp lệ. |
 | `ASSET_MISSING` | Manifest không liệt kê đủ source/preview của document. |
