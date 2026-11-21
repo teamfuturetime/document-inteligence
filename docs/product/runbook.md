@@ -6,7 +6,7 @@
 
 ## Demo có thể lặp lại
 
-Khi nghiệm thu nhiều tính năng hoặc chuẩn bị tích hợp PR, dùng [ma trận nghiệm thu](../testing/integration-acceptance.md) để chọn ca và ghi rõ phần chưa chạy. Mốc đối chiếu 17/11/2026 là `main@1b067a7`: notifications đã tích hợp qua #18; PDF mới có đặc tả ADR0010 qua #26, implementation #27 và autosave #23 vẫn Draft. Demo dưới dùng PNG và lưu nháp thủ công của main; không lấy hành vi autosave/PDF trên nhánh PR để hướng dẫn như đã phát hành.
+Khi nghiệm thu nhiều tính năng hoặc chuẩn bị tích hợp PR, dùng [ma trận nghiệm thu](../testing/integration-acceptance.md) để chọn ca và ghi rõ phần chưa chạy. Demo dưới dùng PNG và lưu nháp thủ công trên nền có notifications từ #18. Dùng mục PDF để kiểm tính năng theo ADR0010 trên nhánh có implementation #27. Ca kết hợp với autosave theo PR #23 được nghiệm thu riêng.
 
 1. Chọn hóa đơn, nguồn synthetic, ảnh `data/product/images/hoa_don_007.png`; xác nhận chính sách data rồi upload.
 2. Đợi OCR xong; kiểm số hóa đơn 0041007, ngày 2026-10-08, đơn vị Giả Lập 107, tổng 1000000 và VND theo ảnh. Đây là dữ liệu mẫu, không hóa đơn thật.
@@ -21,6 +21,10 @@ uv run --project backend --locked python scripts/verify_product.py
 ```
 
 Lệnh này thực sự gọi Tesseract và HTTP workflow, fail nếu không có môi trường; không skip hoặc fallback. Nó dùng DB tạm, scripted review chỉ kiểm workflow, không được báo như accuracy AI.
+
+## PDF một trang
+
+Trong workspace của bản có hỗ trợ PDF, chọn mẫu synthetic `pipeline/tests/fixtures/pdf/hoa_don_007.pdf`, chờ OCR rồi đối chiếu các trường trên preview PNG. Tiếp tục sửa và lưu nháp, xác nhận revision đã lưu và xuất JSON như với PNG. Xem [ADR0010](../decisions/0010-single-page-pdf.md) và [giới hạn, lỗi và ca thử PDF](../operations/single-page-pdf.md).
 
 ## Xác nhận và xử lý phản hồi bị mất
 

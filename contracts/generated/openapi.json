@@ -72,10 +72,23 @@
             },
             "title": "Supported Schemas",
             "type": "array"
+          },
+          "upload_media_types": {
+            "items": {
+              "enum": [
+                "image/png",
+                "image/jpeg",
+                "application/pdf"
+              ],
+              "type": "string"
+            },
+            "title": "Upload Media Types",
+            "type": "array"
           }
         },
         "required": [
           "provider_mode",
+          "upload_media_types",
           "supported_schemas",
           "features"
         ],
@@ -1920,7 +1933,7 @@
   },
   "info": {
     "title": "AI-02 Document Intelligence",
-    "version": "0.5.0"
+    "version": "0.6.0"
   },
   "openapi": "3.1.0",
   "paths": {
@@ -2800,6 +2813,36 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "format": "binary",
+                "type": "string"
+              }
+            },
+            "application/pdf": {
+              "schema": {
+                "format": "binary",
+                "type": "string"
+              }
+            },
+            "image/jpeg": {
+              "schema": {
+                "format": "binary",
+                "type": "string"
+              }
+            },
+            "image/png": {
+              "schema": {
+                "format": "binary",
+                "type": "string"
+              }
+            }
+          },
+          "description": "Raw PNG, JPEG or single-page PDF bytes. Detected from content.",
+          "required": true
+        },
         "responses": {
           "202": {
             "content": {
@@ -2884,12 +2927,19 @@
           "415": {
             "content": {
               "application/json": {
+                "example": {
+                  "error": {
+                    "code": "PDF_ENCRYPTED",
+                    "message": "Hãy chọn bản PDF không mã hóa.",
+                    "request_id": "example-request-id"
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/ErrorEnvelope"
                 }
               }
             },
-            "description": "Unsupported Media Type"
+            "description": "Unsupported content encoding or invalid document."
           },
           "422": {
             "content": {
