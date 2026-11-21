@@ -152,8 +152,13 @@ def test_graceful_stop_waits_for_inflight_work_then_next_start_is_consistent(
                 assert app.process.poll() is None
                 if phase == "upload":
                     assert not request.done()
+                else:
+                    app.assert_worker_draining()
                 app.command("release")
                 document = request.result(timeout=10)
+                if phase == "running":
+                    app.expect("cycle_finished")
+                    assert not app.expect("worker_closed")["alive"]
                 app.wait_stopped()
             finally:
                 if app.process.poll() is None:
@@ -168,3 +173,16 @@ def test_graceful_stop_waits_for_inflight_work_then_next_start_is_consistent(
         assert (
             runtime / "documents" / (document["document_id"] + ".source")
         ).read_bytes() == harness.image()
+
+
+def test_graceful_oracle_rejects_child_mutation_that_skips_join(runtime_dir, harness):
+    runtime = runtime_dir
+    harness.prepare_runtime(runtime)
+    with harness.ProcessApp(runtime, gate="running", skip_worker_join=True) as app:
+        app.ready()
+        document = harness.upload(app)
+        app.expect("inference_started")
+        app.stop()
+        with pytest.raises(AssertionError, match="shutdown returned"):
+            app.assert_worker_draining()  # Same oracle as the authored graceful test.
+        assert run_state(runtime, document["run"]["run_id"])[0] == "running"

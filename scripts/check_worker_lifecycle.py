@@ -28,7 +28,7 @@ def emit(event, **values):
     print(json.dumps({"event": event, **values}), flush=True)
 
 
-def child(runtime, auth_mode, gate, mode, worker_only=False):
+def child(runtime, auth_mode, gate, mode, worker_only=False, skip_worker_join=False):
     import uvicorn
     from docintel.api.app import create_app
     from docintel.services.documents import DocumentService
@@ -36,6 +36,8 @@ def child(runtime, auth_mode, gate, mode, worker_only=False):
 
     if not (runtime / ".lifecycle-test-runtime").is_file():
         raise ValueError("Only a disposable lifecycle runtime is allowed")
+    if skip_worker_join and mode != "fixture":
+        raise ValueError("Mutation is restricted to explicit fixture tests")
     settings = Settings(
         _env_file=None,
         runtime_dir=runtime,
@@ -56,6 +58,19 @@ def child(runtime, auth_mode, gate, mode, worker_only=False):
         real_pipeline = None
     original_init = DocumentService.__init__
     original_cycle = DocumentService.process_next
+    original_close = LocalInferenceWorker.close
+    close_finished = threading.Event()
+
+    def close_worker(self):
+        emit("worker_closing", held=not release.is_set())
+        if skip_worker_join:
+            self.stop.set()  # Deliberate child-only regression: no join or lock release.
+        else:
+            original_close(self)
+        close_finished.set()
+        emit("worker_closed", alive=self.thread.is_alive())
+
+    LocalInferenceWorker.close = close_worker
 
     def initialize(self, config):
         original_init(self, config)
@@ -143,6 +158,13 @@ def child(runtime, auth_mode, gate, mode, worker_only=False):
                 emit("held")
             elif command == "stop":
                 server.should_exit = True
+            elif command == "observe-drain":
+                # Observe actual close completion after the worker-close handshake;
+                # this is a bounded event wait, not a sleep before shutdown starts.
+                finished = close_finished.wait(0.5)
+                emit(
+                    "drain_observation", blocked=not finished, held=not release.is_set()
+                )
 
     threading.Thread(target=control, daemon=True).start()
     try:
@@ -161,6 +183,7 @@ class ProcessApp:
         gate="running",
         mode="fixture",
         worker_only=False,
+        skip_worker_join=False,
     ):
         self.pending = []
         self.events = queue.Queue()
@@ -179,6 +202,8 @@ class ProcessApp:
         ]
         if worker_only:
             args.append("--worker-only")
+        if skip_worker_join:
+            args.append("--skip-worker-join")
         env = {
             **os.environ,
             "PYTHONPATH": os.pathsep.join(
@@ -274,6 +299,20 @@ class ProcessApp:
             self.process.send_signal(signal.SIGTERM)
         self.expect("shutdown_started")
 
+    def assert_worker_draining(self):
+        try:
+            assert self.expect("worker_closing")["held"]
+            self.command("observe-drain")
+            observed = self.expect("drain_observation")
+        except (AssertionError, OSError, queue.Empty) as exc:
+            raise AssertionError(
+                "Worker shutdown returned before held inference was released"
+            ) from exc
+        assert observed["held"]
+        assert observed["blocked"], (
+            "Worker shutdown returned before held inference was released"
+        )
+
     def wait_stopped(self):
         self.expect("lifespan_stopped")
         code = self.process.wait(timeout=10)
@@ -295,7 +334,10 @@ class ProcessApp:
                 self.kill()
         self.process.wait(timeout=5)
         self.reader.join(timeout=1)
-        self.process.stdin.close()
+        try:
+            self.process.stdin.close()
+        except BrokenPipeError:
+            pass  # The intentional no-join mutant can exit while a command is buffered.
         self.process.stdout.close()
 
     def __enter__(self):
@@ -391,10 +433,18 @@ def main():
         help=argparse.SUPPRESS,
     )
     parser.add_argument("--worker-only", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument(
+        "--skip-worker-join", action="store_true", help=argparse.SUPPRESS
+    )
     args = parser.parse_args()
     if args.child:
         return child(
-            args.runtime, args.auth_mode, args.gate, args.mode, args.worker_only
+            args.runtime,
+            args.auth_mode,
+            args.gate,
+            args.mode,
+            args.worker_only,
+            args.skip_worker_join,
         )
     print(json.dumps(native_smoke()))
     return 0
