@@ -14,6 +14,7 @@ import threading
 import time
 import urllib.error
 import urllib.request
+from collections import deque
 from contextlib import asynccontextmanager
 from http.cookiejar import CookieJar
 from pathlib import Path
@@ -187,6 +188,7 @@ class ProcessApp:
     ):
         self.pending = []
         self.events = queue.Queue()
+        self.stderr_tail = deque(maxlen=40)
         args = [
             sys.executable,
             str(ROOT / "scripts/check_worker_lifecycle.py"),
@@ -214,12 +216,19 @@ class ProcessApp:
             args,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
             text=True,
             bufsize=1,
             env=env,
             cwd=ROOT,
         )
+
+        def read_stderr():
+            for line in self.process.stderr:
+                self.stderr_tail.append(line.rstrip()[-512:])
+
+        self.stderr_reader = threading.Thread(target=read_stderr, daemon=True)
+        self.stderr_reader.start()
 
         def read():
             for line in self.process.stdout:
@@ -243,16 +252,29 @@ class ProcessApp:
                 return self.pending.pop(index)
         deadline = time.monotonic() + timeout
         while True:
-            item = self.events.get(timeout=max(0.001, deadline - time.monotonic()))
+            try:
+                item = self.events.get(timeout=max(0.001, deadline - time.monotonic()))
+            except queue.Empty as exc:
+                raise self.handshake_failure(event, "timeout") from exc
             if item["event"] == event:
                 return item
             if item["event"] == "eof":
-                raise AssertionError(
-                    "Lifecycle process exited before expected handshake: " + event
-                )
+                try:
+                    self.process.wait(timeout=1)
+                except subprocess.TimeoutExpired:
+                    pass
+                self.stderr_reader.join(timeout=1)
+                raise self.handshake_failure(event, "process exited before handshake")
             self.pending.append(item)
             if time.monotonic() >= deadline:
-                raise TimeoutError("Lifecycle handshake timeout: " + event)
+                raise self.handshake_failure(event, "timeout")
+
+    def handshake_failure(self, event, reason):
+        return AssertionError(
+            f"Lifecycle {reason}: {event}; exit={self.process.poll()}; "
+            + "stderr tail:\n"
+            + "\n".join(self.stderr_tail)
+        )
 
     def ready(self):
         self.port = self.expect("ready")["port"]
@@ -334,11 +356,13 @@ class ProcessApp:
                 self.kill()
         self.process.wait(timeout=5)
         self.reader.join(timeout=1)
+        self.stderr_reader.join(timeout=1)
         try:
             self.process.stdin.close()
         except BrokenPipeError:
             pass  # The intentional no-join mutant can exit while a command is buffered.
         self.process.stdout.close()
+        self.process.stderr.close()
 
     def __enter__(self):
         return self

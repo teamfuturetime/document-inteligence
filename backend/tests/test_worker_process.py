@@ -2,6 +2,7 @@
 
 import importlib.util
 import sqlite3
+import sys
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import closing
 
@@ -186,3 +187,24 @@ def test_graceful_oracle_rejects_child_mutation_that_skips_join(runtime_dir, har
         with pytest.raises(AssertionError, match="shutdown returned"):
             app.assert_worker_draining()  # Same oracle as the authored graceful test.
         assert run_state(runtime, document["run"]["run_id"])[0] == "running"
+
+
+def test_failed_child_handshake_includes_bounded_stderr(runtime_dir, harness, monkeypatch):
+    popen = harness.subprocess.Popen
+
+    def failing_child(_args, **kwargs):
+        return popen(
+            [
+                sys.executable,
+                "-c",
+                "import sys; print('SYNTHETIC_CHILD_ERROR', file=sys.stderr); sys.exit(2)",
+            ],
+            **kwargs,
+        )
+
+    monkeypatch.setattr(harness.subprocess, "Popen", failing_child)
+    with harness.ProcessApp(runtime_dir) as app:
+        with pytest.raises(AssertionError, match="SYNTHETIC_CHILD_ERROR") as failure:
+            app.ready()
+        assert "exit=2" in str(failure.value)
+        assert len(str(failure.value)) < 40 * 512 + 256
