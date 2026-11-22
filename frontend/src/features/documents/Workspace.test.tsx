@@ -80,6 +80,7 @@ function mockWorkspace(sendUpload?: (options?: RequestInit) => Promise<Response>
         ocr_ready: true,
         provider_mode: 'tesseract',
         supported_schemas: [],
+        upload_media_types: ['image/png', 'image/jpeg'],
       }}
       onUnsavedChange={vi.fn()}
     />,
@@ -116,10 +117,10 @@ describe('Theo dõi trạng thái OCR', () => {
 
     await advance(3600);
     expect(poll).toHaveBeenCalledTimes(1);
-    expect(screen.getByText(/Ảnh đang chờ xử lý/)).toBeVisible();
+    expect(screen.getByText(/Tài liệu đang chờ xử lý/)).toBeVisible();
 
     await act(async () => pending.resolve(response(document('invoice-a', 'succeeded'))));
-    expect(screen.queryByText(/Ảnh đang chờ xử lý/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Tài liệu đang chờ xử lý/)).not.toBeInTheDocument();
     await advance(5000);
     expect(poll).toHaveBeenCalledTimes(1);
   });
@@ -142,11 +143,11 @@ describe('Theo dõi trạng thái OCR', () => {
     await advance(1);
     expect(poll).toHaveBeenCalledTimes(2);
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
-    expect(screen.getByText(/OCR đang nhận dạng ảnh/)).toBeVisible();
+    expect(screen.getByText(/OCR đang nhận dạng tài liệu/)).toBeVisible();
 
     await advance(1200);
     expect(poll).toHaveBeenCalledTimes(3);
-    expect(screen.queryByText(/OCR đang nhận dạng ảnh/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/OCR đang nhận dạng tài liệu/)).not.toBeInTheDocument();
   });
 
   it('bỏ phản hồi đến muộn sau khi người dùng mở tài liệu khác', async () => {
@@ -191,7 +192,7 @@ describe('Gửi lại upload', () => {
     fireEvent.click(screen.getByRole('checkbox', { name: /Tôi xác nhận/ }));
 
     await send();
-    expect(screen.getByRole('alert')).toHaveTextContent('Mất kết nối khi tải ảnh');
+    expect(screen.getByRole('alert')).toHaveTextContent('Mất kết nối khi tải tệp');
     expect(screen.getByRole('button', { name: 'Thử tải lại' })).toBeEnabled();
     await send();
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();

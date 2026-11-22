@@ -1,11 +1,11 @@
 [project]
 name = "docintel"
-version = "0.4.0"
+version = "0.6.0"
 description = "Document Intelligence AI-02: real OCR, persisted review and verified export"
 requires-python = ">=3.14,<3.15"
 dependencies = [
   "anyio==4.15.1",
-  "document-pipeline==0.1.0",
+  "document-pipeline==0.2.0",
   "fastapi==0.142.2",
   "pydantic==2.13.5",
   "pydantic-settings==2.15.0",

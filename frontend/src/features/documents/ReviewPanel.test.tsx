@@ -126,6 +126,41 @@ describe('Keyboard focus and announcements', () => {
     expect(input).toHaveValue('Newer draft');
     expect(Object.values(localStorage).some((raw) => raw.includes('Newer draft'))).toBe(true);
   });
+  it.each([false, true])(
+    'focuses export after confirm only while focus remains in place (%s)',
+    async (moveFocus) => {
+      let finishConfirm!: (value: Response) => void;
+      vi.stubGlobal(
+        'fetch',
+        vi.fn(() => new Promise<Response>((resolve) => (finishConfirm = resolve))),
+      );
+      const onUpdated = (next: DocumentDetail) => view.rerender(renderReview(next));
+      const renderReview = (detail: DocumentDetail) => (
+        <>
+          <button type="button">Điểm đến khác</button>
+          <ReviewPanel
+            document={detail}
+            onUpdated={onUpdated}
+            onDirtyChange={vi.fn()}
+            onFieldChange={vi.fn()}
+          />
+        </>
+      );
+      const view = render(renderReview(document()));
+      const confirmButton = screen.getByRole('button', { name: 'Xác nhận bản lưu' });
+      const other = screen.getByRole('button', { name: 'Điểm đến khác' });
+      act(() => confirmButton.focus());
+      fireEvent.click(confirmButton);
+      if (moveFocus) act(() => other.focus());
+      const confirmed = document(2);
+      confirmed.review!.review_status = 'confirmed';
+      await act(async () => finishConfirm(new Response(JSON.stringify(confirmed))));
+      const exportButton = screen.getByRole('button', { name: 'Xuất JSON đã xác nhận' });
+      await waitFor(() => expect(exportButton).toBeEnabled());
+      expect(moveFocus ? other : exportButton).toHaveFocus();
+    },
+  );
+
   it('does not override a rapid focus move after discard', async () => {
     vi.useFakeTimers();
     mountReview();

@@ -127,19 +127,20 @@ export function ReviewPanel({
   const errorRef = useRef<HTMLDivElement>(null);
   const conflictRef = useRef<HTMLDivElement>(null);
   const exportRef = useRef<HTMLButtonElement>(null);
-  const focusExportAfterConfirm = useRef(false);
+  const confirmFocusOrigin = useRef<Element | null>(null);
   const [editorFocus, setEditorFocus] = useState<{ origin: Element | null } | null>(null);
+  function mayRestoreFocus(origin: Element | null) {
+    if (!origin) return false;
+    const active = window.document.activeElement;
+    const lostOrigin = !origin.isConnected || origin.matches(':disabled');
+    return active === origin || (active === window.document.body && lostOrigin);
+  }
   function focusEditor(origin = window.document.activeElement) {
     setEditorFocus({ origin });
   }
   useLayoutEffect(() => {
     if (!editorFocus || getSessionSnapshot().revision !== sessionRevision) return;
-    const active = window.document.activeElement;
-    const origin = editorFocus.origin;
-    // Restore after the commit enables fields/removes the action, but yield to
-    // any focus move made while a manual save was awaiting its response.
-    const lostOrigin = !origin?.isConnected || origin.matches(':disabled');
-    if (active !== origin && !(active === window.document.body && lostOrigin)) return;
+    if (!mayRestoreFocus(editorFocus.origin)) return;
     panelRef.current?.querySelector<HTMLElement>('[id^="field-"]:not(:disabled)')?.focus();
   }, [editorFocus, sessionRevision]);
   useEffect(() => {
@@ -181,11 +182,12 @@ export function ReviewPanel({
   }, [dirty]);
   const review = base.review;
   useEffect(() => {
-    if (!busy && review?.review_status === 'confirmed' && focusExportAfterConfirm.current) {
-      focusExportAfterConfirm.current = false;
+    if (busy || review?.review_status !== 'confirmed') return;
+    const origin = confirmFocusOrigin.current;
+    confirmFocusOrigin.current = null;
+    if (getSessionSnapshot().revision === sessionRevision && mayRestoreFocus(origin))
       exportRef.current?.focus();
-    }
-  }, [busy, review?.review_status]);
+  }, [busy, review?.review_status, sessionRevision]);
   const editable = base.is_latest_run && !!review && !busy;
   useEffect(() => {
     if (
@@ -538,7 +540,8 @@ export function ReviewPanel({
             issues.length > 0 ||
             review?.review_status === 'confirmed'
           }
-          onClick={() =>
+          onClick={() => {
+            const focusOrigin = window.document.activeElement;
             void act(async () => {
               const result = await jsonRequest<DocumentDetail>(
                 `/documents/${base.document_id}/confirm`,
@@ -548,11 +551,11 @@ export function ReviewPanel({
                   expected_revision: review!.revision,
                 },
               );
-              focusExportAfterConfirm.current = true;
+              confirmFocusOrigin.current = focusOrigin;
               onUpdated(result);
               setMessage('Đã xác nhận bản lưu. Có thể xuất JSON.');
-            })
-          }
+            });
+          }}
         >
           Xác nhận bản lưu
         </button>

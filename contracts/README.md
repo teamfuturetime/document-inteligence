@@ -1,5 +1,11 @@
 # Nguồn chuẩn hợp đồng
 
+App **0.5.0** bổ sung `GET /api/v1/readiness` từ backend domain `Readiness`:
+HTTP200/status ready hoặc HTTP503/status not_ready dùng cùng response schema. Health liveness
+giữ tương thích; readiness chỉ trả lifecycle/DB/worker/provider/profile, không data/counts/paths.
+Provider là startup snapshot được ghi rõ, poll không chạy OCR/probe models/migrate.
+Schema DB2/export1.0.0 giữ nguyên. Xem [readiness contract](../docs/operations/readiness.md).
+
 App **0.4.0** thêm session opt-in theo [ADR0011](../docs/decisions/0011-authentication-ownership.md).
 `docintel.domain.auth` là nguồn Credentials/UserIdentity/SessionState; schema và types được sinh cùng generator.
 `GET /auth/session` trả mode và user/CSRF hiện hành; không trả cookie token hoặc password/hash.
@@ -23,6 +29,8 @@ may omit it. See [autosave contract and compatibility](../docs/product/autosave.
 App 0.2.0 bổ sung nguồn chuẩn `docintel.domain.documents`: invoice/application workflow, review requests, history và persisted export. Product schema 1.0.0 sinh cùng generator; không đổi nghĩa foundation fixture schema 1.0.0. `pipeline.models` chỉ là DTO implementation được adapter chuyển sang backend domain, không nguồn HTTP thứ hai.
 
 App 0.2.1 bổ sung receive/admission budget cho upload và OpenAPI lỗi 400/408; envelope lỗi và product/export schema giữ nguyên. [Chi tiết lỗi, retry và budget](../docs/operations/upload-ingress.md).
+
+App **0.6.0** thêm PDF một trang vào upload raw và `upload_media_types` trong capabilities, kế thừa readiness, session và autosave. SQLite schema 2 và product/export schema 1.0.0 giữ nguyên. Xem [ngân sách và lỗi PDF](../docs/operations/single-page-pdf.md).
 
 Domain models backend và FastAPI là nguồn chuẩn. `generated/*.schema.json` (JSON Schema 2020-12) và `generated/openapi.json` được sinh bằng:
 
