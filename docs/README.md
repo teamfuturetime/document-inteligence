@@ -7,6 +7,7 @@ Bắt đầu tại [README root](../README.md). Nền sản phẩm docintel/SQLi
 | Cài, cấu hình, chạy, check | [README root](../README.md), scripts/dev.py |
 | Phát triển/PR/review | [CONTRIBUTING](../CONTRIBUTING.md), [GitHub approval package](governance/github-setup.md) |
 | Nhận việc và phối hợp môn học trên GitHub | [Hướng dẫn thành viên](team/github-collaboration.md), [quy ước agent](../AGENTS.md) |
+| Trao đổi và chốt quyết định trên Discussions | [Hướng dẫn thành viên/agent và prompt dùng ngay](team/github-discussions.md) |
 | Kiến trúc sản phẩm | [product/architecture](product/architecture.md), [contracts](../contracts/README.md) |
 | OCR/evidence/metrics | [source lineage](ml/source-lineage.md), [protocol](ml/evaluation-protocol.md), [dataset](../data/product/README.md) |
 | Triage dependency frontend | [Tooling advisory và audit snapshot](operations/frontend-tooling-security.md) |
