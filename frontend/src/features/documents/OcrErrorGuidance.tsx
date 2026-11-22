@@ -4,23 +4,26 @@ const guidance: Record<string, string> = {
   MODEL_HASH_MISMATCH:
     'Model OCR không đúng phiên bản. Nhờ người quản lý kiểm tra checksum và cài lại model đã pin theo README trước khi chạy lại.',
   INPUT_CHANGED:
-    'Ảnh nguồn đã thay đổi so với bản lưu. Chạy lại trên bản này sẽ không khắc phục được. Giữ bản nháp, nhờ người quản lý kiểm tra hoặc tự chọn tải lên ảnh gốc thành tài liệu mới.',
+    'Tệp nguồn đã thay đổi so với bản lưu. Chạy lại trên bản này sẽ không khắc phục được. Giữ bản nháp, nhờ người quản lý kiểm tra hoặc tự chọn tải lên tệp gốc thành tài liệu mới.',
   PROCESSING_INTERRUPTED:
     'OCR bị gián đoạn khi ứng dụng dừng. Sau khi ứng dụng ổn định, chọn Chạy OCR lại để tạo lần xử lý mới.',
   PROCESSING_TIMEOUT:
-    'OCR vượt thời gian xử lý. Thử ảnh một trang rõ nét, gọn hơn trong giới hạn tải lên; hoặc chọn Chạy OCR lại. Nếu lặp lại, nhờ người quản lý kiểm tra tài nguyên.',
+    'OCR vượt thời gian xử lý. Thử ảnh rõ nét hoặc PDF một trang có kích thước nhỏ hơn trong giới hạn tải lên; hoặc chọn Chạy OCR lại. Nếu lặp lại, nhờ người quản lý kiểm tra tài nguyên.',
   INVALID_OCR_OUTPUT:
     'Kết quả OCR không hợp lệ. Chọn Chạy OCR lại; nếu lỗi lặp lại, nhờ người quản lý kiểm tra engine và model.',
   PROVIDER_FAILED:
-    'Engine OCR không xử lý được ảnh. Kiểm tra ảnh có đọc được và chọn Chạy OCR lại; nếu vẫn lỗi, nhờ người quản lý kiểm tra engine.',
+    'Engine OCR không xử lý được tài liệu. Kiểm tra tệp có đọc được và chọn Chạy OCR lại; nếu vẫn lỗi, nhờ người quản lý kiểm tra engine.',
   INVALID_DOCUMENT:
-    'Không đọc được ảnh. Giữ bản nháp và tự chọn tải lên ảnh PNG/JPG một trang hợp lệ thành tài liệu mới.',
+    'Không đọc được tài liệu. Giữ bản nháp và tự chọn tải lên ảnh PNG/JPEG hoặc PDF một trang hợp lệ thành tài liệu mới.',
   UNSUPPORTED_MEDIA_TYPE:
-    'Định dạng ảnh chưa được hỗ trợ. Tự chọn ảnh PNG/JPG một trang hợp lệ; không chỉ đổi phần mở rộng của file.',
+    'Định dạng tệp chưa được hỗ trợ. Tự chọn ảnh PNG/JPEG hoặc PDF một trang hợp lệ. Chỉ đổi phần mở rộng không chuyển đổi định dạng.',
+  INVALID_PDF: 'Không đọc được PDF. Tự chọn bản PDF một trang hợp lệ hoặc ảnh PNG/JPEG.',
+  PDF_ENCRYPTED: 'PDF có mã hóa. Tự chọn bản PDF một trang không mã hóa.',
+  PDF_PAGE_COUNT: 'PDF phải có đúng một trang. Tự chọn bản PDF một trang phù hợp.',
   FILE_TOO_LARGE:
-    'Ảnh vượt giới hạn dung lượng. Tự chọn ảnh nhỏ hơn trong giới hạn tải lên; tài liệu và bản nháp hiện tại được giữ.',
+    'Tệp vượt giới hạn dung lượng. Tự chọn tệp nhỏ hơn trong giới hạn tải lên; tài liệu và bản nháp hiện tại được giữ.',
   IMAGE_TOO_LARGE:
-    'Ảnh vượt giới hạn số điểm ảnh. Tự chọn ảnh có độ phân giải thấp hơn; giữ ảnh gốc để đối chiếu.',
+    'Tài liệu vượt giới hạn số điểm ảnh. Tự chọn ảnh hoặc PDF một trang có kích thước nhỏ hơn và giữ tệp gốc để đối chiếu.',
   UNSUPPORTED_SCHEMA:
     'Loại tài liệu chưa được hỗ trợ. Tự chọn loại tài liệu được hỗ trợ khi tải ảnh mới.',
   PROCESSING_FAILED:

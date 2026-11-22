@@ -1,0 +1,11 @@
+{
+  "status": "ready",
+  "app_version": "0.5.0",
+  "lifecycle": "running",
+  "database": "ready",
+  "worker": "ready",
+  "provider": "ready",
+  "provider_check": "startup_snapshot",
+  "provider_mode": "tesseract",
+  "auth_mode": "local"
+}

@@ -8,6 +8,7 @@ export const capabilities: Capabilities = {
   ocr_ready: true,
   provider_mode: 'tesseract',
   supported_schemas: [],
+  upload_media_types: ['image/png', 'image/jpeg', 'application/pdf'],
 };
 export function errorDocument(): DocumentDetail {
   return {

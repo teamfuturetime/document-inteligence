@@ -15,11 +15,13 @@ from docintel.api.documents import router as document_router
 from docintel.api.models import Capabilities, ErrorEnvelope, FixtureCatalog, Health, SchemaInfo
 from docintel.config import ROOT, Settings
 from docintel.domain.models import FIELD_IDS, SCHEMA_VERSION, FixtureView
+from docintel.domain.operations import Readiness
 from docintel.repositories.locking import RuntimeLock
 from docintel.services.auth import AuthService
 from docintel.services.documents import DocumentService, ProductError
 from docintel.services.fixtures import FixtureService
 from docintel.services.notifications import LoggingConfirmationNotifier
+from docintel.services.readiness import inspect_readiness, provider_at_startup
 from docintel.services.worker import LocalInferenceWorker
 
 
@@ -28,6 +30,9 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = True) -
 
     @asynccontextmanager
     async def lifespan(application: FastAPI):
+        application.state.runtime_lifecycle = "starting"
+        application.state.provider_readiness = "not_checked"
+        application.state.inference_worker = None
         app_lock = RuntimeLock(config.runtime_dir / "app.lock") if start_worker else None
         worker = None
         if app_lock:
@@ -38,18 +43,23 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = True) -
             application.state.auth = AuthService(config, application.state.documents.repository)
             application.state.upload_limiter = CapacityLimiter(config.max_concurrent_uploads)
             application.state.upload_tasks = set()
+            application.state.provider_readiness = provider_at_startup(config)
             if start_worker and config.provider_mode == "tesseract":
                 candidate = LocalInferenceWorker(application.state.documents)
                 candidate.start()
                 worker = candidate
+                application.state.inference_worker = candidate
+            application.state.runtime_lifecycle = "running"
             yield
         finally:
+            application.state.runtime_lifecycle = "stopping"
             if getattr(application.state, "upload_tasks", None):
                 await asyncio.gather(*application.state.upload_tasks, return_exceptions=True)
             if worker:
                 worker.close()
             if app_lock:
                 app_lock.release()
+            application.state.runtime_lifecycle = "stopped"
 
     application = FastAPI(
         title="AI-02 Document Intelligence",
@@ -160,6 +170,17 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = True) -
     def health():
         return Health(app_version=__version__)
 
+    @application.get(
+        "/api/v1/readiness", response_model=Readiness, responses={503: {"model": Readiness}}
+    )
+    def readiness():
+        report = inspect_readiness(application.state, config)
+        return JSONResponse(
+            report.model_dump(mode="json"),
+            status_code=200 if report.status == "ready" else 503,
+            headers={"Cache-Control": "no-store"},
+        )
+
     @application.get("/api/v1/capabilities", response_model=Capabilities)
     def capabilities():
         ready = False
@@ -176,6 +197,7 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = True) -
             provider_mode=config.provider_mode,
             ocr_ready=ready,
             max_upload_bytes=config.max_upload_bytes,
+            upload_media_types=["image/png", "image/jpeg", "application/pdf"],
             supported_schemas=["don_de_nghi@1.0.0", "hoa_don@1.0.0"],
             features={
                 "normalization": "implemented",

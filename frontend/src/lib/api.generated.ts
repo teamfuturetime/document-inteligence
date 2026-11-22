@@ -306,6 +306,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/readiness": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Readiness */
+        get: operations["readiness_api_v1_readiness_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/schemas": {
         parameters: {
             query?: never;
@@ -365,6 +382,8 @@ export interface components {
             provider_mode: "unconfigured" | "fixture" | "tesseract";
             /** Supported Schemas */
             supported_schemas: string[];
+            /** Upload Media Types */
+            upload_media_types: ("image/png" | "image/jpeg" | "application/pdf")[];
         };
         /** Confidence */
         Confidence: {
@@ -903,6 +922,52 @@ export interface components {
              * @enum {string}
              */
             prediction_source: "fixture" | "model" | "unavailable";
+        };
+        /** Readiness */
+        Readiness: {
+            /** App Version */
+            app_version: string;
+            /**
+             * Auth Mode
+             * @enum {string}
+             */
+            auth_mode: "local" | "session";
+            /**
+             * Database
+             * @enum {string}
+             */
+            database: "not_checked" | "ready" | "unavailable" | "unsupported_schema";
+            /**
+             * Lifecycle
+             * @enum {string}
+             */
+            lifecycle: "not_started" | "starting" | "running" | "stopping" | "stopped";
+            /**
+             * Provider
+             * @enum {string}
+             */
+            provider: "not_checked" | "ready" | "unconfigured" | "fixture" | "unavailable";
+            /**
+             * Provider Check
+             * @default startup_snapshot
+             * @constant
+             */
+            provider_check: "startup_snapshot";
+            /**
+             * Provider Mode
+             * @enum {string}
+             */
+            provider_mode: "unconfigured" | "fixture" | "tesseract";
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "ready" | "not_ready";
+            /**
+             * Worker
+             * @enum {string}
+             */
+            worker: "not_started" | "disabled" | "ready" | "stopped";
         };
         /** ReprocessRequest */
         ReprocessRequest: {
@@ -1689,7 +1754,15 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        /** @description Raw PNG, JPEG or single-page PDF bytes. Detected from content. */
+        requestBody: {
+            content: {
+                "application/octet-stream": string;
+                "application/pdf": string;
+                "image/jpeg": string;
+                "image/png": string;
+            };
+        };
         responses: {
             /** @description Successful Response */
             202: {
@@ -1763,12 +1836,21 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Unsupported Media Type */
+            /** @description Unsupported content encoding or invalid document. */
             415: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "PDF_ENCRYPTED",
+                     *         "message": "Hãy chọn bản PDF không mã hóa.",
+                     *         "request_id": "example-request-id"
+                     *       }
+                     *     }
+                     */
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
@@ -3157,6 +3239,116 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    readiness_api_v1_readiness_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Readiness"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Content Too Large */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unsupported Media Type */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unprocessable Content */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Too Many Requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Service Unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Readiness"];
                 };
             };
         };

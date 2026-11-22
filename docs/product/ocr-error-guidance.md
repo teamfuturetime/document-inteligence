@@ -9,18 +9,21 @@ Không đổi domain/schema/generated types.
 | --- | --- |
 | PROVIDER_UNAVAILABLE | Nhờ quản lý kiểm Tesseract/model vie+eng trước khi chạy lại |
 | MODEL_HASH_MISMATCH | Kiểm checksum/cài model đúng pin |
-| INPUT_CHANGED | Kiểm ảnh gốc; chạy lại không sửa checksum; tự upload thành tài liệu mới nếu cần |
+| INPUT_CHANGED | Kiểm tệp gốc; chạy lại không sửa checksum; tự upload thành tài liệu mới nếu cần |
 | PROCESSING_INTERRUPTED | Chờ ứng dụng ổn định, chủ động chạy lại |
-| PROCESSING_TIMEOUT | Ảnh rõ/gọn hơn, kiểm tài nguyên nếu lặp lại |
+| PROCESSING_TIMEOUT | Ảnh rõ nét hoặc PDF một trang nhỏ hơn, kiểm tài nguyên nếu lặp lại |
 | INVALID_OCR_OUTPUT / PROVIDER_FAILED | Chủ động chạy lại; lỗi lặp lại cần kiểm engine/model |
-| INVALID_DOCUMENT / FILE_TOO_LARGE / IMAGE_TOO_LARGE | Tự chọn ảnh hợp lệ, nhỏ hơn theo giới hạn |
-| UNSUPPORTED_MEDIA_TYPE | Chọn PNG/JPG hợp lệ, không chỉ đổi phần mở rộng |
+| INVALID_DOCUMENT / FILE_TOO_LARGE / IMAGE_TOO_LARGE | Tự chọn ảnh hoặc PDF một trang hợp lệ, nhỏ hơn theo giới hạn |
+| UNSUPPORTED_MEDIA_TYPE | Chọn PNG/JPEG hoặc PDF một trang hợp lệ |
+| INVALID_PDF | Chọn bản PDF một trang đọc được hoặc ảnh PNG/JPEG |
+| PDF_ENCRYPTED | Chọn bản PDF một trang không mã hóa |
+| PDF_PAGE_COUNT | Chọn PDF có đúng một trang |
 | UNSUPPORTED_SCHEMA | Chọn loại tài liệu được hỗ trợ |
 | PROCESSING_FAILED / unknown | Giữ bản nháp, nhờ quản lý kiểm tra; không hiển thị nội dung lỗi tùy ý |
 
 Nguồn khảo sát: pipeline/src/document_pipeline/{tesseract,service,preprocessing}.py và
 backend/src/docintel/services/documents.py (input checksum, interrupted recovery, fallback).
-Lỗi receive/upload riêng giữ luồng hiện có; không mở rộng readiness/reconnect #50 hay recovery focus #51.
+Các lỗi PDF khi nhận upload vẫn hiển thị theo luồng upload hiện có. Bảng trên áp dụng khi mã xuất hiện ở run hoặc phản hồi chạy lại. Không mở rộng readiness/reconnect #50 hay recovery focus #51.
 
 Nút Chạy OCR lại giữ guards busy/dirty/processing/is_latest_run/ocr_ready và gửi
 expected_run_id hiện hành. Không tự upload, discard draft hoặc retry write. ReviewPanel,
