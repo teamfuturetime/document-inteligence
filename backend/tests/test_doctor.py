@@ -151,6 +151,78 @@ def test_tool_probes_are_bounded_and_redacted(monkeypatch, outcome, code):
 
 
 @pytest.mark.parametrize(
+    "stdout,returncode,code,observed",
+    [
+        (b"tesseract 5.5.2\n", 0, "ready", "5.5.2"),
+        (b"tesseract v5.5.0.20241111\n", 0, "ready", "5.5.0.20241111"),
+        (b"tesseract v5.5.0.20241111\nPRIVATE_CANARY", 0, "ready", "5.5.0.20241111"),
+        (b"tesseract v4.1.1.20241111\n", 0, "tool_version", "4.1.1.20241111"),
+        (b"tesseract v6.0.0.20241111\n", 0, "tool_version", "6.0.0.20241111"),
+        (b"tesseract v5.5.0.20241111\n", 1, "tool_failed", None),
+        (b"", 0, "tool_failed", None),
+        (b"PRIVATE_CANARY /private/path", 0, "tool_failed", None),
+        (b"tesseract v5.5\n", 0, "tool_failed", None),
+        (b"tesseract v5.5.0.20241111.9\n", 0, "tool_failed", None),
+        (b"tesseract v5.5.0.20241111-PRIVATE_CANARY", 0, "tool_failed", None),
+    ],
+)
+def test_tesseract_numeric_versions_are_reported_without_raw_output(
+    monkeypatch, stdout, returncode, code, observed
+):
+    monkeypatch.setattr(doctor.shutil, "which", lambda _: "/private/engine")
+
+    def run(argv, **kw):
+        assert kw["timeout"] == 3 and kw["capture_output"] and not kw.get("shell", False)
+        return subprocess.CompletedProcess(
+            argv, returncode, stdout, b"PRIVATE_CANARY /private/error"
+        )
+
+    monkeypatch.setattr(doctor.subprocess, "run", run)
+    result = doctor.tool_check("tesseract", "5.x")
+    assert result["code"] == code and result.get("observed") == observed
+    assert result["status"] == (
+        "ready" if code == "ready" else "action_required" if code == "tool_version" else "error"
+    )
+    assert "PRIVATE_CANARY" not in json.dumps(result) and "/private" not in json.dumps(result)
+
+
+@pytest.mark.parametrize(
+    "name,pin,prefix",
+    [
+        ("uv", "0.12.22", "uv "),
+        ("node", "24.16.0", "v"),
+        ("npm", "11.13.0", ""),
+    ],
+)
+@pytest.mark.parametrize("suffix", ["", ".20241111"])
+def test_tesseract_fix_does_not_relax_other_tool_pins(monkeypatch, name, pin, prefix, suffix):
+    monkeypatch.setattr(doctor.shutil, "which", lambda _: "/synthetic/tool")
+    monkeypatch.setattr(
+        doctor.subprocess,
+        "run",
+        lambda argv, **kw: subprocess.CompletedProcess(
+            argv,
+            0,
+            (prefix + pin + suffix + "\n").encode(),
+            b"",
+        ),
+    )
+    result = doctor.tool_check(name, pin)
+    assert result["code"] == ("ready" if not suffix else "tool_failed")
+
+
+def test_python_exact_pin_is_unchanged(monkeypatch, tmp_path):
+    monkeypatch.setattr(doctor.platform, "python_version", lambda: "3.14.5.20241111")
+    monkeypatch.setattr(doctor, "tool_check", lambda name, *a: doctor.check(name))
+    monkeypatch.setattr(
+        doctor, "Settings", lambda: Settings(_env_file=None, provider_mode="fixture")
+    )
+    result = doctor.diagnose(tmp_path / "missing")
+    python = next(c for c in result["checks"] if c["name"] == "python")
+    assert python["code"] == "tool_version" and python["expected"] == "3.14.5"
+
+
+@pytest.mark.parametrize(
     "provider,code",
     [
         ("unconfigured", "provider_unconfigured"),

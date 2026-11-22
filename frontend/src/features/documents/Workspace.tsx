@@ -25,6 +25,8 @@ export function Workspace({
   backendReady?: boolean;
   recovery?: number;
 }) {
+  const pdfEnabled = capabilities?.upload_media_types?.includes('application/pdf') ?? false;
+  const uploadLabel = pdfEnabled ? 'PNG/JPG/PDF một trang' : 'Ảnh PNG/JPG một trang';
   const [schemas, setSchemas] = useState<ProductSchema[]>([]);
   const [list, setList] = useState<DocumentList | null>(null);
   const [document, setDocument] = useState<DocumentDetail | null>(null);
@@ -179,7 +181,7 @@ export function Workspace({
     const maximum = capabilities?.max_upload_bytes ?? 5_242_880;
     if (file.size > maximum) {
       setUploadError({
-        message: `Ảnh vượt giới hạn ${(maximum / 1024 / 1024).toFixed(0)} MiB.`,
+        message: `Tệp vượt giới hạn ${(maximum / 1024 / 1024).toFixed(0)} MiB.`,
         retryable: false,
       });
       return;
@@ -223,7 +225,7 @@ export function Workspace({
               retryable: reason.status === 408 || reason.status === 429 || reason.status >= 500,
             }
           : {
-              message: 'Mất kết nối khi tải ảnh. Bạn có thể gửi lại ảnh đang chọn.',
+              message: 'Mất kết nối khi tải tệp. Bạn có thể gửi lại tệp đang chọn.',
               retryable: true,
             },
       );
@@ -343,11 +345,13 @@ export function Workspace({
             </select>
           </label>
           <label>
-            Ảnh PNG/JPG một trang
+            {uploadLabel}
             <input
               ref={fileInput}
               type="file"
-              accept="image/png,image/jpeg"
+              accept={
+                pdfEnabled ? 'image/png,image/jpeg,application/pdf,.pdf' : 'image/png,image/jpeg'
+              }
               disabled={busy}
               onChange={(event) => {
                 setFile(event.target.files?.[0] ?? null);
@@ -379,7 +383,7 @@ export function Workspace({
         </label>
         <p className="subtle">
           Tối đa {((capabilities?.max_upload_bytes ?? 5_242_880) / 1024 / 1024).toFixed(0)} MiB ·
-          một trang · chưa hỗ trợ PDF/chữ viết tay.
+          một trang · {pdfEnabled ? 'PNG, JPG hoặc PDF' : 'PNG hoặc JPG'} · tài liệu đánh máy.
         </p>
         {!capabilities?.ocr_ready && (
           <p role="status">
@@ -503,7 +507,9 @@ export function Workspace({
           </div>
           {processing && (
             <p className="processing-state" role="status">
-              {document.run.status === 'queued' ? 'Ảnh đang chờ xử lý.' : 'OCR đang nhận dạng ảnh.'}{' '}
+              {document.run.status === 'queued'
+                ? 'Tài liệu đang chờ xử lý.'
+                : 'OCR đang nhận dạng tài liệu.'}{' '}
               Bạn có thể mở lại tài liệu sau để xem kết quả.
             </p>
           )}

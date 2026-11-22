@@ -2,6 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 import ready from '../../contracts/examples/readiness-ready.json' with { type: 'json' };
 import notReady from '../../contracts/examples/readiness-not-ready.json' with { type: 'json' };
 import type { DocumentDetail } from '../src/features/documents/api';
+import type { Capabilities } from '../src/lib/api';
 
 // Explicit HTTP/session/inference doubles. Native health/readiness/ownership
 // continue to run in the existing backend, native and authenticated CI suites.
@@ -93,7 +94,8 @@ async function backend(page: Page) {
           ocr_ready: true,
           provider_mode: 'tesseract',
           supported_schemas: [],
-        },
+          upload_media_types: ['image/png', 'image/jpeg', 'application/pdf'],
+        } satisfies Capabilities,
       });
     }
     if (path.endsWith('/document-schemas')) return route.fulfill({ json: [] });
@@ -201,7 +203,7 @@ for (const width of [1280, 390])
     await initialStatus(page, 'Chưa sẵn sàng');
     await page.getByRole('button', { name: 'Xử lý tài liệu', exact: true }).click();
     await expect(page.getByRole('region', { name: 'Tài khoản hiện tại' })).toContainText('alpha');
-    await page.getByLabel('Ảnh PNG/JPG một trang').setInputFiles({
+    await page.getByLabel('PNG/JPG/PDF một trang').setInputFiles({
       name: 'synthetic.png',
       mimeType: 'image/png',
       buffer: Buffer.from('synthetic'),
@@ -216,7 +218,7 @@ for (const width of [1280, 390])
     await expect(upload).toBeEnabled();
     const capBefore = api.stats.capabilities;
     await upload.click();
-    await expect(page.getByRole('alert')).toContainText('Mất kết nối khi tải ảnh');
+    await expect(page.getByRole('alert')).toContainText('Mất kết nối khi tải tệp');
     expect(api.stats.uploads).toBe(1);
     await open(page);
     api.phase('offline');
