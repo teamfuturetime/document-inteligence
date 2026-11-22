@@ -25,6 +25,12 @@
 - Mục tiêu là ghi nhận đầy đủ công việc thật: nhiều phần việc độc lập, commits hoàn chỉnh, PR có review, issues có acceptance và discussions có kết luận. Không tạo commit rỗng, chia theo từng dòng/file, duplicate issue/PR, comment vô nghĩa, reopen/close hoặc đóng/mở lại PR để tăng số đếm. Không đặt quota commit/comment/ngày.
 - Yêu cầu chỉ viết tài liệu/khảo sát không tự cấp quyền đăng nội dung lên GitHub. Khi task đã ủy quyền quy trình GitHub, thực hiện issue/comment/push nhánh task/mở PR trong phạm vi đó, không xin lại từng bước đã được duyệt. Merge, đổi settings/quyền và xóa refs vẫn cần ủy quyền riêng. Nếu thiếu quyền, chuẩn bị nội dung cụ thể và tiếp tục phần local; không báo đã đăng khi chưa có URL thật.
 
+### Trao đổi nhóm trên Discussions
+
+- Đọc [hướng dẫn Discussions cho thành viên và agent](docs/team/github-discussions.md) trước khi tham gia trao đổi nhóm. Đầu lượt làm việc, đọc topic liên quan cùng issue/PR; khi có quyết định ảnh hưởng nhiều module, câu hỏi cần phối hợp hoặc thông tin mới có ích, đưa vào đúng topic khi đã được phép đăng. Không chỉ giữ kết luận trong chat với agent.
+- Tìm chủ đề trùng, đọc đủ body/comments/replies và kết luận trước khi trả lời. Dùng đúng tài khoản người điều khiển; nêu nguồn/SHA, điều đã kiểm/chưa kiểm và ý kiến thuộc phần mình. Không tạo hội thoại, đồng thuận hoặc xác nhận nhận việc thay thành viên khác; không đặt quota comment/topic hoặc đăng lặp để tăng số đếm.
+- Người chủ trì ghi kết luận và người có quyền chốt thực tế; liên kết issues/ADR/PR để thực hiện. Chưa chốt thì ghi đề xuất/chờ xác nhận, không coi im lặng hoặc reaction là đồng ý. Discussion không thay nhận việc trên issue, review/approval trên PR hoặc quyền merge/settings; việc chỉ được giao soạn nháp vẫn chưa được phép đăng.
+
 ### Chủ động tối ưu số lượng commit, issue và pull request
 
 Đây là mục tiêu của quy trình, không chỉ là khuyến nghị commit message: với cùng phạm vi được giao, ưu tiên nhiều đơn vị công việc nhỏ có giá trị riêng thay vì gom mọi thứ vào một issue, một PR hoặc một commit lớn. Tăng số lượng bằng cách phân rã công việc thực tế ngay từ đầu; không làm lại lịch sử hay tạo hoạt động rỗng.

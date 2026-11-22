@@ -10,6 +10,7 @@ RUN uv sync --project backend --locked --no-dev
 ENV PATH="/app/backend/.venv/bin:$PATH"
 COPY scripts/fetch_ocr_models.py /app/scripts/fetch_ocr_models.py
 RUN python scripts/fetch_ocr_models.py --directory /opt/docintel-models \
+    && chmod 0644 /opt/docintel-models/*.traineddata \
     && useradd --uid 10001 --create-home docintel \
     && mkdir -p /app/runtime && chown docintel:docintel /app/runtime
 ENV DOCINTEL_PROVIDER_MODE=tesseract \

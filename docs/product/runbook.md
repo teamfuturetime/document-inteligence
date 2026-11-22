@@ -118,6 +118,40 @@ docker compose down
 
 Backend image cài Tesseract từ apt và fetch đúng model lock trong build, chạy user không phải root; named volume giữ SQLite/uploads sau `down`. Không dùng `down -v` nếu cần giữ dữ liệu. Hai cổng chỉ bind loopback. Cấu hình Docker cần được build/run trên máy có Engine; kiểm YAML không chứng minh container đã chạy. Nghiệm thu/sửa đóng gói của [#52 / PR #68](https://github.com/teamfuturetime/document-inteligence/pull/68) còn chờ tích hợp ở SHA nêu trên; chưa coi main hiện hành đã nhận các fixes của PR đó.
 
+Nghiệm thu bằng project và volumes tạm riêng, từ root với Docker Engine đang chạy:
+
+```powershell
+uv run --project backend --locked python scripts/check_docker_smoke.py --output runtime/docker-qa/my-new-run.json
+```
+
+Chọn file output mới. Helper build hai image, dùng cổng frontend loopback được Docker cấp,
+gọi API qua Nginx, kiểm PNG/JPEG native, restart cùng volume, migration DB1 và restore.
+Helper đọc lại cổng sau restart, vì cổng động có thể thay đổi. Script probe được mount
+read-only; user root chỉ khởi tạo quyền cho volume QA rỗng, app vẫn chạy user `docintel`.
+Mỗi lượt tạo tên `docintel52-<uuid>` và tự `down --volumes --rmi local` đúng project đó,
+kiểm containers/volumes đã được dọn. Backup và runtime tạm bị xóa sau kiểm thử.
+Report lưu IDs, revisions, hashes và metadata OCR, còn logs có thể giữ riêng trong runtime.
+
+Nếu host/process bị dừng cưỡng bức trước cleanup, đọc tên project từ log/report rồi kiểm
+`docker ps -a --filter label=com.docker.compose.project=<project>` và
+`docker volume ls --filter label=com.docker.compose.project=<project>`.
+Chỉ dọn project đã xác định với đúng override configuration của lượt chạy;
+giữ cấu hình tạm nếu cần điều tra, không dùng prune hoặc wildcard trên resources chung.
+Xem [báo cáo Docker trên Windows](../reports/docker-smoke-2026-11-21.md) và
+[evidence JSON](../evidence/docker-smoke-2026-11-21.json).
+
+PR #68 đã bổ sung [nghiệm thu tích hợp ngày 22/11](../reports/docker-smoke-2026-11-22.md)
+và [evidence mới](../evidence/docker-smoke-2026-11-22.json) trên main đã có verifier #56,
+doctor #69 và frontend #63; không thay kết quả lịch sử ngày 21/11. Helper còn kiểm
+snapshot lỗi đã rehash (required columns/revisions/events), current reviewed-null draft,
+old runs, và restored session profile qua HTTP: owner/foreign-owner, login/CSRF và
+session persistence sau restart. Passwords synthetic chỉ ở private QA volume/memory;
+cookie Secure=false chỉ trong override loopback tạm, không đổi `.env` hay default auth.
+Inventory trước/sau gồm containers, volumes, networks và image tags đúng project;
+shared build cache được giữ. File output phải mới; không dùng CI xanh để thay lượt Compose.
+Report ghi Git head tại lúc chạy và source hashes, không gán SHA commit tài liệu tạo sau đó
+cho source đã thực thi. Browser trong container không nằm trong HTTP smoke này.
+
 ## Phạm vi vận hành
 
 Mặc định local/single-user không đăng nhập. Session opt-in của #11 thêm account/document ownership

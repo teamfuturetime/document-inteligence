@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { ReviewIdentityContext, reviewDraftPrefix } from '../../lib/reviewDrafts';
 import { getSessionSnapshot } from '../../lib/session';
 import { APIError, downloadExport, jsonRequest, request, statusLabels } from './api';
@@ -121,6 +121,39 @@ export function ReviewPanel({
       : null,
   );
   const [conflict, setConflict] = useState<DocumentDetail | null>(null);
+  const headingId = useId();
+  const panelRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const errorRef = useRef<HTMLDivElement>(null);
+  const conflictRef = useRef<HTMLDivElement>(null);
+  const exportRef = useRef<HTMLButtonElement>(null);
+  const confirmFocusOrigin = useRef<Element | null>(null);
+  const [editorFocus, setEditorFocus] = useState<{ origin: Element | null } | null>(null);
+  function mayRestoreFocus(origin: Element | null) {
+    if (!origin) return false;
+    const active = window.document.activeElement;
+    const lostOrigin = !origin.isConnected || origin.matches(':disabled');
+    return active === origin || (active === window.document.body && lostOrigin);
+  }
+  function focusEditor(origin = window.document.activeElement) {
+    setEditorFocus({ origin });
+  }
+  useLayoutEffect(() => {
+    if (!editorFocus || getSessionSnapshot().revision !== sessionRevision) return;
+    if (!mayRestoreFocus(editorFocus.origin)) return;
+    panelRef.current?.querySelector<HTMLElement>('[id^="field-"]:not(:disabled)')?.focus();
+  }, [editorFocus, sessionRevision]);
+  useEffect(() => {
+    titleRef.current?.focus();
+  }, []);
+  useEffect(() => {
+    // Background autosave must not interrupt someone still typing.
+    if (error && !['INPUT', 'TEXTAREA'].includes(window.document.activeElement?.tagName ?? ''))
+      errorRef.current?.focus();
+  }, [error]);
+  useEffect(() => {
+    if (conflict) conflictRef.current?.focus();
+  }, [conflict]);
   useEffect(() => {
     mounted.current = true;
     return () => {
@@ -148,6 +181,13 @@ export function ReviewPanel({
     return () => window.removeEventListener('beforeunload', warn);
   }, [dirty]);
   const review = base.review;
+  useEffect(() => {
+    if (busy || review?.review_status !== 'confirmed') return;
+    const origin = confirmFocusOrigin.current;
+    confirmFocusOrigin.current = null;
+    if (getSessionSnapshot().revision === sessionRevision && mayRestoreFocus(origin))
+      exportRef.current?.focus();
+  }, [busy, review?.review_status, sessionRevision]);
   const editable = base.is_latest_run && !!review && !busy;
   useEffect(() => {
     if (
@@ -193,7 +233,7 @@ export function ReviewPanel({
       setBusy(false);
     }
   }
-  async function save() {
+  async function save(restoreFocus = false) {
     if (
       !review ||
       getSessionSnapshot().revision !== sessionRevision ||
@@ -205,6 +245,7 @@ export function ReviewPanel({
       (error instanceof APIError && error.status === 409)
     )
       return;
+    const focusOrigin = window.document.activeElement;
     const snapshot = changesRef.current;
     inFlight.current = true;
     setSaving(true);
@@ -234,6 +275,7 @@ export function ReviewPanel({
       );
       onUpdated(result);
       setMessage('Đã lưu nháp trên máy chủ.');
+      if (restoreFocus) focusEditor(focusOrigin);
     } catch (reason) {
       if (mounted.current) setError(reason as Error);
     } finally {
@@ -242,10 +284,12 @@ export function ReviewPanel({
     }
   }
   return (
-    <section className="review-panel" aria-label="Kiểm tra và sửa kết quả">
+    <section ref={panelRef} className="review-panel" aria-label="Kiểm tra và sửa kết quả">
       <div className="panel-heading">
         <div>
-          <h2>Kiểm tra dữ liệu</h2>
+          <h2 ref={titleRef} tabIndex={-1} id={headingId}>
+            Kiểm tra dữ liệu
+          </h2>
           <p className="subtle">
             {review
               ? `Revision ${review.revision} · ${statusLabels[review.review_status]}`
@@ -264,7 +308,14 @@ export function ReviewPanel({
         </p>
       )}
       {error && (
-        <div role="alert" className="notice">
+        <div
+          ref={errorRef}
+          tabIndex={-1}
+          role="alert"
+          aria-label="Lỗi lưu bản rà soát"
+          aria-atomic="true"
+          className="notice"
+        >
           <strong>{error.message}</strong>
           {error instanceof APIError && (
             <p>
@@ -296,7 +347,13 @@ export function ReviewPanel({
         <p>Bản đã xác nhận không tự động lưu. Chỉnh sửa rồi bấm Lưu nháp để mở lại review.</p>
       )}
       {conflict && (
-        <div className="conflict-box">
+        <div
+          ref={conflictRef}
+          tabIndex={-1}
+          role="region"
+          aria-label="Đối chiếu chỉnh sửa với máy chủ"
+          className="conflict-box"
+        >
           <h3>Bản trên máy chủ và chỉnh sửa của bạn</h3>
           <p>Chỉnh sửa của bạn vẫn được giữ. Kiểm tra từng trường trước khi dùng revision mới.</p>
           <div className="table-scroll">
@@ -329,6 +386,7 @@ export function ReviewPanel({
                 setConflict(null);
                 setError(null);
                 setMessage('Đã đối chiếu. Chỉnh sửa vẫn chưa lưu; hãy lưu lại nếu muốn áp dụng.');
+                focusEditor();
               }}
             >
               Giữ chỉnh sửa, dùng revision mới
@@ -342,6 +400,7 @@ export function ReviewPanel({
               setConflict(null);
               setError(null);
               setChanges({});
+              focusEditor();
             }}
           >
             Bỏ chỉnh sửa, tải bản máy chủ
@@ -349,7 +408,12 @@ export function ReviewPanel({
         </div>
       )}
       {issues.length > 0 && (
-        <div className="validation-summary" role="status">
+        <div
+          className="validation-summary"
+          role="status"
+          aria-label="Kiểm tra tính hợp lệ"
+          aria-atomic="true"
+        >
           <strong>{issues.length} trường cần kiểm tra</strong>
           <p>Bản nháp được phép lưu khi còn thiếu hoặc sai. Cần sửa các lỗi trước khi xác nhận.</p>
         </div>
@@ -364,7 +428,12 @@ export function ReviewPanel({
             <article key={key} className="product-field" onFocus={() => onFieldChange(key)}>
               <div className="field-label-row">
                 <label htmlFor={`field-${key}`}>{definition.label} *</label>
-                <button className="text-button" onClick={() => onFieldChange(key)} type="button">
+                <button
+                  className="text-button"
+                  aria-label={`Xem vùng nguồn: ${definition.label}`}
+                  onClick={() => onFieldChange(key)}
+                  type="button"
+                >
                   Xem vùng nguồn
                 </button>
               </div>
@@ -449,7 +518,7 @@ export function ReviewPanel({
           disabled={
             !editable || !dirty || saving || (error instanceof APIError && error.status === 409)
           }
-          onClick={() => void save()}
+          onClick={() => void save(true)}
         >
           {busy ? 'Đang xử lý…' : 'Lưu nháp'}
         </button>
@@ -458,6 +527,7 @@ export function ReviewPanel({
           onClick={() => {
             setChanges({});
             setMessage('Đã bỏ chỉnh sửa chưa lưu.');
+            focusEditor();
           }}
         >
           Bỏ chỉnh sửa
@@ -470,7 +540,8 @@ export function ReviewPanel({
             issues.length > 0 ||
             review?.review_status === 'confirmed'
           }
-          onClick={() =>
+          onClick={() => {
+            const focusOrigin = window.document.activeElement;
             void act(async () => {
               const result = await jsonRequest<DocumentDetail>(
                 `/documents/${base.document_id}/confirm`,
@@ -480,14 +551,16 @@ export function ReviewPanel({
                   expected_revision: review!.revision,
                 },
               );
+              confirmFocusOrigin.current = focusOrigin;
               onUpdated(result);
               setMessage('Đã xác nhận bản lưu. Có thể xuất JSON.');
-            })
-          }
+            });
+          }}
         >
           Xác nhận bản lưu
         </button>
         <button
+          ref={exportRef}
           disabled={!editable || saving || dirty || review?.review_status !== 'confirmed'}
           onClick={() =>
             void act(async () => {
@@ -499,7 +572,13 @@ export function ReviewPanel({
           Xuất JSON đã xác nhận
         </button>
       </div>
-      <p role="status" aria-live="polite" className="save-status">
+      <p
+        role="status"
+        aria-label="Trạng thái lưu"
+        aria-live="polite"
+        aria-atomic="true"
+        className="save-status"
+      >
         {saving
           ? 'Đang lưu nháp…'
           : error
