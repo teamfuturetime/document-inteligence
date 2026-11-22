@@ -1,72 +1,116 @@
 # Nghiệm thu tích hợp OCR hóa đơn
 
-Task điều phối [#21](https://github.com/teamfuturetime/document-inteligence/issues/21), kế hoạch nhóm [#15](https://github.com/teamfuturetime/document-inteligence/issues/15). Đây là checklist kỹ thuật, không phải bảng chấm điểm hoặc xác nhận thành viên đã nghiệm thu. Tùng điều phối; chủ tính năng tự kiểm thử; Tuấn phụ trách review dữ liệu/QA theo phân công. Kết quả phải gắn với source SHA thực tế.
+Checklist kỹ thuật cho [#54](https://github.com/teamfuturetime/document-inteligence/issues/54),
+đợt triển khai [#40](https://github.com/teamfuturetime/document-inteligence/issues/40) và
+điều phối [#15](https://github.com/teamfuturetime/document-inteligence/issues/15).
+Giữ các mã ca U/O/R/C/N/H/B/G/P/A/X để đối chiếu lịch sử; không phải bảng chấm điểm.
 
-Cập nhật hiện hành 17/11/2026 qua [#29](https://github.com/teamfuturetime/document-inteligence/issues/29): đối chiếu `main@1b067a7`. Notifications đã tích hợp qua [#18](https://github.com/teamfuturetime/document-inteligence/pull/18); đặc tả PDF [ADR0010](../decisions/0010-single-page-pdf.md) đã vào main qua #26. Implementation PDF #27 và autosave #23 vẫn Draft tại lần kiểm tra này. Kết quả trên nhánh PR không thay cho nghiệm thu bản tích hợp main.
+Đối chiếu ngày **22/11/2026**, nền `main@d6c579a973e5de730e3fc65d5331a60b51c1cbd3`:
+app **0.6.0**, SQLite **schema 2**, product/export **1.0.0**. Autosave #23, auth/ownership #33,
+PDF #27, QA kết hợp #66, verifier backup #56 và doctor fix #69 đã tích hợp. Nhánh cá nhân hoặc PR còn mở
+không phải nền mặc định. Tài liệu này không tạo một lượt chạy OCR/browser mới.
 
 ## Chuẩn bị một lần nghiệm thu
 
-1. Dùng main đã cập nhật hoặc SHA ứng viên được ghi rõ, đọc [README](../../README.md), [contract](../../contracts/README.md) và [runbook](../product/runbook.md). Không dùng working tree của nhánh cá nhân cũ làm bằng chứng cho main. Ghi `git rev-parse HEAD` và `git status --short`; không gọi checkout bẩn là sạch.
-2. Cài dependencies theo lock, đúng runtime pins. Chạy model helper để kiểm hai weights vie/eng đã pin; ghi engine, config/source hashes từ report native. Thiếu engine/model phải fail, không bật fixture để thay OCR thật.
-3. Chỉ dùng synthetic/sample có quyền. Dùng DB/runtime tạm riêng cho nghiệm thu; không đưa source files, DB, models, logs hoặc bản export người dùng vào Git. Các helpers verify_product/check_upload_ingress tự tạo runtime tạm.
-4. Phân biệt **có test** với **đã chạy đạt**, **mock pipeline** với **native OCR**, **workflow scripted review** với **accuracy máy trước review**. Các ca chưa chạy ghi Pending hoặc Blocked kèm dependency; không điền Pass vì CI của PR khác xanh.
+1. Đọc [README](../../README.md), [contracts](../../contracts/README.md) và
+   [runbook](../product/runbook.md). Ghi `git rev-parse HEAD`, `git status --short`, môi trường
+   và lệnh thực chạy; giữ thay đổi local, không nhận checkout bẩn là sạch.
+2. Cài dependencies đúng lock/pins và kiểm models vie/eng theo README. Thiếu engine/model
+   phải fail, không bật fixture thay native. Ghi engine, model/config/source hashes từ report.
+3. Chỉ synthetic/sample có quyền. Dùng runtime tạm, giữ mọi DB/source/uploads/models/auth
+   state/logs cá nhân ngoài Git. Helpers nghiệm thu tạo runtime riêng, không dùng DB đang demo.
+4. Tách **coverage có sẵn**, **kết quả đã chạy trên SHA cụ thể** và **Pending/Blocked**.
+   HTTP/inference/sender doubles không phải native OCR. Scripted review và frozen replay
+   không là accuracy máy trước review; không đọc gold khi inference hoặc đổi thresholds theo test.
 
-## Ma trận cho main hiện có
+## Ma trận trên nền đã tích hợp
 
-Nền hiện hành `1b067a7` đã có upload budgets qua PR #16 và notifications qua PR #18. Các đường dẫn dưới là coverage có sẵn, chưa tự chứng minh lần chạy mới đã đạt. Khi thay source, chạy kiểm tra phù hợp và ghi kết quả lại.
+Cột coverage chỉ nơi kiểm, không khẳng định mọi ca vừa chạy local. Chọn ca theo phạm vi thay đổi;
+đọc kết quả CI đúng SHA ở mục bằng chứng bên dưới. Nếu có thay đổi giao nhau sau đó, kiểm lại
+trên bản tích hợp mới trước khi kết luận.
 
-[Baseline ngày 14/11/2026](../reports/integration-baseline-2026-11-14.md) là mốc lịch sử trên source sản phẩm `921541d`: 131 tests, native workflow và HTTP ingress; không bao gồm notifications/PDF/autosave tích hợp sau đó. Giữ nguyên report này, không đổi nhãn các ca Pending trong report thành Pass theo kết quả ở SHA khác.
+| Ca | Thao tác và kết quả mong đợi | Coverage hiện có |
+|---|---|---|
+| U1 — giới hạn/body hỏng | Header lặp/sai, mismatch, body vượt cap/disconnect: 400/413 đúng envelope, không document/run/event/files rác, slot được giải phóng | [Ingress](../../backend/tests/test_upload_ingress.py), [receiver](../../backend/tests/test_upload_receiver.py) |
+| U2 — timeout/admission | Upload nhỏ giọt có tổng deadline; request dư nhận 429; cancellation không thả slot khi thread persistence còn chạy | Các tests U1; [HTTP loopback probe](../../scripts/check_upload_ingress.py) |
+| U3 — retry sau mất response | Cùng key/input/type/origin trả cùng document/run; khác nội dung nhận 409, kể cả queue đầy | [VT-042 retry](../../backend/tests/test_async_retry_vt042.py), [product](../../backend/tests/test_product.py) |
+| O1 — OCR native | PNG/JPEG/application/PDF chạy pipeline có provenance/spans; provider lỗi không fallback fixture, không bịa confidence | [Native workflow](../../scripts/verify_product.py), [pipeline](../../pipeline/tests/test_pipeline.py) |
+| O2 — liveness/readiness/storage | Health báo tiến trình; readiness 200/503 cùng schema, provider là startup snapshot; lỗi persistence/cleanup không mất trạng thái upload | [Readiness](../../backend/tests/test_readiness.py), [storage failures](../../backend/tests/test_upload_storage_failures.py), [runbook](../operations/readiness.md) |
+| O3 — doctor offline | Chỉ đọc DB/model/tool probes, không tạo/migrate runtime; banner Tesseract 3/4 nhóm giữ observed đầy đủ, major khác 5 bị từ chối và output redacted | [Doctor](../../backend/tests/test_doctor.py), [launcher](../../backend/tests/test_dev_launcher.py), [operations](../operations/doctor.md) |
+| R1 — sửa/null/reload | Người dùng xóa trường: reviewed null được giữ sau lưu/reload, không fallback prediction; confirm thiếu trường bị chặn | Product, [ReviewPanel](../../frontend/src/features/documents/ReviewPanel.test.tsx), [browser PNG/PDF](../../frontend/e2e/invoice.spec.ts) |
+| R2 — revision/status CAS | Hai client cùng revision; write stale nhận 409 và UI giữ edits để đối chiếu. Không tự mở lại confirmed nếu thiếu expected_status phù hợp | Product/ReviewPanel; [autosave browser](../../frontend/autosave-e2e/autosave.spec.ts), session browser |
+| C1 — validation/export authority | Confirm invalid/null nhận 422; stale run/revision nhận 409; JSON từ persisted confirmed revision có values/types đúng | Product, native workflow, invoice/session browser |
+| N1 — notification sau commit | Sender thấy SQLite đã commit; failure/timeout không rollback confirm/export. Invalid/rollback không send, retry confirmed không gửi lại | [Notification tests](../../backend/tests/test_confirmation_notifications.py) dùng sender doubles; native helper #66 cài failure có chủ đích; [delivery semantics](../operations/confirmation-notifications.md) |
+| H1 — history/reprocess/restart | Prediction/review/events/raw PDF cũ còn sau restart/reprocess; run cũ chỉ đọc, write/confirm/export cũ nhận STALE_RUN | Product, native helper, [session browser](../../frontend/e2e/auth.spec.ts) |
+| B1 — backup/restore | Snapshot DB/assets/auth state, hashes và private modes giữ nguyên; đích tồn tại/alias lỗi bị từ chối; export/owner sau restore đúng | [Manifest](../../backend/tests/test_backup_manifest.py), [auth backup](../../backend/tests/test_auth_backup.py), [helper](../../scripts/backup_runtime.py) |
+| B2 — verifier offline | Schema1/2, required columns, integrity/FK, latest-run/revisions/events và source/preview đầy đủ; invalid snapshot bị chặn trước destination, không sửa nguồn/lộ dữ liệu | [Verifier](../../backend/tests/test_backup_verify.py), [completeness](../../backend/tests/test_backup_completeness.py), [CLI/report](../operations/backup-verification.md) |
+| S1 — session/ownership/migration | Hai accounts không vượt owner; thiếu CSRF nhận 403, foreign document nhận 404; late ACK/recovery không sang owner mới; DB1 migration có backup và legacy vẫn local | [Auth API](../../backend/tests/test_auth_api.py), [migration](../../backend/tests/test_auth_migration.py), [auth CLI](../../backend/tests/test_auth_cli.py), native session và auth browser |
+| G1 — data/evaluator | Manifest/splits/hashes đúng; không parent overlap; frozen replay đúng công thức và không nhận là inference mới | [Data checker](../../scripts/check_data.py), [frozen regression](../../scripts/check_evaluation_regression.py), [protocol](../ml/evaluation-protocol.md) |
+| P1 — PDF hợp lệ/evidence | Một trang synthetic; input hash/raw PDF đúng; preview PNG và OCR spans cùng raster/frame; review/confirm/export đúng revision | [PDF integration](../../backend/tests/test_pdf_integration.py), [PDF pipeline](../../pipeline/tests/test_pdf.py), invoice/auth browser, native helper; [ADR0010](../decisions/0010-single-page-pdf.md) |
+| P2 — PDF từ chối | Mã hóa kể cả empty password, nhiều trang/hỏng/encoded/quá budget/timeout: safe errors, không records/files rác, slot/retry hồi phục | [PDF admission](../../backend/tests/test_pdf_upload.py), PDF pipeline/integration; [limits/errors](../operations/single-page-pdf.md) |
+| A1 — autosave/late ACK | Sửa A→AB trong lúc ACK A trễ; AB không bị ghi đè, null giữ đúng, trạng thái saving/saved/error phản ánh kết quả | ReviewPanel, autosave browser, auth browser; [contract](../product/autosave.md) |
+| A2 — conflict/navigation/recovery | 409 cho phép giữ/bỏ edits sau đối chiếu; retry/network/unmount không replay write hoặc chuyển draft sang document/run/owner khác | ReviewPanel, autosave browser (inference double rõ ràng), auth browser (native backend với giữ ACK/lỗi vận chuyển có chủ đích) |
+| X1 — PDF + autosave + confirm/export | Cùng source tích hợp: upload PDF→autosave ACK→confirm→download đúng revision; pending/error không được coi đã lưu; lỗi notification không đổi business result | Native local/session và auth browser assertions từ [#66](https://github.com/teamfuturetime/document-inteligence/pull/66); [QA Windows theo SHA gốc](../reports/pdf-session-qa-2026-11-20.md) |
 
-| Ca | Thao tác/điều kiện | Kết quả mong đợi | Coverage hiện có |
-|---|---|---|---|
-| U1 — giới hạn và body hỏng | Content-Length quá lớn/lặp/sai, stream vượt cap, mismatch, disconnect | 400/413 đúng envelope; không document/run/event/source/preview mới; slot được giải phóng | [ASGI ingress tests](../../backend/tests/test_upload_ingress.py), [receiver tests](../../backend/tests/test_upload_receiver.py) |
-| U2 — timeout/admission | Hai upload nhỏ giọt; request thứ ba; hủy khi nhận và khi persistence đang chạy | Tổng receive deadline không reset theo chunk; busy 429 không đợi; slot giữ đến lúc thread lưu kết thúc, sau đó dùng lại được | Ingress tests ở trên; [probe HTTP loopback](../../scripts/check_upload_ingress.py) |
-| U3 — retry sau mất response | Cùng key + ảnh/type/origin sau khi upload đã commit; thử nội dung khác cùng key | Cùng document/run, không nhân file/record; nội dung khác 409, kể cả queue đầy | [retry regression](../../backend/tests/test_async_retry_vt042.py), [product tests](../../backend/tests/test_product.py) |
-| O1 — readiness và OCR thật | Upload PNG/JPEG synthetic; thử provider thiếu/hỏng | Real pipeline có provenance/spans; lỗi provider không fallback fixture, không bịa confidence | [native workflow](../../scripts/verify_product.py), product tests, [pipeline tests](../../pipeline/tests/test_pipeline.py) |
-| R1 — sửa/null/reload | Xóa seller, lưu nháp, tải lại; bổ sung lại giá trị | Explicit null không rơi về prediction; confirm thiếu trường bị chặn; prediction gốc bất biến | Product tests; [ReviewPanel tests](../../frontend/src/features/documents/ReviewPanel.test.tsx); [browser E2E](../../frontend/e2e/invoice.spec.ts) |
-| R2 — hai người sửa cùng revision | Hai tab/client cùng revision; lưu A rồi lưu B | B nhận 409, UI giữ edits để so sánh; không silent overwrite | Product concurrent_saves/clear_null tests; ReviewPanel tests; browser E2E kiểm stale request qua API, không thay cho thử hai tab UI |
-| C1 — validation và export authority | Confirm draft sai/null; gửi approved từ client; confirm hợp lệ rồi tải JSON | 422/409 theo contract cho dữ liệu sai/stale; export từ latest persisted confirmed revision, values đúng kiểu | Product tests, native workflow, browser E2E |
-| N1 — notification sau commit | Sender thành công/lỗi/timeout; confirm invalid/rollback/stale/retry; restart và caller cancellation | DB commit trước send; lỗi sender không đổi confirmation/export; invalid/rollback không gửi; retry confirmed không phát lại; payload/log không chứa fields/source | [Notification tests](../../backend/tests/test_confirmation_notifications.py), SQLite thật với sender doubles; [runbook delivery](../operations/confirmation-notifications.md). Code đã tích hợp qua #18, không tự ghi nhận đã chạy ca trên SHA mới |
-| H1 — reprocess/history/restart | OCR lại; mở run cũ; thử export run cũ; khởi động lại trên DB tạm | History/prediction/review cũ còn; run cũ chỉ đọc, export stale bị từ chối; dữ liệu đã lưu còn sau restart | Product tests, retry regression, native workflow |
-| B1 — backup/restore | Backup runtime tạm rồi restore vào đường dẫn mới; kiểm hashes | Restore giữ revisions/files; từ chối dữ liệu sửa sai hash, không ghi đè runtime đang chạy | Product test backup_restore; [backup helper](../../scripts/backup_runtime.py); không tự gọi là có browser coverage |
-| G1 — dữ liệu và evaluator | Kiểm manifest/splits/hashes, chạy frozen evaluator replay | Không overlap parent trái split, không gold trong inference; metrics đúng công thức; replay không phải inference mới | [data checker](../../scripts/check_data.py), [evaluator regression](../../scripts/check_evaluation_regression.py), [evaluation protocol](../ml/evaluation-protocol.md) |
+N1 vẫn best-effort local log theo [ADR0009](../decisions/0009-confirmation-notifications.md),
+không durable/exactly-once/email/webhook. Native helper dùng TestClient/SQLite/Tesseract thật,
+không phải HTTP TCP/browser. Invoice/auth browser dùng Chromium và HTTP loopback; autosave
+suite riêng dùng inference double tường minh. X1 đã có coverage và CI tích hợp; không còn
+Pending chỉ vì tài liệu snapshot 17/11 từng ghi autosave/PDF là Draft.
 
-Ca O1 phải đối chiếu preview và spans trên mẫu phát triển bằng mắt khi nghiệm thu giao diện; chỉ kiểm spans non-empty không chứng minh evidence đúng vị trí. Hai tab UI, ảnh khác layout, network recovery trên máy khác và Docker cần kết quả riêng nếu chưa được test tự động bao phủ.
+Đối chiếu preview/spans bằng mắt vẫn cần khi nghiệm thu chất lượng UI; spans non-empty không
+chứng minh geometry chính xác. Test trên sample không bao phủ mọi layout/ảnh thật hoặc mọi máy.
 
-## Các ca còn chờ tích hợp tính năng
+## Bằng chứng đã xác minh và lịch sử
 
-| Ca | Dependency | Cách nghiệm thu khi code sẵn sàng | Trạng thái tại lúc lập checklist |
-|---|---|---|---|
-| P1 — PDF hợp lệ và evidence | #6/#25, implementation #27; ADR0010 đã tích hợp | Một trang synthetic, OCR thật, preview/raster và evidence cùng frame theo ADR0010; review→confirm→export; giữ PNG/JPEG/application regression | Pending implementation trên main; spec được duyệt không đồng nghĩa runtime đã hỗ trợ PDF |
-| P2 — PDF bị từ chối | #6/#25, implementation #27; ADR0010 | PDF mã hóa kể cả empty password/nhiều trang/hỏng/body encoded/quá budget/timeout: lỗi theo ADR0010, không records/files rác; slot/retry hồi phục | Pending implementation; không lấy kết quả PNG hoặc test nhánh #27 để đánh dấu main pass |
-| A1 — autosave và ACK cũ | #7 | Sửa liên tiếp A→B, cố tình delay ACK A; B không bị thay bằng A; null giữ đúng; saving/saved/error đúng | Pending, main hiện chỉ manual save |
-| A2 — autosave và conflict/navigation | #7 | Hai tab stale409, mất mạng/retry, chuyển tài liệu/unmount khi đang lưu; edits không sang tài liệu khác hoặc mất im lặng | Pending; thử hai tab trình duyệt thật ngoài component mocks |
-| X1 — PDF + autosave + confirm/export | #6 + #7, kiểm lại N1 đã có trên main | Upload PDF→sửa→chờ autosave ACK→confirm→download; pending/error không bị coi đã lưu; export khớp revision; notification lỗi không đổi business result | Pending, chỉ chạy khi các dependencies được tích hợp trên cùng SHA |
+| Source | Bằng chứng thực | Giới hạn |
+|---|---|---|
+| main `d6c579a` sau #69 | [Product CI 44975747846](https://github.com/teamfuturetime/document-inteligence/actions/runs/44975747846), completed/success 7/7 trên đúng merge SHA, gồm Windows doctor regression | Parser fix đã tích hợp; không nhận là một lượt chạy local mới của tài liệu |
+| main `692a834` sau #56 | [Product CI 44974458695](https://github.com/teamfuturetime/document-inteligence/actions/runs/44974458695), completed/success 7/7, gồm backend/frontend/Windows/evaluation/native/browser và Product checks | Kết quả CI của source này; không tự gọi là lần chạy local của người đọc |
+| main `4191dfe` sau #66 | [Product CI 44762412434](https://github.com/teamfuturetime/document-inteligence/actions/runs/44762412434), completed/success 7/7 với assertions X1 tăng thêm | Mốc tích hợp QA kết hợp; main mới kế thừa nhưng cần CI riêng khi thay đổi |
+| Test commit `d9e322f` của #66 | [QA Windows 20/11](../reports/pdf-session-qa-2026-11-20.md): native local 20/session 26, Chromium PNG/PDF 2/session 7, autosave 11 và focused PDF/session 60 | Số từ report của tác giả, không phải số vừa chạy lại trên main hiện hành; doctor Windows lúc đó fail, Docker không thuộc lượt này |
+| `921541d` và `1b067a7` | [Baseline 14/11](../reports/integration-baseline-2026-11-14.md), tài liệu checklist cũ qua #29 | Giữ nguyên báo cáo lịch sử; không đổi nhãn Pending/Pass của source cũ thành kết quả mới |
 
-N1 là logging local best-effort theo [ADR0009](../decisions/0009-confirmation-notifications.md), không hứa durable/exactly-once hoặc delivery ra dịch vụ bên ngoài. X1 phải kiểm tra tương tác các tính năng trên cùng bản tích hợp, không cộng kết quả độc lập của #23 và #27 thành một lần nghiệm thu kết hợp.
+## Công việc chưa tích hợp tại mốc trên
 
-Đây là yêu cầu nghiệm thu, không phải quyết định triển khai UI/API mới. Nếu spec tính năng đổi hành vi, tác giả cập nhật acceptance trên issue và tests theo contract được review trước khi thay expected results. Không sửa gold/threshold để làm test xanh.
+| Phần việc | Dependency/PR | Bước tiếp theo |
+|---|---|---|
+| Docker Compose/persistence | #52 / [#68](https://github.com/teamfuturetime/document-inteligence/pull/68) | Tác giả có evidence Docker riêng; sửa đóng gói/smoke chưa ở main tại mốc này. Review và chạy bản tích hợp trước khi nhận main đã đạt Docker |
+| Backup/restore staging | #43/#44, #61 → #62 sau #56 | Retarget/sync/CI/review riêng; verifier #56 đã merge không đồng nghĩa publication hoàn tất |
+| Worker crash/restart bằng process | #47 / #59 | Merge main, giữ đủ CI gates và review bản mới. Không gọi test recovery nội bộ hiện có là toàn bộ acceptance process thật |
+| Error guidance, keyboard, live readiness UI | #49/#51/#50, #63/#64/#65 | Sửa findings, đồng bộ main và nghiệm thu tích hợp; không suy backend readiness đã có UI polling mới |
+
+Đây là trạng thái gắn SHA, có thể thay đổi sau các PR. Kiểm GitHub/main mới trước một lượt
+nghiệm thu khác; không cần sửa báo cáo cũ để tạo lịch sử đẹp hơn.
 
 ## Lệnh tái chạy
 
-Từ root, dùng runtime pins theo README:
+Từ root, dùng setup/models/pins tại README và output path mới cho mỗi lượt:
 
 ```sh
 python scripts/dev.py check
-uv run --project backend --locked pytest backend/tests/test_confirmation_notifications.py -q
-python scripts/dev.py models
-uv run --project backend --locked python scripts/verify_product.py --output runtime/verification/product-native-acceptance.json
-uv run --project backend --locked python scripts/check_upload_ingress.py --output runtime/verification/upload-ingress-acceptance.json
+python scripts/dev.py ocr
+uv run --project backend --locked python scripts/verify_product.py --auth-mode session --output runtime/verification/session-acceptance-new.json
+uv run --project backend --locked python scripts/check_upload_ingress.py --output runtime/verification/ingress-acceptance-new.json
 npm --prefix frontend exec -- playwright install chromium
 python scripts/dev.py e2e
+npm --prefix frontend exec -- playwright test --config frontend/playwright.auth.config.ts
+npm --prefix frontend exec -- playwright test --config frontend/playwright.autosave.config.ts
 ```
 
-Lệnh pytest focused giúp tái chạy N1 khi triage, đã nằm trong bộ `check` đầy đủ; không bắt chạy lặp nếu cùng source/môi trường đã kiểm đủ. Nó dùng sender doubles, không chứng minh email/webhook hoặc durability. Native helper không thay cho kiểm lỗi sender.
+Chạy các browser profiles tuần tự: auth/autosave dùng chung ports loopback, không chạy hai suite
+đồng thời hoặc tái dùng server/runtime thật. Lệnh `check` đã gồm các pytest suites chính;
+không bắt chạy focused tests lặp lại nếu cùng source/môi trường đã kiểm đủ. Có thể chọn
+notification/verifier/auth tests trong ma trận để tái hiện finding cụ thể. CLI offline/backup/
+migration và rollback theo runbook, không thực hiện trên runtime đang chạy chỉ để có test log.
 
-Chọn đường dẫn report mới cho mỗi lượt để giữ mốc cũ, nhất là ingress helper từ chối ghi đè. `check` có tests với pipeline doubles và frozen predictions; native helper gọi Tesseract thật, scripted review không đo accuracy. Probe ingress dùng provider unconfigured và timeout ngắn để thử lỗi, không đo OCR hoặc SLA. Browser E2E hiện có một invoice workflow; không coi nó bao phủ các ca Pending.
+## Quyết định tích hợp
 
-## Ghi kết quả và quyết định tích hợp
+Ghi SHA/dirty state, runtime/engine/model/config, lệnh/exit code, ca đạt và Pending/Blocked.
+Chỉ lưu metadata kỹ thuật không nhạy cảm khi cần review. Product checks phải completed/success
+đúng head mới nhất, reviewer độc lập xác nhận. Sau mỗi merge, kiểm lại main ancestry, conflicts,
+CI và approval của PR tiếp theo; không dùng approval dismissed hoặc CI của base cũ.
 
-Với mỗi lượt, ghi SHA/dirty state, runtime, engine/model/config hashes, lệnh/exit code, ca nào đạt/chưa chạy và lý do. Chỉ lưu báo cáo kỹ thuật gọn/metadata không nhạy cảm khi cần review; raw runtime giữ ngoài Git. CI phải completed/success trên SHA mới nhất và reviewer độc lập xác nhận phần mình kiểm tra trước đề xuất merge. Sau merge một PR, PR còn lại có thể BEHIND: cập nhật và kiểm tra lại phần giao nhau.
-
-Checklist chỉ hoàn tất nghiệm thu nền hiện hành khi các ca tương ứng đã chạy đạt; PDF/autosave/X1 vẫn Pending trên main đến lúc có kết quả cùng source tích hợp. Notification đã có implementation và coverage N1; việc cập nhật tài liệu này không tạo một kết quả test mới. Issue #21 đã hoàn tất phần chuẩn bị; issue #29 cập nhật hướng dẫn, không tự đóng issues tính năng #5/#6/#7 hoặc thay người review dữ liệu.
+#54 cập nhật tài liệu hiện hành, không tự đóng các task còn Pending trong bảng trên hoặc tạo
+kết quả benchmark mới. Khi yêu cầu/contract đổi, sửa acceptance và tests có lý do; không làm
+yếu expected assertions, đổi gold/model/config hoặc giảm gates để merge nhanh.
