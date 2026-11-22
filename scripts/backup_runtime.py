@@ -3,12 +3,12 @@
 import argparse
 import hashlib
 import json
-import re
 import shutil
 import sqlite3
 from contextlib import closing
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 
+from docintel.storage.backup import BackupVerificationError, verify_backup
 from docintel.storage.local import LocalDocumentStorage
 
 
@@ -56,48 +56,17 @@ def backup(runtime: Path, destination: Path):
         newline="\n",
     )
 
+    verify_backup(destination)
+
 
 def restore(source: Path, destination: Path):
     source, destination = source.resolve(), new_destination(destination)
-    manifest = json.loads((source / "backup.json").read_text(encoding="utf-8"))
-    if (
-        not isinstance(manifest, dict)
-        or type(manifest.get("version")) is not int
-        or manifest["version"] != 1
-        or not isinstance(manifest.get("sha256"), dict)
-        or "documents.sqlite3" not in manifest["sha256"]
-    ):
-        raise ValueError(
-            "Invalid backup manifest: expected version 1 with database hash"
-        )
-    records = manifest["sha256"]
-    for relative, expected in records.items():
-        if (
-            not isinstance(relative, str)
-            or not relative
-            or "\\" in relative
-            or ":" in relative
-            or PurePosixPath(relative).is_absolute()
-            or ".." in PurePosixPath(relative).parts
-            or PurePosixPath(relative).as_posix() != relative
-            or not isinstance(expected, str)
-            or re.fullmatch(r"[0-9a-f]{64}", expected) is None
-        ):
-            raise ValueError(
-                "Invalid backup manifest: expected relative paths and SHA256 hashes"
-            )
+    verified = verify_backup(source)
     validated = []
-    for relative, expected in records.items():
-        path = (source / relative).resolve()
-        if (
-            not path.is_relative_to(source.resolve())
-            or not path.is_file()
-            or sha256(path) != expected
-        ):
-            raise ValueError("Backup integrity or path check failed")
+    for relative, path in verified.entries:
         target = (destination / relative).resolve()
-        if not target.is_relative_to(destination.resolve()):
-            raise ValueError("Restore path outside target")
+        if not target.is_relative_to(destination):
+            raise BackupVerificationError("RESTORE_PATH_OUTSIDE")
         validated.append((path, target))
     destination.mkdir(parents=True, exist_ok=False, mode=0o700)
     for path, target in validated:
@@ -109,9 +78,37 @@ def restore(source: Path, destination: Path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("source", type=Path)
-    parser.add_argument("destination", type=Path)
+    parser.add_argument("destination", type=Path, nargs="?")
+    parser.add_argument("--verify-backup", action="store_true")
+    parser.add_argument(
+        "--json", action="store_true", help="Versioned verify-backup report"
+    )
     parser.add_argument("--restore", action="store_true")
     args = parser.parse_args()
+    if args.verify_backup:
+        if args.destination is not None or args.restore:
+            parser.error("verify-backup takes only a source")
+        try:
+            verified = verify_backup(args.source)
+            report = {
+                "report_version": 1,
+                "status": "verified",
+                "schema_version": verified.schema_version,
+            }
+        except BackupVerificationError as exc:
+            report = {"report_version": 1, "status": "error", "code": exc.code}
+        print(
+            json.dumps(report)
+            if args.json
+            else "Backup verification: "
+            + report["status"]
+            + (" / " + report["code"] if "code" in report else "")
+        )
+        return 0 if report["status"] == "verified" else 2
+    if args.destination is None or args.json:
+        parser.error(
+            "backup/restore requires a destination; --json is for verify-backup"
+        )
     if args.destination.resolve().is_relative_to(args.source.resolve()):
         parser.error("Destination must be outside source directory")
     (restore if args.restore else backup)(args.source, args.destination)
@@ -119,4 +116,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
