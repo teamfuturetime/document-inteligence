@@ -23,7 +23,7 @@
 
 Chat riêng/họp có thể dùng để trao đổi nhanh; kết luận, phân công và thay đổi phạm vi phải được ghi lại trên GitHub. Không chép từng câu chat thành comment.
 
-**Trạng thái lúc soạn ngày 12/11/2026:** Discussions của repo đang tắt. Người quản trị có thể bật ở Settings → General → Features → Discussions khi nhóm duyệt; xem [hướng dẫn GitHub](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/enabling-or-disabling-github-discussions-for-a-repository). Tài liệu này không tự bật tính năng. Trong lúc chờ, thảo luận ở issue điều phối; nếu sau này có Discussion, liên kết hai nơi và tóm tắt quyết định một lần.
+**Đã kiểm tra ngày 23/11/2026:** [Discussions của repo](https://github.com/teamfuturetime/document-inteligence/discussions) đã bật, có General, Ideas, Q&A, Announcements, Polls và Show and tell. Thành viên và agent thực hiện theo [hướng dẫn Discussions](github-discussions.md), có các mẫu mở topic/phản hồi/kết luận và prompt cấp quyền đăng theo tài khoản cá nhân. Giữ phân công/acceptance trên issues, review trên PR; không tự di chuyển hoặc xóa lịch sử issue điều phối.
 
 ## 3. Nhóm trưởng chia việc hoàn toàn trên GitHub
 
@@ -133,7 +133,8 @@ Không cần tìm lỗi giả để có review. Nếu không có lỗi, nêu ng�
 
 ## 7. Discussions và nhịp phối hợp
 
-- Mỗi tuần dùng một chủ đề kế hoạch/tiến độ chung khi có nội dung mới; thành viên báo phần mình bằng link issue/PR, blocker và bước tiếp theo. Không tạo một Discussion cho từng commit hoặc bắt mỗi người đủ số comment.
+- [Hướng dẫn chi tiết cho thành viên và agent](github-discussions.md) là quy trình trao đổi: đọc topic trước, phản hồi có nguồn, chốt đúng người và nối sang issues/PR. Mục 8 của hướng dẫn có prompt để mỗi người giao agent của chính mình; tài liệu không tự cấp quyền đăng hoặc giả tham gia của người khác.
+- Mỗi đợt phối hợp dùng một chủ đề kế hoạch/tiến độ chung; kế hoạch tuần dùng khi có nội dung mới, tái sử dụng topic còn phù hợp. Thành viên trao đổi bằng link issue/PR, blocker và bước tiếp theo; không tạo topic cho từng commit hoặc bắt mỗi người đủ số comment.
 - Dùng chủ đề kỹ thuật riêng khi cần lựa chọn có tác động: engine OCR, schema, PDF geometry, cách đánh giá. Người đề xuất đưa phương án và bằng chứng; người khác phản biện có lý do. Kết luận liên kết task/ADR để triển khai.
 - Q&A ghi câu hỏi tái hiện được và câu trả lời có cách kiểm tra; chọn câu trả lời khi thực sự giải quyết. Không tự dựng hội thoại nhiều tài khoản.
 - Có thể dùng category sẵn có phù hợp. Tạo categories, bật Discussions hoặc Projects là thay đổi cấu hình cần người có quyền và sự đồng ý của nhóm; tài liệu không tự cấp quyền đó.
