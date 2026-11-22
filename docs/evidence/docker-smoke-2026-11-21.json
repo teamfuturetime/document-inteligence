@@ -1,0 +1,105 @@
+{
+  "project": "docintel52-fb7976985bc54c1080676258e5b1849d",
+  "status": "passed",
+  "checked_at": "2026-11-21T05:09:44.763257+00:00",
+  "checks": [
+    "images_built_from_repository",
+    "startup_readiness_frontend_proxy",
+    "native_png_jpeg_null_confirm_export",
+    "restart_same_volume_persistence",
+    "restored_runtime_confirmed_export"
+  ],
+  "head": "4191dfeb91a6b929784e8c5c9c30c45b0a83a029",
+  "source_hashes": {
+    ".dockerignore": "f07168a5a8bc919c3e8f68a1da5ecfb2b6bc7a3d9b3a072163424b491deab574",
+    "backend/Dockerfile": "6f4f808082ce93b25712d3fc08c865cc7381d0ebdc9248ce664b477cb36b8827",
+    "frontend/Dockerfile": "bfc65a254b7c2cf6fdf81023706cf8d6d41aba254b377fa748c92f6607170882",
+    "compose.yaml": "e1889be2a90266084acd9161f628714933273f810ee04ff348d300b06e19dc01",
+    "scripts/check_docker_smoke.py": "39078abf048aacc5b35bc8583517d018ab1f85135439cf1a9a394988d118a642",
+    "scripts/docker_volume_probe.py": "475e0809753b6d263a324c4d0144694faf319602f08fc8d1ee79786b6e6fe093"
+  },
+  "documents": [
+    {
+      "document_id": "da52de4779b44106a055ffd72d786602",
+      "run_id": "f47bc332b3494665bbdac7ff96f154ab",
+      "revision": 3,
+      "input_sha256": "e3aedcd764f7466491623de17437031ecc532a67e0fea2f009a30fadd7898969",
+      "preview_sha256": "e44afc932641bef40075acf3b4ee1aa6b13cc53188510fecdb3611ec4173926d"
+    },
+    {
+      "document_id": "f5ddab576302493993799cd59ea30903",
+      "run_id": "8c05b9de047141fe8c7d032a83873318",
+      "revision": 3,
+      "input_sha256": "ff3c172dbebb6f9907f414bf58c289dc31d6355ceae8e3e57532816c6cbb05ef",
+      "preview_sha256": "bc49ca6d4ab43316f4c967f6962c51dc25148b2ffd7dec97358f511e96d4cc0c"
+    }
+  ],
+  "offline_probe": {
+    "status": "passed",
+    "checks": [
+      "schema2",
+      "snapshot_hashes",
+      "restored_tables_assets_auth",
+      "private_modes",
+      "db1_backup_migration",
+      "legacy_remains_local",
+      "destination_leaf_guards",
+      "corrupted_backup_rejected"
+    ]
+  },
+  "native_metadata": {
+    "engine_version": "5.5.0",
+    "model_revision": "87416418657359cb625c412a48b6e1d6d41c29bd",
+    "model_sha256": {
+      "vie": "79df64caf7bcfb2a27df5042ecb6121e196eada34da774956995747636d5bfa1",
+      "eng": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+    },
+    "git_commit": null,
+    "git_dirty": null,
+    "pipeline_source_sha256": "b225095aa0751ee4485bbd57d31c434f13c88f829f6b5e633b6759c0b2c97a8c",
+    "runtime": {
+      "python": "3.14.5",
+      "pillow": "12.3.0",
+      "pydantic": "2.13.5"
+    },
+    "hardware": {
+      "architecture": "x86_64",
+      "processor": "unknown",
+      "platform": "Linux",
+      "acceleration": "CPU"
+    },
+    "reproducibility_limitations": [
+      "OCR confidence is heuristic, not calibrated"
+    ],
+    "input_sha256": "e3aedcd764f7466491623de17437031ecc532a67e0fea2f009a30fadd7898969",
+    "config": {
+      "version": "inference-config-1.1.0",
+      "max_upload_bytes": 5242880,
+      "max_image_pixels": 16000000,
+      "timeout_seconds": 30.0,
+      "psm": 6,
+      "rotation": 0,
+      "scale": 1.0,
+      "autocontrast": false,
+      "minimum_field_ocr_score": 0.5
+    },
+    "config_sha256": "3615bd047d1f1e3897482040368f991002d12cfc9bc2e8a9591e871308d1b5ff",
+    "rules_version": "label-rules-1.0.0",
+    "rules_sha256": "10e7c040a535cbdbeac240f68a24d0f7149041619d131ec190e6a2d5937eebcd",
+    "confidence_version": "evidence-minimum-ocr-abstain-1.1.0",
+    "preprocessing": {
+      "version": "image-preprocessing-1.0.0",
+      "source_frame": "exif_normalized_pixels_top_left",
+      "width": 1200,
+      "height": 1550,
+      "processed_width": 1200,
+      "processed_height": 1550,
+      "rotation": 0,
+      "scale": 1.0
+    },
+    "elapsed_seconds": 0.5064,
+    "prediction_source": "model",
+    "report_type": "inference_run"
+  },
+  "cleanup": "project containers and volumes removed"
+}

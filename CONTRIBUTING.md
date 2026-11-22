@@ -2,6 +2,8 @@
 
 [Nhận việc, phân công, commits, PR, review và Discussions trên GitHub](docs/team/github-collaboration.md) là hướng dẫn phối hợp của môn học. Mỗi task cần issue và bằng chứng thật; chia theo đầu ra độc lập, không tạo hoạt động rỗng để tăng thống kê.
 
+Thành viên dùng agent đọc thêm [hướng dẫn Discussions và prompt giao agent](docs/team/github-discussions.md): trao đổi phương án/kế hoạch trong Discussion, nhận việc trên issue, review mã trên PR; kết luận cần có nguồn và người chốt thực tế.
+
 [README gốc](README.md) là điểm chạy duy nhất. Nền được chọn tại [ADR0008](docs/decisions/0008-primary-invoice-platform.md); phạm vi local một người dùng. Đọc [contracts](contracts/README.md) trước khi đổi API và [inventory](docs/branch-inventory.md) trước khi port.
 
 ## GitHub Flow

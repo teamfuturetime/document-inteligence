@@ -4,5 +4,10 @@
 **/node_modules
 **/dist
 **/__pycache__
+**/.pytest_cache
+**/.ruff_cache
+**/.npm-cache
+**/test-results
+**/test-results-auth
 runtime
 artifacts
