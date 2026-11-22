@@ -71,6 +71,8 @@ jobs:
         run: uv run --project backend --locked pytest backend/tests/test_backup_manifest.py backend/tests/test_auth_backup.py backend/tests/test_backup_verify.py backend/tests/test_backup_completeness.py -q
       - name: Verify process crash restart and runtime locks on Windows
         run: uv run --project backend --locked pytest backend/tests/test_worker_process.py pipeline/tests/test_provenance.py -q
+      - name: Verify deterministic timestamp tie ordering on Windows
+        run: uv run --project backend --locked pytest backend/tests/test_stable_order.py -q
       - name: Verify bounded readiness lifecycle on Windows
         run: uv run --project backend --locked pytest backend/tests/test_readiness.py -q
       - name: Verify upload storage failure recovery on Windows
