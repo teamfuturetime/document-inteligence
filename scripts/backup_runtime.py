@@ -10,29 +10,55 @@ from pathlib import Path
 
 from docintel.storage.backup import BackupVerificationError, verify_backup
 from docintel.storage.local import LocalDocumentStorage
+from docintel.storage.publication import (
+    new_destination,
+    publish_directory,
+    staging_directory,
+    sync_files,
+)
 
 
 def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def new_destination(destination: Path) -> Path:
-    # Check the requested leaf before resolve follows a dangling symlink/junction.
-    try:
-        destination.lstat()
-    except FileNotFoundError:
-        return destination.resolve()
-    raise FileExistsError(f"Destination already exists: {destination}")
-
-
 def backup(runtime: Path, destination: Path):
     runtime, destination = runtime.resolve(), new_destination(destination)
+    if destination.is_relative_to(runtime):
+        raise ValueError("Destination must be outside source directory")
     if not (runtime / "documents.sqlite3").is_file():
         raise ValueError("Runtime database not found")
+    with staging_directory(destination) as staged:
+        write_backup(runtime, staged)
+        verify_backup(staged)
+        sync_files(staged)
+        publish_directory(staged, destination)
+
+
+def write_backup(runtime: Path, destination: Path):
     destination.mkdir(parents=True, exist_ok=False, mode=0o700)
     database = destination / "documents.sqlite3"
+    source_database = runtime / "documents.sqlite3"
+    locations = {source_database, source_database.resolve()}
+    if any(Path(str(location) + "-journal").exists() for location in locations):
+        raise ValueError("Runtime requires SQLite recovery before backup")
+    resolved_database = source_database.resolve()
+    if (
+        source_database != resolved_database
+        and Path(str(source_database) + "-wal").exists()
+    ):
+        # A WAL named after an alias has platform-dependent SQLite VFS semantics.
+        # Require explicit recovery instead of guessing which image is authoritative.
+        raise ValueError(
+            "Runtime requires SQLite recovery at the requested database location"
+        )
+    uri = resolved_database.as_uri() + "?mode=ro"
+    # Stable/offline tree: avoid creating WAL/shm for a checkpointed database,
+    # but never ignore existing WAL commits when taking a SQLite API snapshot.
+    if not any(Path(str(location) + "-wal").exists() for location in locations):
+        uri += "&immutable=1"
     with (
-        closing(sqlite3.connect(runtime / "documents.sqlite3")) as source,
+        closing(sqlite3.connect(uri, uri=True)) as source,
         closing(sqlite3.connect(database)) as target,
     ):
         source.backup(target)
@@ -40,7 +66,9 @@ def backup(runtime: Path, destination: Path):
         rows = target.execute(
             "SELECT document_id,input_sha256 FROM documents"
         ).fetchall()
-    storage = LocalDocumentStorage(runtime / "documents")
+    if rows and not (runtime / "documents").is_dir():
+        raise ValueError("Source assets are missing")
+    storage = LocalDocumentStorage(runtime / "documents") if rows else None
     target_storage = LocalDocumentStorage(destination / "documents")
     records = {"documents.sqlite3": sha256(database)}
     for document_id, expected in rows:
@@ -49,14 +77,14 @@ def backup(runtime: Path, destination: Path):
         for kind in ("source", "preview"):
             target = target_storage.path(document_id, kind)
             shutil.copyfile(storage.path(document_id, kind), target)
+            target.chmod(0o600)
             records[target.relative_to(destination).as_posix()] = sha256(target)
     (destination / "backup.json").write_text(
         json.dumps({"version": 1, "sha256": records}, indent=2) + "\n",
         encoding="utf-8",
         newline="\n",
     )
-
-    verify_backup(destination)
+    (destination / "backup.json").chmod(0o600)
 
 
 def restore(source: Path, destination: Path):
