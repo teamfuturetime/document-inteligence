@@ -138,6 +138,18 @@ giữ cấu hình tạm nếu cần điều tra, không dùng prune hoặc wildc
 Xem [báo cáo Docker trên Windows](../reports/docker-smoke-2026-11-21.md) và
 [evidence JSON](../evidence/docker-smoke-2026-11-21.json).
 
+PR #68 đã bổ sung [nghiệm thu tích hợp ngày 22/11](../reports/docker-smoke-2026-11-22.md)
+và [evidence mới](../evidence/docker-smoke-2026-11-22.json) trên main đã có verifier #56,
+doctor #69 và frontend #63; không thay kết quả lịch sử ngày 21/11. Helper còn kiểm
+snapshot lỗi đã rehash (required columns/revisions/events), current reviewed-null draft,
+old runs, và restored session profile qua HTTP: owner/foreign-owner, login/CSRF và
+session persistence sau restart. Passwords synthetic chỉ ở private QA volume/memory;
+cookie Secure=false chỉ trong override loopback tạm, không đổi `.env` hay default auth.
+Inventory trước/sau gồm containers, volumes, networks và image tags đúng project;
+shared build cache được giữ. File output phải mới; không dùng CI xanh để thay lượt Compose.
+Report ghi Git head tại lúc chạy và source hashes, không gán SHA commit tài liệu tạo sau đó
+cho source đã thực thi. Browser trong container không nằm trong HTTP smoke này.
+
 ## Phạm vi vận hành
 
 Mặc định local/single-user không đăng nhập. Session opt-in của #11 thêm account/document ownership

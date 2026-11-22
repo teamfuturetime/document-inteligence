@@ -1,0 +1,1268 @@
+{
+  "report_version": 2,
+  "purpose": "Issue #52 / PR #68 integrated Docker Compose acceptance",
+  "test_date_local": "2026-11-22",
+  "timezone": "Asia/Saigon",
+  "performed_by": "tuanqtb123-creator",
+  "assistance": "Codex",
+  "old_pr_head": "5a31bebfde993951097b392dcab634f0abdc7afa",
+  "base_main_sha": "b16036f062ccacdf77d790ce43a94d8109c4f2de",
+  "first_main_merged": "cc07ee0df087b21cd912f6c7f34d18b333604ce3",
+  "merge_commits": [
+    "c769819fd3e56a9d801631db678b6fc2949197f7",
+    "942c59520cd4ce663bf6d79edaa063e7a18fad02"
+  ],
+  "implementation_commit": "9e2c022b0e5f6b97ff88eedb0a1784e9d562a1ae",
+  "git_head_at_final_execution": "942c59520cd4ce663bf6d79edaa063e7a18fad02",
+  "source_hashes": {
+    ".dockerignore": "f07168a5a8bc919c3e8f68a1da5ecfb2b6bc7a3d9b3a072163424b491deab574",
+    "backend/Dockerfile": "6f4f808082ce93b25712d3fc08c865cc7381d0ebdc9248ce664b477cb36b8827",
+    "frontend/Dockerfile": "bfc65a254b7c2cf6fdf81023706cf8d6d41aba254b377fa748c92f6607170882",
+    "compose.yaml": "e1889be2a90266084acd9161f628714933273f810ee04ff348d300b06e19dc01",
+    "scripts/check_docker_smoke.py": "5a16dd87bf944c2af9d7df684cefc78b7231447133366b01bdefd18caea1aa00",
+    "scripts/docker_volume_probe.py": "fc35d086afc0702a2df8e656f33c92db1f3806b454cbcbf44191fa1872e6473c",
+    "scripts/backup_runtime.py": "44f8241bd828b844bdee7e6438b98e62951d334d0105faf04943d5f39d047ae6",
+    "scripts/manage_auth.py": "a78bf8a063dc72e9b5736c920ccd8017bc06591e1d9f0e012806a7a305cff82e",
+    "backend/src/docintel/storage/backup.py": "0d959a86d7bdbde81adf9101bec60201d0dba798aea7c6963302c077af8bb1a5",
+    "backend/src/docintel/doctor.py": "8627a73cf8f61b5b5c0366c237340a76f9a159c288533b94ece1ebe0bd6e9863",
+    "backend/uv.lock": "a8f1acdcb3cd9c91e9ab3f65129154b11d42f8f864e3cc7ebce610d832cf68f1",
+    "frontend/package-lock.json": "19647a05eeb0d93cad4b2ec6c0bac759335b83a5e22cc63401bbfc7b40f60501",
+    "pipeline/src/document_pipeline/resources/tessdata-lock.json": "a4a8629541144155d387688c0c2e968f9e473c6d647f0d573fd90c4848faa796"
+  },
+  "provenance_note": "Runs 4/5 executed on clean source commit above. Evidence/report commit comes later; its SHA and current-head CI receipt are recorded in PR #68 handoff. Container git_commit/git_dirty remain null because .git is excluded. Run1 was dirty development source, runs2/3 clean implementation commit before the later frontend main merge; none relabeled as final source.",
+  "environment": {
+    "windows_edition": "Microsoft Windows 11 Home",
+    "windows_display_version": "25H2",
+    "windows_build": "26200.9974",
+    "docker_desktop": "4.99.0.245822",
+    "docker_client": "29.9.3",
+    "docker_engine": "29.9.3",
+    "compose": "5.7.0",
+    "container_os": "linux",
+    "container_arch": "x86_64",
+    "container_kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "docker_cpus": 18,
+    "docker_memory_bytes": 16502026240,
+    "python": "Python 3.14.5",
+    "uv": "uv 0.12.22 (70fe1196a 2026-10-01 x86_64-pc-windows-msvc)",
+    "node": "v24.16.0",
+    "npm": "11.13.0",
+    "git": "git version 2.52.0.windows.1",
+    "tesseract": "tesseract v5.5.0.20241111",
+    "main_sha": "cc07ee0df087b21cd912f6c7f34d18b333604ce3",
+    "code_commit": "9e2c022b0e5f6b97ff88eedb0a1784e9d562a1ae",
+    "main_sha_at_final_execution": "b16036f062ccacdf77d790ce43a94d8109c4f2de",
+    "source_commit_at_final_execution": "942c59520cd4ce663bf6d79edaa063e7a18fad02",
+    "wsl_version": "2.7.3.0",
+    "wsl_kernel": "6.6.114.1-1",
+    "host_model_sha256": {
+      "vie": "79df64caf7bcfb2a27df5042ecb6121e196eada34da774956995747636d5bfa1",
+      "eng": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+    }
+  },
+  "windows_host_doctor": {
+    "report_version": 1,
+    "status": "ready",
+    "checks": [
+      {
+        "name": "python",
+        "status": "ready",
+        "code": "ready",
+        "action": "No action required.",
+        "expected": "3.14.5",
+        "observed": "3.14.5"
+      },
+      {
+        "name": "uv",
+        "status": "ready",
+        "code": "ready",
+        "action": "No action required.",
+        "expected": "0.12.22",
+        "observed": "0.12.22"
+      },
+      {
+        "name": "node",
+        "status": "ready",
+        "code": "ready",
+        "action": "No action required.",
+        "expected": "24.16.0",
+        "observed": "24.16.0"
+      },
+      {
+        "name": "npm",
+        "status": "ready",
+        "code": "ready",
+        "action": "No action required.",
+        "expected": "11.13.0",
+        "observed": "11.13.0"
+      },
+      {
+        "name": "config",
+        "status": "ready",
+        "code": "ready",
+        "action": "No action required.",
+        "auth_mode": "local",
+        "provider_mode": "tesseract"
+      },
+      {
+        "name": "runtime",
+        "status": "ready",
+        "code": "ready",
+        "action": "No action required.",
+        "schema_version": 2
+      },
+      {
+        "name": "tesseract",
+        "status": "ready",
+        "code": "ready",
+        "action": "No action required.",
+        "expected": "5.x",
+        "observed": "5.5.0.20241111"
+      },
+      {
+        "name": "models",
+        "status": "ready",
+        "code": "ready",
+        "action": "No action required."
+      }
+    ]
+  },
+  "regression": {
+    "command": "python scripts/dev.py check",
+    "status": "passed",
+    "backend_pipeline_tests": 484,
+    "frontend_tests": 64,
+    "helper_regressions": 6,
+    "ruff_format_files": 118,
+    "contracts": 29,
+    "contract_samples": 6,
+    "product_samples": 150,
+    "notes": "PYTEST_ADDOPTS=-p no:cacheprovider avoids existing locked host cache, no tests skipped. Initial helper invocation had a cache warning; final helper/full checks passed."
+  },
+  "docker_runs": [
+    {
+      "report_version": 2,
+      "project": "docintel52-89ccf4d7daee4bd4b22230dfefb28703",
+      "status": "passed",
+      "checked_at": "2026-11-22T16:35:30.162394+00:00",
+      "checks": [
+        "images_built_from_repository",
+        "startup_readiness_frontend_proxy",
+        "native_png_jpeg_null_confirm_export",
+        "restart_same_volume_persistence",
+        "restored_runtime_confirmed_export",
+        "restored_session_http_owner_isolation_and_restart"
+      ],
+      "head": "c769819fd3e56a9d801631db678b6fc2949197f7",
+      "base_main_sha": "cc07ee0df087b21cd912f6c7f34d18b333604ce3",
+      "source_hashes": {
+        ".dockerignore": "f07168a5a8bc919c3e8f68a1da5ecfb2b6bc7a3d9b3a072163424b491deab574",
+        "backend/Dockerfile": "6f4f808082ce93b25712d3fc08c865cc7381d0ebdc9248ce664b477cb36b8827",
+        "frontend/Dockerfile": "bfc65a254b7c2cf6fdf81023706cf8d6d41aba254b377fa748c92f6607170882",
+        "compose.yaml": "e1889be2a90266084acd9161f628714933273f810ee04ff348d300b06e19dc01",
+        "scripts/check_docker_smoke.py": "5a16dd87bf944c2af9d7df684cefc78b7231447133366b01bdefd18caea1aa00",
+        "scripts/docker_volume_probe.py": "4d13a5ceea882d96c68cedb1d59f28f52b781b66ce6556e71c4068ad697142c1",
+        "scripts/backup_runtime.py": "44f8241bd828b844bdee7e6438b98e62951d334d0105faf04943d5f39d047ae6",
+        "scripts/manage_auth.py": "a78bf8a063dc72e9b5736c920ccd8017bc06591e1d9f0e012806a7a305cff82e",
+        "backend/src/docintel/storage/backup.py": "0d959a86d7bdbde81adf9101bec60201d0dba798aea7c6963302c077af8bb1a5",
+        "backend/src/docintel/doctor.py": "8627a73cf8f61b5b5c0366c237340a76f9a159c288533b94ece1ebe0bd6e9863",
+        "backend/uv.lock": "a8f1acdcb3cd9c91e9ab3f65129154b11d42f8f864e3cc7ebce610d832cf68f1",
+        "frontend/package-lock.json": "19647a05eeb0d93cad4b2ec6c0bac759335b83a5e22cc63401bbfc7b40f60501",
+        "pipeline/src/document_pipeline/resources/tessdata-lock.json": "a4a8629541144155d387688c0c2e968f9e473c6d647f0d573fd90c4848faa796"
+      },
+      "git_head_at_execution": "c769819fd3e56a9d801631db678b6fc2949197f7",
+      "tracked_tree_dirty_at_execution": true,
+      "inventory_before": {
+        "containers": [],
+        "volumes": [],
+        "networks": [],
+        "images": []
+      },
+      "inventory_running": {
+        "containers": [
+          "d78bbd1497f0",
+          "80c22e6d0aa5"
+        ],
+        "volumes": [
+          "docintel52-89ccf4d7daee4bd4b22230dfefb28703_document-runtime",
+          "docintel52-89ccf4d7daee4bd4b22230dfefb28703_qa-state"
+        ],
+        "networks": [
+          "e18b7fef6d0e"
+        ],
+        "images": [
+          "b7d512319ce4",
+          "6435f8cb8652"
+        ]
+      },
+      "container_runtime": {
+        "uid": 10001,
+        "tesseract": "tesseract 5.5.0",
+        "models": {
+          "vie": "79df64caf7bcfb2a27df5042ecb6121e196eada34da774956995747636d5bfa1",
+          "eng": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+        }
+      },
+      "documents": [
+        {
+          "document_id": "4a0c598f646949e9babcd9ea4b308e31",
+          "run_id": "26cb01fce0e54a8db3752888706e337a",
+          "revision": 2,
+          "input_sha256": "e3aedcd764f7466491623de17437031ecc532a67e0fea2f009a30fadd7898969",
+          "preview_sha256": "e44afc932641bef40075acf3b4ee1aa6b13cc53188510fecdb3611ec4173926d",
+          "export_sha256_without_download_time": "3179190cf01aa9f3da80ee118faacaf2cadb9af97a5e6e82e1baadf7cb3e4e79",
+          "old_run_id": "c14482770b1443b6a3ce9b6fff7cfdb2"
+        },
+        {
+          "document_id": "239098955bb74594a488872467435fe8",
+          "run_id": "450e5a21273a4bacbaa0789702bf2200",
+          "revision": 3,
+          "input_sha256": "ff3c172dbebb6f9907f414bf58c289dc31d6355ceae8e3e57532816c6cbb05ef",
+          "preview_sha256": "bc49ca6d4ab43316f4c967f6962c51dc25148b2ffd7dec97358f511e96d4cc0c",
+          "export_sha256_without_download_time": "b64c102f3243e57a9035e8304fb620e3a63a7f9c5076906aa7a77a93e2670cff",
+          "old_run_id": null
+        }
+      ],
+      "reviewed_null": {
+        "document_id": "46282157f5db438baa6d83db2c580e37",
+        "run_id": "fa7ca89d8eab47b2a9871664ccc2557b",
+        "revision": 2
+      },
+      "offline_probe": {
+        "status": "passed",
+        "verifier": {
+          "negative_cases": [
+            {
+              "case": "missing_filename",
+              "code": "SNAPSHOT_UNREADABLE",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            },
+            {
+              "case": "missing_result",
+              "code": "SNAPSHOT_UNREADABLE",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            },
+            {
+              "case": "missing_revisions",
+              "code": "DATABASE_REFERENCES",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            },
+            {
+              "case": "missing_event_revision",
+              "code": "DATABASE_REFERENCES",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            },
+            {
+              "case": "cross_document_event",
+              "code": "DATABASE_REFERENCES",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            }
+          ],
+          "positive_cases": [
+            "schema2",
+            "extra_columns",
+            "queued_no_revision",
+            "failed_no_revision"
+          ]
+        },
+        "snapshot_sha256": "595b4c10aa1c8b029effa6fdb2e54ac02dcf8cc1c60342239935b5559e97a72f",
+        "source_unchanged": true,
+        "checks": [
+          "schema2",
+          "snapshot_hashes",
+          "restored_tables_assets_auth",
+          "private_modes",
+          "db1_backup_migration",
+          "legacy_remains_local",
+          "destination_leaf_guards",
+          "corrupted_backup_rejected",
+          "merged_verifier_rehashed_negatives",
+          "owned_snapshot_auth_preserved"
+        ]
+      },
+      "native_metadata": {
+        "engine_version": "5.5.0",
+        "model_revision": "87416418657359cb625c412a48b6e1d6d41c29bd",
+        "model_sha256": {
+          "vie": "79df64caf7bcfb2a27df5042ecb6121e196eada34da774956995747636d5bfa1",
+          "eng": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+        },
+        "git_commit": null,
+        "git_dirty": null,
+        "pipeline_source_sha256": "b225095aa0751ee4485bbd57d31c434f13c88f829f6b5e633b6759c0b2c97a8c",
+        "runtime": {
+          "python": "3.14.5",
+          "pillow": "12.3.0",
+          "pydantic": "2.13.5"
+        },
+        "hardware": {
+          "architecture": "x86_64",
+          "processor": "unknown",
+          "platform": "Linux",
+          "acceleration": "CPU"
+        },
+        "reproducibility_limitations": [
+          "OCR confidence is heuristic, not calibrated"
+        ],
+        "input_sha256": "e3aedcd764f7466491623de17437031ecc532a67e0fea2f009a30fadd7898969",
+        "config": {
+          "version": "inference-config-1.1.0",
+          "max_upload_bytes": 5242880,
+          "max_image_pixels": 16000000,
+          "timeout_seconds": 30.0,
+          "psm": 6,
+          "rotation": 0,
+          "scale": 1.0,
+          "autocontrast": false,
+          "minimum_field_ocr_score": 0.5
+        },
+        "config_sha256": "3615bd047d1f1e3897482040368f991002d12cfc9bc2e8a9591e871308d1b5ff",
+        "rules_version": "label-rules-1.0.0",
+        "rules_sha256": "10e7c040a535cbdbeac240f68a24d0f7149041619d131ec190e6a2d5937eebcd",
+        "confidence_version": "evidence-minimum-ocr-abstain-1.1.0",
+        "preprocessing": {
+          "version": "image-preprocessing-1.0.0",
+          "source_frame": "exif_normalized_pixels_top_left",
+          "width": 1200,
+          "height": 1550,
+          "processed_width": 1200,
+          "processed_height": 1550,
+          "rotation": 0,
+          "scale": 1.0
+        },
+        "elapsed_seconds": 0.498,
+        "prediction_source": "model",
+        "report_type": "inference_run"
+      },
+      "inventory_after": {
+        "containers": [],
+        "volumes": [],
+        "networks": [],
+        "images": []
+      },
+      "cleanup": "project containers and volumes removed"
+    },
+    {
+      "report_version": 2,
+      "project": "docintel52-fe318b7a1f584660af0b6d1ec73881bc",
+      "status": "passed",
+      "checked_at": "2026-11-22T16:38:35.673213+00:00",
+      "checks": [
+        "images_built_from_repository",
+        "startup_readiness_frontend_proxy",
+        "native_png_jpeg_null_confirm_export",
+        "restart_same_volume_persistence",
+        "restored_runtime_confirmed_export",
+        "restored_session_http_owner_isolation_and_restart"
+      ],
+      "head": "9e2c022b0e5f6b97ff88eedb0a1784e9d562a1ae",
+      "base_main_sha": "cc07ee0df087b21cd912f6c7f34d18b333604ce3",
+      "source_hashes": {
+        ".dockerignore": "f07168a5a8bc919c3e8f68a1da5ecfb2b6bc7a3d9b3a072163424b491deab574",
+        "backend/Dockerfile": "6f4f808082ce93b25712d3fc08c865cc7381d0ebdc9248ce664b477cb36b8827",
+        "frontend/Dockerfile": "bfc65a254b7c2cf6fdf81023706cf8d6d41aba254b377fa748c92f6607170882",
+        "compose.yaml": "e1889be2a90266084acd9161f628714933273f810ee04ff348d300b06e19dc01",
+        "scripts/check_docker_smoke.py": "5a16dd87bf944c2af9d7df684cefc78b7231447133366b01bdefd18caea1aa00",
+        "scripts/docker_volume_probe.py": "fc35d086afc0702a2df8e656f33c92db1f3806b454cbcbf44191fa1872e6473c",
+        "scripts/backup_runtime.py": "44f8241bd828b844bdee7e6438b98e62951d334d0105faf04943d5f39d047ae6",
+        "scripts/manage_auth.py": "a78bf8a063dc72e9b5736c920ccd8017bc06591e1d9f0e012806a7a305cff82e",
+        "backend/src/docintel/storage/backup.py": "0d959a86d7bdbde81adf9101bec60201d0dba798aea7c6963302c077af8bb1a5",
+        "backend/src/docintel/doctor.py": "8627a73cf8f61b5b5c0366c237340a76f9a159c288533b94ece1ebe0bd6e9863",
+        "backend/uv.lock": "a8f1acdcb3cd9c91e9ab3f65129154b11d42f8f864e3cc7ebce610d832cf68f1",
+        "frontend/package-lock.json": "19647a05eeb0d93cad4b2ec6c0bac759335b83a5e22cc63401bbfc7b40f60501",
+        "pipeline/src/document_pipeline/resources/tessdata-lock.json": "a4a8629541144155d387688c0c2e968f9e473c6d647f0d573fd90c4848faa796"
+      },
+      "git_head_at_execution": "9e2c022b0e5f6b97ff88eedb0a1784e9d562a1ae",
+      "tracked_tree_dirty_at_execution": false,
+      "inventory_before": {
+        "containers": [],
+        "volumes": [],
+        "networks": [],
+        "images": []
+      },
+      "inventory_running": {
+        "containers": [
+          "2bf6293f55d4",
+          "00483ff6ef22"
+        ],
+        "volumes": [
+          "docintel52-fe318b7a1f584660af0b6d1ec73881bc_document-runtime",
+          "docintel52-fe318b7a1f584660af0b6d1ec73881bc_qa-state"
+        ],
+        "networks": [
+          "fcff326d3a71"
+        ],
+        "images": [
+          "2d5a3b97a675",
+          "69ed93252a01"
+        ]
+      },
+      "container_runtime": {
+        "uid": 10001,
+        "tesseract": "tesseract 5.5.0",
+        "models": {
+          "vie": "79df64caf7bcfb2a27df5042ecb6121e196eada34da774956995747636d5bfa1",
+          "eng": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+        }
+      },
+      "documents": [
+        {
+          "document_id": "480a86c92d244687bae02bb986b88e72",
+          "run_id": "ac2258a965f44091b40541b6ce5d4b8e",
+          "revision": 2,
+          "input_sha256": "e3aedcd764f7466491623de17437031ecc532a67e0fea2f009a30fadd7898969",
+          "preview_sha256": "e44afc932641bef40075acf3b4ee1aa6b13cc53188510fecdb3611ec4173926d",
+          "export_sha256_without_download_time": "c7a84c8e0747b30f955a04c1f011c349a0b4494e7ea8db51d8e3eb97010c1af6",
+          "old_run_id": "320d3ed239f4435b8e30bacd7e716351"
+        },
+        {
+          "document_id": "6902b9bab0164ed291129ba826d21be2",
+          "run_id": "f41a1e18e8334562b79b9195510571b4",
+          "revision": 3,
+          "input_sha256": "ff3c172dbebb6f9907f414bf58c289dc31d6355ceae8e3e57532816c6cbb05ef",
+          "preview_sha256": "bc49ca6d4ab43316f4c967f6962c51dc25148b2ffd7dec97358f511e96d4cc0c",
+          "export_sha256_without_download_time": "9b51851737ec32049c9dd51a2b1a61e48d1a8be244220da39f3df20a62121e00",
+          "old_run_id": null
+        }
+      ],
+      "reviewed_null": {
+        "document_id": "e1af78bf07dd4eeb9e58bfb5abe5a540",
+        "run_id": "7fccbbdca62d49f0835afad096516190",
+        "revision": 2
+      },
+      "offline_probe": {
+        "status": "passed",
+        "verifier": {
+          "negative_cases": [
+            {
+              "case": "missing_filename",
+              "code": "SNAPSHOT_UNREADABLE",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            },
+            {
+              "case": "missing_result",
+              "code": "SNAPSHOT_UNREADABLE",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            },
+            {
+              "case": "missing_revisions",
+              "code": "DATABASE_REFERENCES",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            },
+            {
+              "case": "missing_event_revision",
+              "code": "DATABASE_REFERENCES",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            },
+            {
+              "case": "cross_document_event",
+              "code": "DATABASE_REFERENCES",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            }
+          ],
+          "positive_cases": [
+            "schema2",
+            "extra_columns",
+            "queued_no_revision",
+            "failed_no_revision"
+          ]
+        },
+        "snapshot_sha256": "a12aebba0f924230807a7358d72ba0ed96d4a318cefe791772e546b84d5fa52e",
+        "source_unchanged": true,
+        "checks": [
+          "schema2",
+          "snapshot_hashes",
+          "restored_tables_assets_auth",
+          "private_modes",
+          "db1_backup_migration",
+          "legacy_remains_local",
+          "destination_leaf_guards",
+          "corrupted_backup_rejected",
+          "merged_verifier_rehashed_negatives",
+          "owned_snapshot_auth_preserved"
+        ]
+      },
+      "native_metadata": {
+        "engine_version": "5.5.0",
+        "model_revision": "87416418657359cb625c412a48b6e1d6d41c29bd",
+        "model_sha256": {
+          "vie": "79df64caf7bcfb2a27df5042ecb6121e196eada34da774956995747636d5bfa1",
+          "eng": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+        },
+        "git_commit": null,
+        "git_dirty": null,
+        "pipeline_source_sha256": "b225095aa0751ee4485bbd57d31c434f13c88f829f6b5e633b6759c0b2c97a8c",
+        "runtime": {
+          "python": "3.14.5",
+          "pillow": "12.3.0",
+          "pydantic": "2.13.5"
+        },
+        "hardware": {
+          "architecture": "x86_64",
+          "processor": "unknown",
+          "platform": "Linux",
+          "acceleration": "CPU"
+        },
+        "reproducibility_limitations": [
+          "OCR confidence is heuristic, not calibrated"
+        ],
+        "input_sha256": "e3aedcd764f7466491623de17437031ecc532a67e0fea2f009a30fadd7898969",
+        "config": {
+          "version": "inference-config-1.1.0",
+          "max_upload_bytes": 5242880,
+          "max_image_pixels": 16000000,
+          "timeout_seconds": 30.0,
+          "psm": 6,
+          "rotation": 0,
+          "scale": 1.0,
+          "autocontrast": false,
+          "minimum_field_ocr_score": 0.5
+        },
+        "config_sha256": "3615bd047d1f1e3897482040368f991002d12cfc9bc2e8a9591e871308d1b5ff",
+        "rules_version": "label-rules-1.0.0",
+        "rules_sha256": "10e7c040a535cbdbeac240f68a24d0f7149041619d131ec190e6a2d5937eebcd",
+        "confidence_version": "evidence-minimum-ocr-abstain-1.1.0",
+        "preprocessing": {
+          "version": "image-preprocessing-1.0.0",
+          "source_frame": "exif_normalized_pixels_top_left",
+          "width": 1200,
+          "height": 1550,
+          "processed_width": 1200,
+          "processed_height": 1550,
+          "rotation": 0,
+          "scale": 1.0
+        },
+        "elapsed_seconds": 0.5909,
+        "prediction_source": "model",
+        "report_type": "inference_run"
+      },
+      "inventory_after": {
+        "containers": [],
+        "volumes": [],
+        "networks": [],
+        "images": []
+      },
+      "cleanup": "project containers and volumes removed"
+    },
+    {
+      "report_version": 2,
+      "project": "docintel52-b6fd119957874a0392cf053938ed61be",
+      "status": "passed",
+      "checked_at": "2026-11-22T16:38:34.809659+00:00",
+      "checks": [
+        "images_built_from_repository",
+        "startup_readiness_frontend_proxy",
+        "native_png_jpeg_null_confirm_export",
+        "restart_same_volume_persistence",
+        "restored_runtime_confirmed_export",
+        "restored_session_http_owner_isolation_and_restart"
+      ],
+      "head": "9e2c022b0e5f6b97ff88eedb0a1784e9d562a1ae",
+      "base_main_sha": "cc07ee0df087b21cd912f6c7f34d18b333604ce3",
+      "source_hashes": {
+        ".dockerignore": "f07168a5a8bc919c3e8f68a1da5ecfb2b6bc7a3d9b3a072163424b491deab574",
+        "backend/Dockerfile": "6f4f808082ce93b25712d3fc08c865cc7381d0ebdc9248ce664b477cb36b8827",
+        "frontend/Dockerfile": "bfc65a254b7c2cf6fdf81023706cf8d6d41aba254b377fa748c92f6607170882",
+        "compose.yaml": "e1889be2a90266084acd9161f628714933273f810ee04ff348d300b06e19dc01",
+        "scripts/check_docker_smoke.py": "5a16dd87bf944c2af9d7df684cefc78b7231447133366b01bdefd18caea1aa00",
+        "scripts/docker_volume_probe.py": "fc35d086afc0702a2df8e656f33c92db1f3806b454cbcbf44191fa1872e6473c",
+        "scripts/backup_runtime.py": "44f8241bd828b844bdee7e6438b98e62951d334d0105faf04943d5f39d047ae6",
+        "scripts/manage_auth.py": "a78bf8a063dc72e9b5736c920ccd8017bc06591e1d9f0e012806a7a305cff82e",
+        "backend/src/docintel/storage/backup.py": "0d959a86d7bdbde81adf9101bec60201d0dba798aea7c6963302c077af8bb1a5",
+        "backend/src/docintel/doctor.py": "8627a73cf8f61b5b5c0366c237340a76f9a159c288533b94ece1ebe0bd6e9863",
+        "backend/uv.lock": "a8f1acdcb3cd9c91e9ab3f65129154b11d42f8f864e3cc7ebce610d832cf68f1",
+        "frontend/package-lock.json": "19647a05eeb0d93cad4b2ec6c0bac759335b83a5e22cc63401bbfc7b40f60501",
+        "pipeline/src/document_pipeline/resources/tessdata-lock.json": "a4a8629541144155d387688c0c2e968f9e473c6d647f0d573fd90c4848faa796"
+      },
+      "git_head_at_execution": "9e2c022b0e5f6b97ff88eedb0a1784e9d562a1ae",
+      "tracked_tree_dirty_at_execution": false,
+      "inventory_before": {
+        "containers": [],
+        "volumes": [],
+        "networks": [],
+        "images": []
+      },
+      "inventory_running": {
+        "containers": [
+          "828130d5eff4",
+          "dea20ad93553"
+        ],
+        "volumes": [
+          "docintel52-b6fd119957874a0392cf053938ed61be_document-runtime",
+          "docintel52-b6fd119957874a0392cf053938ed61be_qa-state"
+        ],
+        "networks": [
+          "1ccc87f1442c"
+        ],
+        "images": [
+          "9e4079211915",
+          "b28428418897"
+        ]
+      },
+      "container_runtime": {
+        "uid": 10001,
+        "tesseract": "tesseract 5.5.0",
+        "models": {
+          "vie": "79df64caf7bcfb2a27df5042ecb6121e196eada34da774956995747636d5bfa1",
+          "eng": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+        }
+      },
+      "documents": [
+        {
+          "document_id": "338b7bbe54334551b93c278ebba214ae",
+          "run_id": "d29a65a2d46643ce8bc22c2c93d91a94",
+          "revision": 2,
+          "input_sha256": "e3aedcd764f7466491623de17437031ecc532a67e0fea2f009a30fadd7898969",
+          "preview_sha256": "e44afc932641bef40075acf3b4ee1aa6b13cc53188510fecdb3611ec4173926d",
+          "export_sha256_without_download_time": "e4995fd315e9662de833776ddbbc32d3a52cec39970f2d0d9446c4c222cb5695",
+          "old_run_id": "68a5389c74b9464795c3c37feedbd3cb"
+        },
+        {
+          "document_id": "5d25672801214c728c3433b820c715ef",
+          "run_id": "2c98415b6d9e48ff8ca65ae356f76fd1",
+          "revision": 3,
+          "input_sha256": "ff3c172dbebb6f9907f414bf58c289dc31d6355ceae8e3e57532816c6cbb05ef",
+          "preview_sha256": "bc49ca6d4ab43316f4c967f6962c51dc25148b2ffd7dec97358f511e96d4cc0c",
+          "export_sha256_without_download_time": "3f6331cc82ac33ef29d6f4482727c73f42620108dcbc558fb9f216118ba913bf",
+          "old_run_id": null
+        }
+      ],
+      "reviewed_null": {
+        "document_id": "a02ce83f23904bd5ae650e70e8a1713e",
+        "run_id": "27a431879e1d4c5a8843f4bf2044d388",
+        "revision": 2
+      },
+      "offline_probe": {
+        "status": "passed",
+        "verifier": {
+          "negative_cases": [
+            {
+              "case": "missing_filename",
+              "code": "SNAPSHOT_UNREADABLE",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            },
+            {
+              "case": "missing_result",
+              "code": "SNAPSHOT_UNREADABLE",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            },
+            {
+              "case": "missing_revisions",
+              "code": "DATABASE_REFERENCES",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            },
+            {
+              "case": "missing_event_revision",
+              "code": "DATABASE_REFERENCES",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            },
+            {
+              "case": "cross_document_event",
+              "code": "DATABASE_REFERENCES",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            }
+          ],
+          "positive_cases": [
+            "schema2",
+            "extra_columns",
+            "queued_no_revision",
+            "failed_no_revision"
+          ]
+        },
+        "snapshot_sha256": "6ade59bf82c4e1dd2713d06b02968111d81a41aab59072a6040b8e0faf71a47b",
+        "source_unchanged": true,
+        "checks": [
+          "schema2",
+          "snapshot_hashes",
+          "restored_tables_assets_auth",
+          "private_modes",
+          "db1_backup_migration",
+          "legacy_remains_local",
+          "destination_leaf_guards",
+          "corrupted_backup_rejected",
+          "merged_verifier_rehashed_negatives",
+          "owned_snapshot_auth_preserved"
+        ]
+      },
+      "native_metadata": {
+        "engine_version": "5.5.0",
+        "model_revision": "87416418657359cb625c412a48b6e1d6d41c29bd",
+        "model_sha256": {
+          "vie": "79df64caf7bcfb2a27df5042ecb6121e196eada34da774956995747636d5bfa1",
+          "eng": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+        },
+        "git_commit": null,
+        "git_dirty": null,
+        "pipeline_source_sha256": "b225095aa0751ee4485bbd57d31c434f13c88f829f6b5e633b6759c0b2c97a8c",
+        "runtime": {
+          "python": "3.14.5",
+          "pillow": "12.3.0",
+          "pydantic": "2.13.5"
+        },
+        "hardware": {
+          "architecture": "x86_64",
+          "processor": "unknown",
+          "platform": "Linux",
+          "acceleration": "CPU"
+        },
+        "reproducibility_limitations": [
+          "OCR confidence is heuristic, not calibrated"
+        ],
+        "input_sha256": "e3aedcd764f7466491623de17437031ecc532a67e0fea2f009a30fadd7898969",
+        "config": {
+          "version": "inference-config-1.1.0",
+          "max_upload_bytes": 5242880,
+          "max_image_pixels": 16000000,
+          "timeout_seconds": 30.0,
+          "psm": 6,
+          "rotation": 0,
+          "scale": 1.0,
+          "autocontrast": false,
+          "minimum_field_ocr_score": 0.5
+        },
+        "config_sha256": "3615bd047d1f1e3897482040368f991002d12cfc9bc2e8a9591e871308d1b5ff",
+        "rules_version": "label-rules-1.0.0",
+        "rules_sha256": "10e7c040a535cbdbeac240f68a24d0f7149041619d131ec190e6a2d5937eebcd",
+        "confidence_version": "evidence-minimum-ocr-abstain-1.1.0",
+        "preprocessing": {
+          "version": "image-preprocessing-1.0.0",
+          "source_frame": "exif_normalized_pixels_top_left",
+          "width": 1200,
+          "height": 1550,
+          "processed_width": 1200,
+          "processed_height": 1550,
+          "rotation": 0,
+          "scale": 1.0
+        },
+        "elapsed_seconds": 0.5815,
+        "prediction_source": "model",
+        "report_type": "inference_run"
+      },
+      "inventory_after": {
+        "containers": [],
+        "volumes": [],
+        "networks": [],
+        "images": []
+      },
+      "cleanup": "project containers and volumes removed"
+    },
+    {
+      "report_version": 2,
+      "project": "docintel52-bf8f15b7974043ef9bf0d4555bb2d786",
+      "status": "passed",
+      "checked_at": "2026-11-22T16:43:59.391991+00:00",
+      "checks": [
+        "images_built_from_repository",
+        "startup_readiness_frontend_proxy",
+        "native_png_jpeg_null_confirm_export",
+        "restart_same_volume_persistence",
+        "restored_runtime_confirmed_export",
+        "restored_session_http_owner_isolation_and_restart"
+      ],
+      "head": "942c59520cd4ce663bf6d79edaa063e7a18fad02",
+      "base_main_sha": "b16036f062ccacdf77d790ce43a94d8109c4f2de",
+      "source_hashes": {
+        ".dockerignore": "f07168a5a8bc919c3e8f68a1da5ecfb2b6bc7a3d9b3a072163424b491deab574",
+        "backend/Dockerfile": "6f4f808082ce93b25712d3fc08c865cc7381d0ebdc9248ce664b477cb36b8827",
+        "frontend/Dockerfile": "bfc65a254b7c2cf6fdf81023706cf8d6d41aba254b377fa748c92f6607170882",
+        "compose.yaml": "e1889be2a90266084acd9161f628714933273f810ee04ff348d300b06e19dc01",
+        "scripts/check_docker_smoke.py": "5a16dd87bf944c2af9d7df684cefc78b7231447133366b01bdefd18caea1aa00",
+        "scripts/docker_volume_probe.py": "fc35d086afc0702a2df8e656f33c92db1f3806b454cbcbf44191fa1872e6473c",
+        "scripts/backup_runtime.py": "44f8241bd828b844bdee7e6438b98e62951d334d0105faf04943d5f39d047ae6",
+        "scripts/manage_auth.py": "a78bf8a063dc72e9b5736c920ccd8017bc06591e1d9f0e012806a7a305cff82e",
+        "backend/src/docintel/storage/backup.py": "0d959a86d7bdbde81adf9101bec60201d0dba798aea7c6963302c077af8bb1a5",
+        "backend/src/docintel/doctor.py": "8627a73cf8f61b5b5c0366c237340a76f9a159c288533b94ece1ebe0bd6e9863",
+        "backend/uv.lock": "a8f1acdcb3cd9c91e9ab3f65129154b11d42f8f864e3cc7ebce610d832cf68f1",
+        "frontend/package-lock.json": "19647a05eeb0d93cad4b2ec6c0bac759335b83a5e22cc63401bbfc7b40f60501",
+        "pipeline/src/document_pipeline/resources/tessdata-lock.json": "a4a8629541144155d387688c0c2e968f9e473c6d647f0d573fd90c4848faa796"
+      },
+      "git_head_at_execution": "942c59520cd4ce663bf6d79edaa063e7a18fad02",
+      "tracked_tree_dirty_at_execution": false,
+      "inventory_before": {
+        "containers": [],
+        "volumes": [],
+        "networks": [],
+        "images": []
+      },
+      "inventory_running": {
+        "containers": [
+          "a784ba9c759c",
+          "d5efc09a0099"
+        ],
+        "volumes": [
+          "docintel52-bf8f15b7974043ef9bf0d4555bb2d786_document-runtime",
+          "docintel52-bf8f15b7974043ef9bf0d4555bb2d786_qa-state"
+        ],
+        "networks": [
+          "1acc7e245c6a"
+        ],
+        "images": [
+          "81a081095495",
+          "493d009ca9cf"
+        ]
+      },
+      "container_runtime": {
+        "uid": 10001,
+        "tesseract": "tesseract 5.5.0",
+        "models": {
+          "vie": "79df64caf7bcfb2a27df5042ecb6121e196eada34da774956995747636d5bfa1",
+          "eng": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+        }
+      },
+      "documents": [
+        {
+          "document_id": "a40383858abd44faa71f4736f518bd48",
+          "run_id": "48ebe757647b4804889a455dd5b84269",
+          "revision": 2,
+          "input_sha256": "e3aedcd764f7466491623de17437031ecc532a67e0fea2f009a30fadd7898969",
+          "preview_sha256": "e44afc932641bef40075acf3b4ee1aa6b13cc53188510fecdb3611ec4173926d",
+          "export_sha256_without_download_time": "0f330a669c790b7c176bfc4f9104aac07c03d4dcf560000f252503d8e33c7b0f",
+          "old_run_id": "2b36cec33fee44328e82ea8a34b83ca0"
+        },
+        {
+          "document_id": "8bdb663cc90144a6b9fe354811d69595",
+          "run_id": "451811764eaf4c5386cbf171003db654",
+          "revision": 3,
+          "input_sha256": "ff3c172dbebb6f9907f414bf58c289dc31d6355ceae8e3e57532816c6cbb05ef",
+          "preview_sha256": "bc49ca6d4ab43316f4c967f6962c51dc25148b2ffd7dec97358f511e96d4cc0c",
+          "export_sha256_without_download_time": "08db0f93ef2be39d8330ab8af7b9b9528653cdc6427210f9c2bb48db3e05dec9",
+          "old_run_id": null
+        }
+      ],
+      "reviewed_null": {
+        "document_id": "25997cdf46274d13b1c2eef6e6209db9",
+        "run_id": "5a6ef55a8e8447f3847f233a3203bb80",
+        "revision": 2
+      },
+      "offline_probe": {
+        "status": "passed",
+        "verifier": {
+          "negative_cases": [
+            {
+              "case": "missing_filename",
+              "code": "SNAPSHOT_UNREADABLE",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            },
+            {
+              "case": "missing_result",
+              "code": "SNAPSHOT_UNREADABLE",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            },
+            {
+              "case": "missing_revisions",
+              "code": "DATABASE_REFERENCES",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            },
+            {
+              "case": "missing_event_revision",
+              "code": "DATABASE_REFERENCES",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            },
+            {
+              "case": "cross_document_event",
+              "code": "DATABASE_REFERENCES",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            }
+          ],
+          "positive_cases": [
+            "schema2",
+            "extra_columns",
+            "queued_no_revision",
+            "failed_no_revision"
+          ]
+        },
+        "snapshot_sha256": "27916ad2154f64346b75d136ea61d1dd2381c8a872a08a4ae79d54e2a4a76cd9",
+        "source_unchanged": true,
+        "checks": [
+          "schema2",
+          "snapshot_hashes",
+          "restored_tables_assets_auth",
+          "private_modes",
+          "db1_backup_migration",
+          "legacy_remains_local",
+          "destination_leaf_guards",
+          "corrupted_backup_rejected",
+          "merged_verifier_rehashed_negatives",
+          "owned_snapshot_auth_preserved"
+        ]
+      },
+      "native_metadata": {
+        "engine_version": "5.5.0",
+        "model_revision": "87416418657359cb625c412a48b6e1d6d41c29bd",
+        "model_sha256": {
+          "vie": "79df64caf7bcfb2a27df5042ecb6121e196eada34da774956995747636d5bfa1",
+          "eng": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+        },
+        "git_commit": null,
+        "git_dirty": null,
+        "pipeline_source_sha256": "b225095aa0751ee4485bbd57d31c434f13c88f829f6b5e633b6759c0b2c97a8c",
+        "runtime": {
+          "python": "3.14.5",
+          "pillow": "12.3.0",
+          "pydantic": "2.13.5"
+        },
+        "hardware": {
+          "architecture": "x86_64",
+          "processor": "unknown",
+          "platform": "Linux",
+          "acceleration": "CPU"
+        },
+        "reproducibility_limitations": [
+          "OCR confidence is heuristic, not calibrated"
+        ],
+        "input_sha256": "e3aedcd764f7466491623de17437031ecc532a67e0fea2f009a30fadd7898969",
+        "config": {
+          "version": "inference-config-1.1.0",
+          "max_upload_bytes": 5242880,
+          "max_image_pixels": 16000000,
+          "timeout_seconds": 30.0,
+          "psm": 6,
+          "rotation": 0,
+          "scale": 1.0,
+          "autocontrast": false,
+          "minimum_field_ocr_score": 0.5
+        },
+        "config_sha256": "3615bd047d1f1e3897482040368f991002d12cfc9bc2e8a9591e871308d1b5ff",
+        "rules_version": "label-rules-1.0.0",
+        "rules_sha256": "10e7c040a535cbdbeac240f68a24d0f7149041619d131ec190e6a2d5937eebcd",
+        "confidence_version": "evidence-minimum-ocr-abstain-1.1.0",
+        "preprocessing": {
+          "version": "image-preprocessing-1.0.0",
+          "source_frame": "exif_normalized_pixels_top_left",
+          "width": 1200,
+          "height": 1550,
+          "processed_width": 1200,
+          "processed_height": 1550,
+          "rotation": 0,
+          "scale": 1.0
+        },
+        "elapsed_seconds": 0.5519,
+        "prediction_source": "model",
+        "report_type": "inference_run"
+      },
+      "inventory_after": {
+        "containers": [],
+        "volumes": [],
+        "networks": [],
+        "images": []
+      },
+      "cleanup": "project containers and volumes removed"
+    },
+    {
+      "report_version": 2,
+      "project": "docintel52-45dbb3877c5c430dae235e02fd45b42e",
+      "status": "passed",
+      "checked_at": "2026-11-22T16:43:59.855207+00:00",
+      "checks": [
+        "images_built_from_repository",
+        "startup_readiness_frontend_proxy",
+        "native_png_jpeg_null_confirm_export",
+        "restart_same_volume_persistence",
+        "restored_runtime_confirmed_export",
+        "restored_session_http_owner_isolation_and_restart"
+      ],
+      "head": "942c59520cd4ce663bf6d79edaa063e7a18fad02",
+      "base_main_sha": "b16036f062ccacdf77d790ce43a94d8109c4f2de",
+      "source_hashes": {
+        ".dockerignore": "f07168a5a8bc919c3e8f68a1da5ecfb2b6bc7a3d9b3a072163424b491deab574",
+        "backend/Dockerfile": "6f4f808082ce93b25712d3fc08c865cc7381d0ebdc9248ce664b477cb36b8827",
+        "frontend/Dockerfile": "bfc65a254b7c2cf6fdf81023706cf8d6d41aba254b377fa748c92f6607170882",
+        "compose.yaml": "e1889be2a90266084acd9161f628714933273f810ee04ff348d300b06e19dc01",
+        "scripts/check_docker_smoke.py": "5a16dd87bf944c2af9d7df684cefc78b7231447133366b01bdefd18caea1aa00",
+        "scripts/docker_volume_probe.py": "fc35d086afc0702a2df8e656f33c92db1f3806b454cbcbf44191fa1872e6473c",
+        "scripts/backup_runtime.py": "44f8241bd828b844bdee7e6438b98e62951d334d0105faf04943d5f39d047ae6",
+        "scripts/manage_auth.py": "a78bf8a063dc72e9b5736c920ccd8017bc06591e1d9f0e012806a7a305cff82e",
+        "backend/src/docintel/storage/backup.py": "0d959a86d7bdbde81adf9101bec60201d0dba798aea7c6963302c077af8bb1a5",
+        "backend/src/docintel/doctor.py": "8627a73cf8f61b5b5c0366c237340a76f9a159c288533b94ece1ebe0bd6e9863",
+        "backend/uv.lock": "a8f1acdcb3cd9c91e9ab3f65129154b11d42f8f864e3cc7ebce610d832cf68f1",
+        "frontend/package-lock.json": "19647a05eeb0d93cad4b2ec6c0bac759335b83a5e22cc63401bbfc7b40f60501",
+        "pipeline/src/document_pipeline/resources/tessdata-lock.json": "a4a8629541144155d387688c0c2e968f9e473c6d647f0d573fd90c4848faa796"
+      },
+      "git_head_at_execution": "942c59520cd4ce663bf6d79edaa063e7a18fad02",
+      "tracked_tree_dirty_at_execution": false,
+      "inventory_before": {
+        "containers": [],
+        "volumes": [],
+        "networks": [],
+        "images": []
+      },
+      "inventory_running": {
+        "containers": [
+          "651d881b4b96",
+          "e5c74961eae1"
+        ],
+        "volumes": [
+          "docintel52-45dbb3877c5c430dae235e02fd45b42e_document-runtime",
+          "docintel52-45dbb3877c5c430dae235e02fd45b42e_qa-state"
+        ],
+        "networks": [
+          "d47cee8b15fe"
+        ],
+        "images": [
+          "4153fa931057",
+          "55b54e9dfe9a"
+        ]
+      },
+      "container_runtime": {
+        "uid": 10001,
+        "tesseract": "tesseract 5.5.0",
+        "models": {
+          "vie": "79df64caf7bcfb2a27df5042ecb6121e196eada34da774956995747636d5bfa1",
+          "eng": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+        }
+      },
+      "documents": [
+        {
+          "document_id": "3cb6a5ce5e96436ab4adb129b9327b00",
+          "run_id": "668f3a20b8524466a27b89fe24d9a715",
+          "revision": 2,
+          "input_sha256": "e3aedcd764f7466491623de17437031ecc532a67e0fea2f009a30fadd7898969",
+          "preview_sha256": "e44afc932641bef40075acf3b4ee1aa6b13cc53188510fecdb3611ec4173926d",
+          "export_sha256_without_download_time": "0d0689ac8809638e082fbf0bd3fbb7235ec02883c2e8f9caa2f85ecf6a0449c2",
+          "old_run_id": "900d46cc98644087aa247c1a8d775681"
+        },
+        {
+          "document_id": "2054c539c58c4797903b584d1cf046fe",
+          "run_id": "b9d75c8c33ca4125a55de63ff9a2a890",
+          "revision": 3,
+          "input_sha256": "ff3c172dbebb6f9907f414bf58c289dc31d6355ceae8e3e57532816c6cbb05ef",
+          "preview_sha256": "bc49ca6d4ab43316f4c967f6962c51dc25148b2ffd7dec97358f511e96d4cc0c",
+          "export_sha256_without_download_time": "32d58a970940894acf0a51c6f712897ac3465cf59e2e6e88d8126c278f280922",
+          "old_run_id": null
+        }
+      ],
+      "reviewed_null": {
+        "document_id": "bcfefb6c1f6945c3811f5b4e42730cec",
+        "run_id": "58552c3e2f7b4f2a95d2824d80de83a7",
+        "revision": 2
+      },
+      "offline_probe": {
+        "status": "passed",
+        "verifier": {
+          "negative_cases": [
+            {
+              "case": "missing_filename",
+              "code": "SNAPSHOT_UNREADABLE",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            },
+            {
+              "case": "missing_result",
+              "code": "SNAPSHOT_UNREADABLE",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            },
+            {
+              "case": "missing_revisions",
+              "code": "DATABASE_REFERENCES",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            },
+            {
+              "case": "missing_event_revision",
+              "code": "DATABASE_REFERENCES",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            },
+            {
+              "case": "cross_document_event",
+              "code": "DATABASE_REFERENCES",
+              "cli_exit": 2,
+              "integrity_fk_clean": true,
+              "rehash": true,
+              "destination_absent": true,
+              "snapshot_unchanged": true
+            }
+          ],
+          "positive_cases": [
+            "schema2",
+            "extra_columns",
+            "queued_no_revision",
+            "failed_no_revision"
+          ]
+        },
+        "snapshot_sha256": "341bf3e89de63c24b4f8ace82d1937ed572d02607ac929c2e25467fcd3803afc",
+        "source_unchanged": true,
+        "checks": [
+          "schema2",
+          "snapshot_hashes",
+          "restored_tables_assets_auth",
+          "private_modes",
+          "db1_backup_migration",
+          "legacy_remains_local",
+          "destination_leaf_guards",
+          "corrupted_backup_rejected",
+          "merged_verifier_rehashed_negatives",
+          "owned_snapshot_auth_preserved"
+        ]
+      },
+      "native_metadata": {
+        "engine_version": "5.5.0",
+        "model_revision": "87416418657359cb625c412a48b6e1d6d41c29bd",
+        "model_sha256": {
+          "vie": "79df64caf7bcfb2a27df5042ecb6121e196eada34da774956995747636d5bfa1",
+          "eng": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+        },
+        "git_commit": null,
+        "git_dirty": null,
+        "pipeline_source_sha256": "b225095aa0751ee4485bbd57d31c434f13c88f829f6b5e633b6759c0b2c97a8c",
+        "runtime": {
+          "python": "3.14.5",
+          "pillow": "12.3.0",
+          "pydantic": "2.13.5"
+        },
+        "hardware": {
+          "architecture": "x86_64",
+          "processor": "unknown",
+          "platform": "Linux",
+          "acceleration": "CPU"
+        },
+        "reproducibility_limitations": [
+          "OCR confidence is heuristic, not calibrated"
+        ],
+        "input_sha256": "e3aedcd764f7466491623de17437031ecc532a67e0fea2f009a30fadd7898969",
+        "config": {
+          "version": "inference-config-1.1.0",
+          "max_upload_bytes": 5242880,
+          "max_image_pixels": 16000000,
+          "timeout_seconds": 30.0,
+          "psm": 6,
+          "rotation": 0,
+          "scale": 1.0,
+          "autocontrast": false,
+          "minimum_field_ocr_score": 0.5
+        },
+        "config_sha256": "3615bd047d1f1e3897482040368f991002d12cfc9bc2e8a9591e871308d1b5ff",
+        "rules_version": "label-rules-1.0.0",
+        "rules_sha256": "10e7c040a535cbdbeac240f68a24d0f7149041619d131ec190e6a2d5937eebcd",
+        "confidence_version": "evidence-minimum-ocr-abstain-1.1.0",
+        "preprocessing": {
+          "version": "image-preprocessing-1.0.0",
+          "source_frame": "exif_normalized_pixels_top_left",
+          "width": 1200,
+          "height": 1550,
+          "processed_width": 1200,
+          "processed_height": 1550,
+          "rotation": 0,
+          "scale": 1.0
+        },
+        "elapsed_seconds": 0.5734,
+        "prediction_source": "model",
+        "report_type": "inference_run"
+      },
+      "inventory_after": {
+        "containers": [],
+        "volumes": [],
+        "networks": [],
+        "images": []
+      },
+      "cleanup": "project containers and volumes removed"
+    }
+  ],
+  "final_source_runs": [
+    4,
+    5
+  ],
+  "status": "passed",
+  "limitations": [
+    "HTTP/API through real Nginx, not browser E2E in Docker.",
+    "Synthetic native workflow QA, not real-world OCR accuracy evidence.",
+    "Raw source files verified via manifest/SQLite hashes; public API serves PNG preview, not a raw-source download route.",
+    "Session cookie Secure=false only in disposable loopback test override; .env/default auth unchanged.",
+    "Product CI does not run Docker Compose smoke; its final-head result is recorded separately on PR #68.",
+    "Shared Docker build cache retained; project resources removed. Ignored synthetic doctor/pytest logs retained locally as evidence.",
+    "No unmerged #61/#62 publication code used; merged verifier still uses current main backup/restore contract."
+  ]
+}
