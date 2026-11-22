@@ -42,7 +42,8 @@ for (const kind of ['png', 'pdf'] as const) {
         .poll(() => preview.evaluate((img: HTMLImageElement) => img.naturalWidth))
         .toBe(detail.image_width);
       const evidence = sourceRegion.getByRole('img', {
-        name: 'Bằng chứng OCR của trường đang chọn',
+        name: 'Bằng chứng OCR: Số hóa đơn',
+        exact: true,
       });
       await expect(evidence).toHaveAttribute(
         'viewBox',
