@@ -57,7 +57,10 @@ def tool_check(name, expected, executable=None):
     except OSError:
         return check(name, "tool_failed", "error", expected=expected)
     # Only emit a numeric version, never raw stdout/stderr, paths or exception text.
-    match = re.match(rb"(?:v|uv |tesseract v?)?(\d+\.\d+\.\d+)(?:\s|$)", result.stdout)
+    version = (
+        rb"\d+(?:\.\d+){2,3}" if name == "tesseract" and expected == "5.x" else rb"\d+\.\d+\.\d+"
+    )
+    match = re.match(rb"(?:v|uv |tesseract v?)?(" + version + rb")(?:\s|$)", result.stdout)
     if result.returncode or match is None:
         return check(name, "tool_failed", "error", expected=expected)
     actual = match[1].decode("ascii")

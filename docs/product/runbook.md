@@ -6,7 +6,7 @@
 
 ## Demo có thể lặp lại
 
-Khi nghiệm thu nhiều tính năng hoặc chuẩn bị tích hợp PR, dùng [ma trận nghiệm thu](../testing/integration-acceptance.md) để chọn ca và ghi rõ phần chưa chạy. Hướng dẫn này đối chiếu `main@692a834` ngày 22/11/2026: app 0.6.0, SQLite schema 2, export 1.0.0. Main đã có autosave #23, session #33, PDF #27, QA kết hợp #66 và verifier backup #56. Các báo cáo cũ giữ nguyên SHA/môi trường; xem ma trận để phân biệt coverage, kết quả CI và phần còn chờ tích hợp.
+Khi nghiệm thu nhiều tính năng hoặc chuẩn bị tích hợp PR, dùng [ma trận nghiệm thu](../testing/integration-acceptance.md) để chọn ca và ghi rõ phần chưa chạy. Hướng dẫn này đối chiếu `main@d6c579a` ngày 22/11/2026: app 0.6.0, SQLite schema 2, export 1.0.0. Main đã có autosave #23, session #33, PDF #27, QA kết hợp #66, verifier backup #56 và doctor fix #69. Các báo cáo cũ giữ nguyên SHA/môi trường; xem ma trận để phân biệt coverage, kết quả CI và phần còn chờ tích hợp.
 
 1. Chọn hóa đơn, nguồn synthetic, ảnh `data/product/images/hoa_don_007.png`; xác nhận chính sách data rồi upload.
 2. Đợi OCR xong; kiểm số hóa đơn 0041007, ngày 2026-10-08, đơn vị Giả Lập 107, tổng 1000000 và VND theo ảnh. Đây là dữ liệu mẫu, không hóa đơn thật.
@@ -77,9 +77,10 @@ session chưa hết hạn, nên cân nhắc thu hồi bằng CLI offline trướ
 
 `python scripts/dev.py doctor --json --runtime runtime/app` chỉ đọc runtime offline. Dừng app
 trước probe; không xóa WAL/journal để ép kết quả ready. Xem [doctor](../operations/doctor.md)
-cho exit codes. Tại SHA nêu trên, parser banner Tesseract Windows bốn nhóm số còn được theo dõi
-ở [#67](https://github.com/teamfuturetime/document-inteligence/issues/67); native OCR thành công
-không đồng nghĩa doctor đã đạt. Không bật fixture để né chẩn đoán lỗi.
+cho exit codes. Parser đã nhận banner Tesseract ba/bốn nhóm số qua
+[PR #69](https://github.com/teamfuturetime/document-inteligence/pull/69), giữ observed đầy đủ và
+major 5. Report Windows cũ vẫn ghi lỗi parser tại source cũ; native OCR thành công không thay
+kết quả doctor/runtime probes. Không bật fixture để né chẩn đoán lỗi.
 
 Khi app đang chạy, `GET /api/v1/health` kiểm liveness; `GET /api/v1/readiness` phân biệt
 HTTP 200/ready và 503/not_ready. Provider readiness là startup snapshot, không phải mỗi poll

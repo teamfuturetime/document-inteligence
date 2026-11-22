@@ -5,9 +5,9 @@ Checklist kỹ thuật cho [#54](https://github.com/teamfuturetime/document-inte
 điều phối [#15](https://github.com/teamfuturetime/document-inteligence/issues/15).
 Giữ các mã ca U/O/R/C/N/H/B/G/P/A/X để đối chiếu lịch sử; không phải bảng chấm điểm.
 
-Đối chiếu ngày **22/11/2026**, nền `main@692a834abef805066616a61af847af702ec698da`:
+Đối chiếu ngày **22/11/2026**, nền `main@d6c579a973e5de730e3fc65d5331a60b51c1cbd3`:
 app **0.6.0**, SQLite **schema 2**, product/export **1.0.0**. Autosave #23, auth/ownership #33,
-PDF #27, QA kết hợp #66 và verifier backup #56 đã tích hợp. Nhánh cá nhân hoặc PR còn mở
+PDF #27, QA kết hợp #66, verifier backup #56 và doctor fix #69 đã tích hợp. Nhánh cá nhân hoặc PR còn mở
 không phải nền mặc định. Tài liệu này không tạo một lượt chạy OCR/browser mới.
 
 ## Chuẩn bị một lần nghiệm thu
@@ -36,6 +36,7 @@ trên bản tích hợp mới trước khi kết luận.
 | U3 — retry sau mất response | Cùng key/input/type/origin trả cùng document/run; khác nội dung nhận 409, kể cả queue đầy | [VT-042 retry](../../backend/tests/test_async_retry_vt042.py), [product](../../backend/tests/test_product.py) |
 | O1 — OCR native | PNG/JPEG/application/PDF chạy pipeline có provenance/spans; provider lỗi không fallback fixture, không bịa confidence | [Native workflow](../../scripts/verify_product.py), [pipeline](../../pipeline/tests/test_pipeline.py) |
 | O2 — liveness/readiness/storage | Health báo tiến trình; readiness 200/503 cùng schema, provider là startup snapshot; lỗi persistence/cleanup không mất trạng thái upload | [Readiness](../../backend/tests/test_readiness.py), [storage failures](../../backend/tests/test_upload_storage_failures.py), [runbook](../operations/readiness.md) |
+| O3 — doctor offline | Chỉ đọc DB/model/tool probes, không tạo/migrate runtime; banner Tesseract 3/4 nhóm giữ observed đầy đủ, major khác 5 bị từ chối và output redacted | [Doctor](../../backend/tests/test_doctor.py), [launcher](../../backend/tests/test_dev_launcher.py), [operations](../operations/doctor.md) |
 | R1 — sửa/null/reload | Người dùng xóa trường: reviewed null được giữ sau lưu/reload, không fallback prediction; confirm thiếu trường bị chặn | Product, [ReviewPanel](../../frontend/src/features/documents/ReviewPanel.test.tsx), [browser PNG/PDF](../../frontend/e2e/invoice.spec.ts) |
 | R2 — revision/status CAS | Hai client cùng revision; write stale nhận 409 và UI giữ edits để đối chiếu. Không tự mở lại confirmed nếu thiếu expected_status phù hợp | Product/ReviewPanel; [autosave browser](../../frontend/autosave-e2e/autosave.spec.ts), session browser |
 | C1 — validation/export authority | Confirm invalid/null nhận 422; stale run/revision nhận 409; JSON từ persisted confirmed revision có values/types đúng | Product, native workflow, invoice/session browser |
@@ -64,20 +65,20 @@ chứng minh geometry chính xác. Test trên sample không bao phủ mọi layo
 
 | Source | Bằng chứng thực | Giới hạn |
 |---|---|---|
+| main `d6c579a` sau #69 | [Product CI 44975747846](https://github.com/teamfuturetime/document-inteligence/actions/runs/44975747846), completed/success 7/7 trên đúng merge SHA, gồm Windows doctor regression | Parser fix đã tích hợp; không nhận là một lượt chạy local mới của tài liệu |
 | main `692a834` sau #56 | [Product CI 44974458695](https://github.com/teamfuturetime/document-inteligence/actions/runs/44974458695), completed/success 7/7, gồm backend/frontend/Windows/evaluation/native/browser và Product checks | Kết quả CI của source này; không tự gọi là lần chạy local của người đọc |
 | main `4191dfe` sau #66 | [Product CI 44762412434](https://github.com/teamfuturetime/document-inteligence/actions/runs/44762412434), completed/success 7/7 với assertions X1 tăng thêm | Mốc tích hợp QA kết hợp; main mới kế thừa nhưng cần CI riêng khi thay đổi |
-| Test commit `d9e322f` của #66 | [QA Windows 20/11](../reports/pdf-session-qa-2026-11-20.md): native local 20/session 26, Chromium PNG/PDF 2/session 7, autosave 11 và focused PDF/session 60 | Số từ report của tác giả, không phải số vừa chạy lại trên main692a834; doctor Windows lúc đó fail, Docker không thuộc lượt này |
+| Test commit `d9e322f` của #66 | [QA Windows 20/11](../reports/pdf-session-qa-2026-11-20.md): native local 20/session 26, Chromium PNG/PDF 2/session 7, autosave 11 và focused PDF/session 60 | Số từ report của tác giả, không phải số vừa chạy lại trên main hiện hành; doctor Windows lúc đó fail, Docker không thuộc lượt này |
 | `921541d` và `1b067a7` | [Baseline 14/11](../reports/integration-baseline-2026-11-14.md), tài liệu checklist cũ qua #29 | Giữ nguyên báo cáo lịch sử; không đổi nhãn Pending/Pass của source cũ thành kết quả mới |
 
 ## Công việc chưa tích hợp tại mốc trên
 
 | Phần việc | Dependency/PR | Bước tiếp theo |
 |---|---|---|
-| Docker Compose/persistence | #52 / [#68](https://github.com/teamfuturetime/document-inteligence/pull/68) | Tác giả có evidence Docker riêng; sửa đóng gói/smoke chưa ở main692a834. Review và chạy bản tích hợp trước khi nhận main đã đạt Docker |
+| Docker Compose/persistence | #52 / [#68](https://github.com/teamfuturetime/document-inteligence/pull/68) | Tác giả có evidence Docker riêng; sửa đóng gói/smoke chưa ở main tại mốc này. Review và chạy bản tích hợp trước khi nhận main đã đạt Docker |
 | Backup/restore staging | #43/#44, #61 → #62 sau #56 | Retarget/sync/CI/review riêng; verifier #56 đã merge không đồng nghĩa publication hoàn tất |
 | Worker crash/restart bằng process | #47 / #59 | Merge main, giữ đủ CI gates và review bản mới. Không gọi test recovery nội bộ hiện có là toàn bộ acceptance process thật |
 | Error guidance, keyboard, live readiness UI | #49/#51/#50, #63/#64/#65 | Sửa findings, đồng bộ main và nghiệm thu tích hợp; không suy backend readiness đã có UI polling mới |
-| Doctor banner Windows bốn nhóm số | #67 / #69 | Parser fix còn ở PR tại mốc692a834; không lấy native OCR thành công làm doctor pass |
 
 Đây là trạng thái gắn SHA, có thể thay đổi sau các PR. Kiểm GitHub/main mới trước một lượt
 nghiệm thu khác; không cần sửa báo cáo cũ để tạo lịch sử đẹp hơn.
