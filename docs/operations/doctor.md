@@ -55,6 +55,11 @@ hash theo lock hiện có. Probe tools có timeout 3 giây mỗi tool, toàn sub
 tối đa 30 giây; lỗi timeout trả error, không tiếp tục bằng fixture fallback. Doctor gọi
 tools đã cài với `--version` (không shell) và đọc model files, không OCR hoặc cài tool.
 
+Riêng Tesseract nhận phiên bản số có 3 hoặc 4 nhóm, ví dụ `5.5.2` và Windows
+`5.5.0.20241111`. `observed` giữ đầy đủ các nhóm số, không bỏ build/date suffix hoặc in
+raw banner/stderr. Major khác 5 vẫn là `tool_version`; malformed/nonzero vẫn lỗi.
+Python/uv/Node/npm giữ exact pin và định dạng cũ, không nhận thêm nhóm số từ thay đổi này.
+
 ## Kiểm chứng
 
 ```sh

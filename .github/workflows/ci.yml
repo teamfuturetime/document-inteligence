@@ -1,7 +1,7 @@
 name: Product CI
 "on":
   pull_request:
-    branches: [main, chore/repository-consolidation, feat/42-backup-verify, feat/43-backup-publish]
+    branches: [main, chore/repository-consolidation, feat/43-backup-publish]
   push:
     branches: [main, chore/repository-consolidation]
   workflow_dispatch:

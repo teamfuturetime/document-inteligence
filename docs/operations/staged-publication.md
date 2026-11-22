@@ -56,7 +56,8 @@ cleanup failure, lost ACK, late targets và hai helpers race bằng barrier có 
 absolute/relative/alias/CLI local+owned roundtrip và Windows junction; thêm publication suite vào
 Windows job hiện có. Không đổi manifest1, API/contracts/versions/dependencies hoặc default auth.
 
-#43 tạm dựa trên verifier PR #56 (`feat/42-backup-verify`), chỉ delta publication backup;
-giữ Draft chờ nền review/tích hợp, rồi đổi base/sync main và chạy CI lại. Workflow thêm đúng
-target branch để CI đủ sáu jobs + Product checks trên PR phụ thuộc. [Restore staging #44](staged-restore.md) tái dùng helper publication tuần tự trong nhánh phụ thuộc;
-bản #43 riêng chỉ cung cấp backup publication.
+Verifier PR #56 đã tích hợp vào main qua merge commit `692a834`; #43 đồng bộ main
+`d6c579a` và chuyển base về main để kiểm tra/review tích hợp, chỉ còn delta publication
+backup. Workflow giữ đủ sáu jobs + Product checks trên main và nhánh nền #43 cho PR phụ thuộc;
+bỏ target verifier cũ. [Restore staging #44](staged-restore.md) tiếp tục chờ #43 tích hợp
+và tái dùng helper publication. CI xanh trên nhánh phụ thuộc không thay nghiệm thu trên main.
