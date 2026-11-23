@@ -46,7 +46,8 @@ manifest đã validate trước đó. Không ghi lỗi do test double là lỗi 
 Giữ bốn path/CLI local/owned roundtrips, beta isolation và confirmed export trong các suites có sẵn.
 Windows job chạy cả suite mới; backend/native/browser/gate vẫn giữ đủ checks.
 
-#44 tạm dựa trên publication PR #61 (`feat/43-backup-publish`), kế thừa verifier PR #56.
-PR chỉ delta restore, giữ Draft chờ nền review/tích hợp. Sau dependency vào main phải đồng bộ,
-đổi base và chạy CI trên head mới trước đề xuất merge. Không nhận CI từng nhánh là nghiệm thu
-của một main đã tích hợp.
+Publication PR #61 đã tích hợp vào main qua `e70016f`, kế thừa verifier PR #56.
+#44 / PR #62 đồng bộ nền này và chuyển base về main; diff chỉ còn staged restore,
+tests và tài liệu liên quan. CI giữ đủ sáu jobs + Product checks và Windows restore suite,
+bỏ trigger feature base cũ. Chuyển Ready/request review tích hợp sau CI đúng head đạt;
+không dùng kết quả feature-base trước đây thay nghiệm thu bản ghép main.
