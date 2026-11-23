@@ -101,6 +101,8 @@ Source/destination có thể là đường dẫn tương đối như ví dụ tr
 
 Đích mới nghĩa là chưa có bất kỳ entry nào tại tên đích được truyền vào: file, thư mục, symlink hoặc Windows junction, kể cả khi target của alias đã mất. Helper kiểm leaf trước khi resolve; dangling alias bị từ chối, không tự tạo lại target. Alias ở thư mục cha vẫn dùng được khi leaf đích là tên mới. Đây là helper local, không có cơ chế khóa chống tiến trình khác sửa alias đồng thời; dừng app và giữ cây thư mục ổn định khi backup/restore.
 
+Backup tạo snapshot trong staging private cùng filesystem, verify SQLite/assets và fsync files trước publication atomic không ghi đè. Xem [staging/cleanup và các nền hỗ trợ](../operations/staged-publication.md). Source/destination cần cây thư mục ổn định; không tự xóa staging hoặc final khi một lệnh báo lỗi, vì lost ACK có thể xảy ra sau publication thành công.
+
 Backup do helper tạo dùng `backup.json` version **1** (số nguyên), với map `sha256` bắt buộc có `documents.sqlite3`. Các paths dùng dấu `/`, tương đối và không có `..`, drive prefix hoặc alias đường dẫn; mỗi hash là 64 ký tự hex thường. Restore từ chối manifest rỗng, thiếu database, version/cấu trúc/hash sai trước khi tạo thư mục đích. Các file được liệt kê phải tồn tại bên trong backup và khớp hash. Không sửa/xóa mục trong manifest để bỏ qua file lỗi.
 
 Nếu gặp `Invalid backup manifest` hoặc lỗi integrity/path, giữ nguyên runtime và backup gốc, chọn lại bản backup hợp lệ. Nếu runtime nguồn vẫn hoạt động, tạo backup mới vào một đường dẫn mới bằng helper; không khởi động app trên thư mục trống và coi đó là restore thành công. Nếu đích đã tồn tại, chọn tên mới, không xóa đích cũ để ép chạy. Sau restore hợp lệ, mở tài liệu đã xác nhận, kiểm run/revision và dữ liệu JSON export; `exported_at` được tạo theo lượt tải, không dùng timestamp đó để kết luận dữ liệu persisted đã đổi.
@@ -115,6 +117,40 @@ docker compose down
 ```
 
 Backend image cài Tesseract từ apt và fetch đúng model lock trong build, chạy user không phải root; named volume giữ SQLite/uploads sau `down`. Không dùng `down -v` nếu cần giữ dữ liệu. Hai cổng chỉ bind loopback. Cấu hình Docker cần được build/run trên máy có Engine; kiểm YAML không chứng minh container đã chạy. Nghiệm thu/sửa đóng gói của [#52 / PR #68](https://github.com/teamfuturetime/document-inteligence/pull/68) còn chờ tích hợp ở SHA nêu trên; chưa coi main hiện hành đã nhận các fixes của PR đó.
+
+Nghiệm thu bằng project và volumes tạm riêng, từ root với Docker Engine đang chạy:
+
+```powershell
+uv run --project backend --locked python scripts/check_docker_smoke.py --output runtime/docker-qa/my-new-run.json
+```
+
+Chọn file output mới. Helper build hai image, dùng cổng frontend loopback được Docker cấp,
+gọi API qua Nginx, kiểm PNG/JPEG native, restart cùng volume, migration DB1 và restore.
+Helper đọc lại cổng sau restart, vì cổng động có thể thay đổi. Script probe được mount
+read-only; user root chỉ khởi tạo quyền cho volume QA rỗng, app vẫn chạy user `docintel`.
+Mỗi lượt tạo tên `docintel52-<uuid>` và tự `down --volumes --rmi local` đúng project đó,
+kiểm containers/volumes đã được dọn. Backup và runtime tạm bị xóa sau kiểm thử.
+Report lưu IDs, revisions, hashes và metadata OCR, còn logs có thể giữ riêng trong runtime.
+
+Nếu host/process bị dừng cưỡng bức trước cleanup, đọc tên project từ log/report rồi kiểm
+`docker ps -a --filter label=com.docker.compose.project=<project>` và
+`docker volume ls --filter label=com.docker.compose.project=<project>`.
+Chỉ dọn project đã xác định với đúng override configuration của lượt chạy;
+giữ cấu hình tạm nếu cần điều tra, không dùng prune hoặc wildcard trên resources chung.
+Xem [báo cáo Docker trên Windows](../reports/docker-smoke-2026-11-21.md) và
+[evidence JSON](../evidence/docker-smoke-2026-11-21.json).
+
+PR #68 đã bổ sung [nghiệm thu tích hợp ngày 22/11](../reports/docker-smoke-2026-11-22.md)
+và [evidence mới](../evidence/docker-smoke-2026-11-22.json) trên main đã có verifier #56,
+doctor #69 và frontend #63; không thay kết quả lịch sử ngày 21/11. Helper còn kiểm
+snapshot lỗi đã rehash (required columns/revisions/events), current reviewed-null draft,
+old runs, và restored session profile qua HTTP: owner/foreign-owner, login/CSRF và
+session persistence sau restart. Passwords synthetic chỉ ở private QA volume/memory;
+cookie Secure=false chỉ trong override loopback tạm, không đổi `.env` hay default auth.
+Inventory trước/sau gồm containers, volumes, networks và image tags đúng project;
+shared build cache được giữ. File output phải mới; không dùng CI xanh để thay lượt Compose.
+Report ghi Git head tại lúc chạy và source hashes, không gán SHA commit tài liệu tạo sau đó
+cho source đã thực thi. Browser trong container không nằm trong HTTP smoke này.
 
 ## Phạm vi vận hành
 

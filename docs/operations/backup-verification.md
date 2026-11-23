@@ -57,10 +57,10 @@ Sai cú pháp argparse cũng exit2; JSON report dành cho lời gọi verify h�
 | `SNAPSHOT_UNREADABLE` | Không đọc/parse được snapshot/DB/schema (gồm SQL deadline). |
 | `RESTORE_PATH_OUTSIDE` | Đường dẫn restore không nằm trong destination. |
 
-Giữ backup/runtime gốc khi lỗi. Backup vẫn ghi trực tiếp đích mới trong phạm vi #42: lỗi giữa
-chừng có thể để thư mục dở, chọn tên đích mới thay vì ghi đè. Publication qua staging là #43/#44,
-chưa nhận đã hoàn tất trong verifier này. Restore hợp lệ giữ source/prediction/review/history,
-owner/schema và confirmed export; kiểm nghiệp vụ sau restore theo runbook.
+Giữ backup/runtime gốc khi lỗi. Backup dùng [staging publication #43](staged-publication.md),
+chỉ công bố sau verification/fsync; giữ nguyên final khi publication mất ACK. Restore trong
+phạm vi trước #44 vẫn copy trực tiếp đích mới: lỗi giữa chừng có thể để directory dở, chọn tên
+mới thay vì ghi đè. Restore staging #44 là PR phụ thuộc tiếp theo, chưa coi đã tích hợp ở đây.
 
 ## Kiểm chứng
 

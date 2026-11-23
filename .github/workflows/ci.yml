@@ -68,7 +68,7 @@ jobs:
       - run: python scripts/dev.py setup
       - run: uv run --project backend --locked pytest backend/tests/test_dev_launcher.py -q
       - name: Verify backup aliases and authenticated restore on Windows
-        run: uv run --project backend --locked pytest backend/tests/test_backup_manifest.py backend/tests/test_auth_backup.py backend/tests/test_backup_verify.py backend/tests/test_backup_completeness.py -q
+        run: uv run --project backend --locked pytest backend/tests/test_backup_manifest.py backend/tests/test_auth_backup.py backend/tests/test_backup_verify.py backend/tests/test_backup_completeness.py backend/tests/test_backup_publication.py -q
       - name: Verify process crash restart and runtime locks on Windows
         run: uv run --project backend --locked pytest backend/tests/test_worker_process.py pipeline/tests/test_provenance.py -q
       - name: Verify deterministic timestamp tie ordering on Windows
