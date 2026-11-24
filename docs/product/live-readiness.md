@@ -108,3 +108,13 @@ Fake-clock còn kiểm lookup timeout/cancel/401 muộn và interrupted upload/O
 trong lúc retry mới đang pending. Local suite sau sửa:64 component tests và4 browser
 cases PASS; full auth/autosave/native/backend lấy evidence CI đúng head, không
 claim là native execution local.
+
+
+## Integration with main 2b52dc9
+
+Main now includes OCR error guidance #49 and keyboard focus #51. The merge retains
+operation cancellation and manual resume guards while restoring focus only after
+a valid save or confirmation ACK. OCR retry uses the safe guidance and request ID
+inside the guarded operation. All browser configs remain in tsconfig. Synthetic
+keyboard/error harnesses return the generated readiness example. Keyboard recovery
+uses an explicit save after comparison when resume is required.

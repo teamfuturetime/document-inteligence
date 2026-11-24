@@ -24,6 +24,8 @@
     "playwright.autosave.config.ts",
     "playwright.auth.config.ts",
     "playwright.readiness.config.ts",
+    "playwright.keyboard.config.ts",
+    "playwright.errors.config.ts",
     "e2e",
     "autosave-e2e"
   ]

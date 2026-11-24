@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Capabilities } from '../../lib/api';
 import { HistoryPanel } from './HistoryPanel';
+import { OcrErrorGuidance } from './OcrErrorGuidance';
 import { ReviewPanel } from './ReviewPanel';
 import { SourcePreview } from './SourcePreview';
 import { APIError, jsonRequest, request, statusLabels } from './api';
@@ -42,6 +43,7 @@ export function Workspace({
   const [busy, setBusy] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [error, setError] = useState('');
+  const [retryError, setRetryError] = useState<{ code: string; requestId?: string } | null>(null);
   const [pollErrorRunId, setPollErrorRunId] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<{ message: string; retryable: boolean } | null>(
     null,
@@ -144,6 +146,7 @@ export function Workspace({
     };
   }, [documentId, runId, processing, busy, backendReady]);
   function updated(value: DocumentDetail) {
+    setRetryError(null);
     setDocument(value);
     setRefresh((old) => old + 1);
   }
@@ -156,6 +159,7 @@ export function Workspace({
     const sequence = ++operationRevision.current;
     const signal = operations.current.signal;
     setBusy(true);
+    setRetryError(null);
     setError('');
     try {
       const query = run ? `?run_id=${encodeURIComponent(run)}` : '';
@@ -246,6 +250,7 @@ export function Workspace({
     const signal = operations.current.signal;
     const sequence = ++operationRevision.current;
     setBusy(true);
+    setRetryError(null);
     setError('');
     try {
       const result = await jsonRequest<DocumentDetail>(
@@ -257,7 +262,11 @@ export function Workspace({
       if (!signal.aborted && sequence === operationRevision.current) updated(result);
     } catch (reason) {
       if (!signal.aborted && sequence === operationRevision.current)
-        setError((reason as Error).message);
+        setRetryError(
+          reason instanceof APIError
+            ? { code: reason.code, requestId: reason.requestId }
+            : { code: 'UNKNOWN' },
+        );
     } finally {
       if (sequence === operationRevision.current) setBusy(false);
     }
@@ -518,11 +527,11 @@ export function Workspace({
               Chưa cập nhật được trạng thái OCR. Hệ thống sẽ tự thử lại.
             </p>
           )}
-          {document.run.error_code && (
-            <div className="notice" role="alert">
-              Lần xử lý chưa thành công: {document.run.error_code}. Kiểm tra provider/ảnh rồi chọn
-              chạy lại.
-            </div>
+          {(retryError || document.run.error_code) && (
+            <OcrErrorGuidance
+              code={retryError?.code ?? document.run.error_code}
+              requestId={retryError?.requestId}
+            />
           )}
           <div className="review-workspace">
             <SourcePreview key={document.document_id} document={document} active={active} />

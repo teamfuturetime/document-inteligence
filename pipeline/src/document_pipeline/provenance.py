@@ -16,7 +16,12 @@ def runtime_metadata() -> dict:
     commit = dirty = None
     try:
         result = subprocess.run(
-            ["git", "rev-parse", "HEAD"], cwd=root, capture_output=True, timeout=2, check=False
+            ["git", "rev-parse", "HEAD"],
+            cwd=root,
+            capture_output=True,
+            timeout=2,
+            check=False,
+            stdin=subprocess.DEVNULL,
         )
         if result.returncode == 0:
             commit = result.stdout.decode("ascii").strip()
@@ -26,6 +31,7 @@ def runtime_metadata() -> dict:
                 capture_output=True,
                 timeout=2,
                 check=False,
+                stdin=subprocess.DEVNULL,
             )
             dirty = bool(state.stdout) if state.returncode == 0 else None
     except (OSError, subprocess.TimeoutExpired):

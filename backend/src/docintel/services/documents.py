@@ -174,7 +174,9 @@ class DocumentService:
                 "SELECT count(*) FROM (" + SUMMARY_SELECT + where + ")", params
             ).fetchone()[0]
             rows = connection.execute(
-                SUMMARY_SELECT + where + " ORDER BY d.created_at DESC LIMIT ? OFFSET ?",
+                SUMMARY_SELECT
+                + where
+                + " ORDER BY d.created_at DESC,d.document_id DESC LIMIT ? OFFSET ?",
                 [*params, limit, offset],
             ).fetchall()
         return DocumentList(
@@ -510,7 +512,8 @@ class DocumentService:
                 ).fetchone()
             )
             runs = connection.execute(
-                "SELECT * FROM runs WHERE document_id=? ORDER BY created_at DESC", (document_id,)
+                "SELECT * FROM runs WHERE document_id=? ORDER BY created_at DESC,run_id DESC",
+                (document_id,),
             ).fetchall()
             rows = connection.execute(
                 "SELECT * FROM events WHERE document_id=? ORDER BY event_id DESC", (document_id,)
@@ -589,7 +592,7 @@ class DocumentService:
             row = connection.execute(
                 "SELECT r.*,d.document_type,d.input_sha256 FROM runs r "
                 "JOIN documents d USING(document_id) "
-                "WHERE r.status='queued' ORDER BY r.created_at LIMIT 1"
+                "WHERE r.status='queued' ORDER BY r.created_at,r.run_id LIMIT 1"
             ).fetchone()
             if row is None:
                 return False
