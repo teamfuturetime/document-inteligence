@@ -4,6 +4,20 @@ Một ứng dụng local: tải ảnh hóa đơn → OCR Tesseract tiếng Việ
 
 **Nền sản phẩm chính trên `main`:** React trong `frontend/`, FastAPI `docintel` trong `backend/`, native pipeline trong `pipeline/`, SQLite cho lịch sử/revisions. Nền kế thừa `nhatquang@a03ea30`, được tích hợp qua [PR #3](https://github.com/teamfuturetime/document-inteligence/pull/3); hướng dẫn nhóm qua [PR #14](https://github.com/teamfuturetime/document-inteligence/pull/14). [Quyết định nền](docs/decisions/0008-primary-invoice-platform.md) · [khảo sát nhánh tại thời điểm consolidation](docs/branch-inventory.md).
 
+## Tiến độ tổng quan
+
+Snapshot **27/11/2026**, đối chiếu [`main@2b52dc9`](https://github.com/teamfuturetime/document-inteligence/commit/2b52dc9783cee717bdd18a59f13e6661239fa0bd). [Issue cha #40](https://github.com/teamfuturetime/document-inteligence/issues/40) giữ phân công năm thành viên, dependencies và acceptance chi tiết; assignee mới chưa có nghĩa thành viên đã nhận/bắt đầu.
+
+| Nhóm việc | Trạng thái tại snapshot |
+|---|---|
+| Nền local/web | **Đã có trên main:** Tesseract vie/eng, extraction/evidence và confidence heuristic; SQLite/worker, review/confirm/export, PDF một trang, autosave/session opt-in, error guidance/keyboard, backup verifier/publication và process crash tests. [CI main](https://github.com/teamfuturetime/document-inteligence/actions/runs/45136281283) thành công; không phải benchmark chất lượng OCR. |
+| Phần đang chờ tích hợp | Restore [#44 / PR #62](https://github.com/teamfuturetime/document-inteligence/pull/62) và readiness/reconnect UI [#50 / PR #65](https://github.com/teamfuturetime/document-inteligence/pull/65) đã có review/CI đúng head, **chưa merge**. Ignore worktree [#74 / PR #75](https://github.com/teamfuturetime/document-inteligence/pull/75) còn cần review độc lập/tích hợp. |
+| Baseline và cải tiến local | **Chưa bắt đầu đợt mới:** [#76 acceptance](https://github.com/teamfuturetime/document-inteligence/issues/76) → [#78 baseline/data QA](https://github.com/teamfuturetime/document-inteligence/issues/78) → [#79 phân tích lỗi](https://github.com/teamfuturetime/document-inteligence/issues/79) → [#80 preprocessing](https://github.com/teamfuturetime/document-inteligence/issues/80) → [#81 Tesseract](https://github.com/teamfuturetime/document-inteligence/issues/81) → [#82 extraction](https://github.com/teamfuturetime/document-inteligence/issues/82) → [#83 confidence/evidence](https://github.com/teamfuturetime/document-inteligence/issues/83). Các bước sau bị chặn bởi đầu ra trước; chỉ đổi khi có evidence trên development/validation, không tune test. |
+| Nghiệm thu local/web | **Blocked:** [#84 stability local](https://github.com/teamfuturetime/document-inteligence/issues/84) chờ candidate và restore tích hợp; [#85 web local](https://github.com/teamfuturetime/document-inteligence/issues/85) chờ stability và reconnect UI. Không thay các coverage/QA đã có bằng lời hứa nghiệm thu mới. |
+| API và Android | **Phase sau, chưa triển khai** — theo [#12](https://github.com/teamfuturetime/document-inteligence/issues/12) và gates ở #40: web local đạt acceptance → common internal contract + adapter từng provider → OCR API thật → web đầy đủ đạt acceptance → Android chỉ client dùng chung backend, **không OCR on-device**. Chưa chọn vendor. |
+
+Human QA mẫu đã được [Tuấn xác nhận ở #5](https://github.com/teamfuturetime/document-inteligence/issues/5#issuecomment-7002179423): 18 ảnh synthetic/108 trường, không phải toàn bộ dataset hoặc độ chính xác hóa đơn thật. Snapshot này dựa trên đọc source/GitHub và CI từ xa, không ghi nhận một lượt tests/inference local mới. [Đầu ra README #77](https://github.com/teamfuturetime/document-inteligence/issues/77) được theo dõi riêng khỏi các tính năng trên.
+
 ## Bắt đầu từ checkout sạch
 
 Cần Git, Python 3.14.5 (uv có thể cài theo `backend/.python-version`), uv 0.12.22, Node 24.16.x + npm 11.13.x, và Tesseract 5 trên PATH. Không cần PostgreSQL, API key hay GPU. Lần cài dependencies/models cần mạng; inference không tải model.
