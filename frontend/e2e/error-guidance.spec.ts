@@ -1,3 +1,4 @@
+import readiness from '../../contracts/examples/readiness-ready.json' with { type: 'json' };
 import { expect, test } from '@playwright/test';
 import { capabilities, errorDocument, processedDocument } from './error-fixture';
 
@@ -15,7 +16,9 @@ test('failed OCR requires explicit keyboard retry before review (HTTP/inference 
   await page.route('**/api/v1/**', async (route) => {
     const path = new URL(route.request().url()).pathname;
     let value: unknown = document;
-    if (path.endsWith('/auth/session')) value = { mode: 'local', user: null, csrf_token: null };
+    if (path.endsWith('/readiness')) value = readiness;
+    else if (path.endsWith('/auth/session'))
+      value = { mode: 'local', user: null, csrf_token: null };
     else if (path.endsWith('/capabilities')) value = capabilities;
     else if (path.endsWith('/document-schemas')) value = [];
     else if (path.endsWith('/insights')) value = { documents: 1 };

@@ -18,9 +18,13 @@ function isProcessing(status: DocumentDetail['run']['status'] | undefined) {
 export function Workspace({
   capabilities,
   onUnsavedChange,
+  backendReady = true,
+  recovery = 0,
 }: {
   capabilities: Capabilities | null;
   onUnsavedChange: (value: boolean) => void;
+  backendReady?: boolean;
+  recovery?: number;
 }) {
   const pdfEnabled = capabilities?.upload_media_types?.includes('application/pdf') ?? false;
   const uploadLabel = pdfEnabled ? 'PNG/JPG/PDF một trang' : 'Ảnh PNG/JPG một trang';
@@ -45,6 +49,18 @@ export function Workspace({
     null,
   );
   const fileInput = useRef<HTMLInputElement>(null);
+  const operations = useRef(new AbortController());
+  const operationRevision = useRef(0);
+  useEffect(() => {
+    const controller = new AbortController();
+    operations.current = controller;
+    ++operationRevision.current;
+    setBusy(false);
+    return () => {
+      ++operationRevision.current;
+      controller.abort();
+    };
+  }, [backendReady]);
   const uploadAttempt = useRef<{ file: File; type: string; origin: string; key: string } | null>(
     null,
   );
@@ -56,35 +72,43 @@ export function Workspace({
     [onUnsavedChange],
   );
   useEffect(() => {
+    if (!backendReady) return;
     const controller = new AbortController();
     request<ProductSchema[]>('/document-schemas', { signal: controller.signal })
-      .then(setSchemas)
+      .then((value) => {
+        if (!controller.signal.aborted) setSchemas(value);
+      })
       .catch((reason: Error) => {
         if (!controller.signal.aborted) setError(reason.message);
       });
     return () => controller.abort();
-  }, []);
+  }, [backendReady, recovery]);
   useEffect(() => {
+    if (!backendReady) return;
     const controller = new AbortController();
     const query = new URLSearchParams({ limit: '10', offset: String(offset) });
     if (filter) query.set('status', filter);
     request<DocumentList>(`/documents?${query}`, { signal: controller.signal })
-      .then(setList)
+      .then((value) => {
+        if (!controller.signal.aborted) setList(value);
+      })
       .catch((reason: Error) => {
         if (!controller.signal.aborted) setError(reason.message);
       });
     request<ProductInsights>('/insights', { signal: controller.signal })
-      .then(setInsights)
+      .then((value) => {
+        if (!controller.signal.aborted) setInsights(value);
+      })
       .catch((reason: Error) => {
         if (!controller.signal.aborted) setError(reason.message);
       });
     return () => controller.abort();
-  }, [filter, offset, refresh]);
+  }, [filter, offset, refresh, backendReady, recovery]);
   const documentId = document?.document_id;
   const runId = document?.run.run_id;
   const processing = isProcessing(document?.run.status);
   useEffect(() => {
-    if (!documentId || !runId || !processing || busy) return;
+    if (!backendReady || !documentId || !runId || !processing || busy) return;
     const controller = new AbortController();
     const query = new URLSearchParams({ run_id: runId });
     let delay = POLL_INTERVAL_MS;
@@ -120,34 +144,40 @@ export function Workspace({
       controller.abort();
       window.clearTimeout(timer);
     };
-  }, [documentId, runId, processing, busy]);
+  }, [documentId, runId, processing, busy, backendReady]);
   function updated(value: DocumentDetail) {
     setRetryError(null);
     setDocument(value);
     setRefresh((old) => old + 1);
   }
   async function selectDocument(id: string, run?: string) {
+    if (!backendReady) return;
     if (dirty) {
       setError('Hãy lưu nháp hoặc bỏ chỉnh sửa trước khi chuyển tài liệu/lần xử lý.');
       return;
     }
+    const sequence = ++operationRevision.current;
+    const signal = operations.current.signal;
     setBusy(true);
     setRetryError(null);
     setError('');
     try {
       const query = run ? `?run_id=${encodeURIComponent(run)}` : '';
-      const result = await request<DocumentDetail>(`/documents/${id}${query}`);
+      const result = await request<DocumentDetail>(`/documents/${id}${query}`, { signal });
+      if (signal.aborted || sequence !== operationRevision.current) return;
       setDocument(result);
       setPollErrorRunId(null);
       setActive(result.definitions[0].field_id);
     } catch (reason) {
-      setError((reason as Error).message);
+      if (!signal.aborted && sequence === operationRevision.current)
+        setError((reason as Error).message);
     } finally {
-      setBusy(false);
+      if (sequence === operationRevision.current) setBusy(false);
     }
   }
   async function upload() {
-    if (!file || !acknowledged) return;
+    if (!backendReady || !capabilities?.ocr_ready || busy || !file || !acknowledged) return;
+    const signal = operations.current.signal;
     if (dirty) {
       setError('Hãy lưu hoặc bỏ chỉnh sửa trước khi tải tài liệu khác.');
       return;
@@ -166,6 +196,7 @@ export function Workspace({
       uploadAttempt.current = attempt;
     }
     setBusy(true);
+    const sequence = ++operationRevision.current;
     setError('');
     setUploadError(null);
     try {
@@ -176,18 +207,21 @@ export function Workspace({
       });
       const result = await request<DocumentDetail>(`/documents?${query}`, {
         method: 'POST',
+        signal,
         body: file,
         headers: {
           'Content-Type': 'application/octet-stream',
           'Idempotency-Key': attempt.key,
         },
       });
+      if (signal.aborted || sequence !== operationRevision.current) return;
       updated(result);
       setActive(result.definitions[0].field_id);
       uploadAttempt.current = null;
       setFile(null);
       if (fileInput.current) fileInput.current.value = '';
     } catch (reason) {
+      if (signal.aborted || sequence !== operationRevision.current) return;
       setUploadError(
         reason instanceof APIError
           ? {
@@ -200,7 +234,41 @@ export function Workspace({
             },
       );
     } finally {
-      setBusy(false);
+      if (sequence === operationRevision.current) setBusy(false);
+    }
+  }
+  async function retryOCR() {
+    if (
+      !backendReady ||
+      busy ||
+      dirty ||
+      processing ||
+      !document?.is_latest_run ||
+      !capabilities?.ocr_ready
+    )
+      return;
+    const signal = operations.current.signal;
+    const sequence = ++operationRevision.current;
+    setBusy(true);
+    setRetryError(null);
+    setError('');
+    try {
+      const result = await jsonRequest<DocumentDetail>(
+        `/documents/${document.document_id}/runs`,
+        'POST',
+        { expected_run_id: document.latest_run_id },
+        signal,
+      );
+      if (!signal.aborted && sequence === operationRevision.current) updated(result);
+    } catch (reason) {
+      if (!signal.aborted && sequence === operationRevision.current)
+        setRetryError(
+          reason instanceof APIError
+            ? { code: reason.code, requestId: reason.requestId }
+            : { code: 'UNKNOWN' },
+        );
+    } finally {
+      if (sequence === operationRevision.current) setBusy(false);
     }
   }
   return (
@@ -212,7 +280,7 @@ export function Workspace({
           <p>Nhận dạng thật, giữ bằng chứng và xuất đúng bản bạn xác nhận.</p>
         </div>
         <span className="pill">
-          {capabilities?.ocr_ready ? 'OCR SẴN SÀNG' : 'OCR CHƯA SẴN SÀNG'}
+          {backendReady && capabilities?.ocr_ready ? 'OCR SẴN SÀNG' : 'OCR CHƯA SẴN SÀNG'}
         </span>
       </section>
       {error && (
@@ -302,7 +370,7 @@ export function Workspace({
           </label>
           <button
             className="primary"
-            disabled={busy || !file || !acknowledged || !capabilities?.ocr_ready}
+            disabled={!backendReady || busy || !file || !acknowledged || !capabilities?.ocr_ready}
             onClick={() => void upload()}
           >
             {busy ? 'Đang gửi…' : uploadError?.retryable ? 'Thử tải lại' : 'Tải lên và nhận dạng'}
@@ -388,7 +456,7 @@ export function Workspace({
                       <td>{item.review_status ? statusLabels[item.review_status] : 'Chưa có'}</td>
                       <td>
                         <button
-                          disabled={busy}
+                          disabled={!backendReady || busy}
                           onClick={() => void selectDocument(item.document_id)}
                         >
                           Mở tài liệu
@@ -426,36 +494,21 @@ export function Workspace({
             </div>
             <div className="inline-actions">
               <button
-                disabled={busy || dirty}
+                disabled={!backendReady || busy || dirty}
                 onClick={() => void selectDocument(document.document_id)}
               >
                 Tải bản mới nhất
               </button>
               <button
                 disabled={
-                  busy || dirty || processing || !document.is_latest_run || !capabilities?.ocr_ready
+                  !backendReady ||
+                  busy ||
+                  dirty ||
+                  processing ||
+                  !document.is_latest_run ||
+                  !capabilities?.ocr_ready
                 }
-                onClick={() => {
-                  setBusy(true);
-                  setError('');
-                  void jsonRequest<DocumentDetail>(
-                    `/documents/${document.document_id}/runs`,
-                    'POST',
-                    { expected_run_id: document.latest_run_id },
-                  )
-                    .then((value) => {
-                      setRetryError(null);
-                      updated(value);
-                    })
-                    .catch((reason: unknown) =>
-                      setRetryError(
-                        reason instanceof APIError
-                          ? { code: reason.code, requestId: reason.requestId }
-                          : { code: 'UNKNOWN' },
-                      ),
-                    )
-                    .finally(() => setBusy(false));
-                }}
+                onClick={() => void retryOCR()}
               >
                 Chạy OCR lại
               </button>
@@ -485,6 +538,7 @@ export function Workspace({
             <ReviewPanel
               key={`${document.document_id}-${document.run.run_id}`}
               document={document}
+              backendReady={backendReady}
               onUpdated={updated}
               onDirtyChange={onDirtyChange}
               onFieldChange={setActive}

@@ -201,29 +201,50 @@ test('PDF recovery: reload retains draft, cross-tab logout rejects late ACK in n
       doc.review.effective_data.seller_name,
     );
     await page.unroute(`**${path}/review`);
-    let accepted!: () => void;
-    const committed = new Promise<void>((resolve) => {
-      accepted = resolve;
+    let committed = false;
+    let oldRequestAborted = false;
+    let handled!: () => void;
+    const settled = new Promise<void>((resolve) => {
+      handled = resolve;
     });
     const held = new Promise<void>((resolve) => {
       release = resolve;
     });
-    await page.route(`**${path}/review`, async (route) => {
-      const response = await route.fetch();
-      expect(response.status()).toBe(200);
-      accepted();
-      await held;
-      await route.fulfill({ response });
+    page.on('requestfailed', (request) => {
+      if (
+        request.url().endsWith(path + '/review') &&
+        request.failure()?.errorText.includes('ERR_ABORTED')
+      )
+        oldRequestAborted = true;
     });
+    await page.route(
+      `**${path}/review`,
+      async (route) => {
+        const response = await route.fetch();
+        expect(response.status()).toBe(200);
+        committed = true;
+        await held;
+        try {
+          await route.fulfill({ response });
+        } catch (error) {
+          if (!oldRequestAborted) throw error;
+        } finally {
+          handled();
+        }
+      },
+      { times: 1 },
+    );
     await page.getByRole('button', { name: 'Đối chiếu bản mới' }).click();
     await page.getByRole('button', { name: 'Giữ chỉnh sửa, dùng revision mới' }).click();
-    await committed;
+    await page.getByRole('button', { name: 'Lưu nháp', exact: true }).click();
+    await expect.poll(() => committed).toBe(true);
     const identity = await (await page.request.get('/api/v1/auth/session')).json();
     const prefix = `field-review:user:${identity.user.id}:`;
     const other = await context.newPage();
     await workspace(other);
     await other.getByRole('button', { name: 'Đăng xuất', exact: true }).click();
     await expect(page.getByRole('button', { name: 'Đăng nhập', exact: true })).toBeVisible();
+    await expect.poll(() => oldRequestAborted).toBe(true);
     await login(other, 'pdfnext');
     await expect(page.getByRole('region', { name: 'Tài khoản hiện tại' })).toContainText('pdfnext');
     const own = await upload(page, 'pdf');
@@ -231,11 +252,9 @@ test('PDF recovery: reload retains draft, cross-tab logout rejects late ACK in n
     await page.route(`**/api/v1/documents/${own.document_id}/review`, (route) => route.abort());
     await page.locator('#field-seller_name').fill('Next account PDF draft');
     await expect(page.locator('.save-status')).toContainText('Lưu thất bại');
-    const late = page.waitForResponse(
-      (response) => response.url().endsWith(path + '/review') && response.status() === 200,
-    );
     release();
-    await late;
+    // The server committed, but the old editor canceled delivery of its ACK.
+    await settled;
     await expect(page.locator('#field-seller_name')).toHaveValue('Next account PDF draft');
     const storage = await page.evaluate(
       (prefix) => ({
@@ -387,6 +406,16 @@ test('revoked session clears a pending owner draft and a late successful ACK can
     const session = await (await page.request.get('/api/v1/auth/session')).json();
     const oldPrefix = `field-review:user:${session.user.id}:`;
     let saved!: () => void;
+    let handled!: () => void;
+    let oldRequestAborted = false;
+    const oldPath = `/documents/${doc.document_id}/review`;
+    page.on('requestfailed', (request) => {
+      if (request.url().endsWith(oldPath) && request.failure()?.errorText.includes('ERR_ABORTED'))
+        oldRequestAborted = true;
+    });
+    const oldHandled = new Promise<void>((resolve) => {
+      handled = resolve;
+    });
     const gate = new Promise<void>((resolve) => {
       release = resolve;
     });
@@ -398,7 +427,13 @@ test('revoked session clears a pending owner draft and a late successful ACK can
       expect(response.status()).toBe(200);
       saved();
       await gate;
-      await route.fulfill({ response });
+      try {
+        await route.fulfill({ response });
+      } catch (error) {
+        if (!oldRequestAborted) throw error;
+      } finally {
+        handled();
+      }
     });
     await page.locator('#field-seller_name').fill('Old eta acknowledged draft');
     await accepted;
@@ -411,6 +446,7 @@ test('revoked session clears a pending owner draft and a late successful ACK can
     ).toBe(204);
     await page.evaluate(() => window.dispatchEvent(new Event('focus')));
     await expect(page.getByRole('button', { name: 'Đăng nhập', exact: true })).toBeVisible();
+    await expect.poll(() => oldRequestAborted).toBe(true);
     expect(
       await page.evaluate(
         (prefix) => Object.keys(localStorage).some((key) => key.startsWith(prefix)),
@@ -422,13 +458,10 @@ test('revoked session clears a pending owner draft and a late successful ACK can
     await page.route(`**/api/v1/documents/${own.document_id}/review`, (route) => route.abort());
     await page.locator('#field-seller_name').fill('Theta pending recovery');
     await expect(page.locator('.save-status')).toContainText('Lưu thất bại');
-    const oldAck = page.waitForResponse(
-      (response) =>
-        response.url().endsWith(`/documents/${doc.document_id}/review`) &&
-        response.status() === 200,
-    );
     release();
-    await oldAck;
+    // The server's 200 was asserted above. The editor lifecycle canceled its
+    // client request, so a response event must not be required after revocation.
+    await oldHandled;
     await expect(page.getByRole('region', { name: 'Tài khoản hiện tại' })).toContainText('theta');
     await expect(page.locator('#field-seller_name')).toHaveValue('Theta pending recovery');
     expect(

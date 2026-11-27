@@ -1,10 +1,18 @@
+import readiness from '../../contracts/examples/readiness-ready.json' with { type: 'json' };
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import type { DocumentDetail } from '../src/features/documents/api';
 
 async function tabTo(page: Page, target: Locator) {
   for (let i = 0; i < 90; i++) {
     if (await target.evaluate((element) => element === document.activeElement)) return;
-    await page.keyboard.press('Tab');
+    const backwards = await target.evaluate(
+      (element) =>
+        !!(
+          element.compareDocumentPosition(document.activeElement!) &
+          Node.DOCUMENT_POSITION_FOLLOWING
+        ),
+    );
+    await page.keyboard.press(backwards ? 'Shift+Tab' : 'Tab');
   }
   throw new Error('Target was not reachable by Tab');
 }
@@ -60,7 +68,9 @@ for (const width of [1280, 390]) {
     await page.route('**/api/v1/**', async (route) => {
       const path = new URL(route.request().url()).pathname;
       let value: unknown = current;
-      if (path.endsWith('/auth/session')) value = { mode: 'local', user: null, csrf_token: null };
+      if (path.endsWith('/readiness')) value = readiness;
+      else if (path.endsWith('/auth/session'))
+        value = { mode: 'local', user: null, csrf_token: null };
       else if (path.endsWith('/capabilities'))
         value = {
           features: {},
@@ -179,6 +189,9 @@ for (const width of [1280, 390]) {
     await activate('Giữ chỉnh sửa, dùng revision mới', 'Space');
     await expect(input).toBeFocused();
     await expect(input).toHaveValue('Local edits');
+    // Resume after comparison is an explicit write under reconnect guards.
+    await activate('Lưu nháp');
+    await expect(input).toBeFocused();
     await expect(page.getByRole('status', { name: 'Trạng thái lưu' })).toContainText('Đã lưu nháp');
     failure = 500;
     await page.keyboard.press('ControlOrMeta+A');

@@ -21,10 +21,13 @@ export class APIError extends Error {
 }
 
 export async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const revision = getSessionSnapshot().revision;
+  options.signal?.throwIfAborted();
+  const { revision, requestEpoch } = getSessionSnapshot();
   const response = await sessionFetch(`/api/v1${path}`, options);
   if (!response.ok) {
     const payload = await response.json().catch(() => null);
+    options.signal?.throwIfAborted();
+    if (response.status !== 401) assertCurrentSession(revision, requestEpoch);
     throw new APIError(
       response.status,
       payload?.error?.code ?? 'NETWORK_ERROR',
@@ -33,7 +36,8 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
     );
   }
   const result = (await response.json()) as T;
-  assertCurrentSession(revision);
+  options.signal?.throwIfAborted();
+  assertCurrentSession(revision, requestEpoch);
   return result;
 }
 
@@ -51,16 +55,24 @@ export function jsonRequest<T>(
   });
 }
 
-export async function downloadExport(document: DocumentDetail): Promise<void> {
-  const revision = getSessionSnapshot().revision;
+export async function downloadExport(
+  document: DocumentDetail,
+  signal?: AbortSignal,
+): Promise<void> {
+  const { revision, requestEpoch } = getSessionSnapshot();
+  signal?.throwIfAborted();
   if (!document.review) throw new Error('Chưa có bản review.');
   const query = new URLSearchParams({
     run_id: document.run.run_id,
     revision: String(document.review.revision),
   });
-  const response = await sessionFetch(`/api/v1/documents/${document.document_id}/export?${query}`);
+  const response = await sessionFetch(`/api/v1/documents/${document.document_id}/export?${query}`, {
+    signal,
+  });
   if (!response.ok) {
     const payload = await response.json().catch(() => null);
+    signal?.throwIfAborted();
+    if (response.status !== 401) assertCurrentSession(revision, requestEpoch);
     throw new APIError(
       response.status,
       payload?.error?.code ?? 'EXPORT_FAILED',
@@ -68,7 +80,8 @@ export async function downloadExport(document: DocumentDetail): Promise<void> {
     );
   }
   const blob = await response.blob();
-  assertCurrentSession(revision);
+  signal?.throwIfAborted();
+  assertCurrentSession(revision, requestEpoch);
   const url = URL.createObjectURL(blob);
   const anchor = window.document.createElement('a');
   anchor.href = url;

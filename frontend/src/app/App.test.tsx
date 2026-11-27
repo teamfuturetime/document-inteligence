@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import fixture from '../../../contracts/examples/fixture-view.json';
+import readiness from '../../../contracts/examples/readiness-not-ready.json';
 import { App } from './App';
 
 const capabilities = {
@@ -15,6 +16,13 @@ function mockAPI(options: { mode?: string; empty?: boolean } = {}) {
     'fetch',
     vi.fn(async (path: string) => {
       let value: unknown;
+      if (path.endsWith('/readiness')) return { status: 503, json: async () => readiness };
+      if (path.endsWith('/auth/session'))
+        return {
+          ok: true,
+          status: 200,
+          json: async () => ({ mode: 'local', user: null, csrf_token: null }),
+        };
       if (path.endsWith('/capabilities'))
         value = { ...capabilities, provider_mode: options.mode ?? 'fixture' };
       else if (path.endsWith('/fixtures'))
@@ -51,18 +59,26 @@ describe('Giao diện foundation trung thực', () => {
     expect(await screen.findByText(/Chế độ fixture chưa bật/)).toBeVisible();
     expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
     expect(
-      vi.mocked(fetch).mock.calls.every(([path]) => String(path).endsWith('/capabilities')),
+      vi
+        .mocked(fetch)
+        .mock.calls.every(([path]) =>
+          ['/capabilities', '/readiness', '/auth/session'].some((suffix) =>
+            String(path).endsWith(suffix),
+          ),
+        ),
     ).toBe(true);
   });
 
   it('cho biết lỗi backend và tải lại sau khi sửa kết nối', async () => {
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Mất kết nối')));
     render(<App />);
-    expect(await screen.findByRole('alert')).toHaveTextContent('Không kết nối được backend');
+    await waitFor(() => expect(fetch).toHaveBeenCalled());
+    expect(screen.getByRole('status', { name: 'Trạng thái backend' })).toHaveTextContent(
+      'Đang kết nối lại',
+    );
     mockAPI();
     fireEvent.click(screen.getByRole('button', { name: 'Thử lại' }));
-    await waitFor(() => expect(screen.queryByRole('alert')).not.toBeInTheDocument());
-    expect(screen.getByText(/Provider: fixture/)).toBeVisible();
+    expect(await screen.findByText(/Provider: fixture/)).toBeVisible();
   });
 
   it('hiển thị catalogue trống', async () => {

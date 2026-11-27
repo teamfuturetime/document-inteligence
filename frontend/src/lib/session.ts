@@ -2,8 +2,20 @@ import type { components } from './api.generated';
 import { clearReviewDrafts } from './reviewDrafts';
 
 export type SessionState = components['schemas']['SessionState'];
-type Snapshot = { session: SessionState | null; error: string; revision: number };
-let snapshot: Snapshot = { session: null, error: '', revision: 0 };
+type Snapshot = {
+  session: SessionState | null;
+  error: string;
+  revision: number;
+  uncertain: boolean;
+  requestEpoch: number;
+};
+let snapshot: Snapshot = {
+  session: null,
+  error: '',
+  revision: 0,
+  uncertain: false,
+  requestEpoch: 0,
+};
 let refreshSequence = 0;
 let mutationSequence = 0;
 let pendingMutation: number | null = null;
@@ -30,7 +42,13 @@ function publish(session: SessionState | null, error = '') {
     previous?.mode !== session?.mode ||
     previous?.user?.id !== session?.user?.id ||
     previous?.csrf_token !== session?.csrf_token;
-  snapshot = { session, error, revision: snapshot.revision + Number(changed) };
+  snapshot = {
+    session,
+    error,
+    revision: snapshot.revision + Number(changed),
+    uncertain: false,
+    requestEpoch: snapshot.requestEpoch,
+  };
   listeners.forEach((listener) => listener());
 }
 
@@ -42,19 +60,54 @@ async function sessionResponse(response: Response): Promise<SessionState> {
   return response.json() as Promise<SessionState>;
 }
 
-export async function refreshSession() {
+export async function refreshSession(signal?: AbortSignal): Promise<boolean> {
   const sequence = ++refreshSequence;
   const mutation = mutationSequence;
   const isCurrent = () =>
     sequence === refreshSequence && mutation === mutationSequence && pendingMutation === null;
-  try {
-    const state = await sessionResponse(
-      await fetch('/api/v1/auth/session', { credentials: 'same-origin', cache: 'no-store' }),
-    );
-    if (isCurrent()) publish(state);
-  } catch {
-    if (isCurrent()) publish(null, 'Không kiểm tra được phiên. Hãy thử lại.');
+  const requestSignal = AbortSignal.any([...(signal ? [signal] : []), AbortSignal.timeout(8000)]);
+  if (
+    pendingMutation === null &&
+    !snapshot.uncertain &&
+    (snapshot.session?.mode === 'local' || snapshot.session?.user)
+  ) {
+    // Keep the editor identity stable, but invalidate protected requests from
+    // before this observation, even if verification returns the same owner.
+    snapshot = { ...snapshot, uncertain: true, requestEpoch: snapshot.requestEpoch + 1 };
+    listeners.forEach((listener) => listener());
   }
+  try {
+    const response = await fetch('/api/v1/auth/session', {
+      credentials: 'same-origin',
+      cache: 'no-store',
+      signal: requestSignal,
+    });
+    requestSignal.throwIfAborted();
+    if (response.status === 401 && isCurrent() && !signal?.aborted) {
+      publish(
+        { mode: 'session', user: null, csrf_token: null },
+        'Phiên đã hết hạn. Vui lòng đăng nhập lại.',
+      );
+      return true;
+    }
+    const state = await sessionResponse(response);
+    requestSignal.throwIfAborted();
+    if (isCurrent() && !signal?.aborted) {
+      publish(state);
+      return true;
+    }
+  } catch {
+    if (isCurrent() && !signal?.aborted) {
+      const error = 'Không kiểm tra được phiên. Hãy thử lại.';
+      if (snapshot.session?.mode === 'local' || snapshot.session?.user) {
+        // Offline is not a verified logout. Keep the mounted editor and owner
+        // namespace, but block requests until identity has been verified again.
+        snapshot = { ...snapshot, uncertain: true, error };
+        listeners.forEach((listener) => listener());
+      } else publish(null, error);
+    }
+  }
+  return false;
 }
 
 function invalidateSessionRequests() {
@@ -81,7 +134,15 @@ function notifyOtherTabs() {
 }
 
 export function watchSession() {
-  const refresh = () => void refreshSession();
+  const controller = new AbortController();
+  let refreshing = false;
+  const refresh = () => {
+    if (refreshing) return;
+    refreshing = true;
+    void refreshSession(controller.signal).finally(() => {
+      refreshing = false;
+    });
+  };
   const visible = () => {
     if (document.visibilityState === 'visible') refresh();
   };
@@ -99,6 +160,7 @@ export function watchSession() {
     };
   }
   return () => {
+    controller.abort();
     window.removeEventListener('focus', refresh);
     window.removeEventListener('pageshow', refresh);
     document.removeEventListener('visibilitychange', visible);
@@ -126,20 +188,29 @@ export async function login(username: string, password: string) {
   }
 }
 
-export function assertCurrentSession(revision: number) {
-  if (revision !== snapshot.revision) {
+export function assertCurrentSession(revision: number, requestEpoch = snapshot.requestEpoch) {
+  if (
+    revision !== snapshot.revision ||
+    requestEpoch !== snapshot.requestEpoch ||
+    snapshot.uncertain
+  ) {
     throw new DOMException('Phiên đã thay đổi; thao tác cũ đã dừng.', 'AbortError');
   }
 }
 
 export async function sessionFetch(path: string, options: RequestInit = {}) {
-  const revision = snapshot.revision;
+  const { revision, requestEpoch } = snapshot;
+  options.signal?.throwIfAborted();
+  assertCurrentSession(revision, requestEpoch);
   const headers = new Headers(options.headers);
   const method = (options.method ?? 'GET').toUpperCase();
   const csrf = snapshot.session?.csrf_token;
   if (csrf && !['GET', 'HEAD', 'OPTIONS'].includes(method)) headers.set('X-CSRF-Token', csrf);
   const response = await fetch(path, { ...options, headers, credentials: 'same-origin' });
-  assertCurrentSession(revision);
+  options.signal?.throwIfAborted();
+  // A verified 401 for this identity remains authoritative while a concurrent
+  // lookup is uncertain. A previous identity's 401 must never expire a new one.
+  if (revision !== snapshot.revision) assertCurrentSession(revision, requestEpoch);
   if (response.status === 401) {
     invalidateSessionRequests();
     publish(
@@ -147,9 +218,12 @@ export async function sessionFetch(path: string, options: RequestInit = {}) {
       'Phiên đã hết hạn. Vui lòng đăng nhập lại.',
     );
     notifyOtherTabs();
-  } else if (response.status === 403 && snapshot.session?.mode === 'session') {
-    // A cookie may have changed in another tab. Never replay the failed write.
-    void refreshSession();
+  } else {
+    assertCurrentSession(revision, requestEpoch);
+    if (response.status === 403 && snapshot.session?.mode === 'session') {
+      // A cookie may have changed in another tab. Never replay the failed write.
+      void refreshSession();
+    }
   }
   return response;
 }

@@ -66,11 +66,13 @@ export function ReviewPanel({
   onUpdated,
   onDirtyChange,
   onFieldChange,
+  backendReady = true,
 }: {
   document: DocumentDetail;
   onUpdated: (value: DocumentDetail) => void;
   onDirtyChange: (value: boolean) => void;
   onFieldChange: (value: string) => void;
+  backendReady?: boolean;
 }) {
   const identity = useContext(ReviewIdentityContext);
   const [sessionRevision] = useState(() => getSessionSnapshot().revision);
@@ -121,6 +123,20 @@ export function ReviewPanel({
       : null,
   );
   const [conflict, setConflict] = useState<DocumentDetail | null>(null);
+  const operations = useRef(new AbortController());
+  const operationRevision = useRef(0);
+  useEffect(() => {
+    const controller = new AbortController();
+    operations.current = controller;
+    ++operationRevision.current;
+    inFlight.current = false;
+    setSaving(false);
+    setBusy(false);
+    return () => {
+      ++operationRevision.current;
+      controller.abort();
+    };
+  }, [backendReady]);
   const headingId = useId();
   const panelRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -169,6 +185,10 @@ export function ReviewPanel({
     setConflict(null);
   }, [document]);
   const dirty = Object.keys(changes).length > 0 || saving;
+  const [resumeRequired, setResumeRequired] = useState(false);
+  useEffect(() => {
+    if (!backendReady && dirty) setResumeRequired(true);
+  }, [backendReady, dirty]);
   useEffect(() => {
     onDirtyChange(dirty);
   }, [dirty, onDirtyChange]);
@@ -192,6 +212,8 @@ export function ReviewPanel({
   useEffect(() => {
     if (
       !dirty ||
+      !backendReady ||
+      resumeRequired ||
       saving ||
       busy ||
       error ||
@@ -221,21 +243,30 @@ export function ReviewPanel({
     setMessage('Có thay đổi chưa lưu.');
     // Failed/ambiguous requests require explicit retry; 409 requires comparison.
   }
-  async function act(operation: () => Promise<void>) {
+  async function act(operation: (signal: AbortSignal) => Promise<void>) {
+    if (!backendReady || busy || saving) return;
+    const sequence = ++operationRevision.current;
+    const signal = AbortSignal.any([operations.current.signal, AbortSignal.timeout(15000)]);
+    const current = () => mounted.current && sequence === operationRevision.current;
     setBusy(true);
-    setError(null);
     setMessage('');
     try {
-      await operation();
+      await operation(signal);
+      if (current()) setError(null);
     } catch (reason) {
-      setError(reason as Error);
+      // A failed/canceled comparison never grants permission to save a
+      // recovered/conflicted draft before the user actually compares it.
+      if (current() && !(error instanceof APIError && error.status === 409))
+        setError(reason as Error);
     } finally {
-      setBusy(false);
+      if (current()) setBusy(false);
     }
   }
-  async function save(restoreFocus = false) {
+  async function save(manual = false) {
     if (
       !review ||
+      !backendReady ||
+      (!manual && resumeRequired) ||
       getSessionSnapshot().revision !== sessionRevision ||
       inFlight.current ||
       busy ||
@@ -245,6 +276,10 @@ export function ReviewPanel({
       (error instanceof APIError && error.status === 409)
     )
       return;
+    setResumeRequired(false);
+    const sequence = ++operationRevision.current;
+    const signal = AbortSignal.any([operations.current.signal, AbortSignal.timeout(15000)]);
+    const current = () => mounted.current && sequence === operationRevision.current;
     const focusOrigin = window.document.activeElement;
     const snapshot = changesRef.current;
     inFlight.current = true;
@@ -260,9 +295,9 @@ export function ReviewPanel({
           expected_status: review.review_status,
           fields: snapshot,
         },
-        AbortSignal.timeout(15_000),
+        signal,
       );
-      if (!mounted.current) return;
+      if (!current() || signal.aborted) return;
       baseRef.current = result;
       setBase(result);
       setChanges(
@@ -275,12 +310,14 @@ export function ReviewPanel({
       );
       onUpdated(result);
       setMessage('Đã lưu nháp trên máy chủ.');
-      if (restoreFocus) focusEditor(focusOrigin);
+      if (manual) focusEditor(focusOrigin);
     } catch (reason) {
-      if (mounted.current) setError(reason as Error);
+      if (current()) setError(reason as Error);
     } finally {
-      inFlight.current = false;
-      if (mounted.current) setSaving(false);
+      if (current()) {
+        inFlight.current = false;
+        setSaving(false);
+      }
     }
   }
   return (
@@ -325,10 +362,14 @@ export function ReviewPanel({
           )}
           {error instanceof APIError && error.status === 409 && (
             <button
-              disabled={busy}
+              disabled={!backendReady || busy}
               onClick={() =>
-                void act(async () => {
-                  setConflict(await request<DocumentDetail>(`/documents/${base.document_id}`));
+                void act(async (signal) => {
+                  const result = await request<DocumentDetail>(`/documents/${base.document_id}`, {
+                    signal,
+                  });
+                  signal.throwIfAborted();
+                  setConflict(result);
                 })
               }
             >
@@ -516,7 +557,11 @@ export function ReviewPanel({
         <button
           className="primary"
           disabled={
-            !editable || !dirty || saving || (error instanceof APIError && error.status === 409)
+            !backendReady ||
+            !editable ||
+            !dirty ||
+            saving ||
+            (error instanceof APIError && error.status === 409)
           }
           onClick={() => void save(true)}
         >
@@ -535,6 +580,7 @@ export function ReviewPanel({
         <button
           disabled={
             !editable ||
+            !backendReady ||
             saving ||
             dirty ||
             issues.length > 0 ||
@@ -542,7 +588,7 @@ export function ReviewPanel({
           }
           onClick={() => {
             const focusOrigin = window.document.activeElement;
-            void act(async () => {
+            void act(async (signal) => {
               const result = await jsonRequest<DocumentDetail>(
                 `/documents/${base.document_id}/confirm`,
                 'POST',
@@ -550,7 +596,9 @@ export function ReviewPanel({
                   run_id: base.run.run_id,
                   expected_revision: review!.revision,
                 },
+                signal,
               );
+              signal.throwIfAborted();
               confirmFocusOrigin.current = focusOrigin;
               onUpdated(result);
               setMessage('Đã xác nhận bản lưu. Có thể xuất JSON.');
@@ -561,10 +609,13 @@ export function ReviewPanel({
         </button>
         <button
           ref={exportRef}
-          disabled={!editable || saving || dirty || review?.review_status !== 'confirmed'}
+          disabled={
+            !backendReady || !editable || saving || dirty || review?.review_status !== 'confirmed'
+          }
           onClick={() =>
-            void act(async () => {
-              await downloadExport(base);
+            void act(async (signal) => {
+              await downloadExport(base, signal);
+              signal.throwIfAborted();
               setMessage('Đã tải JSON từ bản xác nhận trên máy chủ.');
             })
           }
@@ -579,15 +630,19 @@ export function ReviewPanel({
         aria-atomic="true"
         className="save-status"
       >
-        {saving
-          ? 'Đang lưu nháp…'
-          : error
-            ? 'Lưu thất bại. Chỉnh sửa được giữ; hãy thử Lưu nháp hoặc đối chiếu khi xung đột.'
-            : busy
-              ? 'Đang trao đổi với máy chủ…'
-              : dirty
-                ? 'Chưa lưu. Tự động lưu sau khi ngừng nhập.'
-                : message || 'Không có thay đổi chưa lưu.'}
+        {!backendReady
+          ? 'Mất kết nối hoặc backend chưa sẵn sàng. Chỉnh sửa vẫn được giữ.'
+          : resumeRequired && dirty
+            ? 'Đã kết nối lại. Hãy bấm Lưu nháp hoặc đối chiếu trước khi tiếp tục; không tự gửi lại.'
+            : saving
+              ? 'Đang lưu nháp…'
+              : error
+                ? 'Lưu thất bại. Chỉnh sửa được giữ; hãy thử Lưu nháp hoặc đối chiếu khi xung đột.'
+                : busy
+                  ? 'Đang trao đổi với máy chủ…'
+                  : dirty
+                    ? 'Chưa lưu. Tự động lưu sau khi ngừng nhập.'
+                    : message || 'Không có thay đổi chưa lưu.'}
       </p>
     </section>
   );

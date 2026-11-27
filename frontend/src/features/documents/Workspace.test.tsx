@@ -71,8 +71,9 @@ function mockWorkspace(sendUpload?: (options?: RequestInit) => Promise<Response>
       }
     }),
   );
-  render(
+  const editor = (backendReady = true) => (
     <Workspace
+      backendReady={backendReady}
       capabilities={{
         features: {},
         max_upload_bytes: 5_242_880,
@@ -83,9 +84,10 @@ function mockWorkspace(sendUpload?: (options?: RequestInit) => Promise<Response>
         upload_media_types: ['image/png', 'image/jpeg'],
       }}
       onUnsavedChange={vi.fn()}
-    />,
+    />
   );
-  return poll;
+  const view = render(editor());
+  return Object.assign(poll, { setReady: (ready: boolean) => view.rerender(editor(ready)) });
 }
 
 async function open(id: string) {
@@ -107,6 +109,75 @@ afterEach(() => {
 });
 
 describe('Theo dõi trạng thái OCR', () => {
+  it.each(['upload', 'OCR retry'])(
+    'ignores an interrupted %s ACK while its explicit replacement is pending',
+    async (kind) => {
+      vi.useFakeTimers();
+      const first = deferredResponse();
+      const second = deferredResponse();
+      const send = vi
+        .fn<(options?: RequestInit) => Promise<Response>>()
+        .mockReturnValueOnce(first.promise)
+        .mockReturnValueOnce(second.promise);
+      const workspace = mockWorkspace(kind === 'upload' ? send : undefined);
+      await advance(0);
+      if (kind === 'upload') {
+        fireEvent.change(screen.getByLabelText('Ảnh PNG/JPG một trang'), {
+          target: { files: [new File(['sample'], 'synthetic.png', { type: 'image/png' })] },
+        });
+        fireEvent.click(screen.getByRole('checkbox', { name: /Tôi xác nhận/ }));
+      } else {
+        await open('invoice-b');
+        const original = vi.mocked(fetch).getMockImplementation()!;
+        vi.mocked(fetch).mockImplementation((path, options) =>
+          String(path).endsWith('/runs') ? send(options) : original(path, options),
+        );
+      }
+      const action = () =>
+        screen.getByRole('button', {
+          name: kind === 'upload' ? /Tải lên và nhận dạng|Đang gửi/ : 'Chạy OCR lại',
+        });
+      fireEvent.click(action());
+      expect(send).toHaveBeenCalledTimes(1);
+      workspace.setReady(false);
+      expect(send.mock.calls[0][0]?.signal?.aborted).toBe(true);
+      workspace.setReady(true);
+      expect(action()).toBeEnabled();
+      fireEvent.click(action());
+      expect(send).toHaveBeenCalledTimes(2);
+      await act(async () => first.resolve(response(document('stale-ack', 'succeeded'))));
+      expect(action()).toBeDisabled();
+      expect(screen.queryByRole('heading', { name: 'stale-ack.png' })).not.toBeInTheDocument();
+      await act(async () => second.resolve(response(document('invoice-b', 'succeeded'))));
+      expect(screen.getByRole('heading', { name: 'invoice-b.png' })).toBeVisible();
+      if (kind === 'upload')
+        expect(new Headers(send.mock.calls[0][0]?.headers).get('Idempotency-Key')).toBe(
+          new Headers(send.mock.calls[1][0]?.headers).get('Idempotency-Key'),
+        );
+    },
+  );
+  it('does not let an older selection clear the busy state of a newer pending selection', async () => {
+    vi.useFakeTimers();
+    mockWorkspace();
+    await advance(0);
+    const original = vi.mocked(fetch).getMockImplementation()!;
+    const first = deferredResponse();
+    const second = deferredResponse();
+    vi.mocked(fetch).mockImplementation((path, options) => {
+      if (String(path).endsWith('/invoice-a')) return first.promise;
+      if (String(path).endsWith('/invoice-b')) return second.promise;
+      return original(path, options);
+    });
+    const buttons = screen.getAllByRole('button', { name: 'Mở tài liệu' });
+    act(() => {
+      fireEvent.click(buttons[0]);
+      fireEvent.click(buttons[1]);
+    });
+    await act(async () => first.resolve(response(document('invoice-a', 'succeeded'))));
+    expect(buttons[1]).toBeDisabled();
+    await act(async () => second.resolve(response(document('invoice-b', 'succeeded'))));
+    expect(screen.getByRole('heading', { name: 'invoice-b.png' })).toBeVisible();
+  });
   it('chờ phản hồi trước khi gửi tiếp và dừng khi OCR hoàn tất', async () => {
     vi.useFakeTimers();
     const poll = mockWorkspace();
